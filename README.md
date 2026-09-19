@@ -55,27 +55,41 @@ The portrait plaque already works this way.
 
 ## Part 1 — Put it online (free, about 15 minutes)
 
-1. **Make a GitHub account** at [github.com](https://github.com) if you don't have one.
-   Pick your username carefully — it shows up in the temporary web address.
-2. Click **+** (top right) → **New repository**.
-   - Name it whatever you like, e.g. `website`.
-   - Set it to **Public** (Pages needs this on a free account).
-   - Don't tick "Add a README" — you already have one.
-   - Click **Create repository**.
-3. On the empty repo page, click **uploading an existing file**.
-   Drag in **everything inside this folder** — including the `images` folder.
-   Then click **Commit changes**.
-   - If `.nojekyll` doesn't appear in the upload list, your computer is hiding
-     dotfiles. On Mac press `Cmd + Shift + .` in Finder to show them, then drag it in.
-4. Go to **Settings** → **Pages** (left sidebar).
-   Under *Build and deployment*, set **Source** to `Deploy from a branch`,
-   branch `main`, folder `/ (root)`. Click **Save**.
-5. Wait a minute or two, then refresh. GitHub shows your live address:
-   `https://YOURUSERNAME.github.io/website/`
+These files already live in `Desktop\jp4mayor` on your laptop. This section
+takes that folder and puts it on the web.
 
-Your site is live. Now let's put your own name on it.
+**1. Make a GitHub account** at [github.com](https://github.com).
+Your username becomes part of the temporary web address, so pick something
+you won't mind seeing — it stops mattering once your domain is attached.
 
----
+**2. Install GitHub Desktop** from [desktop.github.com](https://desktop.github.com),
+open it, and sign in with the account you just made.
+
+**3. Turn the folder into a repository.**
+In GitHub Desktop: `File` → `Add local repository` → browse to
+`Desktop\jp4mayor` → it will say the folder isn't a repository yet and offer
+to **create a repository here**. Click that, then **Create repository**.
+
+**4. Publish it.**
+Click **Publish repository**. **Untick "Keep this code private"** — GitHub
+Pages needs a public repository on a free account. Name it `jp4mayor`.
+
+**5. Turn on Pages.**
+On github.com, open your new repository → **Settings** → **Pages** in the left
+sidebar. Under *Build and deployment* set **Source** to `Deploy from a branch`,
+branch `main`, folder `/ (root)`. Click **Save**.
+
+Wait a minute or two and refresh. GitHub shows the live address:
+`https://YOURUSERNAME.github.io/jp4mayor/`
+
+### Publishing changes after that
+
+1. Change files in `Desktop\jp4mayor` — edit `content.js`, drop photos into `images/`.
+2. Open GitHub Desktop. Your changes are listed on the left.
+3. Type a few words in the summary box, click **Commit to main**.
+4. Click **Push origin**.
+
+Live in about a minute. Hard-refresh with `Ctrl + Shift + R` if you don't see it.
 
 ## Part 2 — Your .com address
 
