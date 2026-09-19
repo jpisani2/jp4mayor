@@ -80,7 +80,7 @@ sidebar. Under *Build and deployment* set **Source** to `Deploy from a branch`,
 branch `main`, folder `/ (root)`. Click **Save**.
 
 Wait a minute or two and refresh. GitHub shows the live address:
-`https://YOURUSERNAME.github.io/jp4mayor/`
+`https://jpisani2.github.io/jp4mayor/`
 
 ### Publishing changes after that
 
@@ -126,7 +126,7 @@ or placeholder records they created for you.
 2606:50c0:8003::153
 ```
 
-**One CNAME record** — host `www`, pointing to `YOURUSERNAME.github.io`
+**One CNAME record** — host `www`, pointing to `jpisani2.github.io`
 (note the trailing dot if your registrar wants one).
 
 ### Tell GitHub about it
@@ -140,7 +140,7 @@ passes, tick **Enforce HTTPS**. That box may be greyed out for up to 24 hours
 while GitHub issues your certificate — it's free and automatic, just wait.
 
 **One thing to avoid:** don't point `www` at your bare domain instead of at
-`YOURUSERNAME.github.io`. It half-works and then breaks HTTPS.
+`jpisani2.github.io`. It half-works and then breaks HTTPS.
 
 ---
 
