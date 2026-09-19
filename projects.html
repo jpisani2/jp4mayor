@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>John Pisani</title>
+<meta name="description" content="Projects, pictures and videos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="masthead wrap">
+  <h1 id="site-name">John Pisani</h1>
+  <p class="tagline" id="tagline"></p>
+  <nav class="masthead-links" id="masthead-links" aria-label="Contact"></nav>
+</header>
+
+<div class="navbar">
+  <div class="wrap nav-inner">
+    <div class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" id="tab-projects" role="tab" aria-selected="true"  aria-controls="sec-projects" type="button">Projects <span class="count" id="count-projects"></span></button>
+      <button class="tab" id="tab-photos"   role="tab" aria-selected="false" aria-controls="sec-photos"   type="button">Pictures <span class="count" id="count-photos"></span></button>
+      <button class="tab" id="tab-videos"   role="tab" aria-selected="false" aria-controls="sec-videos"   type="button">Videos <span class="count" id="count-videos"></span></button>
+      <button class="tab" id="tab-about"    role="tab" aria-selected="false" aria-controls="sec-about"    type="button">About</button>
+    </div>
+    <button class="theme-btn" id="theme-btn" type="button" aria-label="Switch between light and dark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2.4v2M12 19.6v2M21.6 12h-2M4.4 12h-2M18.8 5.2l-1.4 1.4M6.6 17.4l-1.4 1.4M18.8 18.8l-1.4-1.4M6.6 6.6 5.2 5.2"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <section class="section" id="sec-projects" role="tabpanel" aria-labelledby="tab-projects">
+    <div class="section-head">
+      <h2>Projects</h2>
+      <p class="section-note">Things made, half-made, and abandoned.</p>
+    </div>
+    <div class="filters" id="filters" aria-label="Filter by tag"></div>
+    <div class="projects" id="projects-list"></div>
+  </section>
+
+  <section class="section" id="sec-photos" role="tabpanel" aria-labelledby="tab-photos" hidden>
+    <div class="section-head">
+      <h2>Pictures</h2>
+      <p class="section-note">Click any picture to see it full size.</p>
+    </div>
+    <div class="photo-grid" id="photo-grid"></div>
+  </section>
+
+  <section class="section" id="sec-videos" role="tabpanel" aria-labelledby="tab-videos" hidden>
+    <div class="section-head">
+      <h2>Videos</h2>
+      <p class="section-note">Hosted on YouTube, played here.</p>
+    </div>
+    <div class="video-grid" id="video-grid"></div>
+  </section>
+
+  <section class="section" id="sec-about" role="tabpanel" aria-labelledby="tab-about" hidden>
+    <div class="section-head"><h2>About</h2></div>
+    <div class="about" id="about-body"></div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-inner">
+    <span class="mono" id="footer-name"></span>
+    <span class="mono"><a href="index.html" style="text-decoration:none">&#8592; Back to the campaign</a></span>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Picture viewer">
+  <div class="lightbox-stage" id="lb-stage"></div>
+  <div class="lightbox-bar">
+    <span id="lb-caption"></span>
+    <div class="lb-nav">
+      <span class="lb-nav-wrap" id="lb-nav-wrap">
+        <span class="mono" id="lb-count"></span>
+        <button class="lb-btn" id="lb-prev" type="button" aria-label="Previous picture">&#8592;</button>
+        <button class="lb-btn" id="lb-next" type="button" aria-label="Next picture">&#8594;</button>
+      </span>
+      <button class="lb-btn" id="lb-close" type="button" aria-label="Close">&#10005;</button>
+    </div>
+  </div>
+</div>
+
+<script src="content.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

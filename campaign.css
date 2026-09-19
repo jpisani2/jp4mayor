@@ -1,0 +1,380 @@
+/* campaign.css — the jp4mayor.com front door.
+   Deliberately single-theme: this page is printed material, not a UI. */
+
+:root {
+  --navy:    #12294A;
+  --navy-2:  #0C1D37;
+  --paper:   #F2F4F5;
+  --paper-2: #E6EAEC;
+  --red:     #BF3A2E;
+  --red-ink: #9E2E24;
+  --gold:    #C9962B;
+  --ink:     #131A24;
+  --muted:   #5C6A77;
+  --on-navy: #DDE5EC;
+  --on-navy-dim: #93A8BD;
+
+  --display: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+  --quote: "Newsreader", Georgia, "Times New Roman", serif;
+  --gutter: 22px;
+  --maxw: 1120px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+[hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+.wrap {
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+/* ---------- top bar ---------- */
+.bar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 40;
+  background: var(--navy);
+  border-bottom: 3px solid var(--red);
+}
+.bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 56px;
+}
+.wordmark {
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: -.01em;
+  text-transform: uppercase;
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.wordmark em { font-style: normal; color: var(--gold); }
+
+.bar-nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.bar-nav a {
+  color: var(--on-navy-dim);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  padding: 8px 10px;
+}
+.bar-nav a:hover { color: #fff; }
+.bar-nav a.out { color: var(--gold); }
+
+/* ---------- hero ---------- */
+.hero {
+  background: var(--navy);
+  color: var(--on-navy);
+  padding-block: 56px 62px;
+  background-image:
+    radial-gradient(circle at 18% 12%, rgba(201,150,43,.10), transparent 42%),
+    radial-gradient(circle at 92% 88%, rgba(191,58,46,.14), transparent 46%);
+}
+.hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0,1.15fr) 300px;
+  gap: 48px;
+  align-items: center;
+}
+.hero .eyebrow { color: var(--gold); margin-bottom: 18px; }
+
+.hero h1 {
+  font-size: clamp(50px, 11vw, 118px);
+  font-weight: 900;
+  line-height: .9;
+  letter-spacing: -.028em;
+  text-transform: uppercase;
+  color: #fff;
+  margin: 0;
+  text-wrap: balance;
+}
+.hero h1 .for {
+  display: block;
+  font-size: .32em;
+  font-weight: 800;
+  letter-spacing: .3em;
+  color: var(--gold);
+  margin: .35em 0 .18em 3px;
+}
+
+.rule { height: 4px; background: var(--red); width: 96px; margin: 26px 0 22px; }
+
+.hero p {
+  font-size: 18px;
+  max-width: 46ch;
+  margin: 0;
+  color: var(--on-navy);
+  text-wrap: pretty;
+}
+.hero p + p { margin-top: 14px; color: var(--on-navy-dim); font-size: 16px; }
+
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+
+.btn {
+  appearance: none;
+  cursor: pointer;
+  display: inline-block;
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 13px 22px;
+  border-radius: 2px;
+  border: 2px solid transparent;
+  transition: background .15s ease, color .15s ease;
+}
+.btn-primary { background: var(--red); color: #fff; }
+.btn-primary:hover { background: var(--red-ink); }
+.btn-ghost { border-color: rgba(221,229,236,.38); color: var(--on-navy); background: transparent; }
+.btn-ghost:hover { border-color: #fff; color: #fff; }
+
+/* ---------- portrait ---------- */
+.portrait { justify-self: center; text-align: center; }
+.portrait-frame {
+  width: 258px;
+  max-width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+  padding: 9px;
+  background: var(--navy-2);
+}
+.portrait-frame .disc {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  background: var(--paper-2);
+  overflow: hidden;
+  display: block;
+}
+.portrait-frame svg { width: 100%; height: 100%; display: block; }
+
+.plaque {
+  margin-top: 16px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .19em;
+  text-transform: uppercase;
+  color: var(--on-navy-dim);
+}
+
+/* ---------- slogan band ---------- */
+.band {
+  background: var(--red);
+  color: #fff;
+  padding-block: 13px;
+}
+.band p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* ---------- sections ---------- */
+section { padding-block: 66px; }
+.section-label { color: var(--red-ink); margin-bottom: 10px; }
+.section-title {
+  font-size: clamp(30px, 5vw, 44px);
+  font-weight: 900;
+  letter-spacing: -.022em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin: 0 0 12px;
+}
+.section-lede { color: var(--muted); max-width: 56ch; margin: 0 0 40px; text-wrap: pretty; }
+
+/* ---------- planks ---------- */
+.planks { display: grid; gap: 0; max-width: 900px; }
+.plank {
+  display: grid;
+  grid-template-columns: 62px minmax(0,1fr) 190px;
+  gap: 28px;
+  align-items: start;
+  padding-block: 30px;
+  border-top: 1px solid rgba(19,26,36,.16);
+}
+.plank:last-child { border-bottom: 1px solid rgba(19,26,36,.16); }
+
+.plank-num {
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--paper);
+  -webkit-text-stroke: 1.4px var(--muted);
+  font-variant-numeric: tabular-nums;
+  padding-top: 2px;
+}
+.plank h3 {
+  margin: 0 0 8px;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -.012em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.plank p { margin: 0; color: #303B48; text-wrap: pretty; }
+
+.position {
+  justify-self: start;
+  border-left: 4px solid var(--red);
+  padding: 2px 0 2px 14px;
+}
+.position .label { display: block; font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.position .value { display: block; font-size: 19px; font-weight: 900; letter-spacing: -.01em; color: var(--navy); }
+
+/* ---------- where I stand ---------- */
+.stands-wrap { background: var(--paper-2); }
+.stands { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 2px 52px; margin-top: 8px; }
+.stand {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding-block: 11px;
+}
+.stand .subject { font-size: 15px; font-weight: 600; }
+.stand .leader { flex: 1 1 auto; border-bottom: 1px dotted rgba(19,26,36,.4); transform: translateY(-4px); min-width: 18px; }
+.stand .pos {
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 2px;
+  border: 1.5px solid currentColor;
+  white-space: nowrap;
+}
+.pos.for { color: #1D6B4C; }
+.pos.against { color: var(--red-ink); }
+.pos.none { color: var(--muted); }
+
+/* ---------- endorsements ---------- */
+.endorse-wrap { background: var(--navy); color: var(--on-navy); }
+.endorse-wrap .section-label { color: var(--gold); }
+.endorse-wrap .section-title { color: #fff; }
+.endorse-wrap .section-lede { color: var(--on-navy-dim); }
+
+.quotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap: 32px 44px; }
+.quote {
+  border-top: 3px solid var(--gold);
+  padding-top: 20px;
+}
+.quote blockquote {
+  margin: 0;
+  font-family: var(--quote);
+  font-style: italic;
+  font-size: 21px;
+  line-height: 1.45;
+  color: #fff;
+  text-wrap: pretty;
+}
+.quote cite {
+  display: block;
+  margin-top: 16px;
+  font-family: var(--display);
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--on-navy-dim);
+}
+.quote cite span { display: block; letter-spacing: .04em; font-weight: 400; text-transform: none; font-size: 13px; color: var(--on-navy-dim); margin-top: 4px; }
+
+/* ---------- yard sign ---------- */
+.signs-inner { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 48px; align-items: center; }
+.sign-note {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px dashed rgba(19,26,36,.35);
+  background: var(--paper-2);
+  font-size: 15px;
+  max-width: 56ch;
+  text-wrap: pretty;
+}
+
+.yardsign {
+  background: var(--navy);
+  border: 6px solid #fff;
+  outline: 3px solid var(--navy);
+  padding: 26px 18px;
+  text-align: center;
+  transform: rotate(-1.6deg);
+  box-shadow: 0 10px 22px rgba(18,41,74,.22);
+}
+.yardsign .big { font-size: 46px; font-weight: 900; line-height: .88; letter-spacing: -.03em; color: #fff; text-transform: uppercase; }
+.yardsign .big em { font-style: normal; color: var(--gold); }
+.yardsign .small { margin-top: 10px; font-size: 10px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--on-navy-dim); }
+
+/* ---------- footer ---------- */
+.foot { background: var(--navy-2); color: var(--on-navy-dim); padding-block: 40px 52px; }
+.foot a { color: var(--gold); }
+.foot .paid {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--on-navy);
+  border-top: 1px solid rgba(221,229,236,.2);
+  padding-top: 22px;
+}
+.foot .fine { font-size: 13px; max-width: 70ch; margin: 12px 0 0; line-height: 1.6; text-wrap: pretty; }
+.foot .back { margin-top: 26px; font-size: 14px; font-weight: 600; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: minmax(0,1fr); gap: 38px; }
+  .portrait { justify-self: start; order: -1; }
+  .portrait-frame { width: 190px; }
+  .plank { grid-template-columns: 50px minmax(0,1fr); gap: 20px; }
+  .position { grid-column: 2; margin-top: 16px; }
+  .stands { grid-template-columns: minmax(0,1fr); }
+  .signs-inner { grid-template-columns: minmax(0,1fr); }
+  .yardsign { max-width: 300px; }
+}
+
+@media (max-width: 560px) {
+  :root { --gutter: 18px; }
+  section { padding-block: 48px; }
+  .hero { padding-block: 40px 46px; }
+  .plank { grid-template-columns: minmax(0,1fr); gap: 0; }
+  .plank-num { font-size: 26px; margin-bottom: 8px; }
+  .position { grid-column: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
