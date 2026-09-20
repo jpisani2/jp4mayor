@@ -4,7 +4,7 @@
    a corrected grade or a roster merge flows straight through, including back
    through past seasons. */
 
-import { state, goto, loadHistory } from "../store.js";
+import { state, goto, loadHistory, historyStale } from "../store.js";
 import { esc, money } from "../format.js";
 import { rollUp, settle, riskA, riskB } from "../scoring.js";
 
@@ -209,7 +209,7 @@ function csv(games, bets) {
 }
 
 export function wire(root) {
-  if (!state.history.loaded) { loadHistory(); return; }
+  if (historyStale()) loadHistory();
 
   root.querySelector("#back").onclick = () => goto(state.game ? "room" : "idle");
 

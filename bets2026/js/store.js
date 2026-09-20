@@ -23,7 +23,7 @@ export const state = {
   proposing: false,
   menu: false,
   admin: false,
-  history: { games: [], bets: [], payments: [], loaded: false },
+  history: { games: [], bets: [], payments: [], loaded: false, stale: false },
   roster: { flags: [], changes: [], loaded: false },
 };
 
@@ -82,6 +82,10 @@ export async function reload({ announce = false } = {}) {
     state.players = players;
     state.bets = await db.fetchBets(game?.id);
     if (announce && betsBy("open").length > openBefore) beep();
+    // The history fetch backs settle-up, stats and the roster. Anything that
+    // changes a bet makes it wrong, so mark it for refetch rather than
+    // leaving those screens on a stale snapshot.
+    state.history.stale = true;
     state.error = "";
     render();
   } catch (e) {
@@ -264,15 +268,26 @@ export async function kickOff() {
    close-out screen enforces before it calls this. */
 /* --- history, money, stats ----------------------------------------------- */
 
+let fetchingHistory = false;
+
 export async function loadHistory() {
+  if (fetchingHistory) return;
+  fetchingHistory = true;
   try {
     const [games, bets, payments] = await Promise.all([
       db.fetchGames(), db.fetchAllBets(), db.fetchPayments(),
     ]);
-    state.history = { games, bets, payments, loaded: true };
+    state.history = { games, bets, payments, loaded: true, stale: false };
     render();
-  } catch (e) { setError(e.message || e); }
+  } catch (e) {
+    setError(e.message || e);
+  } finally {
+    fetchingHistory = false;
+  }
 }
+
+/* True when a screen backed by the history fetch needs fresh numbers. */
+export const historyStale = () => !state.history.loaded || state.history.stale;
 
 export async function logPayment(payerId, payeeId, amount, note) {
   try {
@@ -354,7 +369,8 @@ export async function mergePlayers(source, target) {
       localStorage.setItem("betroom.player", target);
     }
     state.players = await db.fetchPlayers();
-    await Promise.all([reload(), loadHistory(), loadRoster()]);
+    await reload();
+    await Promise.all([loadHistory(), loadRoster()]);
     notify("Merged — every stat recalculated");
   } catch (e) { setError(e.message || e); }
 }
@@ -363,7 +379,8 @@ export async function removePlayer(id) {
   try {
     await db.removePlayer(id);
     state.players = await db.fetchPlayers();
-    await Promise.all([reload(), loadHistory(), loadRoster()]);
+    await reload();
+    await Promise.all([loadHistory(), loadRoster()]);
   } catch (e) { setError(e.message || e); }
 }
 
@@ -371,7 +388,8 @@ export async function undoRosterChange(id) {
   try {
     await db.undoRosterChange(id);
     state.players = await db.fetchPlayers();
-    await Promise.all([reload(), loadHistory(), loadRoster()]);
+    await reload();
+    await Promise.all([loadHistory(), loadRoster()]);
     notify("Put back");
   } catch (e) { setError(e.message || e); }
 }

@@ -3,7 +3,7 @@
    Ordered so that whatever you can act on beats whatever is merely
    interesting. Owing someone six dollars sits above your win rate. */
 
-import { state, goto, loadHistory, openMenu } from "../store.js";
+import { state, goto, loadHistory, historyStale, openMenu } from "../store.js";
 import { esc, money, matchup } from "../format.js";
 import { rollUp } from "../scoring.js";
 import { balances } from "../ledger.js";
@@ -147,7 +147,7 @@ function seasonTable(games, bets) {
 }
 
 export function wire(root) {
-  if (!state.history.loaded) { loadHistory(); return; }
+  if (historyStale()) loadHistory();
 
   root.querySelector("#admin").onclick = () => { setup.reset(); goto("setup"); };
 

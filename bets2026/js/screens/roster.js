@@ -5,7 +5,7 @@
 
 import { state, goto, unlockAdmin, loadRoster, loadHistory,
          renamePlayer, mergePlayers, removePlayer, undoRosterChange,
-         clearFlag, reassignPick } from "../store.js";
+         clearFlag, reassignPick, historyStale } from "../store.js";
 import { esc, money } from "../format.js";
 import { rollUp } from "../scoring.js";
 
@@ -227,7 +227,7 @@ export function wire(root) {
     return;
   }
 
-  if (!state.history.loaded) { loadHistory(); return; }
+  if (historyStale()) { loadHistory(); return; }
   if (!state.roster.loaded) { loadRoster(); return; }
 
   root.querySelectorAll("[data-select]").forEach(el => {

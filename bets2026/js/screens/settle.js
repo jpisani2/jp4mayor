@@ -4,7 +4,7 @@
    has two twenties and no fives. The payments log is what's real, so the
    screen says so and puts logging a payment right underneath. */
 
-import { state, goto, logPayment, undoPayment, loadHistory } from "../store.js";
+import { state, goto, logPayment, undoPayment, loadHistory, historyStale } from "../store.js";
 import { esc, money } from "../format.js";
 import { balances, roundAgainstYourself, suggestTransfers, leaverPlan } from "../ledger.js";
 
@@ -156,7 +156,7 @@ export function wire(root) {
   const $ = sel => root.querySelector(sel);
   const redraw = () => goto("settle");
 
-  if (!state.history.loaded) { loadHistory(); return; }
+  if (historyStale()) loadHistory();
 
   $("#back").onclick = () => goto(state.game ? "room" : "idle");
 
