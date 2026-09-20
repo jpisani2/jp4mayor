@@ -25,6 +25,8 @@ export function view() {
         <span>lifetime, season, categories, export</span></button>
       <button class="menuitem" id="m-roster">Roster
         <span>merge, rename, move a stray pick</span></button>
+      <button class="menuitem" id="m-rules">House rules
+        <span>how this all works, settled in advance</span></button>
       <button class="menuitem" id="m-admin">${state.game ? "Close out the night" : "Set up a game"}
         <span>admin${state.admin ? "" : " — needs the PIN"}</span></button>
     </div>
@@ -54,6 +56,7 @@ export function wire(root) {
   $("#m-settle").onclick = () => { close(); settle.reset(); goto("settle"); };
   $("#m-stats").onclick  = () => { close(); stats.reset();  goto("stats"); };
   $("#m-roster").onclick = () => { close(); roster.reset(); goto("roster"); };
+  $("#m-rules").onclick  = () => { close(); goto("rules"); };
   $("#m-admin").onclick  = () => {
     close();
     if (state.game) { closeout.reset(); goto("closeout"); }

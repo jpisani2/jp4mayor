@@ -376,3 +376,10 @@ select.field{appearance:none;
 .swatches[data-swatch="michigan-state"] i:nth-child(1){background:#FFFFFF}
 .swatches[data-swatch="michigan-state"] i:nth-child(2){background:#18453B}
 .swatches[data-swatch="michigan-state"] i:nth-child(3){background:#0B8A57}
+
+/* --- house rules --------------------------------------------------------- */
+.rules{margin:0;padding-left:22px}
+.rules li{margin-bottom:13px;line-height:1.45}
+.ruletext{font-size:15px}
+.rulewhy{display:block;font-size:12px;color:var(--ink3);margin-top:4px;line-height:1.5;
+  border-left:2px solid var(--line);padding-left:9px}
