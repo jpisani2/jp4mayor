@@ -1,19 +1,69 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Nothing here</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — Not Found</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@400;500&family=Public+Sans:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Public+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Public Sans', sans-serif;
+    background-image: linear-gradient(rgba(14,18,20,0.55), rgba(14,18,20,0.55)), url('images/404-bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #E7ECEC;
+    padding: 24px;
+  }
+
+  .error-code {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: clamp(64px, 15vw, 140px);
+    line-height: 1;
+    color: #fff;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.5);
+  }
+
+  .error-message {
+    font-size: clamp(16px, 3vw, 20px);
+    color: #E7ECEC;
+    margin-top: 12px;
+    text-shadow: 0 1px 12px rgba(0,0,0,0.5);
+  }
+
+  .error-home-link {
+    display: inline-block;
+    margin-top: 28px;
+    padding: 10px 22px;
+    border: 1px solid #F0945A;
+    border-radius: 6px;
+    color: #fff;
+    background: rgba(240,148,90,0.15);
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s ease;
+  }
+
+  .error-home-link:hover {
+    background: rgba(240,148,90,0.3);
+  }
+</style>
 </head>
 <body>
-  <main class="wrap" style="padding-block:20vh 10vh">
-    <h1 style="font-family:var(--display);font-weight:400;font-size:clamp(36px,7vw,58px);margin:0">Nothing here</h1>
-    <p style="color:var(--muted);margin:14px 0 26px;max-width:44ch">That page doesn't exist — or it used to and doesn't anymore.</p>
-    <p><a href="index.html" style="font-weight:500">Back to the front page &#8594;</a></p>
-  </main>
+  <div>
+    <div class="error-code">404</div>
+    <p class="error-message">Page not found.</p>
+    <a href="/" class="error-home-link">Back home</a>
+  </div>
 </body>
 </html>
