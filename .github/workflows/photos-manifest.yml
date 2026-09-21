@@ -1,0 +1,44 @@
+name: Update pictures list
+
+# Regenerates images/photos-manifest.json whenever a file changes in
+# images/pictures/, so new pictures show up on the site without hand-
+# editing content.js. See images/pictures/README.txt.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "images/pictures/**"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Build photos manifest
+        run: python3 .github/scripts/build_photos_manifest.py
+
+      - name: Commit manifest if it changed
+        run: |
+          git config user.name "photo-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if git diff --quiet -- images/photos-manifest.json; then
+            echo "No changes to commit."
+          else
+            git add images/photos-manifest.json
+            git commit -m "Update pictures list"
+            git push
+          fi

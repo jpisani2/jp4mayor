@@ -149,13 +149,15 @@ const SITE = {
   /* ---------- 3. PICTURES ----------
      One-off photos that don't belong to a project. Anything tied to
      a project goes in that project's log instead.
+
+     You shouldn't need to touch this list anymore. Drop a photo into
+     images/pictures/ (from your phone via GitHub's website, or however
+     else) and it appears on the Pictures tab on its own — see
+     images/pictures/README.txt. This array is still here for anything you
+     want to caption by hand instead; those entries are merged with the
+     automatic ones when the page loads.
   ----------------------------------- */
-  photos: [
-    { src: "images/example-1.jpg", caption: "Example — replace with your own photo", date: "2026" },
-    { src: "images/example-2.jpg", caption: "Drop files in the images/ folder and list them here", date: "2026" },
-    { src: "images/example-3.jpg", caption: "Captions and dates are optional", date: "2025" },
-    { src: "images/example-4.jpg", caption: "Click any picture to open it full size", date: "2025" }
-  ],
+  photos: [],
 
 
   /* ---------- 4. VIDEOS ----------

@@ -8,3 +8,7 @@ desktop.ini
 # Editors
 *.swp
 .vscode/
+
+# Python (photo-manifest script)
+__pycache__/
+*.pyc
