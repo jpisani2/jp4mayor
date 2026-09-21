@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="JP for Mayor">
+  <rect width="64" height="64" fill="#12294A"/>
+  <g fill="#EEF2F4">
+    <path d="M15,27 L9,4 L30,17 Z"/>
+    <path d="M49,27 L55,4 L34,17 Z"/>
+    <path d="M32,15 C44,15 52,23 53,32 C54,43 45,53 32,53 C19,53 10,43 11,32 C12,23 20,15 32,15 Z"/>
+  </g>
+  <path d="M26,50 L38,50 L32,64 Z" fill="#BF3A2E"/>
+</svg>
