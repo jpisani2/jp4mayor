@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pistons Season Hub</title>
+<meta name="description" content="Detroit Pistons 2026-27 schedule, home games, season summary and road-trip planner, with scores updated after every game.">
+<meta property="og:title" content="Pistons Season Hub">
+<meta property="og:description" content="Detroit Pistons 2026-27 schedule, home games, season summary and road-trip planner.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1D428A">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+<script>try{var s=localStorage.getItem("pistons-skin");if(s)document.documentElement.setAttribute("data-skin",s);}catch(e){}</script>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="mark" aria-hidden="true"><span>DET</span></div>
+      <div><h1>Pistons Season Hub</h1><small>2026–27 · Detroit · Little Caesars Arena</small></div>
+    </div>
+    <div class="skin" role="group" aria-label="Color theme">
+      <button type="button" id="skin-navy" data-skin="navy" aria-pressed="false"><i class="sw navy"></i>Blue</button>
+      <button type="button" id="skin-red" data-skin="red" aria-pressed="false"><i class="sw red"></i>Red</button>
+      <button type="button" id="skin-light" data-skin="light" aria-pressed="false"><i class="sw light"></i>Light</button>
+    </div>
+  </header>
+
+  <section class="hero" aria-label="Record and next games">
+    <div class="rec">
+      <div class="lab">Record</div>
+      <div class="big" id="rec-big">0–0</div>
+      <div class="splits" id="rec-splits"></div>
+    </div>
+    <div class="nexts">
+      <div class="next" id="next-1"></div>
+      <div class="next" id="next-2"></div>
+    </div>
+  </section>
+
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button type="button" role="tab" id="tab-schedule" data-tab="schedule" aria-selected="true">Schedule</button>
+    <button type="button" role="tab" id="tab-home" data-tab="home" aria-selected="false">Home games</button>
+    <button type="button" role="tab" id="tab-summary" data-tab="summary" aria-selected="false">Season summary</button>
+    <button type="button" role="tab" id="tab-trips" data-tab="trips" aria-selected="false">Road trips</button>
+  </nav>
+
+  <section id="p-schedule" role="tabpanel">
+    <div class="bar">
+      <div class="seg" role="group" aria-label="View">
+        <button type="button" id="v-list" data-view="list" aria-pressed="true">List</button>
+        <button type="button" id="v-cal" data-view="cal" aria-pressed="false">Calendar</button>
+      </div>
+      <div class="seg" role="group" aria-label="Filter">
+        <button type="button" id="f-all" data-f="all" aria-pressed="true">All</button>
+        <button type="button" id="f-home" data-f="home" aria-pressed="false">Home</button>
+        <button type="button" id="f-away" data-f="away" aria-pressed="false">Away</button>
+      </div>
+      <select id="f-month" aria-label="Month"></select>
+      <span class="spacer"></span>
+      <span class="muted" style="font-size:13px">Times ET · <span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--tint-strong);vertical-align:-1px"></span> home</span>
+    </div>
+    <div id="sched-list"></div>
+    <div id="sched-cal" hidden></div>
+  </section>
+
+  <section id="p-home" role="tabpanel" hidden></section>
+  <section id="p-summary" role="tabpanel" hidden></section>
+  <section id="p-trips" role="tabpanel" hidden></section>
+
+  <footer class="foot">
+    <div id="status">Scores update nightly after games.</div>
+    <div>Schedule: CBS Sports and Yahoo Sports (pulled Sept 21, 2026). Times ET and subject to change. Two December games (Dec 3–11) are TBD pending the NBA Cup knockout round.</div>
+    <div>Unofficial fan page. Not affiliated with the Detroit Pistons or the NBA.</div>
+  </footer>
+</div>
+<script src="data/schedule.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
