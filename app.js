@@ -248,7 +248,7 @@
       if (href) {
         var n = (p.log || []).length;
         links.appendChild(el("a", { href: href,
-          text: n ? "Open (" + n + " updates)" : "Open" }));
+          text: n ? "Open (" + n + (n === 1 ? " update)" : " updates)") : "Open" }));
       }
       (p.links || []).forEach(function (l) { if (l && l.label) links.appendChild(link(l.label, l.url)); });
       if (links.children.length) foot.appendChild(links);

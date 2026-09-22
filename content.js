@@ -131,7 +131,45 @@ const SITE = {
       summary: "The Pistons' 2026–27 season on one page: full schedule, home games, record, a road-trip planner, and scores updated after every game.",
       tags: ["code", "sports"],
       links: [
-        { label: "Open the hub →", url: "pistons/" }
+        { label: "Open the hub", url: "pistons/" }
+      ]
+    },
+
+    {
+      id: "signals",
+      page: true,
+      title: "Sideline Signals",
+      year: "2026",
+      status: "In progress",
+      summary: "A phone app for cracking the other team's play-call signals from the bleachers at my nephew's middle school football games.",
+      tags: ["code", "sports"],
+      image: "",
+      about: [
+        "Middle school coaches call plays from the sideline with hand signs: touch the hat, the nose, the chest, clap. I go to my nephew's games, and I wanted a way to keep them interesting between snaps. So this is a notebook for the signs. Write down what the coach does, write down what the offense runs, and see if the code falls out. It only uses what anyone in the bleachers can see.",
+        "It's built for one thumb in the stands. When the coach signals, tap each sign in the order you see it. After the snap, tap what happened: run left, middle or right, QB keep, short pass, deep pass, screen, punt, kick, or trick play. The signal gets saved with the result and the pad clears for the next play. You can mark the down if you catch it. If you miss the signal entirely, tap the result anyway. It still counts toward what they like to run.",
+        "The hard part is that coaches hide the real sign among decoys, and the app doesn't know which system they're using. So it tries all of them: the whole signal, the first sign, the second, the third, the last, the same signs in any order, how many signs there were, whether one particular sign showed up at all, and the sign right before or right after every other sign (that last one catches the classic \"the sign after the hat is the real one\"). Each theory gets graded the same way: hide one play, predict it from all the others, and repeat for every play. A theory only counts if it beats just guessing their favorite play.",
+        "Once the signal you're entering matches a pattern it has seen enough times, the top of the screen makes a call: \"Locked in: PASS, Pass Short, 5 of 5,\" plus which theory it's reading from and how often that theory has been right. With less evidence it says \"Leaning\" instead. How much counts as enough (three matching plays, 70% consistent) can be changed in Setup. The Insights tab shows the best theory, a cheat sheet of what each sign means under it, and a sign-by-sign table. A sign that shows up a lot but splits evenly between run and pass is probably a decoy.",
+        "If nothing beats guessing, Insights says so, and suggests they might be using a wristband or sending plays in with a player.",
+        "It's one HTML file with no server. Everything saves on the phone, so a refresh mid-game doesn't lose anything, and once it's been opened it works at fields with no cell signal. It can go on the home screen like an app, has a light theme for bright sun, and exports the log as a spreadsheet. The demo above is the same code with a made-up game already loaded, where the real sign is always the one right after Hat."
+      ],
+      facts: [
+        { label: "Started", value: "September 2026" },
+        { label: "Built with", value: "One HTML file, no server" },
+        { label: "Used at", value: "My nephew's games" },
+        { label: "Record", value: "0 real games so far" }
+      ],
+      links: [
+        { label: "Open the app", url: "signals/" }
+      ],
+      demo: {
+        src: "demos/signals/index.html",
+        ratio: "3 / 4",
+        note: "The real app with a made-up game of 26 plays. After it makes a call, the Insights tab shows how it worked the code out."
+      },
+      log: [
+        { date: "2026-09-22", title: "First version",
+          note: "Built and working against the sample game. The right theory first takes the top spot at play 14 and holds it from play 24 on. It hasn't seen a real game yet. That's next, from the bleachers.",
+          photos: [] }
       ]
     },
 
