@@ -1,49 +1,35 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Demo slot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bet Room — demo</title>
+<link rel="stylesheet" href="styles.css">
 <style>
-  :root { color-scheme: light dark; --bg:#FFFFFF; --ink:#14181A; --muted:#5D686C; --line:#E0E5E5; --accent:#0E6E62; }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg:#161B1D; --ink:#E7ECEC; --muted:#93A0A3; --line:#242B2E; --accent:#4EC3B2; }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink);
-    font: 15px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-    display: grid; place-items: center; padding: 28px; text-align: center;
-  }
-  .box { max-width: 30rem; }
-  h1 { font-size: 19px; font-weight: 600; margin: 0 0 10px; letter-spacing: -.01em; }
-  p { margin: 0 0 14px; color: var(--muted); text-wrap: pretty; }
-  code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 12.5px; background: color-mix(in srgb, var(--accent) 9%, transparent);
-    border: 1px solid var(--line); border-radius: 3px; padding: 2px 6px; color: var(--ink);
-  }
-  .live {
-    display: inline-block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent);
-    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 999px; padding: 4px 11px;
-  }
+  /* Demo-only strip. Uses the app's own tokens so it follows the theme. */
+  .demobar{font-size:12.5px;line-height:1.45;padding:8px 34px 8px 14px;
+    background:color-mix(in srgb,var(--edit) 16%,var(--ground));
+    border-bottom:1px solid color-mix(in srgb,var(--edit) 40%,transparent);color:inherit}
+  .demobar b{color:var(--edit);font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    font-size:11px;margin-right:6px}
+  .demobar button{font:inherit;color:inherit;background:none;border:0;padding:0;
+    text-decoration:underline;cursor:pointer}
 </style>
+<script>
+  /* Every visit starts fresh: skip the room password, forget the seat and the
+     admin PIN, keep only the theme someone picked. Uses its own keys, so it
+     never touches the real app's storage on the same site. */
+  try {
+    ["player", "admin", "device"].forEach(k => localStorage.removeItem("betroom-demo." + k));
+    localStorage.setItem("betroom-demo.pw", "1");
+  } catch (e) { /* storage blocked: the app still runs, it just asks for a password (any works) */ }
+</script>
 </head>
 <body>
-  <div class="box">
-    <h1>This is the demo slot</h1>
-    <p>Replace everything in <code>demos/bet-tracker/</code> with your app. As long as
-       <code>index.html</code> there works on its own, it runs inside the project page.</p>
-    <p>You can use as many files as you like in this folder — scripts, styles, images.</p>
-    <span class="live" id="live">running</span>
-  </div>
-<script>
-  // Proves this is live code, not a screenshot.
-  var t = new Date();
-  document.getElementById('live').textContent =
-    'running · loaded ' + String(t.getHours()).padStart(2,'0') + ':' +
-    String(t.getMinutes()).padStart(2,'0') + ':' + String(t.getSeconds()).padStart(2,'0');
-</script>
+  <div class="demobar"><b>Demo</b>Made-up people, fake money, nothing saved — reload to start over.
+    The others pick sides on anything you post. Admin PIN: any number.</div>
+  <div class="dot" id="live" title="realtime connection"></div>
+  <main id="app"></main>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>

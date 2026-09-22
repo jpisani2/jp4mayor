@@ -629,6 +629,7 @@ footer {
   width: 100%;
   max-width: 100%;
   aspect-ratio: var(--ratio, 16 / 10);
+  max-height: min(78vh, 760px);   /* keeps a tall demo from outgrowing the screen */
   border: 1px solid var(--line);
   border-radius: 6px;
   overflow: hidden;

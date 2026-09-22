@@ -89,35 +89,36 @@ const SITE = {
     {
       id: "bet-tracker",
       page: true,
-      title: "Bet tracking app",
+      title: "Bet Room",
       year: "2026",
       status: "In progress",
-      summary: "A web app for tracking bets, which turned into something closer to a game.",
+      summary: "A web app for the small bets my friends and I make on each other while the game is on. Anyone can call a bet, everyone picks a side from their phone, and it settles up at the end of the night.",
       tags: ["code"],
       image: "",
       about: [
-        "Replace this with what the thing actually does and who it's for. Two or three paragraphs is plenty.",
-        "Worth writing down: what you thought you were building when you started, and what it turned into. That's usually the interesting part."
+        "The idea is simple: while the game is on, someone says \"I bet the Lions go for it on fourth down,\" and then nobody remembers who took what. Bet Room fixes that. Everyone opens it on their own phone, and the board updates live for all of them.",
+        "Anyone can call a bet, either from a list of ready-made ones (next play, this drive, what the announcers will say) or by writing their own. Whoever calls it sets the odds and takes a side. Everyone else picks a side or sits out, and anyone can lock it before the snap. If nobody has taken the other side, it can't lock, because a bet with everyone on the same side doesn't pay anybody.",
+        "The money works like odds, not flat bets. Your risk is twice the base stake times the chance your side happens, so backing the longshot is cheap and backing the favorite costs more. The winners split the whole pot in proportion to what they risked. Before a bet locks, each card shows what you'd win if your side hits.",
+        "Before kickoff there's a pregame board of eleven bets, and all of them are worked out from just the spread and the total. Picks stay hidden until kickoff, so nobody can wait to see where everyone else went. At kickoff, bets with both sides covered lock, and one-sided bets are voided.",
+        "At the end of the night, the admin grades anything still open and closes out the game. The settle-up screen works out the fewest handoffs that square everyone, rounding against yourself: if you owe, you round up, and if you're owed, you round down. If someone has to leave early, there's a plan for that too. Payments get logged and never deleted (a mistaken one is voided but stays in the log), and balances carry over from week to week until someone pays.",
+        "Behind that: stats by season, streaks, a who's-good-at-what table by category, and a CSV export. There's also a roster screen for when Teddy shows up as \"Ted\" on his wife's phone. It merges the two names and recalculates every stat, and the merge can be undone. There are six color themes, including Lions and Michigan, and each phone picks its own.",
+        "It's plain JavaScript with no build step, so I can fix it from my phone at halftime. The data lives in Supabase, a hosted Postgres database that pushes changes to every phone as they happen. The real app sits behind a room password, so the demo above is a copy with its database swapped for a fake one that runs in your browser. The people are made up, and the bets you post get picked by them. Everything else is the real code."
       ],
       facts: [
         { label: "Started", value: "2026" },
-        { label: "Built with", value: "—" },
-        { label: "State", value: "Playable, unfinished" }
+        { label: "Built with", value: "JavaScript, Supabase" },
+        { label: "Used on", value: "Game days" },
+        { label: "State", value: "In use, still changing" }
       ],
       links: [],
-      // The demo is a self-contained page inside the demos/ folder.
-      // Build it so it works on its own, drop it in, and it appears here.
       demo: {
         src: "demos/bet-tracker/index.html",
-        ratio: "16 / 10",
-        note: "Runs right here in the page. Nothing is saved between visits."
+        ratio: "3 / 4",
+        note: "The real app, with made-up friends and fake money. Tap a name to sit down. Nothing is saved, and reloading starts over."
       },
       log: [
-        { date: "2026-09-10", title: "Scoring rewrite",
-          note: "What changed and why the first version didn't work.",
-          photos: [] },
-        { date: "2026-08-28", title: "First playable",
-          note: "The point where it stopped being a spreadsheet.",
+        { date: "2026-09-21", title: "Public demo",
+          note: "The real app is behind a room password, so there's now a copy anyone can try, embedded above. Everything talks to the database through one file, so the demo swaps that file for a fake one that runs in the browser, with made-up friends who pick sides on whatever you post. The rest is the real code. Also fixed two small bugs found while building it: Settle up threw an error the first time it opened, and on the setup screen, tapping from one team name straight into the other lost the tap.",
           photos: [] }
       ]
     },
