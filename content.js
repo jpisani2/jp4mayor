@@ -216,10 +216,34 @@ const SITE = {
   --------------------------------- */
   videos: [
     {
-      youtube: "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
-      title: "Example — Big Buck Bunny",
-      note: "Swap this for one of your own. Paste the YouTube link into content.js and it plays right here.",
-      date: "2026"
+      youtube: "https://www.youtube.com/watch?v=JZyWVIUJHSc",
+      title: "Biking Across the Gordie Howe Bridge",
+      note: "First day for biking across the Gordie Howe Bridge from the US to Canada, 8/5/2026.",
+      date: "August 2026"
+    },
+    {
+      youtube: "https://www.youtube.com/watch?v=wSi6JSniOi8",
+      title: "Northern Michigan Bike Trip, June 2026",
+      note: "Burt Lake to Cheboygan to Mackinaw City to Petoskey to Burt Lake.",
+      date: "June 2026"
+    },
+    {
+      youtube: "https://www.youtube.com/watch?v=oSEr88N_WIc",
+      title: "Gozo Coastal Walk",
+      note: "A walk from Mgarr Harbour to Mgarr ix-Xini. Gozo, Malta.",
+      date: "September 2025"
+    },
+    {
+      youtube: "https://www.youtube.com/watch?v=OjuP7Phfbfg",
+      title: "White Pine Trail, Howard City to Cadillac, May 2025",
+      note: "Howard City to Paris to Cadillac, Michigan bike ride.",
+      date: "May 2025"
+    },
+    {
+      youtube: "https://www.youtube.com/watch?v=EcsFMisbT-Y",
+      title: "Detroit Bike Ride Memorial Day 2025",
+      note: "Riverwalk, Dequindre Cut, Eastern Market, downtown Detroit bike ride.",
+      date: "May 2025"
     }
   ]
 };
