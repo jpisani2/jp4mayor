@@ -123,6 +123,18 @@ const SITE = {
     },
 
     {
+      id: "pistons",
+      title: "Pistons Season Hub",
+      year: "2026",
+      status: "In progress",
+      summary: "The Pistons' 2026–27 season on one page: full schedule, home games, record, a road-trip planner, and scores updated after every game.",
+      tags: ["code", "sports"],
+      links: [
+        { label: "Open the hub →", url: "pistons/" }
+      ]
+    },
+
+    {
       id: "remodel",
       page: true,
       title: "House remodel",
