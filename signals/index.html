@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Signals">
+<meta name="theme-color" content="#0b6b45">
+<title>Sideline Signals</title>
+<link rel="apple-touch-icon" id="touchIcon" href="">
+<style>
+:root{
+  --bg:#f2f4f6; --surface:#ffffff; --surface2:#e9edf1; --text:#0f1419; --muted:#56606b;
+  --border:#d5dbe1; --accent:#0b6b45; --accent-ink:#ffffff;
+  --run:#1f5fbf; --run-bg:#e3ecfa; --pass:#b4530a; --pass-bg:#fbeadc;
+  --spec:#5b4bb0; --spec-bg:#ebe8f8; --oth:#56606b; --oth-bg:#e9edf1;
+  --lock:#0b6b45; --lock-bg:#dcf2e6; --lean:#8a5a00; --lean-bg:#fdf0cf; --none-bg:#e9edf1;
+  --danger:#b3261e; --chip:#0f1419; --chip-ink:#ffffff; --toast-accent:#4ee29c;
+  --radius:14px; --tabh:58px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c0f12; --surface:#161b20; --surface2:#20272e; --text:#eef1f4; --muted:#9aa5b1;
+    --border:#2c343c; --accent:#2fbf7f; --accent-ink:#06120c;
+    --run:#7fb0ff; --run-bg:#172a45; --pass:#ffab66; --pass-bg:#3d2515;
+    --spec:#b5a8ff; --spec-bg:#27224a; --oth:#aab4bf; --oth-bg:#20272e;
+    --lock:#4ee29c; --lock-bg:#123525; --lean:#ffd166; --lean-bg:#3a2f10; --none-bg:#20272e;
+    --danger:#ff7b72; --chip:#eef1f4; --chip-ink:#0c0f12; --toast-accent:#0b6b45;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c0f12; --surface:#161b20; --surface2:#20272e; --text:#eef1f4; --muted:#9aa5b1;
+  --border:#2c343c; --accent:#2fbf7f; --accent-ink:#06120c;
+  --run:#7fb0ff; --run-bg:#172a45; --pass:#ffab66; --pass-bg:#3d2515;
+  --spec:#b5a8ff; --spec-bg:#27224a; --oth:#aab4bf; --oth-bg:#20272e;
+  --lock:#4ee29c; --lock-bg:#123525; --lean:#ffd166; --lean-bg:#3a2f10; --none-bg:#20272e;
+  --danger:#ff7b72; --chip:#eef1f4; --chip-ink:#0c0f12; --toast-accent:#0b6b45;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text)}
+body{font:16px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+  -webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+button,input,select{font:inherit;color:inherit}
+button{touch-action:manipulation;cursor:pointer;border:0;background:none;-webkit-user-select:none;user-select:none}
+h2{font-size:20px;margin:0}
+h3{font-size:14px;margin:0;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+.wrap{max-width:560px;margin:0 auto;padding:0 12px calc(var(--tabh) + env(safe-area-inset-bottom) + 20px)}
+header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding:8px 12px 6px;max-width:560px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;gap:8px}
+header.top .title{font-weight:800;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header.top .count{font-size:13px;color:var(--muted);white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin:10px 0}
+.row{display:flex;align-items:center;gap:8px}
+.between{justify-content:space-between}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.hidden{display:none!important}
+
+/* prediction */
+#pred{position:sticky;top:42px;z-index:15;margin-top:4px;box-shadow:0 6px 16px -10px rgba(0,0,0,.35);min-height:96px}
+.badge{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.08em;padding:3px 8px;border-radius:99px;text-transform:uppercase}
+.b-lock{background:var(--lock-bg);color:var(--lock)}
+.b-lean{background:var(--lean-bg);color:var(--lean)}
+.b-none{background:var(--none-bg);color:var(--muted)}
+.call{display:flex;align-items:baseline;gap:10px;margin-top:6px;flex-wrap:wrap}
+.call .big{font-size:34px;font-weight:900;line-height:1;letter-spacing:-.01em}
+.call .pct{font-size:15px;font-weight:700}
+.fine{font-size:16px;font-weight:700;margin-top:4px}
+.via{font-size:13px;color:var(--muted);margin-top:4px}
+.g-Run{color:var(--run)} .g-Pass{color:var(--pass)} .g-Special{color:var(--spec)} .g-Other{color:var(--oth)}
+.tend{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--surface2);margin-top:8px}
+.tend span{display:block;height:100%}
+.bg-Run{background:var(--run)} .bg-Pass{background:var(--pass)} .bg-Special{background:var(--spec)} .bg-Other{background:var(--oth)}
+
+/* sequence */
+.seq{min-height:48px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px;margin:8px 0;
+  border:2px dashed var(--border);border-radius:12px}
+.seq .ph{color:var(--muted);font-size:14px}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--chip);color:var(--chip-ink);border-radius:99px;
+  padding:6px 10px;font-weight:700;font-size:15px}
+.chip .x{opacity:.6;font-weight:900;margin-left:2px}
+.arrow{color:var(--muted);font-weight:900}
+.tool{padding:8px 12px;border-radius:10px;background:var(--surface2);font-weight:700;font-size:14px}
+.tool:active{filter:brightness(.9)}
+
+/* pads */
+.pad{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.pad button{min-height:46px;border-radius:10px;background:var(--surface2);font-weight:700;font-size:13.5px;padding:4px 1px;
+  border:1px solid var(--border);overflow:hidden;overflow-wrap:break-word;line-height:1.1;letter-spacing:-.02em}
+.pad button:active,.outs button:active,.downs button:active{transform:scale(.96);filter:brightness(.92)}
+.pad button.custom{border-color:var(--accent);border-style:dashed}
+.pad button.add{color:var(--accent);border-style:dashed;border-color:var(--accent);background:transparent}
+.sublabel{font-size:12px;color:var(--muted);margin:10px 0 4px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.addrow{display:flex;gap:6px;margin-top:8px}
+.addrow input,.field input,.field select{flex:1;min-width:0;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+  background:var(--surface);font-size:16px}
+.btn{padding:10px 14px;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-weight:800}
+.btn.ghost{background:var(--surface2);color:var(--text)}
+.btn.danger{background:transparent;color:var(--danger);border:1px solid var(--danger)}
+.btn.armed{background:var(--danger);color:#fff}
+.btn:active{filter:brightness(.9)}
+
+/* outcomes */
+.outs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.outs button{min-height:56px;border-radius:12px;font-weight:800;font-size:14px;line-height:1.1;padding:4px}
+.outs .o-Run{background:var(--run-bg);color:var(--run)}
+.outs .o-Pass{background:var(--pass-bg);color:var(--pass)}
+.outs .o-Special{background:var(--spec-bg);color:var(--spec);grid-column:span 2;min-height:46px}
+.outs .o-Other{background:var(--oth-bg);color:var(--oth)}
+.downs{display:flex;gap:4px;align-items:center}
+.downs button{width:36px;height:32px;border-radius:8px;background:var(--surface2);font-weight:800;font-size:14px}
+.downs button.on{background:var(--chip);color:var(--chip-ink)}
+
+/* log */
+.logrow{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--border)}
+.logrow:first-child{border-top:0}
+.logrow .n{font-weight:800;min-width:34px;color:var(--muted)}
+.logrow .body{flex:1;min-width:0}
+.logrow .sigs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.logrow .sigs .chip{padding:3px 8px;font-size:13px}
+.pill{display:inline-block;padding:3px 9px;border-radius:99px;font-weight:800;font-size:13px}
+.p-Run{background:var(--run-bg);color:var(--run)} .p-Pass{background:var(--pass-bg);color:var(--pass)}
+.p-Special{background:var(--spec-bg);color:var(--spec)} .p-Other{background:var(--oth-bg);color:var(--oth)}
+.del{padding:6px 10px;border-radius:8px;color:var(--muted);font-weight:800;font-size:13px;background:var(--surface2)}
+.del.armed{background:var(--danger);color:#fff}
+
+/* tables */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:6px 4px}
+td{padding:7px 4px;border-top:1px solid var(--border);vertical-align:middle}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mini{display:flex;height:8px;border-radius:99px;overflow:hidden;background:var(--surface2);min-width:60px}
+.mini span{display:block;height:100%}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.cracked{border-left:4px solid var(--lock)}
+.stat{font-size:28px;font-weight:900}
+
+/* setup */
+.field{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.field label{font-size:13px;font-weight:700;color:var(--muted)}
+.stepper{display:flex;align-items:center;gap:10px}
+.stepper button{width:40px;height:40px;border-radius:10px;background:var(--surface2);font-weight:900;font-size:20px}
+.stepper output{min-width:56px;text-align:center;font-weight:800;font-size:18px}
+.taglist{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.help p{margin:6px 0;font-size:14px}
+.help b{color:var(--text)}
+
+/* tab bar */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--border);
+  display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .in{display:flex;width:100%;max-width:560px}
+nav.tabs button{flex:1;height:var(--tabh);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:11px;font-weight:700;color:var(--muted)}
+nav.tabs button svg{width:24px;height:24px}
+nav.tabs button.on{color:var(--accent)}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tabh) + env(safe-area-inset-bottom) + 12px);
+  z-index:40;background:var(--chip);color:var(--chip-ink);border-radius:12px;padding:10px 12px 10px 14px;display:flex;gap:12px;
+  align-items:center;font-weight:700;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.3);max-width:calc(100% - 24px);
+  transition:opacity .2s, transform .2s}
+.toast.off{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(10px)}
+.toast button{color:var(--toast-accent);font-weight:900;padding:4px 6px}
+@media (max-width:360px){
+  .pad{grid-template-columns:repeat(4,1fr)}
+  .call .big{font-size:30px}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="title" id="hdrTitle">Sideline Signals</div>
+  <div class="count" id="hdrCount">0 plays</div>
+</header>
+
+<div class="wrap">
+  <!-- LIVE -->
+  <section id="v-live">
+    <div class="card" id="pred"></div>
+
+    <div class="card">
+      <div class="row between">
+        <h3>Signal</h3>
+        <div class="row">
+          <button class="tool" id="bUndoSign" aria-label="Remove last sign">⌫ Back</button>
+          <button class="tool" id="bClear">Clear</button>
+        </div>
+      </div>
+      <div class="seq" id="seq"></div>
+      <div class="pad" id="pad"></div>
+      <div class="sublabel">Fingers / numbers</div>
+      <div class="pad" id="nums"></div>
+      <div class="addrow hidden" id="addRow">
+        <input id="addInput" maxlength="18" placeholder="New sign, e.g. Blue card, #23" autocomplete="off" enterkeyhint="done">
+        <button class="btn" id="addGo">Add</button>
+        <button class="btn ghost" id="addCancel">✕</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row between">
+        <h3>Result</h3>
+        <div class="downs" id="downs"></div>
+      </div>
+      <div class="outs" id="outs"></div>
+      <div class="small muted" style="margin-top:8px">Didn't catch a signal? Just tap the result. It still counts toward their tendencies.</div>
+    </div>
+  </section>
+
+  <!-- LOG -->
+  <section id="v-log" class="hidden">
+    <div class="card">
+      <div class="row between"><h2>Play log</h2><span class="small muted" id="logCount"></span></div>
+      <div id="logList" style="margin-top:6px"></div>
+    </div>
+  </section>
+
+  <!-- INSIGHTS -->
+  <section id="v-ins" class="hidden"><div id="insBody"></div></section>
+
+  <!-- SETUP -->
+  <section id="v-set" class="hidden">
+    <div class="card">
+      <h2>Game</h2>
+      <div class="field">
+        <label for="gName">Team you're watching / game name</label>
+        <input id="gName" maxlength="40" placeholder="e.g. Lincoln MS vs. Eastside" autocomplete="off">
+      </div>
+      <div class="btnrow">
+        <button class="btn ghost" id="bExport">Export CSV</button>
+        <button class="btn ghost" id="bCopy">Copy log</button>
+        <button class="btn ghost" id="bSample">Load sample game</button>
+      </div>
+      <div class="btnrow">
+        <button class="btn danger" id="bNew">New game (erase plays)</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>When to make a call</h2>
+      <div class="field">
+        <label>Lock it in after this many matching plays</label>
+        <div class="stepper"><button id="nMinus">−</button><output id="nOut">3</output><button id="nPlus">+</button></div>
+      </div>
+      <div class="field">
+        <label>…and they've been at least this consistent</label>
+        <div class="stepper"><button id="cMinus">−</button><output id="cOut">70%</output><button id="cPlus">+</button></div>
+      </div>
+      <div class="small muted">With less than this, you'll get a "Leaning" call instead of "Locked in."</div>
+    </div>
+
+    <div class="card">
+      <h2>My custom signs</h2>
+      <div class="addrow">
+        <input id="cInput" maxlength="18" placeholder="e.g. Red card, Wristband 23" autocomplete="off" enterkeyhint="done">
+        <button class="btn" id="cAdd">Add</button>
+      </div>
+      <div class="taglist" id="cList"></div>
+      <div class="small muted" style="margin-top:8px">Tap a custom sign here to remove it. You can also add signs from the Live screen with the <b>+ Sign</b> button.</div>
+    </div>
+
+    <div class="card">
+      <h2>Display</h2>
+      <div class="field">
+        <select id="theme">
+          <option value="">Match iPhone setting</option>
+          <option value="light">Light (best in bright sun)</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card help">
+      <h2>How it works</h2>
+      <p class="muted"><b>1.</b> When the coach signals, tap each sign in order.</p>
+      <p class="muted"><b>2.</b> After the snap, tap what happened. The signal gets saved with the result and clears for the next play.</p>
+      <p class="muted"><b>3.</b> The app tries different ways a coach might hide the real sign: the whole sequence, the 1st/2nd/last sign, the sign right after an "indicator" (like a hat touch), or whether one particular sign shows up at all. It checks each one against your past plays and uses whichever has actually been right most often.</p>
+      <p class="muted"><b>4.</b> Once a pattern repeats enough, entering the signal shows the call. Look in <b>Insights</b> to see which system seems to have cracked their code.</p>
+      <p class="muted">Tip: to see how it works, tap "Load sample game," then go back to Live and enter <b>Nose › Hat › Chest</b>.</p>
+      <p class="muted small">Everything is saved on this phone only, so a refresh won't lose your game.</p>
+    </div>
+  </section>
+</div>
+
+<nav class="tabs"><div class="in">
+  <button data-tab="live" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="5.5" transform="rotate(-35 12 12)"/><path d="M9.5 14.5l5-5M10.5 11l1 1M12 9.5l1 1M13.5 12.5l-1-1"/></svg>Live</button>
+  <button data-tab="log"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>Log</button>
+  <button data-tab="ins"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Insights</button>
+  <button data-tab="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>Setup</button>
+</div></nav>
+
+<div class="toast off" id="toast"><span id="toastMsg"></span><button id="toastUndo">Undo</button></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- constants ---------- */
+const STORE = 'sideline-signals-v1';
+const DEFAULT_SIGNS = ['Hat','Face','Nose','Ear','Chin','Chest','Shoulder','Arm','Wrist','Belt','Thigh','Knee','Clap','Point','Swipe'];
+const NUM_SIGNS = ['#1','#2','#3','#4','#5'];
+const OUTCOMES = [
+  {id:'RL', label:'Run Left',   short:'Run\nLeft',   group:'Run'},
+  {id:'RM', label:'Run Middle', short:'Run\nMiddle', group:'Run'},
+  {id:'RR', label:'Run Right',  short:'Run\nRight',  group:'Run'},
+  {id:'QB', label:'QB Keep',    short:'QB Keep /\nSneak', group:'Run'},
+  {id:'PS', label:'Pass Short', short:'Pass\nShort', group:'Pass'},
+  {id:'PD', label:'Pass Deep',  short:'Pass\nDeep',  group:'Pass'},
+  {id:'SC', label:'Screen',     short:'Screen',      group:'Pass'},
+  {id:'OT', label:'Trick / Other', short:'Trick /\nOther', group:'Other'},
+  {id:'PU', label:'Punt',       short:'Punt',        group:'Special'},
+  {id:'KK', label:'Kick / PAT', short:'Kick / PAT',  group:'Special'}
+];
+const OUT = Object.fromEntries(OUTCOMES.map(o => [o.id, o]));
+const GROUPS = ['Run','Pass','Special','Other'];
+const GROUP_LABEL = {Run:'RUN', Pass:'PASS', Special:'KICK', Other:'TRICK'};
+const groupOf = id => OUT[id] ? OUT[id].group : 'Other';
+const DOWN_TXT = ['','1st','2nd','3rd','4th'];
+
+/* ---------- state ---------- */
+function fresh(){ return {v:1, name:'', plays:[], custom:[], cur:[], down:null, nextId:1, theme:'', settings:{minN:3, minConf:0.7}}; }
+function load(){
+  try{
+    const raw = localStorage.getItem(STORE);
+    if (raw){
+      const o = JSON.parse(raw), f = fresh();
+      return Object.assign(f, o, {settings:Object.assign(f.settings, o.settings || {})});
+    }
+  }catch(e){}
+  return fresh();
+}
+let S = load();
+function save(){ try{ localStorage.setItem(STORE, JSON.stringify(S)); }catch(e){} }
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pct = x => Math.round(x * 100) + '%';
+function wilson(h, n, z){
+  z = z || 1; if (!n) return 0;
+  const p = h / n, zz = z * z;
+  return (p + zz/(2*n) - z * Math.sqrt(p*(1-p)/n + zz/(4*n*n))) / (1 + zz/n);
+}
+function groupDist(plays){
+  const c = {Run:0, Pass:0, Special:0, Other:0};
+  plays.forEach(p => c[groupOf(p.outcome)]++);
+  return {c, n: plays.length};
+}
+function tendBar(d){
+  if (!d.n) return '';
+  return '<div class="tend">' + GROUPS.filter(g => d.c[g]).map(g =>
+    `<span class="bg-${g}" style="width:${d.c[g]/d.n*100}%"></span>`).join('') + '</div>';
+}
+function tendText(d){
+  return GROUPS.filter(g => d.c[g]).sort((a,b) => d.c[b]-d.c[a])
+    .map(g => `<span class="g-${g}"><b>${g}</b> ${pct(d.c[g]/d.n)}</span>`).join(' · ');
+}
+function seqHTML(seq, removable){
+  return seq.map((s, i) =>
+    (i ? '<span class="arrow">›</span>' : '') +
+    `<span class="chip"${removable ? ` data-rm="${i}"` : ''}>${esc(s)}${removable ? '<span class="x">×</span>' : ''}</span>`
+  ).join('');
+}
+
+/* ---------- decoder engine ----------
+   A "model" is a guess at HOW the coach hides the real sign. It maps a
+   sequence of signs to a key; plays sharing a key should share an outcome.
+   Each model is scored by leave-one-out accuracy on the logged plays.   */
+let cache = null;
+function dirty(){ cache = null; }
+
+function buildModels(plays){
+  const signs = new Set();
+  plays.forEach(p => p.seq.forEach(s => signs.add(s)));
+  const m = [
+    {id:'whole', name:'Exact same full signal',      key: s => s.join(' › ')},
+    {id:'p1',    name:'1st sign',                    key: s => s.length ? s[0] : null},
+    {id:'p2',    name:'2nd sign',                    key: s => s.length > 1 ? s[1] : null},
+    {id:'p3',    name:'3rd sign',                    key: s => s.length > 2 ? s[2] : null},
+    {id:'last',  name:'Last sign',                   key: s => s.length ? s[s.length-1] : null},
+    {id:'set',   name:'Same signs in any order',     key: s => [...new Set(s)].sort().join(' + ')},
+    {id:'count', name:'Number of signs given',       key: s => s.length + (s.length === 1 ? ' sign' : ' signs')}
+  ];
+  signs.forEach(x => {
+    m.push({id:'after:'+x,  name:`Sign right after “${x}”`,  ind:x,
+      key: s => { const i = s.indexOf(x); return (i >= 0 && i < s.length-1) ? s[i+1] : null; }});
+    m.push({id:'before:'+x, name:`Sign right before “${x}”`, ind:x,
+      key: s => { const i = s.indexOf(x); return i > 0 ? s[i-1] : null; }});
+    m.push({id:'has:'+x,    name:`Whether “${x}” is shown`,
+      key: s => s.includes(x) ? `${x}: yes` : `${x}: no`});
+  });
+  return m;
+}
+
+function evalModel(model, plays, level){
+  const val = p => level === 'fine' ? p.outcome : groupOf(p.outcome);
+  const byKey = new Map(), items = [];
+  for (const p of plays){
+    const k = model.key(p.seq);
+    if (k == null) continue;
+    const v = val(p);
+    items.push([k, v]);
+    let c = byKey.get(k); if (!c){ c = new Map(); byKey.set(k, c); }
+    c.set(v, (c.get(v) || 0) + 1);
+  }
+  let hits = 0, att = 0;
+  for (const [k, v] of items){
+    const c = byKey.get(k);
+    let bn = 0, tops = [];
+    for (const [o, n0] of c){
+      const n = o === v ? n0 - 1 : n0;
+      if (n > bn){ bn = n; tops = [o]; } else if (n === bn && n > 0) tops.push(o);
+    }
+    if (bn === 0) continue;             // key never seen before → no prediction
+    att++;
+    if (tops.includes(v)) hits += 1 / tops.length;
+  }
+  // Score over every play the theory covers: a theory that can't predict new signals isn't worth much.
+  return {hits, att, acc: att ? hits/att : 0, score: wilson(hits, items.length), byKey, covered: items.length};
+}
+
+function analysis(){
+  if (cache) return cache;
+  const sig = S.plays.filter(p => p.seq.length);
+  const models = buildModels(sig);
+  const base = {id:'base', name:'Their overall tendency', key: () => 'all'};
+  const out = {sig, models, base:{}};
+  for (const level of ['fine','coarse']){
+    const be = evalModel(base, sig, level);
+    // Baseline = always guess their most common result (plain rate; leave-one-out undersells it)
+    const bc = be.byKey.get('all'); let mx = 0; if (bc) for (const n of bc.values()) mx = Math.max(mx, n);
+    be.acc = sig.length ? mx / sig.length : 0; be.att = sig.length; be.hits = mx;
+    out.base[level] = be;
+    out[level] = models.map(m => ({m, ev: evalModel(m, sig, level)}))
+      .filter(r => r.ev.att >= 2)
+      .sort((a, b) => b.ev.score - a.ev.score || b.ev.covered - a.ev.covered);
+  }
+  return (cache = out);
+}
+
+function reads(cur, level){
+  const A = analysis(), res = [];
+  for (const r of A[level]){
+    const k = r.m.key(cur); if (k == null) continue;
+    const c = r.ev.byKey.get(k); if (!c) continue;
+    let total = 0, best = null, bn = 0, ties = 0;
+    for (const [o, n] of c){ total += n; if (n > bn){ bn = n; best = o; ties = 0; } else if (n === bn) ties++; }
+    res.push({m:r.m, ev:r.ev, key:k, best, bn, total, purity: bn/total, tied: ties > 0,
+      rs: Math.sqrt(Math.max(0, r.ev.score) * wilson(bn, total))});
+  }
+  res.sort((a, b) => b.rs - a.rs || b.total - a.total);
+  return res.filter(r => !r.tied);
+}
+
+function status(rd, level){
+  if (!rd) return 'none';
+  const st = S.settings, base = analysis().base[level];
+  const absent = rd.m.id.startsWith('has:') && / no$/.test(rd.key); // "X wasn't shown" is a weak clue
+  if (!absent && rd.total >= st.minN && rd.purity >= st.minConf && rd.ev.acc >= st.minConf && rd.ev.acc > base.acc) return 'lock';
+  if (rd.purity >= 0.5 && rd.ev.acc >= base.acc) return 'lean';
+  return 'none';
+}
+
+/* ---------- rendering: live ---------- */
+function renderHeader(){
+  $('#hdrTitle').textContent = S.name || 'Sideline Signals';
+  const n = S.plays.length;
+  $('#hdrCount').textContent = n + (n === 1 ? ' play' : ' plays');
+}
+
+function renderPred(){
+  const el = $('#pred');
+  if (!S.plays.length){
+    el.innerHTML = `<span class="badge b-none">Getting started</span>
+      <div class="fine" style="margin-top:8px">Tap the signs you see, then what happened.</div>
+      <div class="via">It'll start calling plays once patterns repeat. Want to try it first? Setup → Load sample game.</div>`;
+    return;
+  }
+  const pool = S.down ? S.plays.filter(p => p.down === S.down) : S.plays;
+  const d = groupDist(pool.length ? pool : S.plays);
+  const tendLabel = (S.down && pool.length) ? `On ${DOWN_TXT[S.down]} down (${pool.length})` : `Tendency (${S.plays.length} plays)`;
+
+  if (!S.cur.length){
+    el.innerHTML = `<span class="badge b-none">Waiting for signal</span>
+      <div class="via" style="margin-top:8px">${tendLabel}: ${tendText(d)}</div>${tendBar(d)}`;
+    return;
+  }
+  const rc = reads(S.cur, 'coarse')[0];
+  const allF = reads(S.cur, 'fine');
+  // prefer the specific-play read from the same theory as the run/pass read
+  let rf = allF[0];
+  if (rc && status(rf, 'fine') !== 'lock'){ const same = allF.find(r => r.m.id === rc.m.id); if (same) rf = same; }
+  const sc = status(rc, 'coarse'), sf = status(rf, 'fine');
+  if (sc === 'none' && sf === 'none'){
+    el.innerHTML = `<span class="badge b-none">No read yet</span>
+      <div class="fine">Haven't seen this signal pattern enough.</div>
+      <div class="via">${tendLabel}: ${tendText(d)}</div>${tendBar(d)}`;
+    return;
+  }
+  const top = (sf === 'lock' || sc === 'none') ? 'fine' : 'coarse';
+  const lvlStatus = top === 'fine' ? sf : sc;
+  const g = top === 'fine' ? groupOf(rf.best) : rc.best;
+  const bigTxt = GROUP_LABEL[g];
+  const main = top === 'fine' ? rf : rc;
+  let fineLine = '';
+  if (rf && sf !== 'none' && groupOf(rf.best) === g){
+    fineLine = `<div class="fine g-${g}">${esc(OUT[rf.best].label)} <span class="muted small">· ${rf.bn} of ${rf.total}</span></div>`;
+  } else if (rf && sf !== 'none'){
+    fineLine = `<div class="fine muted">Specific play unclear (${esc(OUT[rf.best].label)}? ${rf.bn}/${rf.total})</div>`;
+  }
+  const typeStat = rc && sc !== 'none' && rc.best === g ? `${pct(rc.purity)} · ${rc.bn} of ${rc.total}` : `${pct(main.purity)} · ${main.bn} of ${main.total}`;
+  el.innerHTML = `<span class="badge ${lvlStatus === 'lock' ? 'b-lock' : 'b-lean'}">${lvlStatus === 'lock' ? 'Locked in' : 'Leaning'}</span>
+    <div class="call"><span class="big g-${g}">${bigTxt}</span><span class="pct">${typeStat}</span></div>
+    ${fineLine}
+    <div class="via">Read from: ${esc(main.m.name)} = <b>${esc(main.key)}</b> · this read has been right ${pct(main.ev.acc)} of ${main.ev.att} plays</div>`;
+}
+
+function renderSeq(){
+  $('#seq').innerHTML = S.cur.length ? seqHTML(S.cur, true) : '<span class="ph">Tap signs in the order the coach gives them…</span>';
+}
+
+function renderPad(){
+  const all = DEFAULT_SIGNS.concat(S.custom.filter(c => !DEFAULT_SIGNS.includes(c)));
+  $('#pad').innerHTML = all.map(s =>
+    `<button data-sign="${esc(s)}" class="${S.custom.includes(s) ? 'custom' : ''}">${esc(s)}</button>`).join('') +
+    '<button class="add" id="bAddSign">+ Sign</button>';
+  $('#nums').innerHTML = NUM_SIGNS.map(s => `<button data-sign="${s}">${s}</button>`).join('');
+}
+
+function renderOuts(){
+  $('#outs').innerHTML = OUTCOMES.map(o =>
+    `<button data-out="${o.id}" class="o-${o.group}">${esc(o.short).replace('\n','<br>')}</button>`).join('');
+}
+
+function renderDowns(){
+  $('#downs').innerHTML = '<span class="small muted" style="margin-right:2px">Down</span>' +
+    [1,2,3,4].map(n => `<button data-down="${n}" class="${S.down === n ? 'on' : ''}">${n}</button>`).join('');
+}
+
+function renderLive(){ renderPred(); renderSeq(); renderDowns(); }
+
+/* ---------- rendering: log ---------- */
+function renderLog(){
+  const n = S.plays.length;
+  $('#logCount').textContent = n ? n + ' plays' : '';
+  if (!n){ $('#logList').innerHTML = '<div class="muted small">Nothing logged yet.</div>'; return; }
+  $('#logList').innerHTML = S.plays.map((p, i) => ({p, i})).reverse().map(({p, i}) => {
+    const o = OUT[p.outcome], g = o.group;
+    return `<div class="logrow">
+      <div class="n">#${i+1}</div>
+      <div class="body">
+        <span class="pill p-${g}">${esc(o.label)}</span>
+        ${p.down ? `<span class="small muted"> · ${DOWN_TXT[p.down]} down</span>` : ''}
+        <div class="sigs">${p.seq.length ? seqHTML(p.seq, false) : '<span class="small muted">no signal logged</span>'}</div>
+      </div>
+      <button class="del" data-del="${p.id}">Delete</button>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- rendering: insights ---------- */
+function miniBar(counts, total){
+  return '<div class="mini">' + GROUPS.filter(g => counts[g]).map(g =>
+    `<span class="bg-${g}" style="width:${counts[g]/total*100}%"></span>`).join('') + '</div>';
+}
+const LEGEND = '<div class="legend">' + GROUPS.map(g => `<span><i class="bg-${g}"></i>${g === 'Special' ? 'Kick' : g}</span>`).join('') + '</div>';
+
+function renderIns(){
+  const el = $('#insBody');
+  const P = S.plays;
+  if (!P.length){ el.innerHTML = '<div class="card"><h2>Insights</h2><p class="muted">Log some plays and the patterns will show up here.</p></div>'; return; }
+  const A = analysis(), d = groupDist(P);
+  let h = '';
+
+  // summary
+  h += `<div class="card"><h3>Their offense so far</h3>
+    <div class="row" style="gap:18px;margin-top:6px">
+      <div><div class="stat">${P.length}</div><div class="small muted">plays</div></div>
+      <div><div class="stat">${A.sig.length}</div><div class="small muted">with signals</div></div>
+      <div><div class="stat g-Run">${pct(d.c.Run/d.n)}</div><div class="small muted">run</div></div>
+      <div><div class="stat g-Pass">${pct(d.c.Pass/d.n)}</div><div class="small muted">pass</div></div>
+    </div>${tendBar(d)}${LEGEND}</div>`;
+
+  // decoder
+  h += '<div class="card"><h3>Code breaker</h3>';
+  if (A.sig.length < 4){
+    h += `<p class="muted small">Log at least 4 plays with signals to start testing theories (${A.sig.length} so far).</p>`;
+  } else {
+    const bf = A.fine[0], bc = A.coarse[0], basef = A.base.fine, basec = A.base.coarse;
+    const fineGood = bf && bf.ev.acc > basef.acc + 0.05;
+    const coarseGood = bc && bc.ev.acc > basec.acc + 0.05;
+    const best = fineGood ? bf : (coarseGood ? bc : null);
+    const lvl = fineGood ? 'fine' : 'coarse';
+    if (!best){
+      h += `<p class="small">No signal pattern beats just guessing their tendency yet
+        (${pct(basec.acc)} for run/pass). Keep logging. Also, they may be using a wristband or sending plays in with a player.</p>`;
+    } else {
+      const baseAcc = lvl === 'fine' ? basef.acc : basec.acc;
+      h += `<div class="cracked" style="padding-left:10px;margin-top:8px">
+        <div class="small muted">Best theory</div>
+        <div style="font-weight:900;font-size:18px">${esc(best.m.name)}</div>
+        <div class="small">Called the ${lvl === 'fine' ? 'exact play' : 'run/pass'} right <b>${pct(best.ev.acc)}</b> of the time (${Math.round(best.ev.hits)}/${best.ev.att}).
+          Just guessing their tendency gets ${pct(baseAcc)}.</div></div>`;
+      // key table
+      const rows = [...best.ev.byKey.entries()].map(([k, c]) => {
+        const sig = A.sig.filter(p => best.m.key(p.seq) === k);
+        const gc = groupDist(sig);
+        let bo = null, bn = 0, tot = 0; for (const [o, n] of c){ tot += n; if (n > bn){ bn = n; bo = o; } }
+        return {k, bo, bn, tot, gc};
+      }).sort((a, b) => b.tot - a.tot);
+      h += `<table style="margin-top:10px"><tr><th>When it's</th><th>Usually</th><th class="num">Times</th><th></th></tr>` +
+        rows.map(r => {
+          const lab = lvl === 'fine' ? OUT[r.bo].label : r.bo;
+          const g = lvl === 'fine' ? groupOf(r.bo) : r.bo;
+          return `<tr><td><b>${esc(r.k)}</b></td><td class="g-${g}"><b>${esc(lab)}</b></td>
+            <td class="num">${r.bn}/${r.tot}</td><td style="width:70px">${miniBar(r.gc.c, r.gc.n)}</td></tr>`;
+        }).join('') + '</table>';
+    }
+    // runner-up theories
+    const list = A.coarse.slice(0, 6);
+    if (list.length){
+      h += `<div class="sublabel" style="margin-top:14px">Top theories (run vs. pass)</div><table>
+        <tr><th>Theory</th><th class="num">Right</th><th class="num">Plays</th></tr>` +
+        list.map(r => `<tr><td>${esc(r.m.name)}</td><td class="num">${pct(r.ev.acc)}</td><td class="num">${r.ev.att}</td></tr>`).join('') +
+        `<tr><td class="muted">Just guessing tendency</td><td class="num muted">${pct(basec.acc)}</td><td class="num muted">${basec.att}</td></tr></table>`;
+    }
+  }
+  h += '</div>';
+
+  // by down
+  const downs = [1,2,3,4].map(n => ({n, pl: P.filter(p => p.down === n)})).filter(x => x.pl.length);
+  if (downs.length){
+    h += `<div class="card"><h3>By down</h3><table><tr><th>Down</th><th class="num">Plays</th><th class="num">Run</th><th class="num">Pass</th><th></th></tr>` +
+      downs.map(x => { const dd = groupDist(x.pl);
+        return `<tr><td><b>${DOWN_TXT[x.n]}</b></td><td class="num">${dd.n}</td><td class="num g-Run">${pct(dd.c.Run/dd.n)}</td>
+          <td class="num g-Pass">${pct(dd.c.Pass/dd.n)}</td><td style="width:70px">${miniBar(dd.c, dd.n)}</td></tr>`; }).join('') +
+      '</table></div>';
+  }
+
+  // signs table
+  const signCounts = new Map();
+  A.sig.forEach(p => new Set(p.seq).forEach(s => signCounts.set(s, (signCounts.get(s) || 0) + 1)));
+  if (signCounts.size){
+    const rows = [...signCounts.entries()].sort((a, b) => b[1] - a[1]).map(([s, n]) => {
+      const pl = A.sig.filter(p => p.seq.includes(s)), dd = groupDist(pl);
+      const topG = GROUPS.slice().sort((a, b) => dd.c[b] - dd.c[a])[0];
+      return `<tr><td><b>${esc(s)}</b></td><td class="num">${n}</td>
+        <td class="g-${topG}">${topG === 'Special' ? 'Kick' : topG} ${pct(dd.c[topG]/dd.n)}</td><td style="width:70px">${miniBar(dd.c, dd.n)}</td></tr>`;
+    }).join('');
+    h += `<div class="card"><h3>Each sign: what happens when it shows up</h3>
+      <table><tr><th>Sign</th><th class="num">Seen</th><th>Most often</th><th></th></tr>${rows}</table>
+      <div class="small muted" style="margin-top:6px">A sign that shows up a lot but splits evenly between run and pass is probably a decoy.</div></div>`;
+  }
+  el.innerHTML = h;
+}
+
+/* ---------- rendering: setup ---------- */
+function renderSetup(){
+  $('#gName').value = S.name;
+  $('#nOut').textContent = S.settings.minN;
+  $('#cOut').textContent = pct(S.settings.minConf);
+  $('#theme').value = S.theme || '';
+  $('#cList').innerHTML = S.custom.length
+    ? S.custom.map(c => `<button class="chip" data-crm="${esc(c)}">${esc(c)}<span class="x">×</span></button>`).join('')
+    : '<span class="small muted">None yet.</span>';
+}
+
+function applyTheme(){
+  if (S.theme) document.documentElement.setAttribute('data-theme', S.theme);
+  else document.documentElement.removeAttribute('data-theme');
+}
+
+let tab = 'live';
+function renderAll(){
+  renderHeader();
+  if (tab === 'live') renderLive();
+  if (tab === 'log') renderLog();
+  if (tab === 'ins') renderIns();
+  if (tab === 'set') renderSetup();
+}
+function showTab(t){
+  tab = t;
+  ['live','log','ins','set'].forEach(x => $('#v-' + x).classList.toggle('hidden', x !== t));
+  document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  window.scrollTo(0, 0);
+  renderAll();
+}
+
+/* ---------- toast ---------- */
+let toastTimer = null, toastUndo = null;
+function toast(msg, undo){
+  $('#toastMsg').textContent = msg;
+  toastUndo = undo || null;
+  $('#toastUndo').classList.toggle('hidden', !undo);
+  $('#toast').classList.remove('off');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('#toast').classList.add('off'), undo ? 5000 : 2200);
+}
+$('#toastUndo').addEventListener('click', () => {
+  if (toastUndo) toastUndo();
+  toastUndo = null; $('#toast').classList.add('off');
+});
+
+/* ---------- arm-to-confirm (no browser dialogs) ---------- */
+function armed(btn, label){
+  if (btn.dataset.armed === '1') return true;
+  const orig = btn.textContent;
+  btn.dataset.armed = '1'; btn.classList.add('armed'); btn.textContent = label || 'Tap again to confirm';
+  setTimeout(() => { if (btn.isConnected){ btn.dataset.armed = ''; btn.classList.remove('armed'); btn.textContent = orig; } }, 3000);
+  return false;
+}
+
+/* ---------- actions ---------- */
+function addCustom(label){
+  label = (label || '').trim().replace(/\s+/g, ' ').slice(0, 18);
+  if (!label) return false;
+  if (!S.custom.includes(label) && !DEFAULT_SIGNS.includes(label) && !NUM_SIGNS.includes(label)) S.custom.push(label);
+  save(); renderPad();
+  return label;
+}
+
+function logPlay(outId){
+  const play = {id: S.nextId++, seq: S.cur.slice(), outcome: outId, down: S.down, t: Date.now()};
+  S.plays.push(play);
+  const prevSeq = S.cur.slice(), prevDown = S.down;
+  S.cur = []; S.down = null;
+  dirty(); save(); renderAll();
+  toast(`#${S.plays.length} logged: ${OUT[outId].label}`, () => {
+    const i = S.plays.findIndex(p => p.id === play.id);
+    if (i >= 0) S.plays.splice(i, 1);
+    S.cur = prevSeq; S.down = prevDown;
+    dirty(); save(); renderAll();
+  });
+}
+
+function csv(){
+  const q = s => '"' + String(s).replace(/"/g, '""') + '"';
+  const lines = [['play','down','signal','result','type','time'].join(',')];
+  S.plays.forEach((p, i) => lines.push([i+1, p.down ? DOWN_TXT[p.down] : '', q(p.seq.join(' > ')), q(OUT[p.outcome].label),
+    groupOf(p.outcome), q(new Date(p.t).toLocaleTimeString())].join(',')));
+  return lines.join('\n');
+}
+
+function sampleGame(){
+  // Indicator system: the live sign is the one right after "Hat". Everything else is a decoy.
+  const live = {Chest:'PS', Arm:'RR', Belt:'RM', Thigh:'PD', Ear:'RL', Wrist:'SC'};
+  const liveKeys = Object.keys(live);
+  const decoys = ['Nose','Chin','Shoulder','Clap','Face','Knee','Swipe'];
+  let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const pick = a => a[Math.floor(rnd() * a.length)];
+  const plays = []; let down = 1;
+  for (let i = 0; i < 26; i++){
+    const k = pick(liveKeys.concat(['Arm','Belt','Chest']));
+    const len = 3 + Math.floor(rnd() * 2);
+    const seq = []; for (let j = 0; j < len; j++) seq.push(pick(decoys));
+    const pos = Math.floor(rnd() * (len - 1));
+    seq[pos] = 'Hat'; seq[pos + 1] = k;
+    let out = live[k];
+    if (rnd() < 0.08) out = pick(['RL','RM','PS','QB']); // the occasional audible
+    if (down === 4 && rnd() < 0.6){ out = 'PU'; }
+    plays.push({id: i + 1, seq: out === 'PU' ? [] : seq, outcome: out, down, t: Date.now() - (26 - i) * 60000});
+    down = out === 'PU' ? 1 : (rnd() < 0.35 ? 1 : Math.min(4, down + 1));
+  }
+  S.plays = plays; S.nextId = 100; S.cur = []; S.down = null;
+  if (!S.name) S.name = 'Sample: Eastside MS';
+}
+
+/* ---------- events ---------- */
+document.addEventListener('touchstart', () => {}, {passive: true}); // enables :active on iOS
+
+document.querySelector('nav.tabs').addEventListener('click', e => {
+  const b = e.target.closest('button[data-tab]'); if (b) showTab(b.dataset.tab);
+});
+
+$('#v-live').addEventListener('click', e => {
+  const sign = e.target.closest('[data-sign]');
+  if (sign){ S.cur.push(sign.dataset.sign); save(); renderPred(); renderSeq(); return; }
+  const rm = e.target.closest('[data-rm]');
+  if (rm){ S.cur.splice(+rm.dataset.rm, 1); save(); renderPred(); renderSeq(); return; }
+  const out = e.target.closest('[data-out]');
+  if (out){ logPlay(out.dataset.out); return; }
+  const dn = e.target.closest('[data-down]');
+  if (dn){ const n = +dn.dataset.down; S.down = S.down === n ? null : n; save(); renderDowns(); renderPred(); return; }
+  if (e.target.closest('#bAddSign')){ $('#addRow').classList.remove('hidden'); $('#addInput').focus(); return; }
+});
+$('#bUndoSign').addEventListener('click', () => { S.cur.pop(); save(); renderPred(); renderSeq(); });
+$('#bClear').addEventListener('click', () => { S.cur = []; save(); renderPred(); renderSeq(); });
+function addFromLive(){
+  const l = addCustom($('#addInput').value);
+  if (l){ S.cur.push(l); save(); renderSeq(); renderPred(); }
+  $('#addInput').value = ''; $('#addRow').classList.add('hidden');
+}
+$('#addGo').addEventListener('click', addFromLive);
+$('#addInput').addEventListener('keydown', e => { if (e.key === 'Enter') addFromLive(); });
+$('#addCancel').addEventListener('click', () => { $('#addInput').value = ''; $('#addRow').classList.add('hidden'); });
+
+$('#logList').addEventListener('click', e => {
+  const b = e.target.closest('[data-del]'); if (!b) return;
+  if (!armed(b, 'Sure?')) return;
+  const id = +b.dataset.del;
+  S.plays = S.plays.filter(p => p.id !== id);
+  dirty(); save(); renderAll();
+});
+
+$('#gName').addEventListener('input', e => { S.name = e.target.value; save(); renderHeader(); });
+$('#nMinus').addEventListener('click', () => { S.settings.minN = Math.max(1, S.settings.minN - 1); save(); renderSetup(); });
+$('#nPlus').addEventListener('click', () => { S.settings.minN = Math.min(10, S.settings.minN + 1); save(); renderSetup(); });
+$('#cMinus').addEventListener('click', () => { S.settings.minConf = Math.max(0.5, Math.round((S.settings.minConf - 0.05) * 100) / 100); save(); renderSetup(); });
+$('#cPlus').addEventListener('click', () => { S.settings.minConf = Math.min(1, Math.round((S.settings.minConf + 0.05) * 100) / 100); save(); renderSetup(); });
+$('#theme').addEventListener('change', e => { S.theme = e.target.value; save(); applyTheme(); });
+function addFromSetup(){ addCustom($('#cInput').value); $('#cInput').value = ''; renderSetup(); }
+$('#cAdd').addEventListener('click', addFromSetup);
+$('#cInput').addEventListener('keydown', e => { if (e.key === 'Enter') addFromSetup(); });
+$('#cList').addEventListener('click', e => {
+  const b = e.target.closest('[data-crm]'); if (!b) return;
+  S.custom = S.custom.filter(c => c !== b.dataset.crm); save(); renderPad(); renderSetup();
+});
+$('#bNew').addEventListener('click', e => {
+  if (!armed(e.currentTarget, 'Tap again to erase all plays')) return;
+  const keep = {custom: S.custom, settings: S.settings, theme: S.theme};
+  S = Object.assign(fresh(), keep);
+  dirty(); save(); renderAll(); toast('New game started');
+});
+$('#bSample').addEventListener('click', e => {
+  if (S.plays.length && !armed(e.currentTarget, 'Replaces current plays: tap again')) return;
+  sampleGame(); dirty(); save(); renderAll();
+  toast('Sample loaded: 26 plays. Try Hat › Chest on Live');
+});
+$('#bExport').addEventListener('click', () => {
+  if (!S.plays.length){ toast('No plays to export'); return; }
+  const blob = new Blob([csv()], {type: 'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (S.name || 'game').replace(/[^\w\- ]+/g, '').trim().replace(/\s+/g, '-') + '-signals.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+});
+$('#bCopy').addEventListener('click', () => {
+  if (!S.plays.length){ toast('No plays to copy'); return; }
+  const text = csv();
+  (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject())
+    .then(() => toast('Log copied. Paste it into Notes or a text'))
+    .catch(() => toast("Couldn't copy on this browser"));
+});
+
+/* ---------- home-screen icon (drawn at runtime, no external files) ---------- */
+function makeIcon(){
+  try{
+    const c = document.createElement('canvas'); c.width = c.height = 180;
+    const x = c.getContext('2d');
+    x.fillStyle = '#0b6b45'; x.fillRect(0, 0, 180, 180);
+    x.strokeStyle = 'rgba(255,255,255,.25)'; x.lineWidth = 4;
+    for (let i = 30; i < 180; i += 40){ x.beginPath(); x.moveTo(0, i); x.lineTo(180, i); x.stroke(); }
+    x.save(); x.translate(90, 90); x.rotate(-0.6);
+    x.fillStyle = '#8a4b1f'; x.beginPath(); x.ellipse(0, 0, 62, 36, 0, 0, Math.PI * 2); x.fill();
+    x.strokeStyle = '#fff'; x.lineWidth = 6; x.lineCap = 'round';
+    x.beginPath(); x.moveTo(-26, 0); x.lineTo(26, 0); x.stroke();
+    x.lineWidth = 5;
+    for (let i = -15; i <= 15; i += 10){ x.beginPath(); x.moveTo(i, -9); x.lineTo(i, 9); x.stroke(); }
+    x.restore();
+    $('#touchIcon').href = c.toDataURL('image/png');
+  }catch(e){}
+}
+
+/* ---------- boot ---------- */
+applyTheme(); makeIcon(); renderPad(); renderOuts(); renderAll();
+// Optional offline support: if sw.js sits next to this file on an https host, the app keeps working with no signal.
+if ('serviceWorker' in navigator && location.protocol === 'https:'){
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+})();
+</script>
+</body>
+</html>
