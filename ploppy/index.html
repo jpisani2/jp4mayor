@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ploppy 3-2 roulette simulator</title>
+<meta name="description" content="Simulate thousands of roulette sessions of the Ploppy 3-2 system ($3 on black, $2 on the third column) with doubling, Fibonacci, linear or flat progressions.">
+<meta name="theme-color" content="#eef1ec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1714" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ploppy 3-2">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<meta property="og:title" content="Ploppy 3-2 roulette simulator">
+<meta property="og:description" content="See where thousands of simulated sessions end up with doubling, Fibonacci, linear or flat betting.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#eef1ec; --surface:#fbfcfa; --ink:#1b2a23; --muted:#56665e; --line:#d2dbd4;
+  --felt:#1f6b4f; --felt-soft:#dcebe3; --red:#b3262f; --bust:#474d52; --brass:#94731f;
+  --on-felt:#ffffff; --focus:#1f6b4f;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1714; --surface:#16211c; --ink:#e4ece7; --muted:#9bada4; --line:#2a3a33;
+    --felt:#45a77e; --felt-soft:#1d3329; --red:#e0575e; --bust:#8d949a; --brass:#d4b05a;
+    --on-felt:#0f1714; --focus:#6cc59e; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1714; --surface:#16211c; --ink:#e4ece7; --muted:#9bada4; --line:#2a3a33;
+  --felt:#45a77e; --felt-soft:#1d3329; --red:#e0575e; --bust:#8d949a; --brass:#d4b05a;
+  --on-felt:#0f1714; --focus:#6cc59e; color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*,*::before,*::after{box-sizing:inherit;}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:400 15px/1.55 "Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-variant-numeric:tabular-nums;}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 56px;}
+h1{font:700 clamp(30px,4.4vw,46px)/1.02 "Bricolage Grotesque","Public Sans",system-ui,sans-serif;
+  letter-spacing:-0.025em;margin:0 0 8px;color:var(--felt);}
+h2{font:600 20px/1.2 "Bricolage Grotesque","Public Sans",system-ui,sans-serif;margin:0 0 10px;letter-spacing:-0.01em;}
+.lede{color:var(--muted);margin:0 0 26px;max-width:64ch;}
+button,input,select{font:inherit;color:inherit;}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+
+.systems{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:18px;}
+.sys{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-align:left;cursor:pointer;}
+.sys strong{display:block;font:600 17px/1.2 "Bricolage Grotesque","Public Sans",system-ui,sans-serif;}
+.sys span{display:block;color:var(--muted);font-size:13px;margin-top:2px;}
+.sys:hover{border-color:var(--felt);}
+.sys[aria-pressed="true"]{background:var(--felt);border-color:var(--felt);color:var(--on-felt);}
+.sys[aria-pressed="true"] span{color:var(--on-felt);opacity:.85;}
+@media (max-width:640px){.systems{grid-template-columns:repeat(2,minmax(0,1fr));}}
+
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:12px 14px;align-items:end;}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--muted);margin-bottom:4px;}
+.field input,.field select{font-size:16px;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:40px;}
+.money{position:relative;}
+.money::before{content:"$";position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+.money input{padding-left:22px;}
+.run{background:transparent;border:1.5px solid var(--felt);color:var(--felt);border-radius:8px;min-height:40px;padding:8px 14px;font-weight:600;cursor:pointer;}
+.run:hover{background:var(--felt-soft);}
+
+.status{display:flex;align-items:center;gap:12px;margin:16px 0 10px;font-size:13px;color:var(--muted);min-height:20px;}
+.bar{flex:0 0 140px;height:4px;background:var(--line);border-radius:2px;overflow:hidden;}
+.bar i{display:block;height:100%;width:0;background:var(--felt);transition:width .15s linear;}
+.status.done .bar{display:none;}
+.error{color:var(--red);}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 18px 8px;}
+.chart-head{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 18px;align-items:baseline;margin-bottom:6px;}
+.chart-head h2{margin:0;}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--muted);}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.legend i{width:11px;height:11px;border-radius:2px;display:inline-block;}
+#chart{position:relative;width:100%;min-height:300px;}
+#chart svg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y;-webkit-user-select:none;user-select:none;}
+.placeholder{display:flex;align-items:center;justify-content:center;height:320px;color:var(--muted);}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;line-height:1.4;padding:7px 9px;border-radius:6px;white-space:nowrap;transform:translate(-50%,-100%);opacity:0;transition:opacity .08s;}
+.tip.show{opacity:1;}
+
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--line);margin-top:10px;}
+.stat{padding:14px 12px 12px 0;}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.stat .v{font:600 22px/1.15 "Bricolage Grotesque","Public Sans",system-ui,sans-serif;}
+.stat .k{font-size:13px;color:var(--muted);}
+.nw{white-space:nowrap;}
+.pos{color:var(--felt);} .neg{color:var(--red);}
+
+.lower{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;margin-top:30px;}
+@media (max-width:820px){.lower{grid-template-columns:1fr;}}
+.lower > *{min-width:0;}
+.scroll{overflow-x:auto;}
+table{border-collapse:collapse;width:100%;font-size:14px;}
+th,td{text-align:right;padding:8px 8px;border-bottom:1px solid var(--line);white-space:nowrap;}
+th:first-child,td:first-child{text-align:left;}
+th{font-weight:500;color:var(--muted);font-size:13px;}
+tbody tr{cursor:pointer;}
+tbody tr:hover td{background:var(--felt-soft);}
+tbody tr.sel td{font-weight:600;}
+tbody tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--felt);padding-left:11px;}
+.ladder{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 10px;}
+.rung{border:1px solid var(--line);border-radius:6px;padding:4px 8px;font-size:13px;background:var(--surface);}
+.rung b{font-weight:600;color:var(--muted);margin-right:4px;}
+.rung.over{border-style:dashed;color:var(--muted);}
+.note{color:var(--muted);font-size:14px;max-width:62ch;}
+.rules{margin-top:30px;max-width:70ch;}
+.rules p{margin:0 0 10px;}
+  .show-sm{display:none;}
+footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px;max-width:70ch;}
+button{-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+@media (max-width:640px){
+  .wrap{padding:14px 14px 40px;}
+  h1{font-size:30px;}
+  .lede{margin-bottom:14px;font-size:14.5px;}
+  .systems{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding:8px 0;margin:0 0 10px;}
+  .sys{padding:10px 2px;text-align:center;border-radius:8px;}
+  .sys strong{font-size:14.5px;}
+  .sys span{display:none;}
+  .controls{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 10px;}
+  .run{grid-column:1 / -1;min-height:44px;}
+  .panel{padding:14px 12px 4px;border-radius:10px;}
+  .chart-head h2{font-size:17px;}
+  .legend{font-size:12px;}
+  .stat{padding:12px 8px 10px 0;}
+  .stat .v{font-size:19px;}
+  .hide-sm{display:none;}
+  .show-sm{display:inline;}
+  table{font-size:13.5px;}
+  th,td{padding:9px 4px;}
+  th:first-child,td:first-child{padding-left:0;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Ploppy 3-2 simulator</h1>
+  <p class="lede">$3 on black and $2 on the third column, with a progression after every no-hit. Pick a system, set your bankroll, and see where thousands of sessions end up.</p>
+
+  <div class="systems" role="group" aria-label="Betting progression" id="systems"></div>
+
+  <div class="controls">
+    <div class="field"><label for="bankroll">Bankroll</label><div class="money"><input id="bankroll" type="number" inputmode="decimal" min="0.5" step="50" value="500"></div></div>
+    <div class="field"><label for="spins">Spins per session</label><input id="spins" type="number" inputmode="numeric" min="1" max="2000" step="10" value="100"></div>
+    <div class="field"><label for="wheel">Wheel</label>
+      <select id="wheel"><option value="1" selected>Single zero</option><option value="2">Double zero</option></select></div>
+    <div class="field"><label for="unit">Starting bet</label>
+      <select id="unit"><option value="0.1">$0.30 / $0.20</option><option value="1" selected>$3 / $2</option><option value="2">$6 / $4</option><option value="5">$15 / $10</option><option value="10">$30 / $20</option></select></div>
+    <div class="field"><label for="stopwin">Quit when ahead by</label><div class="money"><input id="stopwin" type="number" inputmode="numeric" min="0" step="25" value="" placeholder="Never"></div></div>
+    <div class="field"><label for="sessions">Sessions</label>
+      <select id="sessions"><option value="10000">10,000</option><option value="50000" selected>50,000</option><option value="100000">100,000</option></select></div>
+    <button class="run" id="run" type="button">Run again</button>
+  </div>
+
+  <div class="status" id="status" aria-live="polite"><div class="bar"><i id="barfill"></i></div><span id="statustext">Starting…</span></div>
+
+  <section class="panel" aria-labelledby="chart-title">
+    <div class="chart-head">
+      <h2 id="chart-title">Session results</h2>
+      <div class="legend">
+        <span><i style="background:var(--felt)"></i>Finished ahead</span>
+        <span><i style="background:var(--red)"></i>Finished behind</span>
+        <span><i style="background:var(--bust)"></i>Busted: couldn't cover the next bet</span>
+      </div>
+    </div>
+    <div id="chart"><div class="placeholder">Simulating…</div></div>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <div class="lower">
+    <section>
+      <h2>All four systems, same settings</h2>
+      <div class="scroll"><table>
+        <thead><tr><th>System</th><th>Ahead</th><th>Busted</th><th>Median</th><th>Average</th><th><span class="hide-sm">Most common</span><span class="show-sm">Mode</span></th><th class="hide-sm">Avg bet total</th><th class="hide-sm">Median spins</th></tr></thead>
+        <tbody id="compare"></tbody>
+      </table></div>
+      <p class="note">Select a row to chart that system.</p>
+    </section>
+    <section>
+      <h2 id="ladder-title">Bet ladder</h2>
+      <div class="ladder" id="ladder"></div>
+      <p class="note" id="ladder-note"></p>
+    </section>
+  </div>
+
+  <section class="rules">
+    <h2>How each spin is scored</h2>
+    <p>Black pays 1 to 1 and the third column pays 2 to 1. At the starting bet, a big hit (6, 15, 24 or 33, both bets win) is +$7. A small hit (any other black number, or a red number in the third column) is +$1. A no-hit (a red number outside the column, or zero) is −$5.</p>
+    <p>A no-hit moves you up one level. A big hit sends you back to level 1. A small hit moves you down one level once your bankroll is back above where it was before the loss that moved you up. A session ends after the set number of spins, when you're ahead by your quit amount, or when you can't cover the next bet.</p>
+    <p class="note" id="edge-note"></p>
+  </section>
+  <footer>For fun and learning. Every result here comes from random simulated spins. No progression changes the house edge, so over time every system on this page loses money on average. Please gamble only what you can afford to lose.</footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+(function(){
+  "use strict";
+  var FIB = [1,2]; while (FIB.length < 2100) FIB.push(FIB[FIB.length-1] + FIB[FIB.length-2]);
+  var SYSTEMS = [
+    {id:"doubling", name:"Doubling", desc:"1, 2, 4, 8, 16…", mult:function(k){return Math.pow(2,k);}},
+    {id:"fib", name:"Fibonacci", desc:"1, 2, 3, 5, 8…", mult:function(k){return FIB[k];}},
+    {id:"linear", name:"Linear", desc:"1, 2, 3, 4, 5…", mult:function(k){return k+1;}},
+    {id:"flat", name:"Flat", desc:"Same bet every spin", mult:function(){return 1;}}
+  ];
+  var RED = {1:1,3:1,5:1,7:1,9:1,12:1,14:1,16:1,18:1,19:1,21:1,23:1,25:1,27:1,30:1,32:1,34:1,36:1};
+
+  var state = {sel:"doubling", results:{}, stats:{}, opts:null, gen:0};
+  var $ = function(id){return document.getElementById(id);};
+
+  function payTable(zeros){
+    var p = [];
+    for (var n=1; n<=36; n++){
+      var black = !RED[n], col3 = n % 3 === 0;
+      p.push((black?3:-3) + (col3?4:-2));
+    }
+    for (var z=0; z<zeros; z++) p.push(-5);
+    return Int8Array.from(p);
+  }
+
+  function money(v, signed){
+    var d = (state.opts && state.opts.unit < 1 && Math.abs(v) < 1000) ? 2 : 0;
+    var r = Math.round(v*Math.pow(10,d))/Math.pow(10,d);
+    var a = "$" + Math.abs(r).toLocaleString("en-US", {minimumFractionDigits:d, maximumFractionDigits:d});
+    if (!signed) return (r<0?"−":"") + a;
+    return (r<0?"−":r>0?"+":"") + a;
+  }
+  function betFmt(v){
+    var r = Math.round(v*100)/100;
+    return "$" + r.toLocaleString("en-US", {minimumFractionDigits: r % 1 ? 2 : 0, maximumFractionDigits: 2});
+  }
+  function nw(t){ return '<span class="nw">' + t + '</span>'; }
+  function pct(v){ return (v*100).toFixed(v<0.1 && v>0 ? 1 : 1).replace(/\.0$/,"") + "%"; }
+  function cls(v){ return v>0?"pos":v<0?"neg":""; }
+
+  function readOpts(){
+    var o = {
+      bankroll: Math.round(Number($("bankroll").value)*100)/100,
+      spins: Math.floor(Number($("spins").value)),
+      zeros: Number($("wheel").value),
+      unit: Number($("unit").value),
+      stopWin: Math.max(0, Math.round((Number($("stopwin").value) || 0)*100)/100),
+      sessions: Number($("sessions").value)
+    };
+    var err = null;
+    if (!(o.bankroll >= 5*o.unit)) err = "Bankroll has to cover at least one starting bet (" + money(5*o.unit) + ").";
+    else if (o.bankroll > 10000000) err = "Keep the bankroll under $10,000,000.";
+    else if (!(o.spins >= 1 && o.spins <= 2000)) err = "Spins per session must be between 1 and 2,000.";
+    o.err = err;
+    return o;
+  }
+
+  function simulate(sys, o, gen, onProgress){
+    var pay = payTable(o.zeros), P = pay.length;
+    var U = o.unit, N = o.sessions, S = o.spins, B = Math.round(o.bankroll/U*1e6)/1e6, SW = Math.round(o.stopWin/U*1e6)/1e6;
+    var mults = new Float64Array(S+2);
+    for (var k=0; k<S+2; k++) mults[k] = sys.mult(k);
+    var net = new Float64Array(N), busted = new Uint8Array(N), played = new Uint32Array(N), wag = new Float64Array(N), stopped = new Uint8Array(N);
+    var targets = new Float64Array(S+3);
+    var CH = 2500, s0 = 0;
+    return new Promise(function(resolve){
+      function chunk(){
+        if (gen !== state.gen) return resolve(null);
+        var end = Math.min(N, s0 + CH);
+        for (var s=s0; s<end; s++){
+          var bank = B, lv = 0, w = 0, i = 0, b = 0, st = 0;
+          for (; i<S; i++){
+            if (SW > 0 && bank - B >= SW){ st = 1; break; }
+            var m = mults[lv], bet = 5*m;
+            if (bet > bank){ b = 1; break; }
+            var r = pay[(Math.random()*P)|0];
+            var before = bank;
+            bank += r*m; w += bet;
+            if (r < 0){ lv++; targets[lv] = before; }
+            else if (r === 7){ lv = 0; }
+            else if (lv > 0 && bank > targets[lv]){ lv--; }
+          }
+          net[s] = (bank - B)*U; busted[s] = b; played[s] = i; wag[s] = w*U; stopped[s] = st;
+        }
+        s0 = end;
+        onProgress(s0/N);
+        if (s0 < N) setTimeout(chunk, 0);
+        else resolve({net:net, busted:busted, played:played, wag:wag, stopped:stopped});
+      }
+      chunk();
+    });
+  }
+
+  function summarize(r, U){
+    var n = r.net.length, sorted = Float64Array.from(r.net).sort();
+    var spreadU = (sorted[Math.floor(0.95*(n-1))] - sorted[Math.floor(0.05*(n-1))]) / U;
+    var wU = Math.max(1, niceIntStep(spreadU/60));
+    var counts = new Map(), modeU = 0, modeC = 0;
+    for (var j=0;j<n;j++){
+      var key = Math.floor(Math.round(r.net[j]/U)/wU), c = (counts.get(key)||0) + 1;
+      counts.set(key, c);
+      if (c > modeC || (c === modeC && key > modeU)){ modeC = c; modeU = key; }
+    }
+    var q = function(p){ return sorted[Math.min(n-1, Math.max(0, Math.floor(p*(n-1))))]; };
+    var ahead=0, bust=0, sum=0, wsum=0, stop=0;
+    for (var i=0;i<n;i++){ if (r.net[i]>0) ahead++; bust+=r.busted[i]; sum+=r.net[i]; wsum+=r.wag[i]; stop+=r.stopped[i]; }
+    var pl = Uint32Array.from(r.played).sort();
+    return {ahead:ahead/n, bust:bust/n, mean:sum/n, wag:wsum/n, stop:stop/n,
+      median:q(0.5), modeLo:modeU*wU*U, modeHi:(modeU+1)*wU*U, modeMid:(modeU+0.5)*wU*U, modeW:wU, modeShare:modeC/n, p5:q(0.05), p95:q(0.95), min:sorted[0], max:sorted[n-1], medSpins:pl[Math.floor((n-1)/2)]};
+  }
+
+  function niceStep(raw){
+    var p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw/p;
+    return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p;
+  }
+
+  function niceIntStep(raw){
+    if (raw <= 1) return 1;
+    var p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw/p;
+    return (f<=1?1:f<=2?2:f<=5?5:10)*p;
+  }
+
+  function renderChart(){
+    var host = $("chart"), r = state.results[state.sel], o = state.opts;
+    if (!r){ host.innerHTML = '<div class="placeholder">Simulating…</div>'; return; }
+    var st = state.stats[state.sel];
+    var W = Math.max(300, host.clientWidth), H = Math.round(Math.min(440, Math.max(280, W*0.46)));
+    var mL = 48, mR = 14, mT = 26, mB = 40, iw = W-mL-mR, ih = H-mT-mB;
+    var U = o.unit, lo = Math.round(st.min/U), hi = Math.round(st.max/U); if (hi - lo < 10){ lo -= 5; hi += 5; }
+    var stepU = Math.max(1, niceIntStep((hi-lo)/Math.min(80, Math.max(45, iw/6))));
+    var startU = Math.floor(lo/stepU)*stepU, nb = Math.floor((hi-startU)/stepU)+1;
+    var step = stepU*U, start = startU*U;
+    var fin = new Uint32Array(nb), bst = new Uint32Array(nb), n = r.net.length;
+    for (var i=0;i<n;i++){ var b = Math.min(nb-1, Math.floor((Math.round(r.net[i]/U)-startU)/stepU)); if (r.busted[i]) bst[b]++; else fin[b]++; }
+    var maxP = 0; for (i=0;i<nb;i++) maxP = Math.max(maxP, (fin[i]+bst[i])/n);
+    var yStep = niceStep(maxP/4), yMax = Math.ceil(maxP/yStep)*yStep || yStep;
+    var x0 = start, x1 = start + nb*step;
+    var X = function(v){ return mL + (v-x0)/(x1-x0)*iw; };
+    var Y = function(p){ return mT + ih - p/yMax*ih; };
+    var bw = iw/nb, gap = bw > 5 ? 1 : 0;
+    var s = '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Histogram of session results for '+nameOf(state.sel)+': '+pct(st.ahead)+' finished ahead, '+pct(st.bust)+' busted, average '+money(st.mean,true)+'">';
+    for (var t=0; t<=yMax+1e-12; t+=yStep){
+      var yy = Y(t);
+      s += '<line x1="'+mL+'" x2="'+(W-mR)+'" y1="'+yy+'" y2="'+yy+'" stroke="var(--line)" stroke-width="1"/>';
+      s += '<text x="'+(mL-8)+'" y="'+(yy+4)+'" text-anchor="end" font-size="11.5" fill="var(--muted)">'+(+(t*100).toFixed(2))+'%</text>';
+    }
+    for (i=0;i<nb;i++){
+      var lowEdge = start + i*step, xb = mL + i*bw, pb = bst[i]/n, pf = fin[i]/n;
+      if (pb > 0) s += '<rect x="'+(xb+gap/2)+'" y="'+Y(pb)+'" width="'+Math.max(0.5,bw-gap)+'" height="'+(Y(0)-Y(pb))+'" fill="var(--bust)"/>';
+      if (pf > 0) s += '<rect x="'+(xb+gap/2)+'" y="'+Y(pb+pf)+'" width="'+Math.max(0.5,bw-gap)+'" height="'+(Y(pb)-Y(pb+pf))+'" fill="'+(lowEdge>=0?'var(--felt)':'var(--red)')+'"/>';
+    }
+    var xs = niceStep((x1-x0)/Math.max(4, Math.floor(iw/95)));
+    for (var v=Math.ceil(x0/xs)*xs; v<=x1; v+=xs){
+      var xx = X(v);
+      s += '<line x1="'+xx+'" x2="'+xx+'" y1="'+(mT+ih)+'" y2="'+(mT+ih+5)+'" stroke="var(--muted)"/>';
+      s += '<text x="'+xx+'" y="'+(mT+ih+19)+'" text-anchor="middle" font-size="11.5" fill="var(--muted)">'+money(v,true)+'</text>';
+    }
+    s += '<line x1="'+mL+'" x2="'+(W-mR)+'" y1="'+(mT+ih)+'" y2="'+(mT+ih)+'" stroke="var(--muted)"/>';
+    s += '<text x="'+(mL+iw/2)+'" y="'+(H-3)+'" text-anchor="middle" font-size="12" fill="var(--muted)">Result at end of session</text>';
+    if (x0 < 0 && x1 > 0) s += '<line x1="'+X(0)+'" x2="'+X(0)+'" y1="'+(mT-6)+'" y2="'+(mT+ih)+'" stroke="var(--ink)" stroke-width="1.2"/>';
+    var mx = X(st.mean), anchor = mx > W - 110 ? "end" : mx < mL + 110 ? "start" : "middle";
+    s += '<line x1="'+mx+'" x2="'+mx+'" y1="'+(mT-6)+'" y2="'+(mT+ih)+'" stroke="var(--brass)" stroke-width="1.6" stroke-dasharray="5 4"/>';
+    s += '<text x="'+mx+'" y="'+(mT-11)+'" text-anchor="'+anchor+'" font-size="12" font-weight="600" fill="var(--brass)">Average '+money(st.mean,true)+'</text>';
+    s += '<rect id="hit" x="'+mL+'" y="'+mT+'" width="'+iw+'" height="'+ih+'" fill="transparent"/>';
+    s += '</svg>';
+    host.innerHTML = s;
+
+    var svg = host.querySelector("svg"), tip = $("tip");
+    function move(e){
+      var rect = svg.getBoundingClientRect(), scale = W/rect.width;
+      var px = (e.clientX - rect.left)*scale;
+      var bi = Math.floor((px - mL)/bw);
+      if (bi < 0 || bi >= nb){ tip.classList.remove("show"); return; }
+      var c = fin[bi] + bst[bi], a = start + bi*step, z = a + step;
+      tip.innerHTML = '<strong>' + money(a,true) + ' to ' + money(z,true) + '</strong><br>' +
+        (c/n*100).toFixed(2) + '% of sessions (' + c.toLocaleString("en-US") + ')' +
+        (bst[bi] ? '<br>' + bst[bi].toLocaleString("en-US") + ' busted' : '');
+      var topPx = rect.top + Y((c)/n)/scale;
+      tip.classList.add("show");
+      var tw = tip.offsetWidth, vw = document.documentElement.clientWidth;
+      var lx = Math.min(vw - tw/2 - 8, Math.max(tw/2 + 8, e.clientX));
+      var ty = Math.min(topPx, e.clientY) - (e.pointerType === "touch" ? 28 : 10);
+      tip.style.left = (lx + window.scrollX) + "px";
+      tip.style.top = (Math.max(tip.offsetHeight + 4, ty) + window.scrollY) + "px";
+    }
+    svg.addEventListener("pointermove", move);
+    svg.addEventListener("pointerdown", move);
+    svg.addEventListener("pointerleave", function(e){ if (e.pointerType !== "touch") tip.classList.remove("show"); });
+  }
+
+  function nameOf(id){ for (var i=0;i<SYSTEMS.length;i++) if (SYSTEMS[i].id===id) return SYSTEMS[i].name; return id; }
+
+  function renderStats(){
+    var st = state.stats[state.sel], o = state.opts, el = $("stats");
+    if (!st){ el.innerHTML = ""; return; }
+    var items = [
+      [pct(st.ahead), "Finished ahead", ""],
+      [pct(st.bust), "Busted", st.bust>0?"neg":""],
+      [money(st.median,true), "Median result", cls(st.median)],
+      [money(st.mean,true), "Average result", cls(st.mean)],
+      [st.modeW === 1 ? money(st.modeLo,true) : nw(money(st.modeLo,true)) + " to " + nw(money(st.modeHi,true)),
+        (st.modeW === 1 ? "Most common result" : "Most common range") + " (" + (st.modeShare*100).toFixed(1) + "% of sessions)", cls(st.modeMid)],
+      [nw(money(st.p5,true)) + " to " + nw(money(st.p95,true)), "Middle 90% of sessions", ""],
+      [money(st.max,true), "Best session", cls(st.max)],
+      [money(st.wag), "Average total bet", ""],
+      [st.medSpins.toLocaleString("en-US"), "Median spins played", ""]
+    ];
+    if (o.stopWin > 0) items.splice(2, 0, [pct(st.stop), "Hit quit amount", ""]);
+    el.innerHTML = items.map(function(it){
+      return '<div class="stat"><div class="v '+it[2]+'">'+it[0]+'</div><div class="k">'+it[1]+'</div></div>';
+    }).join("");
+    $("chart-title").textContent = nameOf(state.sel) + ": " + o.sessions.toLocaleString("en-US") + " sessions of " + o.spins.toLocaleString("en-US") + " spins";
+  }
+
+  function renderCompare(){
+    $("compare").innerHTML = SYSTEMS.map(function(s){
+      var st = state.stats[s.id], sel = s.id === state.sel ? ' class="sel" aria-selected="true"' : '';
+      if (!st) return '<tr data-id="'+s.id+'"'+sel+'><td>'+s.name+'</td><td colspan="7" style="text-align:left;color:var(--muted)">Simulating…</td></tr>';
+      return '<tr data-id="'+s.id+'"'+sel+' tabindex="0"><td>'+s.name+'</td><td>'+pct(st.ahead)+'</td><td>'+pct(st.bust)+'</td>' +
+        '<td class="'+cls(st.median)+'">'+money(st.median,true)+'</td><td class="'+cls(st.mean)+'">'+money(st.mean,true)+'</td>' +
+        '<td class="'+cls(st.modeMid)+'">'+(st.modeW === 1 ? '' : '<span class="hide-sm">≈ </span>')+money(st.modeW === 1 ? st.modeLo : st.modeMid,true)+'</td>' +
+        '<td class="hide-sm">'+money(st.wag)+'</td><td class="hide-sm">'+st.medSpins.toLocaleString("en-US")+'</td></tr>';
+    }).join("");
+  }
+
+  function renderLadder(){
+    var o = state.opts || readOpts(), sys = SYSTEMS.filter(function(s){return s.id===state.sel;})[0];
+    $("ladder-title").textContent = nameOf(state.sel) + " bet ladder";
+    if (o.err){ $("ladder").innerHTML = ""; $("ladder-note").textContent = ""; return; }
+    if (sys.id === "flat"){
+      $("ladder").innerHTML = '<span class="rung"><b>Every spin</b>'+betFmt(3*o.unit)+' / '+betFmt(2*o.unit)+'</span>';
+      $("ladder-note").textContent = "No progression. You only bust if your bankroll drops below " + money(5*o.unit) + ".";
+      return;
+    }
+    var html = "", k = 0, afford = 0;
+    while (k < 5000){
+      var m = sys.mult(k)*o.unit, tot = 5*m, ok = tot <= o.bankroll + 1e-9;
+      if (ok) afford = k+1;
+      if (k < 10 || !ok) html += '<span class="rung'+(ok?'':' over')+'"><b>L'+(k+1)+'</b>'+betFmt(3*m)+' / '+betFmt(2*m)+'</span>';
+      else if (k === 10) html += '<span class="rung">…</span>';
+      if (!ok) break;
+      k++;
+    }
+    $("ladder").innerHTML = html;
+    $("ladder-note").textContent = "A full " + money(o.bankroll) + " bankroll can place a bet at levels 1 to " + afford +
+      ". In practice you reach the top with less than that left, so the dashed level is where sessions bust.";
+  }
+
+  function renderEdge(){
+    var o = state.opts; if (!o || o.err) return;
+    var edge = o.zeros === 1 ? 1/37 : 1/19;
+    var st = state.stats[state.sel];
+    $("edge-note").textContent = "On a " + (o.zeros===1?"single":"double") + "-zero wheel this bet loses " + (edge*100).toFixed(2) +
+      "% of every dollar bet on average" + (st ? ", so an average total bet of " + money(st.wag) + " works out to about " + money(-st.wag*edge, true) +
+      " per session. The simulated average is " + money(st.mean, true) + "." : ".");
+  }
+
+  function renderSystems(){
+    $("systems").innerHTML = SYSTEMS.map(function(s){
+      return '<button class="sys" type="button" data-id="'+s.id+'" aria-pressed="'+(s.id===state.sel)+'"><strong>'+s.name+'</strong><span>'+s.desc+'</span></button>';
+    }).join("");
+  }
+
+  function select(id){
+    state.sel = id;
+    renderSystems(); renderChart(); renderStats(); renderCompare(); renderLadder(); renderEdge();
+  }
+
+  function setStatus(text, frac, done, isErr){
+    $("statustext").textContent = text;
+    $("statustext").className = isErr ? "error" : "";
+    $("barfill").style.width = Math.round((frac||0)*100) + "%";
+    $("status").classList.toggle("done", !!done);
+  }
+
+  function run(){
+    var o = readOpts(), gen = ++state.gen;
+    state.opts = o;
+    state.results = {}; state.stats = {};
+    renderLadder();
+    if (o.err){ setStatus(o.err, 0, true, true); renderChart(); renderStats(); renderCompare(); return; }
+    var order = [state.sel].concat(SYSTEMS.map(function(s){return s.id;}).filter(function(id){return id!==state.sel;}));
+    var t0 = performance.now(), idx = 0;
+    renderChart(); renderStats(); renderCompare();
+    function next(){
+      if (gen !== state.gen) return;
+      if (idx >= order.length){
+        setStatus(o.sessions.toLocaleString("en-US") + " sessions per system, simulated in " + ((performance.now()-t0)/1000).toFixed(1) + "s", 1, true);
+        return;
+      }
+      var id = order[idx], sys = SYSTEMS.filter(function(s){return s.id===id;})[0];
+      simulate(sys, o, gen, function(f){
+        setStatus("Simulating " + sys.name.toLowerCase() + "…", (idx + f)/order.length, false);
+      }).then(function(r){
+        if (!r || gen !== state.gen) return;
+        state.results[id] = r; state.stats[id] = summarize(r, o.unit);
+        if (id === state.sel){ renderChart(); renderStats(); renderEdge(); }
+        renderCompare();
+        idx++; next();
+      });
+    }
+    next();
+  }
+
+  document.addEventListener("pointerdown", function(e){ if (!e.target.closest("#chart svg")) $("tip").classList.remove("show"); });
+  window.addEventListener("scroll", function(){ $("tip").classList.remove("show"); }, {passive:true});
+  var debounce;
+  function schedule(){ clearTimeout(debounce); debounce = setTimeout(run, 350); }
+
+  renderSystems();
+  $("systems").addEventListener("click", function(e){
+    var b = e.target.closest(".sys"); if (b) select(b.getAttribute("data-id"));
+  });
+  $("compare").addEventListener("click", function(e){
+    var tr = e.target.closest("tr[data-id]"); if (tr) select(tr.getAttribute("data-id"));
+  });
+  $("compare").addEventListener("keydown", function(e){
+    if (e.key === "Enter" || e.key === " "){ var tr = e.target.closest("tr[data-id]"); if (tr){ e.preventDefault(); select(tr.getAttribute("data-id")); } }
+  });
+  ["bankroll","spins","stopwin"].forEach(function(id){ $(id).addEventListener("input", schedule); });
+  ["wheel","unit","sessions"].forEach(function(id){ $(id).addEventListener("change", run); });
+  $("run").addEventListener("click", run);
+
+  var lastW = 0;
+  if (window.ResizeObserver){
+    new ResizeObserver(function(){ var w = $("chart").clientWidth; if (Math.abs(w-lastW) > 2){ lastW = w; renderChart(); } }).observe($("chart"));
+  } else {
+    window.addEventListener("resize", renderChart);
+  }
+  run();
+})();
+</script>
+</body>
+</html>
