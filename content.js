@@ -11,13 +11,15 @@ const SITE = {
   tagline: "Projects, pictures, and things worth keeping.",
 
   about: [
-    "This is where I park the things I make and the things I want to remember. Some of it is finished, most of it isn't.",
-    "Replace this text with your own in content.js — it's the second block from the top."
+    "A place to keep the stuff I need online: projects I'm working on, pictures, videos, and anything else that doesn't have a better home. Some of it is finished. Most of it isn't."
   ],
 
   links: [
+    /* Hidden for now. To bring them back, remove this comment's opening
+       and closing markers.
     { label: "Email",  url: "mailto:you@example.com" },
     { label: "GitHub", url: "https://github.com/yourusername" }
+    */
   ],
 
 
@@ -52,37 +54,48 @@ const SITE = {
     {
       id: "lawn",
       page: true,
-      title: "Lawn renovation",
+      title: "Front lawn",
       year: "2026",
       status: "In progress",
-      summary: "Killing off the old lawn and starting over from seed.",
+      summary: "Pulling the weeds and crabgrass out of the front lawn by hand and seeding it back, photographed from the same three spots every few days.",
       tags: ["outdoors"],
-      image: "",
+      image: "lawn/th/IMG_7507.jpg",
       about: [
-        "Replace this with a couple of sentences about why you tore the lawn up. Mostly this project is photos — the log below is doing the work."
+        "The front lawn was thin and full of weeds and crabgrass. At the end of August I redid one patch under the maple. Then on September 6 I pulled the rest of the weeds and crabgrass by hand and seeded most of the lawn with Pennington seed, the official grass seed of the Detroit Tigers. About 300 square feet in all.",
+        "After that it was watering, three or four times a day, until a couple of days of heavy rain around September 17 and 18 did it for me. The first mow was September 22.",
+        "The full photo log is linked above. Every photo there is lined up with the others from the same spot, matched on fixed landmarks like the sidewalk joints, the mailbox post and the curb corner, then rotated and cropped to the same frame. Nothing inside the photos is retouched. You can drag across a photo to compare any two dates, or step through them in order."
       ],
       facts: [
-        { label: "Started", value: "August 2026" },
-        { label: "Seed", value: "—" },
-        { label: "Area", value: "—" }
+        { label: "Started", value: "Late August 2026" },
+        { label: "Seed", value: "Pennington" },
+        { label: "Area", value: "About 300 sq ft" },
+        { label: "Watering", value: "3 to 4 times a day" },
+        { label: "First mow", value: "Sep 22" }
       ],
-      links: [],
+      links: [
+        { label: "Open the photo log", url: "lawn/" }
+      ],
       log: [
-        { date: "2026-09-14", title: "First mow",
-          note: "What height you cut at, and how it looked afterward.",
-          photos: ["images/lawn/first-mow-1.jpg", "images/lawn/first-mow-2.jpg"] },
-        { date: "2026-09-02", title: "Germination",
-          note: "When it broke, and which patches were slow.",
-          photos: ["images/lawn/germination-1.jpg", "images/lawn/germination-2.jpg", "images/lawn/germination-3.jpg"] },
-        { date: "2026-08-24", title: "Seed down",
-          note: "Seed type, the rate you put it down at, and what the weather did after.",
-          photos: ["images/lawn/seed-1.jpg", "images/lawn/seed-2.jpg"] },
-        { date: "2026-08-17", title: "Levelling",
-          note: "How much sand it took, and whether it was worth it.",
-          photos: ["images/lawn/level-1.jpg"] },
-        { date: "2026-08-10", title: "Kill-off",
-          note: "What you sprayed and how long you waited before touching anything.",
-          photos: ["images/lawn/killoff-1.jpg", "images/lawn/killoff-2.jpg"] }
+        { date: "2026-09-22", title: "First mow",
+          note: "Sixteen days after seeding. From the curb strip by the mailbox.",
+          photos: ["lawn/img/IMG_7507.jpg"] },
+        { date: "2026-09-18", title: "After the rain",
+          note: "A couple of days of heavy rain around the 17th and 18th, so the hose got a break.",
+          photos: ["lawn/img/IMG_7481.jpg"] },
+        { date: "2026-09-11", title: "Five days after seeding",
+          note: "All three spots on the same morning. Still watering three or four times a day.",
+          photos: ["lawn/img/IMG_7466.jpg", "lawn/img/IMG_7465.jpg", "lawn/img/IMG_7463.jpg"] },
+        { date: "2026-09-07", title: "Under the maple",
+          note: "First photos of the patch under the tree, which I seeded at the end of August.",
+          photos: ["lawn/img/IMG_7443.jpg"] },
+        { date: "2026-09-06", title: "Weeds out, seed down",
+          note: "Pulled the weeds and crabgrass by hand and seeded most of the lawn with Pennington. This is the start date for everything except the patch under the tree. Also the first photos of the curb strip.",
+          photos: ["lawn/img/IMG_7424.jpg", "lawn/img/IMG_7427.jpg"] },
+        { date: "2026-09-02", title: "Before the weeding",
+          photos: ["lawn/img/IMG_7391.jpg"] },
+        { date: "2026-08-21", title: "Starting point",
+          note: "From the front walk. Thin, dry, and bare along the sidewalk.",
+          photos: ["lawn/img/IMG_7335.jpg"] }
       ]
     },
 
@@ -206,6 +219,42 @@ const SITE = {
     },
 
     {
+      id: "ploppy",
+      page: true,
+      title: "Ploppy 3-2 simulator",
+      year: "2026",
+      status: "In progress",
+      summary: "A simulator for the Ploppy 3-2 roulette system: $3 on black, $2 on the third column, and a bigger bet after every miss. It plays thousands of sessions to show where each way of raising the bet really ends up.",
+      tags: ["code"],
+      image: "",
+      about: [
+        "Ploppy 3-2 is a roulette system. Every spin you put $3 on black and $2 on the third column, and after any spin where neither one hits, the bet goes up. This site simulates it: pick how the bet goes up, set a bankroll, and see where tens of thousands of sessions end up.",
+        "Between the two bets, 26 of the 37 numbers on a single-zero wheel pay something. The four black numbers in the third column (6, 15, 24 and 33) hit both bets for +$7. Twenty-two others hit one of them for +$1. The other eleven, the ten red numbers outside the column plus zero, lose both for −$5. So it wins about 70% of spins and still loses 2.7 cents per dollar bet, the same as anything else on a single-zero table. On a double-zero wheel it's 5.3 cents.",
+        "There are four ways to raise the bet after a miss: doubling (1, 2, 4, 8…), Fibonacci (1, 2, 3, 5, 8…), linear (1, 2, 3, 4…), and flat, which never raises it. A big hit drops you back to the starting bet. A small hit steps you down one level, but only once your bankroll is back above where it was before the loss that moved you up. A session ends after the set number of spins, when you're ahead by your quit amount, or when you can't cover the next bet.",
+        "Each run plays every system with the same settings, up to 100,000 sessions each, then charts where the sessions finished and lines the four up side by side. On the defaults ($500 bankroll, 100 spins, single zero, $3 and $2), Fibonacci finishes ahead in more than half the sessions but busts about four times in ten. Doubling busts close to six times in ten. Flat never busts and finishes ahead about a third of the time, and it loses the least on average because it bets the least. Every one of them loses money over time. The progressions only change the shape: lots of small wins, paid for by fewer, much bigger losses.",
+        "It's one HTML file with no server, and the simulations run right in the browser. It goes on the phone's home screen like an app."
+      ],
+      facts: [
+        { label: "Started", value: "September 2026" },
+        { label: "Built with", value: "One HTML file, no server" },
+        { label: "Systems", value: "Doubling, Fibonacci, linear, flat" },
+        { label: "Simulated", value: "Up to 100,000 sessions per system" }
+      ],
+      links: [
+        { label: "Open the simulator", url: "ploppy/" }
+      ],
+      log: [
+        { date: "2026-09-23", title: "First version",
+          note: "Four progressions, single- and double-zero wheels, five bet sizes from $0.30/$0.20 up to $30/$20, and an optional quit-when-ahead amount.",
+          photos: [] }
+      ]
+    }
+
+    /* House remodel: hidden until there's something to show. To bring it
+       back, put a comma after the closing brace just above this comment
+       and remove this comment's opening and closing markers.
+
+    {
       id: "remodel",
       page: true,
       title: "House remodel",
@@ -225,6 +274,7 @@ const SITE = {
       links: [],
       log: []
     }
+    */
 
   ],
 

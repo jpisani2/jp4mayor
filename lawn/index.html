@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A month of front-lawn photos from Aug 21 to Sep 22, 2026, lined up so each spot keeps the same angle.">
+<meta name="theme-color" content="#EEF0E8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131611" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lawn">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Front Lawn Progress">
+<meta property="og:description" content="From patchy to thick &amp; green — Aug 21 to Sep 22, 2026.">
+<meta property="og:image" content="og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<style>:root{color-scheme:light dark;padding-top:env(safe-area-inset-top,0px)}body{margin:0}img{max-width:100%}</style>
+<title>Front Lawn Progress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#EEF0E8; --surface:#F8F9F4; --ink:#1C2118; --muted:#5E6757; --line:#D5D9CC;
+  --turf:#3A6B24; --on-turf:#F4F6EF; --soil:#8A5A3B; --mat:#1A1C1C;
+  --gutter:clamp(16px,4vw,48px);
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Source Sans 3",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#131611; --surface:#1B1F18; --ink:#E6EAE0; --muted:#9BA592; --line:#2E3429;
+    --turf:#93C872; --on-turf:#131611; --soil:#C79068; --mat:#0B0C0B;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#131611; --surface:#1B1F18; --ink:#E6EAE0; --muted:#9BA592; --line:#2E3429;
+  --turf:#93C872; --on-turf:#131611; --soil:#C79068; --mat:#0B0C0B;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-padding-top:calc(64px + env(safe-area-inset-top,0px))}
+body{background:var(--ground);color:var(--ink);font:17px/1.55 var(--body);padding-inline:var(--gutter);padding-block:0 calc(48px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:1180px;margin:0 auto}
+button,select{font:inherit;color:inherit}
+
+/* header */
+header.top{padding-block:clamp(24px,6vw,64px) 22px;display:grid;gap:12px}
+.back{justify-self:start;display:inline-flex;align-items:center;min-height:32px;font:500 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--turf);text-decoration:none}
+.back:hover{text-decoration:underline;text-underline-offset:3px}
+.back:focus-visible{outline:2px solid var(--turf);outline-offset:2px}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+h1{font:700 clamp(38px,8vw,84px)/.95 var(--display);letter-spacing:-.025em;margin:0;text-wrap:balance}
+h1 em{font-style:normal;color:var(--turf)}
+.lede{max-width:60ch;color:var(--muted);margin:0}
+.stats{display:grid;grid-template-columns:repeat(4,max-content);gap:6px 28px;font:400 13px/1.3 var(--mono);color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.stats b{display:block;font:600 22px/1.2 var(--display);color:var(--ink)}
+
+/* sticky spot tabs */
+nav.tabs{position:sticky;top:0;z-index:5;margin-inline:calc(-1*var(--gutter));padding:calc(10px + env(safe-area-inset-top,0px)) var(--gutter) 10px;background:color-mix(in srgb,var(--ground) 88%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(12px);backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
+nav.tabs .in{max-width:1180px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+nav.tabs .in::-webkit-scrollbar{display:none}
+nav.tabs a{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:40px;font:600 15px/1 var(--body);color:var(--ink);text-decoration:none;border:1px solid var(--line);padding:0 14px;border-radius:999px;background:var(--surface)}
+nav.tabs a span{font:400 12px/1 var(--mono);color:var(--muted)}
+nav.tabs a[aria-current="true"]{background:var(--turf);border-color:var(--turf);color:var(--on-turf)}
+nav.tabs a[aria-current="true"] span{color:inherit;opacity:.8}
+nav.tabs a:focus-visible{outline:2px solid var(--turf);outline-offset:2px}
+
+/* sections */
+section.view{padding-block:32px 28px;border-bottom:1px solid var(--line);display:grid;gap:18px}
+.vhead{display:grid;gap:4px}
+h2{font:700 clamp(28px,5vw,40px)/1.05 var(--display);letter-spacing:-.015em;margin:0;text-wrap:balance}
+.range{font:400 13px/1.3 var(--mono);color:var(--muted)}
+.vdesc{margin:0;color:var(--muted);max-width:60ch}
+
+/* viewer */
+.viewer{display:grid;gap:12px}
+@media (min-width:641px){.viewer{width:100%;max-width:min(100%,calc((100svh - 190px)*4/3));min-width:min(100%,560px)}}
+.stage{position:relative;aspect-ratio:4/3;max-width:100%;background:var(--mat);border-radius:8px;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:pan-y;cursor:ew-resize}
+.stage.step{cursor:grab}
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;-webkit-touch-callout:none;pointer-events:none}
+.stage .after{clip-path:inset(0 0 0 var(--split,50%))}
+.stage .handle{position:absolute;top:0;bottom:0;left:var(--split,50%);width:2px;margin-left:-1px;background:#F4F6EF;box-shadow:0 0 0 1px rgba(0,0,0,.2);pointer-events:none}
+.stage .handle::after{content:"";position:absolute;top:50%;left:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#F4F6EF;box-shadow:0 2px 10px rgba(0,0,0,.35);
+  background-image:linear-gradient(90deg,transparent 15px,#1A1C1C 15px 17px,transparent 17px 27px,#1A1C1C 27px 29px,transparent 29px)}
+.tag{position:absolute;top:10px;padding:6px 9px;border-radius:5px;background:rgba(15,17,14,.7);color:#EEF0E8;font:500 12px/1.2 var(--mono);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);pointer-events:none;max-width:46%}
+.tag.l{left:10px}.tag.r{right:10px;text-align:right}
+.tag small{display:block;font-size:11px;opacity:.78}
+.note{position:absolute;bottom:10px;left:10px;font:400 13px/1.35 var(--body);color:#EEF0E8;background:rgba(15,17,14,.65);padding:6px 10px;border-radius:5px;pointer-events:none;max-width:calc(100% - 20px)}
+.swipe-hint{position:absolute;bottom:10px;right:10px;font:500 11px/1 var(--mono);color:#EEF0E8;background:rgba(15,17,14,.55);padding:6px 8px;border-radius:5px;pointer-events:none}
+
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);padding:3px;gap:3px}
+.seg button{font:600 15px/1 var(--body);border:0;background:transparent;padding:0 14px;min-height:40px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--turf);color:var(--on-turf)}
+.btn{font:600 15px/1 var(--body);border:1px solid var(--line);background:var(--surface);padding:0 14px;min-height:46px;border-radius:10px;cursor:pointer;min-width:92px}
+.seg button:focus-visible,.btn:focus-visible,.strip button:focus-visible,.pick select:focus-visible,.stage:focus-visible{outline:2px solid var(--turf);outline-offset:2px}
+.picks{display:flex;flex-wrap:wrap;gap:10px 14px;flex:1 1 320px}
+.pick{display:grid;gap:3px;flex:1 1 140px;min-width:0}
+.pick span{font:500 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.pick select{font-size:16px;min-height:44px;padding:0 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);width:100%;max-width:100%}
+.step-row{display:flex;gap:12px;align-items:center;flex:1 1 320px}
+.scrub{flex:1 1 220px;display:flex;align-items:center;gap:12px;min-height:46px}
+.scrub input{flex:1;accent-color:var(--turf);min-width:0;height:32px}
+.scrub output{font:400 13px/1 var(--mono);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* timeline */
+.tl-head{font:500 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:6px 0 -4px}
+.timeline{display:flex;flex-wrap:wrap;gap:20px 26px}
+.day{display:grid;gap:8px;align-content:start;max-width:100%}
+.when{display:flex;align-items:baseline;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.when .d{font:700 18px/1.1 var(--display)}
+.when .n{font:500 12px/1.2 var(--mono);color:var(--turf);letter-spacing:.06em;text-transform:uppercase}
+.strip{display:flex;flex-wrap:wrap;gap:10px}
+.strip button{padding:0;border:0;background:none;cursor:zoom-in;text-align:left;display:grid;gap:5px;width:156px;max-width:100%}
+.strip img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;display:block;background:var(--mat)}
+.strip .cap{font:400 12px/1.3 var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.strip .cap i{font-style:normal;color:var(--soil)}
+
+footer{padding-top:24px;color:var(--muted);font-size:15px;max-width:68ch;display:grid;gap:8px}
+footer p{margin:0}
+
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:50;background:#080908;color:#EEF0E8;display:grid;grid-template-rows:auto 1fr auto;touch-action:none}
+.lb-top,.lb-bot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+.lb-top{padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:10px}
+.lb-bot{padding-top:10px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+.lb-title{font:700 18px/1.15 var(--display)}
+.lb-title small{display:block;font:400 12px/1.3 var(--mono);opacity:.75;margin-top:3px}
+.lb-img{position:relative;overflow:hidden;display:grid;place-items:center}
+.lb-img img{max-width:100%;max-height:100%;object-fit:contain;display:block;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;transition:transform .18s ease-out}
+.lb button{font:600 15px/1 var(--body);color:#EEF0E8;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);min-height:44px;min-width:44px;padding:0 14px;border-radius:10px;cursor:pointer}
+.lb button:focus-visible{outline:2px solid #93C872;outline-offset:2px}
+.lb button:disabled{opacity:.35}
+.lb .count{font:400 13px/1 var(--mono);opacity:.8;font-variant-numeric:tabular-nums}
+.lb .lb-note{font:400 13px/1.35 var(--body);opacity:.85;text-align:center;padding-inline:16px}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .stats{grid-template-columns:repeat(2,max-content);gap:10px 32px}
+  .stage{margin-inline:calc(-1*var(--gutter));max-width:none;border-radius:0}
+  .controls{display:grid;grid-template-columns:1fr}
+  .seg{display:grid;grid-template-columns:1fr 1fr}
+  .timeline{gap:18px 12px}
+  nav.tabs .in{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  nav.tabs a{justify-content:center;padding:0 8px;font-size:14px}
+  nav.tabs a span{display:none}
+  .strip button{width:calc((100vw - 2*var(--gutter) - 10px)/2)}
+}
+@media (prefers-reduced-motion:reduce){.lb-img img{transition:none}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="top">
+    <a class="back" href="../projects.html">← All projects</a>
+    <div class="eyebrow">Lawn renovation log · 2026</div>
+    <h1>From patchy to <em>thick &amp; green</em></h1>
+    <p class="lede">A month of photos from the same three spots, lined up so each spot keeps the same angle. Drag across a photo to compare, or step through the dates.</p>
+    <div class="stats" id="stats"></div>
+  </header>
+</div>
+<nav class="tabs" aria-label="Camera spots"><div class="in" id="nav"></div></nav>
+<div class="wrap">
+  <main id="views"></main>
+  <footer>
+    <p><b>How the photos were adjusted.</b> Within each spot, every photo was matched to one reference shot using fixed landmarks (sidewalk joints, the mailbox post, the curb corner), then rotated, zoomed and cropped to that frame. Dark edges mean the original photo didn't reach that part of the frame. Nothing inside the photos was painted or retouched.</p>
+    <p>Day counts start at the first photo on Aug 21. Times are Eastern.</p>
+  </footer>
+</div>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-labelledby="lb-title">
+  <div class="lb-top"><div class="lb-title" id="lb-title"></div><button type="button" id="lb-close" aria-label="Close">✕</button></div>
+  <div class="lb-img" id="lb-img"><img id="lb-pic" alt=""></div>
+  <div class="lb-bot">
+    <button type="button" id="lb-prev" aria-label="Previous photo">←</button>
+    <div style="display:grid;gap:6px;justify-items:center;flex:1"><span class="lb-note" id="lb-note" hidden></span><span class="count" id="lb-count"></span></div>
+    <button type="button" id="lb-next" aria-label="Next photo">→</button>
+  </div>
+</div>
+
+<script>
+const PHOTOS = [{"v":"sidewalk","n":"IMG_7335","t":"2026-08-21T08:59:31","d":0,"a":true},{"v":"sidewalk","n":"IMG_7362","t":"2026-08-29T08:49:05","d":8,"a":true},{"v":"sidewalk","n":"IMG_7391","t":"2026-09-02T08:24:13","d":12,"a":true},{"v":"sidewalk","n":"IMG_7424","t":"2026-09-06T08:50:41","d":16,"a":true},{"v":"curb","n":"IMG_7427","t":"2026-09-06T13:00:11","d":16,"a":true},{"v":"curb","n":"IMG_7428","t":"2026-09-06T13:00:19","d":16,"a":false},{"v":"curb","n":"IMG_7429","t":"2026-09-06T15:29:18","d":16,"a":true},{"v":"curb","n":"IMG_7430","t":"2026-09-06T15:29:21","d":16,"a":true},{"v":"curb","n":"IMG_7431","t":"2026-09-06T15:29:21","d":16,"a":true},{"v":"under","n":"IMG_7443","t":"2026-09-07T12:29:57","d":17,"a":true},{"v":"under","n":"IMG_7444","t":"2026-09-07T12:30:04","d":17,"a":true},{"v":"under","n":"IMG_7445","t":"2026-09-07T15:25:25","d":17,"a":true},{"v":"sidewalk","n":"IMG_7460","t":"2026-09-10T12:54:12","d":20,"a":true},{"v":"under","n":"IMG_7463","t":"2026-09-11T08:43:39","d":21,"a":true},{"v":"under","n":"IMG_7464","t":"2026-09-11T08:43:42","d":21,"a":true},{"v":"curb","n":"IMG_7465","t":"2026-09-11T08:49:30","d":21,"a":true},{"v":"sidewalk","n":"IMG_7466","t":"2026-09-11T08:49:47","d":21,"a":true},{"v":"sidewalk","n":"IMG_7467","t":"2026-09-11T10:33:15","d":21,"a":true},{"v":"sidewalk","n":"IMG_7476","t":"2026-09-15T09:40:43","d":25,"a":true},{"v":"curb","n":"IMG_7477","t":"2026-09-17T12:51:41","d":27,"a":true},{"v":"sidewalk","n":"IMG_7481","t":"2026-09-18T13:12:23","d":28,"a":true},{"v":"curb","n":"IMG_7504","t":"2026-09-20T15:35:23","d":30,"a":true},{"v":"curb","n":"IMG_7507","t":"2026-09-22T18:43:56","d":32,"a":true}];
+const NOTES = {
+  IMG_7428:"Close-up of the curb strip — shown as taken.",
+  IMG_7429:"Zoomed-in shot; the dark wedge is outside this photo.",
+  IMG_7465:"Taken from the far end of the strip, lined up on the mailbox."
+};
+const PREFER_LATEST = {under:"IMG_7463"}; // 7464 has spray haze across it
+const VIEWS = [
+  {id:"sidewalk", name:"Sidewalk view", short:"Sidewalk", desc:"From the front walk, looking across the lawn under the maple toward the street."},
+  {id:"curb", name:"Curb strip & mailbox", short:"Curb strip", desc:"The slope along the curb and sidewalk, lined up on the mailbox post."},
+  {id:"under", name:"Under the tree", short:"Under tree", desc:"Standing on the lawn under the maple, looking toward the mailbox and street."}
+];
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const parse=t=>{const [d,h]=t.split("T");const [y,m,dd]=d.split("-").map(Number);const [H,M]=h.split(":").map(Number);return {y,m,dd,H,M,dow:new Date(y,m-1,dd).getDay()}};
+const fDate=t=>{const p=parse(t);return `${MON[p.m-1]} ${p.dd}`};
+const fTime=t=>{const p=parse(t);const h=p.H%12||12;return `${h}:${String(p.M).padStart(2,"0")} ${p.H<12?"am":"pm"}`};
+const src=n=>`img/${n}.jpg`, th=n=>`th/${n}.jpg`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const preload=n=>{const im=new Image();im.decoding="async";im.src=src(n)};
+
+// swipe helper: calls onSwipe(-1|1) for a mostly-horizontal flick
+function swipeable(el,onSwipe,opts={}){
+  let x0=null,y0=0,t0=0,id=null;
+  el.addEventListener("pointerdown",e=>{if(opts.active&&!opts.active())return;x0=e.clientX;y0=e.clientY;t0=Date.now();id=e.pointerId});
+  el.addEventListener("pointerup",e=>{
+    if(x0===null||e.pointerId!==id)return;
+    const dx=e.clientX-x0,dy=e.clientY-y0;x0=null;
+    if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.3&&Date.now()-t0<800) onSwipe(dx<0?1:-1);
+    else if(opts.onTap&&Math.abs(dx)<8&&Math.abs(dy)<8) opts.onTap(e);
+  });
+  el.addEventListener("pointercancel",()=>{x0=null});
+}
+
+// header stats
+const days=new Set(PHOTOS.map(p=>p.t.slice(0,10)));
+document.getElementById("stats").innerHTML=
+  `<div><b>${PHOTOS.length}</b>photos</div><div><b>${VIEWS.length}</b>camera spots</div><div><b>${days.size}</b>photo days</div><div><b>${fDate(PHOTOS[0].t)} – ${fDate(PHOTOS[PHOTOS.length-1].t)}</b>${PHOTOS[PHOTOS.length-1].d} days</div>`;
+
+// lightbox
+const LB=(()=>{
+  const lb=document.getElementById("lb"),pic=document.getElementById("lb-pic"),title=document.getElementById("lb-title"),count=document.getElementById("lb-count"),note=document.getElementById("lb-note"),prev=document.getElementById("lb-prev"),next=document.getElementById("lb-next"),close=document.getElementById("lb-close");
+  let list=[],i=0,name="",opener=null;
+  function show(){
+    const p=list[i];
+    pic.src=src(p.n); pic.alt=`${name}, ${fDate(p.t)} ${fTime(p.t)}`;
+    title.innerHTML=`${esc(name)}<small>Day ${p.d} · ${DOW[parse(p.t).dow]}, ${fDate(p.t)} · ${fTime(p.t)}</small>`;
+    count.textContent=`${i+1} of ${list.length}`;
+    const n=NOTES[p.n]; note.hidden=!n; if(n) note.textContent=n;
+    prev.disabled=i===0; next.disabled=i===list.length-1;
+    if(list[i+1])preload(list[i+1].n); if(list[i-1])preload(list[i-1].n);
+  }
+  function go(d){const j=i+d;if(j<0||j>=list.length)return;i=j;
+    if(!reduced){pic.style.transform=`translateX(${d>0?-24:24}px)`;requestAnimationFrame(()=>requestAnimationFrame(()=>pic.style.transform=""))}
+    show()}
+  function open(l,idx,nm,from){list=l;i=idx;name=nm;opener=from;show();lb.hidden=false;document.documentElement.style.overflow="hidden";close.focus()}
+  function shut(){lb.hidden=true;document.documentElement.style.overflow="";if(opener)opener.focus({preventScroll:true})}
+  prev.addEventListener("click",()=>go(-1)); next.addEventListener("click",()=>go(1)); close.addEventListener("click",shut);
+  swipeable(document.getElementById("lb-img"),go,{onTap:e=>{if(e.target===document.getElementById("lb-img"))shut()}});
+  document.addEventListener("keydown",e=>{if(lb.hidden)return;if(e.key==="Escape")shut();if(e.key==="ArrowLeft")go(-1);if(e.key==="ArrowRight")go(1)});
+  return {open};
+})();
+
+const nav=document.getElementById("nav"), main=document.getElementById("views");
+VIEWS.forEach(v=>{
+  const list=PHOTOS.filter(p=>p.v===v.id);
+  const first=list[0], last=list[list.length-1];
+  nav.insertAdjacentHTML("beforeend",`<a href="#${v.id}" data-id="${v.id}">${esc(v.short)}<span>${list.length}</span></a>`);
+  const sec=document.createElement("section");
+  sec.className="view"; sec.id=v.id;
+  const groups=[]; list.forEach((p,i)=>{const k=p.t.slice(0,10);let g=groups[groups.length-1];if(!g||g.k!==k){g={k,items:[]};groups.push(g)}g.items.push({p,i})});
+  const opt=(p,i)=>`<option value="${i}">${fDate(p.t)} · ${fTime(p.t)}</option>`;
+  sec.innerHTML=`
+    <div class="vhead"><h2>${esc(v.name)}</h2><p class="vdesc">${esc(v.desc)}</p>
+      <div class="range">${fDate(first.t)} → ${fDate(last.t)} · ${last.d-first.d} days · ${list.length} photos</div></div>
+    <div class="viewer">
+      <div class="stage" tabindex="0" aria-label="${esc(v.name)} photo viewer. Use left and right arrow keys.">
+        <img class="before" alt="" decoding="async">
+        <img class="after" alt="" decoding="async">
+        <div class="handle"></div>
+        <div class="tag l"></div><div class="tag r"></div>
+        <div class="note" hidden></div>
+        <div class="swipe-hint" hidden>swipe ‹ ›</div>
+      </div>
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Viewer mode">
+          <button type="button" data-mode="compare" aria-pressed="true">Before / after</button>
+          <button type="button" data-mode="step" aria-pressed="false">Step through</button>
+        </div>
+        <div class="picks">
+          <label class="pick"><span>Before</span><select id="before-${v.id}">${list.map(opt).join("")}</select></label>
+          <label class="pick"><span>After</span><select id="after-${v.id}">${list.map(opt).join("")}</select></label>
+        </div>
+        <div class="step-row" hidden>
+          <button type="button" class="btn play">▶ Play</button>
+          <label class="scrub"><input type="range" id="scrub-${v.id}" min="0" max="${list.length-1}" value="0" aria-label="Photo"><output></output></label>
+        </div>
+      </div>
+    </div>
+    <div class="tl-head">All photos by date · tap to enlarge</div>
+    <div class="timeline">${groups.map(g=>{const p0=g.items[0].p;const pp=parse(p0.t);return `
+      <div class="day"><div class="when"><span class="d">${DOW[pp.dow]}, ${fDate(p0.t)}</span><span class="n">Day ${p0.d}</span></div>
+      <div class="strip">${g.items.map(({p,i})=>`<button type="button" data-i="${i}" aria-label="Enlarge ${fDate(p.t)} ${fTime(p.t)}"><img loading="lazy" decoding="async" src="${th(p.n)}" alt="${esc(v.name)}, ${fDate(p.t)} ${fTime(p.t)}"><span class="cap">${fTime(p.t)}${p.a?"":" · <i>close-up</i>"}</span></button>`).join("")}</div></div>`}).join("")}
+    </div>`;
+  main.appendChild(sec);
+  initViewer(sec,list,v);
+});
+
+function initViewer(sec,list,v){
+  const $=s=>sec.querySelector(s);
+  const stage=$(".stage"), before=$(".before"), after=$(".after"), tagL=$(".tag.l"), tagR=$(".tag.r"), note=$(".note"), handle=$(".handle"), hint=$(".swipe-hint");
+  const modeBtns=sec.querySelectorAll(".seg button"), picks=$(".picks"), selB=$(`#before-${v.id}`), selA=$(`#after-${v.id}`);
+  const stepRow=$(".step-row"), play=$(".play"), range=$(".scrub input"), out=$(".scrub output");
+  let mode="compare", idx=0, left=0, right=list.length-1, timer=null;
+  const pref=list.findIndex(p=>p.n===PREFER_LATEST[v.id]); if(pref>0) right=pref;
+  const tag=(p,label)=>`${label?label+" · ":""}Day ${p.d}<small>${fDate(p.t)}, ${fTime(p.t)}</small>`;
+  function render(){
+    if(mode==="compare"){
+      before.src=src(list[left].n); after.src=src(list[right].n);
+      before.alt=`${v.name}, ${fDate(list[left].t)}`; after.alt=`${v.name}, ${fDate(list[right].t)}`;
+      after.hidden=handle.hidden=tagR.hidden=false; hint.hidden=true;
+      tagL.innerHTML=tag(list[left],"Before"); tagR.innerHTML=tag(list[right],"After");
+      selB.value=left; selA.value=right;
+      const n=NOTES[list[left].n]||NOTES[list[right].n]; note.hidden=!n; if(n) note.textContent=n;
+    }else{
+      before.src=src(list[idx].n); before.alt=`${v.name}, ${fDate(list[idx].t)}`;
+      after.hidden=handle.hidden=tagR.hidden=true;
+      tagL.innerHTML=tag(list[idx]);
+      const n=NOTES[list[idx].n]; note.hidden=!n; if(n) note.textContent=n;
+      hint.hidden=!!n||idx>0;
+      range.value=idx; out.textContent=`${idx+1} / ${list.length}`;
+      if(list[idx+1])preload(list[idx+1].n);
+    }
+  }
+  function setMode(m){
+    mode=m; stop();
+    modeBtns.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===m)));
+    picks.hidden=m!=="compare"; stepRow.hidden=m!=="step";
+    stage.classList.toggle("step",m==="step");
+    render();
+  }
+  modeBtns.forEach(b=>b.addEventListener("click",()=>setMode(b.dataset.mode)));
+  selB.addEventListener("change",()=>{left=+selB.value;render()});
+  selA.addEventListener("change",()=>{right=+selA.value;render()});
+  range.addEventListener("input",()=>{stop();idx=+range.value;render()});
+  function stop(){if(timer){clearInterval(timer);timer=null;play.textContent="▶ Play"}}
+  function step(d){stop();const j=idx+d;if(j<0||j>=list.length)return;idx=j;render()}
+  play.addEventListener("click",()=>{
+    if(timer){stop();return}
+    if(idx>=list.length-1) idx=0;
+    list.forEach(p=>preload(p.n));
+    play.textContent="❚❚ Pause"; render();
+    timer=setInterval(()=>{if(idx>=list.length-1){stop();return}idx++;render()},1200);
+  });
+  sec.querySelectorAll(".strip button").forEach(b=>b.addEventListener("click",()=>LB.open(list,+b.dataset.i,v.name,b)));
+  // compare: drag the divider; step: swipe
+  let drag=false;
+  const setSplit=x=>{const r=stage.getBoundingClientRect();stage.style.setProperty("--split",Math.min(100,Math.max(0,(x-r.left)/r.width*100))+"%")};
+  stage.addEventListener("pointerdown",e=>{if(mode!=="compare")return;drag=true;try{stage.setPointerCapture(e.pointerId)}catch(_){ }setSplit(e.clientX)});
+  stage.addEventListener("pointermove",e=>{if(drag)setSplit(e.clientX)});
+  stage.addEventListener("pointerup",()=>drag=false);
+  stage.addEventListener("pointercancel",()=>drag=false);
+  swipeable(stage,step,{active:()=>mode==="step"});
+  stage.addEventListener("keydown",e=>{
+    if(e.key!=="ArrowLeft"&&e.key!=="ArrowRight")return;
+    const d=e.key==="ArrowRight"?1:-1;
+    if(mode==="compare"){const cur=parseFloat(stage.style.getPropertyValue("--split"))||50;stage.style.setProperty("--split",Math.min(100,Math.max(0,cur+d*5))+"%")}
+    else step(d);
+    e.preventDefault();
+  });
+  setMode("compare");
+}
+
+// highlight the tab for the section in view
+const tabs=[...nav.querySelectorAll("a")];
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)tabs.forEach(a=>a.setAttribute("aria-current",String(a.dataset.id===e.target.id)))})},{rootMargin:"-45% 0px -50% 0px"});
+document.querySelectorAll("section.view").forEach(s=>io.observe(s));
+tabs[0].setAttribute("aria-current","true");
+</script>
+
+</body>
+</html>
