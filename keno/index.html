@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Club Keno, by the numbers</title>
+<meta name="description" content="Michigan Club Keno odds, add-on math, group-night ladders, a ticket simulator, and a night tracker.">
+<meta name="theme-color" content="#121A33">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Club Keno">
+<meta name="format-detection" content="telephone=no">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --paper:#FBFAF9;
+  --slip:#FFFFFF;
+  --stripe:#FDE9E2;
+  --stripe-soft:#FEF4F0;
+  --ink:#1B2340;
+  --ink-soft:#4F5775;
+  --rule:#EDD3CA;
+  --red:#D9431C;
+  --red-deep:#B8350F;
+  --on-red:#FFFFFF;
+  --monitor:#121A33;
+  --monitor-2:#1B2547;
+  --ball:#FFD23F;
+  --ball-ink:#121A33;
+  --unlit:#6E79A1;
+  --good:#1F7A4D;
+  --bad:#B8350F;
+  --condensed:"Barlow Condensed","Arial Narrow","Roboto Condensed",system-ui,sans-serif;
+  --body:"Barlow","Helvetica Neue",Arial,system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#10152A; --slip:#161C33; --stripe:rgba(255,122,82,.14); --stripe-soft:rgba(255,122,82,.07);
+    --ink:#ECEBF3; --ink-soft:#A9AFC8; --rule:#2C3456; --red:#FF7A52; --red-deep:#FF9470; --on-red:#1A0E08;
+    --monitor:#0A0F22; --monitor-2:#141B38; --good:#5BD49A; --bad:#FF8A66;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#10152A; --slip:#161C33; --stripe:rgba(255,122,82,.14); --stripe-soft:rgba(255,122,82,.07);
+  --ink:#ECEBF3; --ink-soft:#A9AFC8; --rule:#2C3456; --red:#FF7A52; --red-deep:#FF9470; --on-red:#1A0E08;
+  --monitor:#0A0F22; --monitor-2:#141B38; --good:#5BD49A; --bad:#FF8A66;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+button,select,input,a{touch-action:manipulation}
+a{color:var(--red)}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 max(20px,env(safe-area-inset-right,0px)) 0 max(20px,env(safe-area-inset-left,0px))}
+.prose{max-width:68ch}
+h1,h2,h3{font-family:var(--condensed);line-height:1.02;margin:0;letter-spacing:-.005em}
+h2{font-size:clamp(34px,5vw,52px);font-weight:800}
+h3{font-size:26px;font-weight:700}
+p{margin:0 0 1em}
+.num{font-variant-numeric:tabular-nums}
+
+/* nav */
+.bar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:2px solid var(--red);padding-top:env(safe-area-inset-top,0px)}
+.bar .wrap{display:flex;align-items:center;gap:18px;height:54px;overflow-x:auto;scrollbar-width:none}
+.bar .wrap::-webkit-scrollbar{display:none}
+.brand{font-family:var(--condensed);font-weight:800;font-size:22px;color:var(--red);white-space:nowrap;text-decoration:none}
+.bar nav{display:flex;gap:16px;margin-left:auto}
+.bar nav a{font-family:var(--condensed);font-weight:600;font-size:18px;color:var(--ink);text-decoration:none;white-space:nowrap;padding:4px 0;border-bottom:2px solid transparent}
+.bar nav a:hover{border-bottom-color:var(--red)}
+@media (max-width:760px){.brand{display:none}.bar nav{margin-left:0}}
+
+/* hero */
+.hero{padding:48px 0 56px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:48px;align-items:start}
+.hero-grid>div:first-child{padding-top:24px}
+.hero h1{font-size:clamp(52px,7.4vw,96px);overflow-wrap:anywhere;font-weight:800;color:var(--red);line-height:.9}
+.hero .lede{font-size:20px;color:var(--ink-soft);margin-top:20px;max-width:34ch}
+.hero .facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin-top:28px;border-top:2px solid var(--red)}
+.hero .facts div{padding:12px 0;border-bottom:1px solid var(--rule)}
+.hero .facts strong{display:block;font-family:var(--condensed);font-size:30px;font-weight:700;line-height:1}
+.hero .facts span{font-size:14px;color:var(--ink-soft)}
+@media (max-width:880px){.hero-grid{grid-template-columns:minmax(0,1fr);gap:32px}.hero{padding-top:32px}}
+
+/* monitor */
+.monitor{background:var(--monitor);border-radius:14px;padding:18px;color:#DDE3FA;box-shadow:inset 0 0 0 1px #2A3663}
+.monitor-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
+.monitor-top b{font-family:var(--condensed);font-size:24px;font-weight:700;color:var(--ball)}
+.monitor-top span{font-size:14px;color:#9AA4CC}
+.board{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px}
+.board button{aspect-ratio:1;border:0;border-radius:50%;background:var(--monitor-2);color:var(--unlit);font-family:var(--condensed);font-weight:700;font-size:clamp(13px,2.3vw,18px);cursor:pointer;padding:0;position:relative;transition:background .15s,color .15s,transform .15s}
+.board button:hover{color:#DDE3FA}
+.board button.pick{box-shadow:inset 0 0 0 3px #FF7A52;color:#FFFFFF}
+.board button.hit{background:var(--ball);color:var(--ball-ink)}
+.board button.hit.pick{background:#FF7A52;color:#fff;box-shadow:0 0 0 3px var(--ball)}
+.board button.pop{animation:pop .28s ease-out}
+@keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+.board .gap{grid-column:1/-1;height:4px}
+.monitor-controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.mbtn{white-space:nowrap;font-family:var(--condensed);font-size:18px;font-weight:700;border:0;border-radius:8px;padding:9px 16px;cursor:pointer;background:#27315A;color:#DDE3FA}
+.mbtn.go{background:var(--ball);color:var(--ball-ink)}
+.mbtn:disabled{opacity:.5;cursor:default}
+.mbtn[hidden]{display:none}
+.readout{margin-top:12px;min-height:3.2em;font-size:16px;color:#C9D0EE}
+.readout strong{color:var(--ball);font-weight:700}
+.sim-opts{display:flex;flex-wrap:wrap;gap:12px 20px;margin-top:14px;color:#C9D0EE}
+.sim-opts select{background:#1B2547;color:#FFFFFF;border-color:#33406E;font-family:var(--condensed);font-size:20px;font-weight:700;padding:6px 10px}
+.strip{display:flex;flex-wrap:wrap;gap:4px;margin-top:12px;min-height:0}
+.strip-lbl{font-size:13px;color:#9AA4CC;align-self:center;margin-right:4px}
+.strip i{font-style:normal;display:grid;place-items:center;width:26px;height:26px;border-radius:6px;background:#1B2547;color:#6E79A1;font-family:var(--condensed);font-weight:700;font-size:15px}
+.strip i.done{color:#C9D0EE}
+.strip i.win{background:#2D5E48;color:#FFFFFF}
+.strip i.big{background:var(--ball);color:var(--ball-ink)}
+.strip i.now{box-shadow:0 0 0 2px #FF7A52}
+.session{margin-top:16px;border-top:1px solid #2A3663;padding-top:14px}
+.sess-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.sess-head span{display:block;font-size:14px;color:#9AA4CC}
+.sess-head strong{display:block;font-family:var(--condensed);font-size:44px;font-weight:800;line-height:1;color:#DDE3FA}
+.sess-head strong.up{color:#5BD49A}.sess-head strong.down{color:#FF8A66}
+.sess-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:12px}
+.sess-stats div{font-size:13px;color:#9AA4CC}
+.sess-stats b{display:block;font-family:var(--condensed);font-size:22px;font-weight:700;color:#DDE3FA;font-variant-numeric:tabular-nums}
+@media (max-width:480px){.sess-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.sess-note{font-size:15px;color:#C9D0EE;margin-top:10px}
+.sess-note b{color:#5BD49A}
+.sess-note .warn{color:#FF8A66;font-weight:600}
+.ledger-wrap{margin-top:12px;max-height:220px;overflow:auto}
+table.ledger{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+table.ledger th{position:sticky;top:0;background:var(--monitor);color:#9AA4CC;font-weight:600;text-align:right;padding:5px 6px;border-bottom:1px solid #2A3663;white-space:nowrap}
+table.ledger td{text-align:right;padding:5px 6px;border-bottom:1px solid #1E2848;white-space:nowrap;color:#DDE3FA}
+table.ledger th:nth-child(2),table.ledger td:nth-child(2){text-align:left}
+table.ledger td.up{color:#5BD49A;font-weight:600}table.ledger td.down{color:#FF8A66}
+
+/* sections */
+section{padding:64px 0;border-top:1px solid var(--rule)}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:40px;align-items:end;margin-bottom:28px}
+.sec-head p{color:var(--ink-soft);margin:0}
+@media (max-width:880px){.sec-head{grid-template-columns:minmax(0,1fr);gap:14px}}
+
+/* slip tables — echo the ticket */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.slip{width:100%;border-collapse:collapse;background:var(--slip);border:2px solid var(--red);font-variant-numeric:tabular-nums;min-width:640px}
+table.slip th{background:var(--red);color:var(--on-red);font-family:var(--condensed);font-weight:700;font-size:18px;text-align:right;padding:9px 12px;white-space:nowrap}
+table.slip th:first-child,table.slip td:first-child{text-align:left}
+table.slip td{padding:9px 12px;text-align:right;border-top:1px solid var(--rule);white-space:nowrap}
+table.slip tbody tr:nth-child(even) td{background:var(--stripe-soft)}
+table.slip td.note{text-align:left;white-space:normal;color:var(--ink-soft);font-size:15px;min-width:180px}
+table.slip tr.star td{background:var(--stripe)!important;font-weight:600}
+.spotno{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:0 0 12px 0;background:var(--red);color:var(--on-red);font-family:var(--condensed);font-weight:800;font-size:22px;margin-right:8px;vertical-align:middle}
+.pos{color:var(--good);font-weight:600}.neg{color:var(--bad);font-weight:600}
+.callouts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:28px}
+.callouts div{border-left:4px solid var(--red);padding-left:14px}
+.callouts h3{font-size:22px;margin-bottom:6px}
+.callouts p{font-size:16px;color:var(--ink-soft);margin:0}
+@media (max-width:760px){.callouts{grid-template-columns:minmax(0,1fr)}}
+
+/* add-ons */
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px}
+@media (max-width:880px){.two{grid-template-columns:minmax(0,1fr)}}
+.sub{margin:0 0 10px}
+.small{font-size:15px;color:var(--ink-soft)}
+.slider-row{display:flex;align-items:center;gap:14px;margin:16px 0 8px;flex-wrap:wrap}
+.slider-row input{flex:1;min-width:180px;accent-color:var(--red)}
+.big-out{font-family:var(--condensed);font-size:44px;font-weight:800;line-height:1;color:var(--red)}
+table.slip.compact{min-width:0}
+
+/* calculator */
+.calc{background:var(--slip);border:2px solid var(--red);padding:20px}
+.fields{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px}
+.f{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:15px}
+select,input[type=number]{font:inherit;font-size:16px;padding:8px 10px;border:1.5px solid var(--rule);border-radius:6px;background:var(--paper);color:var(--ink);min-width:0}
+.growth{font-family:var(--condensed);font-size:22px;font-weight:700;margin:6px 0 14px}
+tr.capped td{color:var(--bad)}
+
+/* games */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--red);margin-bottom:24px;overflow-x:auto}
+.tabs button{font-family:var(--condensed);font-size:22px;font-weight:700;padding:10px 18px;border:0;background:transparent;color:var(--ink-soft);cursor:pointer;white-space:nowrap;border-radius:8px 8px 0 0}
+.tabs button[aria-selected="true"]{background:var(--red);color:var(--on-red)}
+.game-intro{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;margin-bottom:24px}
+@media (max-width:880px){.game-intro{grid-template-columns:minmax(0,1fr)}}
+.toggle{display:flex;align-items:center;gap:10px;font-weight:600;margin-top:8px}
+.toggle input{width:20px;height:20px;accent-color:var(--red)}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:2px solid var(--red)}
+.summary div{padding:10px 8px 10px 0;border-bottom:1px solid var(--rule)}
+.summary strong{display:block;font-family:var(--condensed);font-size:30px;font-weight:700;line-height:1.05}
+.summary span{font-size:14px;color:var(--ink-soft)}
+
+.ladder{display:flex;flex-direction:column;gap:14px}
+.rung{display:grid;grid-template-columns:72px minmax(0,1fr);background:var(--slip);border:1.5px solid var(--rule)}
+.rung.skip{opacity:.45}
+.rung .n{background:var(--red);color:var(--on-red);font-family:var(--condensed);font-weight:800;font-size:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.rung .n small{font-size:14px;font-weight:600;font-family:var(--body);margin-top:4px}
+.rung .body{padding:14px 16px}
+.rung .top{display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline;margin-bottom:10px}
+.rung .top h3{font-size:26px}
+.rung .top .stat{font-size:15px;color:var(--ink-soft)}
+.rung .top .stat b{color:var(--ink);font-variant-numeric:tabular-nums}
+.prizes{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
+.prizes th{text-align:right;font-weight:600;color:var(--ink-soft);padding:4px 8px;border-bottom:1px solid var(--rule);white-space:nowrap}
+.prizes td{text-align:right;padding:5px 8px;border-bottom:1px dashed var(--rule);white-space:nowrap}
+.prizes th:first-child,.prizes td:first-child{text-align:left}
+.prizes td.pay{font-weight:700}
+.prizes tr.big td.pay{color:var(--red)}
+.claim{font-size:12px;font-weight:600;color:var(--ink-soft);margin-left:4px}
+
+.dist{margin-top:28px}
+.dist svg{display:block;width:100%;height:auto}
+
+/* tracker */
+.tracker{background:var(--monitor);color:#DDE3FA;border-radius:14px;padding:22px}
+.tracker h3{color:var(--ball)}
+.trk-top{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:flex-end;margin:10px 0 16px}
+.trk-net{font-family:var(--condensed);font-size:56px;font-weight:800;line-height:1}
+.trk-net.up{color:#5BD49A}.trk-net.down{color:#FF8A66}
+.trk-now{font-size:17px;color:#C9D0EE}
+.trk-now b{color:#fff}
+.trk-btns{display:flex;flex-wrap:wrap;gap:8px}
+.trk-btns .mbtn{font-size:17px}
+.trk-btns .mbtn.win{background:var(--ball);color:var(--ball-ink)}
+.banner{margin-top:14px;padding:12px 14px;border-radius:8px;font-weight:600}
+.banner.ok{background:#1F7A4D;color:#fff}.banner.end{background:#8C2A10;color:#fff}
+.trk-foot{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.trk-log{margin-top:12px;font-size:14px;color:#9AA4CC;max-height:84px;overflow:auto}
+.progress{display:flex;gap:3px;margin:6px 0 2px;flex-wrap:wrap}
+.progress i{display:block;width:10px;height:10px;border-radius:50%;background:#27315A}
+.progress i.done{background:#6E79A1}.progress i.w{background:var(--ball)}.progress i.now{box-shadow:0 0 0 2px #FF7A52}
+.progress i.sep{width:6px;background:transparent}
+
+/* cashing */
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:2px solid var(--red)}
+.rules div{padding:16px 16px 16px 0;border-bottom:1px solid var(--rule)}
+.rules strong{display:block;font-family:var(--condensed);font-size:28px;font-weight:700;line-height:1.1}
+@media (max-width:760px){.rules{grid-template-columns:minmax(0,1fr)}}
+.house{margin-top:32px}
+.house ol{padding-left:1.2em;margin:0}
+.house li{margin-bottom:8px}
+.setup{background:var(--slip);border:2px solid var(--red);padding:18px 20px;margin-bottom:28px}
+.setup h3{margin-bottom:10px}
+.setup-row{display:flex;flex-wrap:wrap;gap:20px 32px;align-items:flex-end;margin-bottom:10px}
+.money-in{display:flex;align-items:center;gap:4px;font-family:var(--condensed);font-size:30px;font-weight:700}
+.money-in input{font-family:var(--condensed);font-size:30px;font-weight:700;width:150px;padding:4px 8px}
+.seg{display:inline-flex;border:2px solid var(--red);border-radius:8px;overflow:hidden}
+.seg button{font-family:var(--condensed);font-size:20px;font-weight:700;padding:8px 16px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--red);color:var(--on-red)}
+.setup .small{margin:0}
+.rung.trim{opacity:.45}
+.rung .tix{font-size:15px;color:var(--ink-soft);font-weight:500;font-family:var(--body)}
+.trk-settings{font-size:15px;color:#9AA4CC;margin:4px 0 0}
+.trk-settings b{color:#DDE3FA}
+.trk-settings .mbtn{margin-top:8px;font-size:16px}
+.progress i.tsep{width:2px}
+tr.over td{color:var(--ink-soft);font-style:italic}
+@media (max-width:480px){
+  body{font-size:16px}
+  section{padding:44px 0}
+  .hero{padding:24px 0 40px}
+  .monitor{padding:14px;border-radius:12px}
+  .board{gap:4px}
+  .mbtn{padding:10px 14px}
+  .rung{grid-template-columns:48px minmax(0,1fr)}
+  .rung .n{font-size:30px}
+  .rung .body{padding:12px}
+  .rung .top h3{font-size:22px}
+  .summary strong{font-size:24px}
+  .trk-net{font-size:44px}
+  .trk-btns .mbtn{flex:1 1 45%}
+  .tabs button{font-size:19px;padding:10px 14px}
+}
+footer{padding:36px 0 calc(56px + env(safe-area-inset-bottom,0px));border-top:2px solid var(--red);font-size:14px;color:var(--ink-soft)}
+</style>
+</head>
+<body>
+
+<div class="bar"><div class="wrap">
+  <a class="brand" href="#top">Club Keno, by the numbers</a>
+  <nav aria-label="Sections">
+    <a href="#sim">Simulator</a>
+    <a href="#odds">Odds</a>
+    <a href="#addons">Add-ons</a>
+    <a href="#chasing">Chasing losses</a>
+    <a href="#games">Group games</a>
+    <a href="#setup">Your night</a>
+    <a href="#tracker">Night tracker</a>
+    <a href="#cashing">Cashing</a>
+  </nav>
+</div></div>
+
+<header class="hero" id="top"><div class="wrap hero-grid">
+  <div>
+    <h1>Club Keno, by the numbers</h1>
+    <p class="lede">What the Michigan Club Keno paytable actually returns, and three ways to run a <span id="heroBudget">$600</span> group night around it.</p>
+    <div class="facts">
+      <div><strong class="num">20 of 80</strong><span>numbers drawn each game</span></div>
+      <div><strong class="num">63–66¢</strong><span>back per $1, spots 2 through 10</span></div>
+      <div><strong class="num">2-spot</strong><span>highest return, 66.1%</span></div>
+      <div><strong class="num">3-spot</strong><span>best return for how often it pays $2+</span></div>
+    </div>
+  </div>
+  <div class="monitor" id="sim" aria-label="Ticket simulator">
+    <div class="monitor-top"><b>Ticket simulator</b><span id="pickCount">Tap up to 10 numbers</span></div>
+    <div class="board" id="board"></div>
+    <div class="sim-opts">
+      <label class="f">Bet per draw<select id="simBet"></select></label>
+      <label class="f">Draws on the ticket<select id="simDraws"></select></label>
+    </div>
+    <div class="monitor-controls">
+      <button class="mbtn go" id="buyBtn">Buy ticket</button>
+      <button class="mbtn" id="skipBtn" hidden>Skip to results</button>
+      <button class="mbtn" id="qpBtn">Quick pick</button>
+      <button class="mbtn" id="clearBtn">Clear numbers</button>
+    </div>
+    <div class="strip" id="strip" aria-hidden="true"></div>
+    <div class="readout" id="readout" aria-live="polite"></div>
+    <div class="session">
+      <div class="sess-head">
+        <div><span>Game so far</span><strong class="num" id="sNet">$0</strong></div>
+        <button class="mbtn" id="endBtn">Clear game</button>
+      </div>
+      <div class="sess-stats" id="sStats"></div>
+      <div class="sess-note" id="sNote"></div>
+      <div class="scroll ledger-wrap" id="ledgerWrap" hidden><table class="ledger" id="ledger">
+        <thead><tr><th>#</th><th>Numbers</th><th>Bet</th><th>Draws</th><th>Cost</th><th>Won</th><th>Result</th></tr></thead><tbody></tbody>
+      </table></div>
+    </div>
+  </div>
+</div></header>
+
+<main>
+
+<section id="odds"><div class="wrap">
+  <div class="sec-head">
+    <h2>Every spot, side by side</h2>
+    <p>Return is the long-run average paid back per $1. The ticket's printed "overall odds" count $1 prizes as wins, so the $2+ column shows how often you actually come out ahead on a draw.</p>
+  </div>
+  <div class="scroll"><table class="slip" id="oddsTable">
+    <thead><tr><th>Spot game</th><th>Return per $1</th><th>Any prize</th><th>$2+ prize</th><th>Top prize</th><th>Top prize odds</th><th style="text-align:left">Worth knowing</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+  <div class="callouts">
+    <div><h3>Highest return: 2-spot</h3><p>66.1¢ per dollar, but it only pays about once every 17 draws.</p></div>
+    <div><h3>Best balance: 3-spot</h3><p>65.2¢ per dollar and a $2+ win about once every 6.5 draws, 2.5 times as often as 2-spot.</p></div>
+    <div><h3>Avoid: 1-spot</h3><p>Wins most often (1 in 4), but the only prize is $2, so it returns just 50¢.</p></div>
+  </div>
+</div></section>
+
+<section id="addons"><div class="wrap">
+  <div class="sec-head">
+    <h2>Plus 3, The Jack, and the Kicker</h2>
+    <p>Each add-on changes your cost per draw. Whether it helps depends on the spot you're playing.</p>
+  </div>
+  <div class="two">
+    <div>
+      <h3 class="sub">Plus 3</h3>
+      <p class="small">Draws 3 extra winning numbers (23 total) and doubles your wager. It's a bad deal on small picks and slightly favorable on 8- and 9-spot, where the bigger pool boosts the rare top prizes.</p>
+      <div class="scroll"><table class="slip compact" id="plusTable">
+        <thead><tr><th>Spot</th><th>Without</th><th>With Plus 3</th><th>Change</th></tr></thead><tbody></tbody>
+      </table></div>
+    </div>
+    <div>
+      <h3 class="sub">The Jack</h3>
+      <p class="small">$1 more per draw. Nine easy-pick numbers matched against the same 20-number draw. The fixed prizes return 37.6¢; the progressive jackpot adds the rest, so value depends on how big it's grown.</p>
+      <div class="slider-row">
+        <label for="jackSlider" class="small" style="font-weight:600;color:var(--ink)">Current jackpot</label>
+        <input type="range" id="jackSlider" min="10000" max="1000000" step="5000" value="10000">
+      </div>
+      <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px">
+        <div><div class="small">Jackpot</div><div class="big-out num" id="jackAmt">$10,000</div></div>
+        <div><div class="small">Return per $1</div><div class="big-out num" id="jackEv">38.3¢</div></div>
+      </div>
+      <div class="scroll"><table class="slip compact" id="jackTable">
+        <thead><tr><th>Match</th><th>Prize</th><th>Odds</th></tr></thead><tbody></tbody>
+      </table></div>
+      <h3 class="sub" style="margin-top:28px">Kicker</h3>
+      <p class="small">Doubles your wager for a random multiplier (up to 5x) on Club Keno prizes. It breaks even only if the average multiplier is exactly 2. Michigan doesn't publish how often each multiplier comes up, so its true value can't be calculated from the ticket.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="chasing"><div class="wrap">
+  <div class="sec-head">
+    <h2>Why bet-doubling systems stall</h2>
+    <p>A "cover the pot" system raises the bet after each losing batch so one hit recovers everything. How fast the bet grows depends on one number: the prize multiplier minus the draws per batch. A thin margin makes the bets explode, and the $20-per-draw cap ends every one of these within a few rounds.</p>
+  </div>
+  <div class="calc">
+    <div class="fields">
+      <label class="f">Chasing<select id="calcTier"></select></label>
+      <label class="f">Draws per batch<input type="number" id="calcDraws" value="20" min="1" max="100"></label>
+      <label class="f">Starting bet ($)<input type="number" id="calcStart" value="1" min="1" max="20"></label>
+    </div>
+    <div class="growth" id="calcGrowth"></div>
+    <div class="scroll"><table class="slip compact" id="calcTable" style="min-width:560px">
+      <thead><tr><th>Batch</th><th>Bet per draw</th><th>Batch cost</th><th>Total in if it misses</th><th>Pays if it hits</th><th>Chance you get here</th><th>Your budget</th></tr></thead><tbody></tbody>
+    </table></div>
+    <p class="small" style="margin:12px 0 0">Bets are rounded up so a hit on the last draw of a batch still leaves you at least $1 ahead. Rows in red need more than $20 per draw. Rows in italics cost more than your budget under <a href="#setup">Your night</a>.</p>
+  </div>
+  <div class="prose" style="margin-top:24px">
+    <p class="small">No stopping rule or bet sequence changes the average. With any finite bankroll, the rare wipe-out exactly offsets the frequent small wins, so every dollar wagered still loses about 35¢ on average.</p>
+  </div>
+</div></section>
+
+<section id="games"><div class="wrap">
+  <div class="sec-head">
+    <h2>Three ladders for a group night</h2>
+    <p>Start small and step up a rung whenever a stage ends with the group still behind. You check the score after each ticket finishes: if the group is ahead, the night is over. Figures below come from 40,000 simulated nights per ladder, run in your browser.</p>
+  </div>
+  <div class="setup" id="setup">
+    <h3>Your night</h3>
+    <div class="setup-row">
+      <label class="f">Group budget
+        <span class="money-in"><span aria-hidden="true">$</span><input type="number" id="budget" min="20" max="100000" step="1" value="600" inputmode="numeric" aria-label="Group budget in dollars"></span>
+      </label>
+      <div class="f"><span id="ticketLbl">Draws per ticket</span>
+        <div class="seg" role="group" aria-labelledby="ticketLbl">
+          <button type="button" data-t="10" aria-pressed="true">10 draws</button>
+          <button type="button" data-t="20" aria-pressed="false">20 draws</button>
+        </div>
+      </div>
+    </div>
+    <p class="small" id="setupNote"></p>
+  </div>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div id="gamePanel"></div>
+</div></section>
+
+<section id="tracker"><div class="wrap">
+  <div class="sec-head">
+    <h2>Night tracker</h2>
+    <p>Keep this open at the table. Pick your ladder, tap the result of each draw, and it tells you what to buy next and when to stop. It uses the budget and ticket size set under <a href="#setup">Your night</a>, and saves on this device only.</p>
+  </div>
+  <div class="tracker">
+    <div class="fields" style="margin-bottom:6px">
+      <label class="f" style="color:#C9D0EE">Ladder<select id="trkSys"></select></label>
+      <label class="toggle" style="color:#C9D0EE"><input type="checkbox" id="trkSkip" checked> Skip Stage 5 of The Climb</label>
+    </div>
+    <div id="trkSettings" class="trk-settings"></div>
+    <div class="trk-top">
+      <div><div class="small" style="color:#9AA4CC">Group is</div><div class="trk-net num" id="trkNet">$0</div></div>
+      <div class="trk-now" id="trkNow"></div>
+    </div>
+    <div class="progress" id="trkProg" aria-hidden="true"></div>
+    <div class="trk-btns" id="trkBtns" style="margin-top:12px"></div>
+    <div id="trkBanner"></div>
+    <div class="trk-foot">
+      <button class="mbtn" id="trkUndo">Undo last draw</button>
+      <button class="mbtn" id="trkReset">Start a new night</button>
+    </div>
+    <div class="trk-log" id="trkLog"></div>
+  </div>
+</div></section>
+
+<section id="cashing"><div class="wrap">
+  <div class="sec-head">
+    <h2>Cashing a big one</h2>
+    <p>From the back of the Michigan Club Keno ticket. Sign the back of a winning ticket before claiming.</p>
+  </div>
+  <div class="rules">
+    <div><strong>$600 or less</strong>Any Michigan Lottery retailer, starting shortly after the drawing.</div>
+    <div><strong>$601 to $99,999</strong>A Michigan Lottery office or licensed claim center. Bring a picture ID and your Social Security card.</div>
+    <div><strong>Over $99,999</strong>Contact Michigan Lottery Player Relations at 844-917-6325, option 2.</div>
+  </div>
+  <div class="two house">
+    <div>
+      <h3 class="sub">Settle before the first ticket</h3>
+      <ol>
+        <li>Which ladder, and what counts as "ahead" (any profit, or a set target like +$50).</li>
+        <li>The top rung is the end of the night. Nobody adds a new stage.</li>
+        <li>Whose name goes on a claim over $600, and how the group splits it. Big keno wins are taxable income to whoever claims them.</li>
+        <li>Which bet amounts your retailer allows. Odd amounts like $7, $12, or $15 may need two tickets, and bets over $20 a draw may need several.</li>
+      </ol>
+    </div>
+    <div>
+      <h3 class="sub">Treat the <span class="budgetTxt">$600</span> as the price of the night</h3>
+      <p id="priceNote">The ladders here often finish ahead, but the wins are small and the losses are large. Budget the average loss as entertainment, not an investment.</p>
+      <p class="small">If gambling stops being fun, the Michigan Problem Gambling Helpline is free and confidential: 1-800-270-7117.</p>
+    </div>
+  </div>
+</div></section>
+
+</main>
+
+<footer><div class="wrap prose">
+  Odds are calculated exactly from the paytable on the Michigan Club Keno bet slip (20 of 80 drawn; Plus 3 draws 23). Ladder statistics come from simulations run in this page. Paytables and rules can change, so check the current slip at your retailer. Not affiliated with the Michigan Lottery.
+</div></footer>
+
+<script>
+(function(){
+"use strict";
+/* ---------- math ---------- */
+const LF=[0];for(let i=1;i<=100;i++)LF[i]=LF[i-1]+Math.log(i);
+const lc=(n,k)=>(k<0||k>n)?-Infinity:LF[n]-LF[k]-LF[n-k];
+function hyp(N,K,n,m){if(m<0||m>n||m>K||n-m>N-K)return 0;return Math.exp(lc(K,m)+lc(N-K,n-m)-lc(N,n));}
+const P=(k,m)=>hyp(80,20,k,m);
+const P3=(k,m)=>hyp(80,23,k,m);
+const PT={
+ 1:{1:2},2:{2:11},3:{3:27,2:2},4:{4:72,3:5,2:1},5:{5:410,4:18,3:2},
+ 6:{6:1100,5:57,4:7,3:1},7:{7:2000,6:100,5:11,4:5,3:1},
+ 8:{8:10000,7:300,6:50,5:15,4:2},9:{9:25000,8:2000,7:100,6:20,5:5,4:2},
+ 10:{10:100000,9:5000,8:500,7:50,6:10,5:2,0:5}};
+const tiers=k=>Object.keys(PT[k]).map(Number).sort((a,b)=>b-a);
+const ev=k=>tiers(k).reduce((s,m)=>s+P(k,m)*PT[k][m],0);
+const money=v=>(v<0?"−$":"$")+Math.abs(Math.round(v)).toLocaleString("en-US");
+const signed=v=>(v>0?"+":v<0?"−":"")+"$"+Math.abs(Math.round(v)).toLocaleString("en-US");
+const oneIn=p=>"1 in "+(1/p>=100?Math.round(1/p).toLocaleString("en-US"):(1/p).toFixed(1));
+const pct=(p,d=1)=>(p*100).toFixed(d)+"%";
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
+const $=id=>document.getElementById(id);
+const store={get(k){try{return JSON.parse(localStorage.getItem(k));}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+
+/* ---------- shared settings ---------- */
+const SKEY="clubkeno-settings-v1";
+const SET=Object.assign({budget:600,ticket:10},store.get(SKEY)||{});
+const listeners=[];
+function onSettings(fn){listeners.push(fn);}
+function applySettings(){
+  store.set(SKEY,SET);
+  $("budget").value=SET.budget;
+  document.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.t===SET.ticket?"true":"false"));
+  const bt="$"+SET.budget.toLocaleString("en-US");
+  $("heroBudget").textContent=bt;document.querySelectorAll(".budgetTxt").forEach(e=>e.textContent=bt);
+  $("setupNote").textContent=`The Climb and 5-Spot Ladder scale their bets to fit $${SET.budget.toLocaleString("en-US")} with ${SET.ticket}-draw tickets. The 3-Spot Batch always starts at $1 and adds stages as far as the budget reaches. Everything below, including the tracker, updates from these two settings.`;
+  listeners.forEach(fn=>fn());
+}
+let bTimer=null;
+$("budget").addEventListener("input",()=>{clearTimeout(bTimer);bTimer=setTimeout(()=>{let v=Math.round(+$("budget").value);if(!isFinite(v)||v<20)return;v=Math.min(v,100000);SET.budget=v;applySettings();},450);});
+$("budget").addEventListener("change",()=>{let v=Math.round(+$("budget").value);if(!isFinite(v)||v<20)v=20;SET.budget=Math.min(v,100000);applySettings();});
+document.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{SET.ticket=+b.dataset.t;applySettings();});
+
+/* ---------- ticket simulator (session only, nothing saved) ---------- */
+const board=$("board");const picks=new Set([7,23,58]);let drawn=new Set();
+const BETS=[1,2,3,4,5,10,20],DRAWS=[1,2,3,4,5,10,20];
+$("simBet").innerHTML=BETS.map(v=>`<option value="${v}">$${v}</option>`).join("");
+$("simDraws").innerHTML=DRAWS.map(v=>`<option value="${v}">${v} draw${v>1?"s":""}</option>`).join("");
+const sim={bet:1,draws:SET.ticket,running:false,skip:false,tickets:[],spent:0,won:0,played:0,best:0,cur:null};
+$("simBet").value=sim.bet;$("simDraws").value=sim.draws;
+const reduceMotion=()=>window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const sleep=ms=>new Promise(r=>setTimeout(r,(sim.skip||reduceMotion())?0:ms));
+for(let i=1;i<=80;i++){
+  const b=document.createElement("button");b.textContent=i;b.dataset.n=i;b.setAttribute("aria-pressed","false");b.setAttribute("aria-label","Number "+i);
+  board.appendChild(b);
+  if(i===40){const g=document.createElement("div");g.className="gap";board.appendChild(g);}
+}
+function paintBoard(){
+  board.querySelectorAll("button").forEach(b=>{const n=+b.dataset.n;b.classList.toggle("pick",picks.has(n));b.classList.toggle("hit",drawn.has(n));b.setAttribute("aria-pressed",picks.has(n)?"true":"false");});
+  $("pickCount").textContent=picks.size?picks.size+"-spot ticket":"Tap up to 10 numbers";
+  $("buyBtn").textContent=`Buy ticket for $${(sim.bet*sim.draws).toLocaleString("en-US")}`;
+}
+function describePicks(){
+  const k=picks.size;
+  if(!k){$("readout").textContent="Pick 1 to 10 numbers, choose a bet and number of draws, then buy a ticket.";return;}
+  const any=tiers(k).reduce((s,m)=>s+P(k,m),0);const top=Math.max(...Object.values(PT[k]))*sim.bet;
+  $("readout").innerHTML=`${k}-spot: returns <strong>${(ev(k)*100).toFixed(1)}¢</strong> per $1 and pays something ${oneIn(any)} draws. At $${sim.bet} a draw the top prize is <strong>$${top.toLocaleString("en-US")}</strong>.`;
+}
+function paintStrip(){
+  const t=sim.cur;if(!t){$("strip").innerHTML="";return;}
+  $("strip").innerHTML=`<span class="strip-lbl">Matches each draw</span>`+Array.from({length:t.draws},(_,i)=>{const r=t.res[i];if(!r)return `<i class="${i===t.res.length&&sim.running?"now":""}"></i>`;return `<i class="done ${r.pay>=t.bet*5?"big":r.pay>0?"win":""}" title="Draw ${i+1}: ${r.m} matched, $${r.pay}">${r.m}</i>`;}).join("");
+}
+function renderSession(){
+  const net=sim.won-sim.spent;const n=$("sNet");
+  n.textContent=net===0?"$0":(net>0?"Up ":"Down ")+money(Math.abs(net));n.className="num "+(net>0?"up":net<0?"down":"");
+  $("sStats").innerHTML=[["Tickets",sim.tickets.length+(sim.running?1:0)],["Draws",sim.played],["Spent","$"+sim.spent.toLocaleString("en-US")],["Won","$"+sim.won.toLocaleString("en-US")],["Best draw","$"+sim.best.toLocaleString("en-US")]].map(([l,v])=>`<div>${l}<b>${v}</b></div>`).join("");
+  const B=SET.budget;let note="";
+  if(!sim.spent)note=`Nothing bought yet. Your group budget is $${B.toLocaleString("en-US")}.`;
+  else{
+    note=sim.spent>B?`<span class="warn">$${sim.spent.toLocaleString("en-US")} spent, which is over your $${B.toLocaleString("en-US")} budget.</span>`:`$${sim.spent.toLocaleString("en-US")} of your $${B.toLocaleString("en-US")} budget spent.`;
+    if(!sim.running&&net>0)note+=` <b>The group is ahead after that ticket.</b> Under the ladder rules, this is where you'd stop.`;
+  }
+  $("sNote").innerHTML=note;
+  const rows=[...sim.tickets].reverse().map(t=>{const r=t.won-t.bet*t.draws;return `<tr><td>${t.n}</td><td>${t.picks.join(", ")}</td><td>$${t.bet}</td><td>${t.draws}</td><td>$${(t.bet*t.draws).toLocaleString("en-US")}</td><td>$${t.won.toLocaleString("en-US")}</td><td class="${r>0?"up":r<0?"down":""}">${signed(r)}</td></tr>`;}).join("");
+  document.querySelector("#ledger tbody").innerHTML=rows;$("ledgerWrap").hidden=!sim.tickets.length;
+  $("endBtn").disabled=sim.running||(!sim.tickets.length);
+}
+function setRunning(on){
+  sim.running=on;$("buyBtn").disabled=on;$("qpBtn").disabled=on;$("clearBtn").disabled=on;$("simBet").disabled=on;$("simDraws").disabled=on;$("skipBtn").hidden=!on;
+}
+async function buyTicket(){
+  if(sim.running)return;const k=picks.size;
+  if(!k){$("readout").textContent="Pick at least one number first.";return;}
+  const t={n:sim.tickets.length+1,picks:[...picks].sort((a,b)=>a-b),k,bet:sim.bet,draws:sim.draws,won:0,res:[]};
+  sim.cur=t;sim.skip=false;setRunning(true);sim.spent+=t.bet*t.draws;renderSession();paintStrip();
+  for(let d=0;d<t.draws;d++){
+    const pool=[...Array(80)].map((_,i)=>i+1);for(let i=79;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+    const order=pool.slice(0,20);drawn=new Set();paintBoard();
+    if(sim.skip||reduceMotion()){order.forEach(n=>drawn.add(n));paintBoard();}
+    else{for(const n of order){if(sim.skip){order.forEach(x=>drawn.add(x));paintBoard();break;}drawn.add(n);const b=board.querySelector(`button[data-n="${n}"]`);b.classList.add("hit","pop");setTimeout(()=>b.classList.remove("pop"),300);await sleep(t.draws>5?22:45);}}
+    const m=t.picks.filter(n=>drawn.has(n)).length;const pay=(PT[k][m]||0)*t.bet;
+    t.res.push({m,pay});t.won+=pay;sim.won+=pay;sim.played++;sim.best=Math.max(sim.best,pay);
+    paintStrip();renderSession();
+    if(!sim.skip)$("readout").innerHTML=`Draw ${d+1} of ${t.draws}: matched <strong>${m} of ${k}</strong>. ${pay?`Won <strong>$${pay.toLocaleString("en-US")}</strong>.`:"No prize."}`;
+    await sleep(t.draws>5?380:650);
+  }
+  sim.tickets.push(t);setRunning(false);
+  const r=t.won-t.bet*t.draws;const wins=t.res.filter(x=>x.pay>0).length;
+  $("readout").innerHTML=`Ticket ${t.n} done: ${t.draws} draw${t.draws>1?"s":""}, ${wins} paid. Spent $${(t.bet*t.draws).toLocaleString("en-US")}, won <strong>$${t.won.toLocaleString("en-US")}</strong>, ticket ${r>=0?"up":"down"} <strong>${money(Math.abs(r))}</strong>. Keep your numbers or change them, then buy the next one.`;
+  renderSession();paintStrip();
+}
+board.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b||sim.running)return;const n=+b.dataset.n;
+  drawn=new Set();
+  if(picks.has(n))picks.delete(n);else if(picks.size<10)picks.add(n);
+  paintBoard();describePicks();
+});
+$("simBet").onchange=()=>{sim.bet=+$("simBet").value;paintBoard();describePicks();};
+$("simDraws").onchange=()=>{sim.draws=+$("simDraws").value;paintBoard();};
+$("buyBtn").onclick=buyTicket;
+$("skipBtn").onclick=()=>{sim.skip=true;};
+$("clearBtn").onclick=()=>{if(sim.running)return;picks.clear();drawn=new Set();paintBoard();describePicks();};
+$("qpBtn").onclick=()=>{if(sim.running)return;const k=picks.size||3;picks.clear();drawn=new Set();while(picks.size<k)picks.add(1+Math.floor(Math.random()*80));paintBoard();describePicks();};
+$("endBtn").onclick=()=>{if(sim.running)return;if(sim.tickets.length&&!confirm("Clear this game and start from $0?"))return;Object.assign(sim,{tickets:[],spent:0,won:0,played:0,best:0,cur:null});drawn=new Set();paintBoard();paintStrip();describePicks();renderSession();};
+onSettings(renderSession);
+paintBoard();describePicks();
+
+/* ---------- odds table ---------- */
+(function(){
+  const notes={1:"Most frequent $2+ win, worst return",2:"Highest return, but pays rarely",3:"Best balance of return and frequency",4:"Printed odds inflated by $1 prizes",6:"Only 3% of draws pay $2+",7:"Second-highest return",9:"As frequent as 3-spot, with a $25,000 top",10:"Lowest return of 2–10, $100,000 top"};
+  const rows=[];
+  for(let k=10;k>=1;k--){
+    const t=tiers(k);const any=t.reduce((s,m)=>s+P(k,m),0);const two=t.filter(m=>PT[k][m]>=2).reduce((s,m)=>s+P(k,m),0);
+    const top=Math.max(...Object.values(PT[k]));const tm=t.find(m=>PT[k][m]===top);
+    rows.push(`<tr class="${k===3?"star":""}"><td><span class="spotno">${k}</span>Spot</td><td>${(ev(k)*100).toFixed(1)}¢</td><td>${oneIn(any)}</td><td>${oneIn(two)}</td><td>$${top.toLocaleString()}</td><td>${oneIn(P(k,tm))}</td><td class="note">${notes[k]||""}</td></tr>`);
+  }
+  document.querySelector("#oddsTable tbody").innerHTML=rows.join("");
+})();
+
+/* ---------- Plus 3 ---------- */
+(function(){
+  const rows=[];
+  for(let k=1;k<=10;k++){
+    const base=ev(k);const p3=tiers(k).reduce((s,m)=>s+P3(k,m)*PT[k][m],0)/2;const ch=(p3-base)/base;
+    rows.push(`<tr><td>${k}-spot</td><td>${(base*100).toFixed(1)}¢</td><td>${(p3*100).toFixed(1)}¢</td><td class="${ch>=0?"pos":"neg"}">${ch>=0?"+":"−"}${Math.abs(ch*100).toFixed(1)}%</td></tr>`);
+  }
+  document.querySelector("#plusTable tbody").innerHTML=rows.join("");
+})();
+
+/* ---------- The Jack ---------- */
+(function(){
+  const J={9:null,8:1000,7:100,6:10,5:5,0:1};
+  const fixed=[8,7,6,5,0].reduce((s,m)=>s+P(9,m)*J[m],0);const p9=P(9,9);
+  document.querySelector("#jackTable tbody").innerHTML=[9,8,7,6,5,0].map(m=>`<tr><td>${m} of 9</td><td>${m===9?"Jackpot":"$"+J[m].toLocaleString()}</td><td>${oneIn(P(9,m))}</td></tr>`).join("");
+  const s=$("jackSlider");const upd=()=>{const j=+s.value;$("jackAmt").textContent="$"+j.toLocaleString();$("jackEv").textContent=((fixed+j*p9)*100).toFixed(1)+"¢";s.setAttribute("aria-valuetext","$"+j.toLocaleString());};
+  s.oninput=upd;upd();
+})();
+
+/* ---------- escalation calculator ---------- */
+(function(){
+  const sel=$("calcTier");const opts=[];
+  for(let k=1;k<=10;k++)tiers(k).forEach(m=>{const x=PT[k][m];if(x>=5&&m>0)opts.push({k,m,x});});
+  sel.innerHTML=opts.map((o,i)=>`<option value="${i}">${o.k}-spot, ${o.m} of ${o.k} (pays ${o.x.toLocaleString()}x)</option>`).join("");
+  sel.value=opts.findIndex(o=>o.k===3&&o.m===3);
+  function run(){
+    const o=opts[+sel.value];const n=Math.max(1,Math.min(100,+$("calcDraws").value||1));const start=Math.max(1,+$("calcStart").value||1);
+    const p=P(o.k,o.m);const miss=Math.pow(1-p,n);const margin=o.x-n;const tb=document.querySelector("#calcTable tbody");
+    if(margin<=0){$("calcGrowth").textContent=`With ${n} draws per batch, a ${o.x}x prize can never cover a whole losing batch. Use fewer draws.`;tb.innerHTML="";return;}
+    let cum=0,bet=start,rows=[],prev=null,ratios=[],fit=0;
+    for(let b=1;b<=12;b++){
+      if(b>1)bet=Math.max(start,Math.ceil((cum+1)/margin));
+      if(prev)ratios.push(bet/prev);prev=bet;
+      const cost=bet*n;const reach=Math.pow(miss,b-1);const over=cum+cost>SET.budget;if(!over)fit=b;
+      rows.push(`<tr class="${bet>20?"capped":""} ${over?"over":""}"><td>${b}</td><td>$${bet.toLocaleString()}</td><td>$${cost.toLocaleString()}</td><td>$${(cum+cost).toLocaleString()}</td><td>$${(bet*o.x).toLocaleString()}</td><td>${pct(reach)}</td><td>${over?"Over budget":"Fits"}</td></tr>`);
+      cum+=cost;
+      if(b>=4&&over&&bet>20)break;
+    }
+    tb.innerHTML=rows.join("");
+    const g=ratios.length?ratios[ratios.length-1]:1;
+    const reachEnd=Math.pow(miss,fit);
+    $("calcGrowth").textContent=`Bet grows about ${g.toFixed(2)}x per batch, and each batch hits ${pct(1-miss)} of the time. Your $${SET.budget.toLocaleString("en-US")} covers ${fit} batch${fit===1?"":"es"}, so ${pct(reachEnd)} of runs end with all of it spent and no hit.`;
+  }
+  ["calcTier","calcDraws","calcStart"].forEach(id=>$(id).addEventListener("input",run));
+  onSettings(run);
+})();
+
+/* ---------- ladders ---------- */
+const SYSTEMS={
+  climb:{name:"The Climb",blurb:"Switches games as the hole deepens: 3-spot's frequent hits early, 5-spot's 18x in the middle, and 8-spot's 50x and 300x prizes when you need a big recovery.",
+    rungs:[[3,1],[3,2],[5,3],[5,5],[8,5,"opt"],[8,10],[8,20]],
+    verdict:"Usually the best mix of finish-ahead rate and a real shot at a big night, at the cost of bigger busts."},
+  five:{name:"5-Spot Ladder",blurb:"One game all night, raising the bet each stage. Simple to run, but 5-spot has nothing between 18x and 410x, so the late rungs rarely rescue a deep hole.",
+    rungs:[[5,1],[5,2],[5,3],[5,5],[5,8],[5,10],[5,15]],
+    verdict:"Usually the weakest of the three. The last rungs cost the most and rarely get a group out."},
+  batch:{name:"3-Spot Batch",blurb:"Twenty draws per stage, starting at $1. Each later stage's bet is sized so a 3/3 anywhere in it covers everything spent so far.",
+    verdict:"The smallest busts and usually the best average. Its biggest wins are limited to what a 3/3 pays at the top stage."}
+};
+/* Build a ladder for a budget B and ticket size T.
+   Returns stages: {spot,bet,draws,tickets,status:"play"|"skip"|"trim"} */
+function buildLadder(key,skip,B,T){
+  const out=[];
+  if(key==="batch"){
+    let cum=0,bet=1;
+    for(let n=1;n<=12;n++){
+      if(n>1)bet=Math.ceil((cum+1)/7);
+      const cost=bet*20;
+      if(cum+cost>B){out.push({spot:3,bet,draws:20,tickets:20/T,status:"trim"});break;}
+      out.push({spot:3,bet,draws:20,tickets:20/T,status:"play"});cum+=cost;
+    }
+    return out;
+  }
+  const scale=(B/600)*(10/T);
+  const st=SYSTEMS[key].rungs.map(r=>({spot:r[0],bet:Math.max(1,Math.round(r[1]*scale)),draws:T,tickets:1,opt:r[2]==="opt",status:(skip&&r[2]==="opt")?"skip":"play"}));
+  let tot=st.filter(x=>x.status==="play").reduce((a,x)=>a+x.bet*x.draws,0);
+  for(let i=st.length-1;i>=0&&tot>B;i--){if(st[i].status==="play"){st[i].status="trim";tot-=st[i].bet*st[i].draws;}}
+  return st;
+}
+const DIST={};for(let k=1;k<=10;k++){const pr=[],pay=[];let c=0;for(let m=0;m<=k;m++){c+=P(k,m);pr.push(c);pay.push(PT[k][m]||0);}DIST[k]={cum:pr,pay};}
+const simCache={};
+function simulate(key,skip,B,T){
+  const id=[key,skip?1:0,B,T].join("|");if(simCache[id])return simCache[id];
+  const L=buildLadder(key,skip,B,T).filter(g=>g.status==="play");const N=40000;const rnd=mulberry(20260922);
+  const st=L.map(()=>({reach:0,holes:[],wins:0}));const finals=new Float64Array(N);let ahead=0;
+  for(let t=0;t<N;t++){
+    let net=0,done=false;
+    for(let s=0;s<L.length&&!done;s++){
+      const g=L[s];st[s].reach++;st[s].holes.push(-net);const d=DIST[g.spot];const per=g.draws/g.tickets;
+      for(let tk=0;tk<g.tickets&&!done;tk++){
+        for(let i=0;i<per;i++){const r=rnd();let m=0;while(r>d.cum[m]&&m<d.cum.length-1)m++;net+=d.pay[m]*g.bet-g.bet;}
+        if(net>0){st[s].wins++;done=true;}
+      }
+    }
+    finals[t]=net;if(net>0)ahead++;
+  }
+  const med=a=>{if(!a.length)return 0;const b=Float64Array.from(a).sort();return b[Math.floor(b.length/2)];};
+  const w=[],l=[];let sum=0;for(const v of finals){sum+=v;if(v>0)w.push(v);else l.push(v);}
+  const max=L.reduce((s,g)=>s+g.bet*g.draws,0);
+  const bigLine=niceRound(B*5/6);let big=0;for(const v of finals)if(v>=bigLine)big++;
+  const res={L,N,stages:st.map(s=>({reach:s.reach/N,hole:med(s.holes),win:s.wins/N})),ahead:ahead/N,avg:sum/N,medWin:med(w),medBust:med(l),big:big/N,bigLine,max,finals};
+  simCache[id]=res;return res;
+}
+function niceRound(v){if(v<50)return Math.max(5,Math.round(v/5)*5);if(v<1000)return Math.round(v/10)*10;return Math.round(v/50)*50;}
+function prizeRows(g){
+  return tiers(g.spot).filter(m=>PT[g.spot][m]>0).map(m=>{
+    const p=P(g.spot,m);const pay=PT[g.spot][m]*g.bet;const ch=1-Math.pow(1-p,g.draws);
+    const chTxt=ch<0.001?"about "+oneIn(ch):pct(ch,ch<0.01?2:1);
+    return `<tr class="${pay>=250?"big":""}"><td>${m} of ${g.spot}</td><td class="pay">$${pay.toLocaleString()}${pay>600?'<span class="claim">claim office</span>':""}</td><td>${oneIn(p)}</td><td>${chTxt}</td></tr>`;
+  }).join("");
+}
+function histogram(finals,max,B){
+  const q=[0.25,0.5,0.75].map(f=>niceRound(max*f));const w1=niceRound(B/12),w2=niceRound(B*5/6);
+  const M=v=>"$"+v.toLocaleString("en-US");
+  const bins=[{l:"−"+M(q[2])+" or worse",f:v=>v<=-q[2]},{l:"−"+M(q[1])+" to −"+M(q[2]),f:v=>v>-q[2]&&v<=-q[1]},{l:"−"+M(q[0])+" to −"+M(q[1]),f:v=>v>-q[1]&&v<=-q[0]},{l:"$0 to −"+M(q[0]),f:v=>v>-q[0]&&v<=0},{l:"+$1 to +"+M(w1-1),f:v=>v>0&&v<w1},{l:"+"+M(w1)+" to +"+M(w2-1),f:v=>v>=w1&&v<w2},{l:"+"+M(w2)+" or more",f:v=>v>=w2}];
+  const c=bins.map(()=>0);for(const v of finals){for(let i=0;i<bins.length;i++)if(bins[i].f(v)){c[i]++;break;}}
+  const tot=finals.length;const W=720,rowH=30,H=bins.length*rowH+10,lx=170;const mx=Math.max(...c,1);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Distribution of night results"><title>How nights end</title>`;
+  bins.forEach((b,i)=>{const y=5+i*rowH;const w=(W-lx-70)*c[i]/mx;const win=i>=4;
+    s+=`<text x="${lx-10}" y="${y+19}" text-anchor="end" font-size="14" fill="var(--ink-soft)" font-family="Barlow,Arial,sans-serif">${b.l}</text>`;
+    s+=`<rect x="${lx}" y="${y+4}" width="${Math.max(w,1)}" height="${rowH-10}" fill="${win?"var(--good)":"var(--red)"}" opacity="${win?0.85:0.8}"/>`;
+    s+=`<text x="${lx+w+8}" y="${y+19}" font-size="14" font-weight="600" fill="var(--ink)" font-family="Barlow,Arial,sans-serif">${pct(c[i]/tot)}</text>`;});
+  return s+"</svg>";
+}
+let curKey="climb",skip5=true;
+function renderGame(){
+  const S=SYSTEMS[curKey];const B=SET.budget,T=SET.ticket;
+  const full=buildLadder(curKey,curKey==="climb"&&skip5,B,T);
+  const playable=full.filter(g=>g.status==="play");
+  if(!playable.length){
+    const first=full[0];
+    $("gamePanel").innerHTML=`<div class="game-intro"><div><h3 style="font-size:34px;margin-bottom:10px">${S.name}</h3><p>A budget of $${B.toLocaleString("en-US")} doesn't cover this ladder's first stage, which costs $${(first.bet*first.draws).toLocaleString("en-US")} with ${T}-draw tickets. Raise the budget or switch to 10-draw tickets.</p></div></div>`;
+    return;
+  }
+  const R=simulate(curKey,curKey==="climb"&&skip5,B,T);
+  let cum=0,si=0,num=0;
+  const rungs=full.map(g=>{
+    num++;let stat="",body="";
+    const tixTxt=g.tickets>1?` <span class="tix">(${g.tickets} tickets of ${g.draws/g.tickets})</span>`:"";
+    if(g.status==="play"){cum+=g.bet*g.draws;const r=R.stages[si++];
+      stat=`<span class="stat">Total in <b>$${cum.toLocaleString("en-US")}</b></span><span class="stat">Reach it <b>${pct(r.reach)}</b></span><span class="stat">Typical hole <b>$${Math.round(r.hole).toLocaleString("en-US")}</b></span><span class="stat">Win here <b>${pct(r.win)}</b></span>`;
+      body=`<div class="scroll"><table class="prizes"><thead><tr><th>Match</th><th>Pays</th><th>Odds per draw</th><th>Chance this stage</th></tr></thead><tbody>${prizeRows(g)}</tbody></table></div>`;}
+    else if(g.status==="skip")stat=`<span class="stat">Skipped. This rung rarely gets a group out, and skipping it improves the results.</span>`;
+    else stat=`<span class="stat">Doesn't fit your budget. It would bring the total to $${(cum+g.bet*g.draws).toLocaleString("en-US")}.</span>`;
+    return `<div class="rung ${g.status==="skip"?"skip":g.status==="trim"?"trim":""}"><div class="n">${num}<small>stage</small></div><div class="body">
+      <div class="top"><h3>${g.spot}-spot at $${g.bet} × ${g.draws}${tixTxt}</h3>${stat}</div>${body}</div></div>`;
+  }).join("");
+  const unused=B-R.max;
+  $("gamePanel").innerHTML=`
+    <div class="game-intro">
+      <div><h3 style="font-size:34px;margin-bottom:10px">${S.name}</h3><p>${S.blurb}</p><p class="small">${S.verdict} ${unused>0?`At these settings it uses $${R.max.toLocaleString("en-US")} of your $${B.toLocaleString("en-US")}.`:""}</p>
+      ${curKey==="climb"?`<label class="toggle"><input type="checkbox" id="skipToggle" ${skip5?"checked":""}> Skip Stage 5 (recommended)</label>`:""}</div>
+      <div class="summary">
+        <div><strong class="num">${pct(R.ahead,0)}</strong><span>nights finish ahead</span></div>
+        <div><strong class="num">${signed(R.avg)}</strong><span>average result</span></div>
+        <div><strong class="num">$${R.max.toLocaleString("en-US")}</strong><span>most you can spend</span></div>
+        <div><strong class="num">${signed(R.medWin)}</strong><span>typical win</span></div>
+        <div><strong class="num">${signed(R.medBust)}</strong><span>typical bust</span></div>
+        <div><strong class="num">${pct(R.big)}</strong><span>nights win $${R.bigLine.toLocaleString("en-US")}+</span></div>
+      </div>
+    </div>
+    <div class="ladder">${rungs}</div>
+    <div class="dist"><h3 style="margin-bottom:10px">How ${R.N.toLocaleString("en-US")} nights end</h3>${histogram(R.finals,R.max,B)}</div>`;
+  const t=$("skipToggle");if(t)t.onchange=()=>{skip5=t.checked;renderGame();};
+}
+const tabs=$("tabs");
+tabs.innerHTML=Object.entries(SYSTEMS).map(([k,s])=>`<button role="tab" data-k="${k}" aria-selected="${k===curKey}">${s.name}</button>`).join("");
+tabs.onclick=e=>{const b=e.target.closest("button");if(!b)return;curKey=b.dataset.k;tabs.querySelectorAll("button").forEach(x=>x.setAttribute("aria-selected",x===b));renderGame();};
+onSettings(renderGame);
+
+/* ---------- price-of-the-night note ---------- */
+onSettings(()=>{
+  const B=SET.budget,T=SET.ticket;const res=[];
+  for(const k of ["climb","five","batch"]){if(buildLadder(k,k==="climb",B,T).some(g=>g.status==="play"))res.push(simulate(k,k==="climb",B,T));}
+  if(!res.length){$("priceNote").textContent="This budget is too small for any of the ladders. Raise it under Your night.";return;}
+  const avgs=res.map(r=>-r.avg),ah=res.map(r=>r.ahead);
+  $("priceNote").textContent=`With $${B.toLocaleString("en-US")} and ${T}-draw tickets, the ladders finish ahead ${pct(Math.min(...ah),0)} to ${pct(Math.max(...ah),0)} of the time, but the wins are small and the losses are large. Across many nights, each one averages a loss of $${Math.round(Math.min(...avgs)).toLocaleString("en-US")} to $${Math.round(Math.max(...avgs)).toLocaleString("en-US")}. Budget that as entertainment, not an investment.`;
+});
+
+/* ---------- tracker ---------- */
+const TKEY="clubkeno-tracker-v2";
+let TR=store.get(TKEY)||{sys:"climb",skip:true,budget:SET.budget,ticket:SET.ticket,log:[]};
+const sysSel=$("trkSys");sysSel.innerHTML=Object.entries(SYSTEMS).map(([k,s])=>`<option value="${k}">${s.name}</option>`).join("");
+function tState(){
+  const L=buildLadder(TR.sys,TR.sys==="climb"&&TR.skip,TR.budget,TR.ticket).filter(g=>g.status==="play");
+  const flat=[];
+  L.forEach((g,s)=>{const per=g.draws/g.tickets;for(let tk=0;tk<g.tickets;tk++)for(let i=0;i<per;i++)flat.push({s,tk,i,per,g,lastOfTicket:i===per-1});});
+  let net=0,done=false;
+  for(let i=0;i<TR.log.length;i++){net+=TR.log[i]-flat[i].g.bet;if(flat[i].lastOfTicket&&net>0){done=true;break;}}
+  const pos=TR.log.length;return{L,flat,net,pos,cur:flat[pos],done,out:!done&&pos>=flat.length};
+}
+function renderTracker(){
+  if(!TR.log.length){TR.budget=SET.budget;TR.ticket=SET.ticket;}
+  sysSel.value=TR.sys;$("trkSkip").checked=TR.skip;$("trkSkip").parentElement.style.display=TR.sys==="climb"?"flex":"none";
+  const same=TR.budget===SET.budget&&TR.ticket===SET.ticket;
+  $("trkSettings").innerHTML=`Tracking a <b>$${TR.budget.toLocaleString("en-US")}</b> budget with <b>${TR.ticket}-draw tickets</b>.`+(same?"":` Your settings have changed to $${SET.budget.toLocaleString("en-US")} and ${SET.ticket}-draw tickets.<br><button class="mbtn" id="trkAdopt">Start a new night with the new settings</button>`);
+  const ad=$("trkAdopt");if(ad)ad.onclick=()=>{if(!confirm("Clear this night and start over with the new settings?"))return;TR.log=[];renderTracker();};
+  const s=tState();const net=$("trkNet");net.textContent=s.net===0?"$0":(s.net>0?"Up ":"Down ")+money(Math.abs(s.net));
+  net.className="trk-net num "+(s.net>0?"up":s.net<0?"down":"");
+  let prog="",last=null;
+  s.flat.forEach((f,i)=>{if(last){if(f.s!==last.s)prog+='<i class="sep"></i>';else if(f.tk!==last.tk)prog+='<i class="sep tsep"></i>';}last=f;const pay=TR.log[i];prog+=`<i class="${i<s.pos?(pay>=f.g.bet*2?"w":"done"):""} ${i===s.pos&&!s.done&&!s.out?"now":""}"></i>`;});
+  $("trkProg").innerHTML=prog;
+  const btns=$("trkBtns");const ban=$("trkBanner");
+  if(!s.flat.length){btns.innerHTML="";$("trkNow").innerHTML="";ban.innerHTML=`<div class="banner end">This budget doesn't cover the first stage of this ladder. Raise it under Your night.</div>`;}
+  else if(s.done){btns.innerHTML="";$("trkNow").innerHTML="";ban.innerHTML=`<div class="banner ok">The ticket's done and the group is ahead by ${money(s.net)}. That's the night. Cash out and celebrate.</div>`;}
+  else if(s.out){btns.innerHTML="";$("trkNow").innerHTML="";ban.innerHTML=`<div class="banner end">That was the top rung. The night ends here, down ${money(Math.abs(s.net))}. No new stages.</div>`;}
+  else{
+    const c=s.cur,g=c.g;
+    const newTicket=c.i===0?` Buy a <b>${c.per}-draw ticket</b> for <b>$${(g.bet*c.per).toLocaleString("en-US")}</b>.`:"";
+    $("trkNow").innerHTML=`Stage <b>${c.s+1} of ${s.L.length}</b>: <b>${g.spot}-spot at $${g.bet}</b>.${newTicket} Ticket ${c.tk+1} of ${g.tickets}, draw <b>${c.i+1} of ${c.per}</b>.`;
+    ban.innerHTML=(c.i===0&&s.pos>0&&s.net<=0)?`<div class="banner" style="background:#27315A;color:#DDE3FA">Still behind after that ticket, so keep going.</div>`:"";
+    btns.innerHTML=`<button class="mbtn" data-pay="0">No prize</button>`+tiers(g.spot).filter(m=>PT[g.spot][m]>0).map(m=>`<button class="mbtn ${PT[g.spot][m]>=5?"win":""}" data-pay="${PT[g.spot][m]*g.bet}">${m} of ${g.spot}: $${(PT[g.spot][m]*g.bet).toLocaleString()}</button>`).join("");
+  }
+  $("trkLog").textContent=TR.log.length?"Draws logged: "+TR.log.length+". Total spent: $"+s.flat.slice(0,TR.log.length).reduce((a,f)=>a+f.g.bet,0).toLocaleString()+". Total won: $"+TR.log.reduce((a,b)=>a+b,0).toLocaleString()+".":"";
+  $("trkUndo").disabled=!TR.log.length;
+  store.set(TKEY,TR);
+}
+$("trkBtns").onclick=e=>{const b=e.target.closest("button");if(!b)return;TR.log.push(+b.dataset.pay);renderTracker();};
+$("trkUndo").onclick=()=>{TR.log.pop();renderTracker();};
+$("trkReset").onclick=()=>{if(TR.log.length&&!confirm("Clear this night and start over?"))return;TR.log=[];renderTracker();};
+sysSel.onchange=()=>{if(TR.log.length&&!confirm("Switching ladders clears the current night. Continue?")){sysSel.value=TR.sys;return;}TR.sys=sysSel.value;TR.log=[];renderTracker();};
+$("trkSkip").onchange=()=>{if(TR.log.length&&!confirm("Changing the ladder clears the current night. Continue?")){$("trkSkip").checked=TR.skip;return;}TR.skip=$("trkSkip").checked;TR.log=[];renderTracker();};
+onSettings(renderTracker);
+
+applySettings();
+})();
+if("serviceWorker" in navigator && (location.protocol==="https:"||location.hostname==="localhost")){
+  window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});
+}
+</script>
+</body>
+</html>
