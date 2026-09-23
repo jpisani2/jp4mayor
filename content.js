@@ -174,6 +174,38 @@ const SITE = {
     },
 
     {
+      id: "keno",
+      page: true,
+      title: "Club Keno, by the numbers",
+      year: "2026",
+      status: "In progress",
+      summary: "Michigan Club Keno worked out exactly: what every spot game really pays back, whether the add-ons are worth it, and three ways to run a group night.",
+      tags: ["code"],
+      image: "",
+      about: [
+        "Club Keno is the Michigan Lottery's bar keno: 20 numbers drawn out of 80, and you pick anywhere from 1 to 10 of them. The ticket prints the odds, but it counts a $1 prize on a $1 bet as a win. This site works out what the paytable actually returns.",
+        "Spot games 2 through 10 all pay back between 63 and 66 cents per dollar in the long run. The 2-spot returns the most, 66.1 cents, but only pays about once every 17 draws. The 3-spot is the better balance: 65.2 cents, and a win of $2 or more about once every 6.5 draws. The 1-spot wins most often and returns the least, 50 cents, because its only prize is $2.",
+        "The add-ons get the same treatment. Plus 3 doubles the bet for three extra numbers, and it's a bad deal except on 8- and 9-spot. The Jack's value depends on how big the jackpot has grown. The Kicker can't be worked out at all, because Michigan doesn't publish how often each multiplier comes up. There's also a section on why doubling-up systems don't work: the bets grow fast, the $20-per-draw cap ends them within a few rounds, and no betting pattern changes the average. Every dollar still loses about 35 cents.",
+        "The rest is for a group night with a shared budget. There are three ladders: start small, move up a rung whenever a stage ends with the group behind, and stop as soon as the group is ahead. Each one is tested with 40,000 simulated nights, run in the browser. The 3-Spot Batch usually has the smallest busts and the best average, and The Climb gives the best shot at a big night. The night tracker is for the table: pick a ladder, tap each draw's result, and it says what to buy next and when to stop. The ladders often finish ahead, but the wins are small and the losses are large, and the page says so.",
+        "There's also a ticket simulator for playing with fake money, and the cashing rules from the back of the ticket. It's one HTML file with no server. It goes on the phone's home screen like an app and keeps working if the bar's signal drops. Not affiliated with the Michigan Lottery."
+      ],
+      facts: [
+        { label: "Started", value: "September 2026" },
+        { label: "Built with", value: "One HTML file, no server" },
+        { label: "Based on", value: "The Club Keno bet slip" },
+        { label: "Simulated", value: "40,000 nights per ladder" }
+      ],
+      links: [
+        { label: "Open the site", url: "keno/" }
+      ],
+      log: [
+        { date: "2026-09-22", title: "First version",
+          note: "Odds for every spot, the add-on math, three group-night ladders, a ticket simulator, and a night tracker for the table.",
+          photos: [] }
+      ]
+    },
+
+    {
       id: "remodel",
       page: true,
       title: "House remodel",
