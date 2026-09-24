@@ -3,88 +3,129 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>48240 Happy Hour Map</title>
-<meta name="description" content="Happy hours around 48240 — Redford, Livonia, Dearborn Heights, Farmington, west Detroit, Garden City, Westland, Dearborn, Inkster and Taylor. Pick a day and time to see what's running.">
-<meta name="theme-color" content="#1D6A4D" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0E1719" media="(prefers-color-scheme: dark)">
-<meta property="og:title" content="48240 Happy Hour Map">
-<meta property="og:description" content="Pick a day and time and see which west-side and Downriver happy hours are running, with deals and how recently each was confirmed.">
+<title>Clock Out</title>
+<meta name="description" content="Clock Out: Metro Detroit happy hours, right now. Pick a day and time to see what's running across the west side and Downriver, with deals, business hours and how recently each was confirmed.">
+<meta name="theme-color" content="#1D6A4D">
+<meta property="og:title" content="Clock Out">
+<meta property="og:description" content="Metro Detroit happy hours, right now.">
 <meta property="og:type" content="website">
 <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="img/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
+<script>try{var p=localStorage.getItem("clockout.pal");if(p){p=JSON.parse(p);document.documentElement.dataset.pal=p;document.documentElement.dataset.theme=/afterhours|lastcall|neondive|chrome|lakeeffect/.test(p)?"dark":"light";}}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/styles.css?v=2026-09-24-1">
 </head>
 <body>
 <div class="wrap">
 <header class="top">
   <div class="brand">
-    <div class="shield" aria-hidden="true">HH</div>
+    <div class="shield" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="16" r="12.5"/><path d="M16 8.5V16l5 3"/></svg></div>
     <div>
-      <h1>48240 Happy Hour Map</h1>
-      <p class="sub">Redford, Livonia, Dearborn Heights, Farmington, south Farmington Hills and west Detroit, fading south into Garden City, Westland, Dearborn, Inkster and Taylor (down to Eureka Rd).</p>
+      <h1>Clock Out</h1>
+      <p class="sub">Metro Detroit happy hours, right now.</p>
     </div>
   </div>
-  <div class="asof">Researched Sep 24, 2026</div>
+  <div class="headtools">
+    <span class="asof">Researched Sep 24, 2026</span>
+    <button class="iconbtn" id="palBtn" type="button" aria-label="Change color theme. Press and hold to pick one." title="Tap to cycle themes · press and hold to pick"><span class="swatch" aria-hidden="true"></span><span id="palName">Classic</span></button>
+    <button class="iconbtn" id="shareBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/></svg>Share</button>
+  </div>
 </header>
 
-<div class="controls" role="region" aria-label="Pick a day and time">
-  <div class="when">
-    <label class="lbl" for="day">Day</label>
-    <select id="day"></select>
-    <label class="lbl" for="time">Time</label>
-    <input id="time" type="time" step="900">
-    <button class="btn primary" id="nowBtn" type="button">Now</button>
+<div class="controls" id="controls" role="region" aria-label="Filters">
+  <div class="row">
+    <div class="seg" id="areaSeg" role="group" aria-label="Area">
+      <button type="button" data-area="all">All</button>
+      <button type="button" data-area="west">West Side</button>
+      <button type="button" data-area="downriver">Downriver</button>
+      <button type="button" data-area="near">Near me</button>
+    </div>
+    <div class="row" style="gap:8px">
+      <label class="lbl" for="day">Day</label>
+      <select id="day"></select>
+      <label class="lbl" for="time">Time</label>
+      <input id="time" type="time" step="900">
+      <button class="btn primary" id="nowBtn" type="button">Now</button>
+      <button class="chip" id="lateChip" type="button" aria-pressed="false">🌙 Late night</button>
+    </div>
+    <input type="search" id="q" placeholder="Search bars, roads, deals…" aria-label="Search bars, roads or deals" autocomplete="off">
   </div>
-  <div class="chips" id="typeChips" aria-label="Kinds of places"></div>
-  <div class="spacer"></div>
-  <div class="when">
-    <button class="chip" id="unvChip" type="button" aria-pressed="false">Include unverified</button>
-    <label class="lbl" for="sort">Sort</label>
-    <select id="sort">
-      <option value="ending">Ending soonest</option>
-      <option value="near">Nearest to 48240</option>
-      <option value="rating">Top rated</option>
-    </select>
+  <div class="row filterrow">
+    <div class="chips" id="typeChips" aria-label="Kinds of places"></div>
+    <span class="divider" aria-hidden="true"></span>
+    <div class="chips" id="dealChips" aria-label="Deals"></div>
+    <span class="divider" aria-hidden="true"></span>
+    <div class="chips">
+      <button class="chip" id="favChip" type="button" aria-pressed="false">★ Favorites</button>
+      <button class="chip" id="unvChip" type="button" aria-pressed="false">Include unverified</button>
+      <label class="lbl" for="sort" style="margin-left:4px">Sort</label>
+      <select id="sort">
+        <option value="ending">Ending soonest</option>
+        <option value="near">Nearest to me</option>
+        <option value="rating">Top rated</option>
+        <option value="cheap">Cheapest drinks</option>
+      </select>
+    </div>
   </div>
 </div>
 
 <div class="status" aria-live="polite">
-  <div class="big" id="bigStatus"></div>
-  <div class="meta" id="metaStatus"></div>
+  <div>
+    <div class="big" id="bigStatus"></div>
+    <div class="meta" id="metaStatus"></div>
+  </div>
+  <div class="actions">
+    <button class="btn primary" id="planBtn" type="button">Plan my night</button>
+    <button class="btn" id="surpriseBtn" type="button">🎲 Surprise me</button>
+  </div>
 </div>
 
 <div class="grid">
   <div class="mapbox" id="mapbox">
-    <svg id="map" viewBox="0 0 1000 1226" role="img" aria-label="Map of happy hours on the west side Mile-road grid"></svg>
+    <svg id="map" viewBox="0 0 1000 1226" role="img" aria-label="Map of happy hours across the west side and Downriver"></svg>
     <div class="maptools">
       <button type="button" id="zin" aria-label="Zoom in">+</button>
       <button type="button" id="zout" aria-label="Zoom out">−</button>
-      <button type="button" id="zreset" aria-label="Reset map" style="font-size:13px">⤢</button>
+      <button type="button" id="zreset" aria-label="Fit the selected area" style="font-size:13px">⤢</button>
     </div>
     <div class="tip" id="tip" hidden></div>
     <div class="legend">
       <span><i class="dot" style="background:var(--glow)"></i>Happy hour now</span>
       <span><i class="dot" style="border:2px solid var(--later)"></i>Later that day</span>
       <span><i class="dot" style="background:var(--idle)"></i>Other days / times</span>
-      <span><i class="dot" style="background:var(--ink);width:8px;height:8px"></i>48240 center</span>
+      <span id="youLegend" hidden><i class="dot" style="background:var(--sign);outline:2px solid var(--surface)"></i>You</span>
     </div>
   </div>
 
   <div id="lists">
-    <div class="section-h">Happy hour now <span class="n" id="nNow"></span></div>
-    <div class="list" id="listNow"></div>
-    <div class="section-h">Starting later <span id="laterDay"></span> <span class="n" id="nLater"></span></div>
-    <div class="list" id="listLater"></div>
-    <details class="more" id="unknownBox">
-      <summary><div class="section-h">Has happy hour, times unknown <span class="n" id="nUnknown"></span></div></summary>
-      <p class="where" style="margin:0 0 10px">These places advertise or are reviewed for a happy hour, but I couldn't find published times. Call before you go.</p>
-      <div class="list" id="listUnknown"></div>
-    </details>
+    <div class="tabs" role="tablist" aria-label="View">
+      <button type="button" role="tab" id="tabList" aria-selected="true" aria-controls="listView">List</button>
+      <button type="button" role="tab" id="tabTimeline" aria-selected="false" aria-controls="timelineView">Tonight timeline</button>
+    </div>
+    <div id="listView" role="tabpanel" aria-labelledby="tabList">
+      <div class="section-h">Happy hour now <span class="n" id="nNow"></span></div>
+      <div class="list" id="listNow"></div>
+      <div class="section-h">Starting later <span id="laterDay"></span> <span class="n" id="nLater"></span></div>
+      <div class="list" id="listLater"></div>
+      <details class="more" id="specialsBox">
+        <summary><div class="section-h"><span id="spDay">Today's</span> specials <span class="n" id="nSpecial"></span></div></summary>
+        <p class="where" style="margin:0 0 10px">Day-specific deals like taco nights and drink specials, whether or not they're during happy hour.</p>
+        <div class="list" id="listSpecial"></div>
+      </details>
+      <details class="more" id="unknownBox">
+        <summary><div class="section-h">Has happy hour, times unknown <span class="n" id="nUnknown"></span></div></summary>
+        <p class="where" style="margin:0 0 10px">These places advertise or are reviewed for a happy hour, but I couldn't find published times. Call before you go.</p>
+        <div class="list" id="listUnknown"></div>
+      </details>
+    </div>
+    <div id="timelineView" role="tabpanel" aria-labelledby="tabTimeline" hidden>
+      <div class="section-h">Every happy hour <span id="tlDay"></span> <span class="n" id="nTl"></span></div>
+      <div class="tl" id="timeline"></div>
+    </div>
   </div>
 </div>
 
@@ -95,20 +136,29 @@
       <li><b>Confirmed</b>: times come from the place's own site, its Google business listing, or a post or review from the last 12 months or so.</li>
       <li><b>Likely</b>: a chain's standard schedule, a third-party guide, or evidence 1–3 years old, or times I had to partly infer (marked "times approximate").</li>
       <li><b>Unverified</b>: only old listings or thin evidence. Hidden unless you turn on "Include unverified".</li>
+      <li>The dot next to "Why I think so" shows how fresh the evidence is: <b style="color:var(--fresh)">green</b> within 6 months, <b style="color:var(--mid)">amber</b> 6–18 months, <b style="color:var(--stale)">grey</b> older or undated.</li>
     </ul>
   </div>
   <div>
     <h2>Where this came from</h2>
-    <p>I pulled every bar, pub, restaurant with a bar, chain, brewery and lounge Google Maps shows in the area (about 550 results, trimmed to about 190 real candidates), then did the same sweep for Taylor down to Eureka Rd (about 45 more). For each one I checked Google's happy-hour tags and business hours, searched its Google reviews for "happy hour" and noted how recent they were, then checked official sites, Facebook and Instagram posts, and happy hour guides.</p>
+    <p>I pulled every bar, pub, restaurant with a bar, chain, brewery and lounge Google Maps shows across the west side (about 550 results, trimmed to about 190 real candidates), then did the same sweep for Taylor down to Eureka Rd (about 45 more). For each one I checked Google's happy-hour tags and business hours, searched its Google reviews for "happy hour" and noted how recent they were, then checked official sites, Facebook and Instagram posts, and happy hour guides.</p>
   </div>
   <div>
     <h2>Before you go</h2>
-    <p>Bars change specials often, and chain happy hours vary by location. Times ending after midnight count toward the night they start. Several older listings (Double OO Pub, J R's Lounge, La Chambre, Bar Louie Dearborn, Hooters Taylor) turned out to be permanently closed, and Cavill's Lounge and Points n Pints in Taylor are temporarily closed. All were dropped.</p>
+    <p><b>Researched Sep 24, 2026.</b></p>
+    <p>Bars change specials often, and chain happy hours vary by location. Times ending after midnight count toward the night they start. Happy hours are cut off at the bar's posted closing time, and hidden on days Google lists it as closed. See something wrong? Tap "Something changed?" on any card.</p>
+    <p>Drive times in "Plan my night" are rough estimates. Plan a safe ride home.</p>
   </div>
 </section>
 </div>
+
+<div class="pop" id="palPop" hidden role="dialog" aria-modal="true" aria-labelledby="palTitle"><div class="panel"><button class="x" type="button" data-close aria-label="Close">×</button><h2 id="palTitle">Pick a theme</h2><p class="where" style="margin:0">Tapping the theme button cycles light, dark, light, dark…</p><div class="palgrid" id="palGrid"></div></div></div>
+<div class="pop" id="planPop" hidden role="dialog" aria-modal="true" aria-labelledby="planTitle"><div class="panel"><button class="x" type="button" data-close aria-label="Close">×</button><h2 id="planTitle">Plan my night</h2><p class="where" style="margin:0" id="planSub"></p>
+  <div class="planrow"><label class="lbl" for="planStart">Start</label><input id="planStart" type="time" step="900"><label class="lbl" for="planStops">Stops</label><select id="planStops"><option>2</option><option selected>3</option></select><button class="btn" id="planShuffle" type="button">Shuffle</button><button class="btn primary" id="planMap" type="button">Show on map</button></div>
+  <div id="planOut"></div><p class="plan-note">Drive times are rough straight-line estimates. Hours and deals can change, so call ahead. Plan a safe ride home.</p></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <button type="button" class="totop" id="toTop" aria-label="Back to the map" tabindex="-1"><span aria-hidden="true">↑</span> Back to map</button>
-<script src="js/data.js"></script>
-<script src="js/app.js"></script>
+<script src="js/data.js?v=2026-09-24-1"></script>
+<script src="js/app.js?v=2026-09-24-1"></script>
 </body>
 </html>
