@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>48240 Happy Hour Map</title>
+<meta name="description" content="Happy hours around 48240 — Redford, Livonia, Dearborn Heights, Farmington, west Detroit, Garden City, Westland, Dearborn, Inkster and Taylor. Pick a day and time to see what's running.">
+<meta name="theme-color" content="#1D6A4D" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1719" media="(prefers-color-scheme: dark)">
+<meta property="og:title" content="48240 Happy Hour Map">
+<meta property="og:description" content="Pick a day and time and see which west-side and Downriver happy hours are running, with deals and how recently each was confirmed.">
+<meta property="og:type" content="website">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="img/icon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="brand">
+    <div class="shield" aria-hidden="true">HH</div>
+    <div>
+      <h1>48240 Happy Hour Map</h1>
+      <p class="sub">Redford, Livonia, Dearborn Heights, Farmington, south Farmington Hills and west Detroit, fading south into Garden City, Westland, Dearborn, Inkster and Taylor (down to Eureka Rd).</p>
+    </div>
+  </div>
+  <div class="asof">Researched Sep 24, 2026</div>
+</header>
+
+<div class="controls" role="region" aria-label="Pick a day and time">
+  <div class="when">
+    <label class="lbl" for="day">Day</label>
+    <select id="day"></select>
+    <label class="lbl" for="time">Time</label>
+    <input id="time" type="time" step="900">
+    <button class="btn primary" id="nowBtn" type="button">Now</button>
+  </div>
+  <div class="chips" id="typeChips" aria-label="Kinds of places"></div>
+  <div class="spacer"></div>
+  <div class="when">
+    <button class="chip" id="unvChip" type="button" aria-pressed="false">Include unverified</button>
+    <label class="lbl" for="sort">Sort</label>
+    <select id="sort">
+      <option value="ending">Ending soonest</option>
+      <option value="near">Nearest to 48240</option>
+      <option value="rating">Top rated</option>
+    </select>
+  </div>
+</div>
+
+<div class="status" aria-live="polite">
+  <div class="big" id="bigStatus"></div>
+  <div class="meta" id="metaStatus"></div>
+</div>
+
+<div class="grid">
+  <div class="mapbox" id="mapbox">
+    <svg id="map" viewBox="0 0 1000 1226" role="img" aria-label="Map of happy hours on the west side Mile-road grid"></svg>
+    <div class="maptools">
+      <button type="button" id="zin" aria-label="Zoom in">+</button>
+      <button type="button" id="zout" aria-label="Zoom out">−</button>
+      <button type="button" id="zreset" aria-label="Reset map" style="font-size:13px">⤢</button>
+    </div>
+    <div class="tip" id="tip" hidden></div>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--glow)"></i>Happy hour now</span>
+      <span><i class="dot" style="border:2px solid var(--later)"></i>Later that day</span>
+      <span><i class="dot" style="background:var(--idle)"></i>Other days / times</span>
+      <span><i class="dot" style="background:var(--ink);width:8px;height:8px"></i>48240 center</span>
+    </div>
+  </div>
+
+  <div id="lists">
+    <div class="section-h">Happy hour now <span class="n" id="nNow"></span></div>
+    <div class="list" id="listNow"></div>
+    <div class="section-h">Starting later <span id="laterDay"></span> <span class="n" id="nLater"></span></div>
+    <div class="list" id="listLater"></div>
+    <details class="more" id="unknownBox">
+      <summary><div class="section-h">Has happy hour, times unknown <span class="n" id="nUnknown"></span></div></summary>
+      <p class="where" style="margin:0 0 10px">These places advertise or are reviewed for a happy hour, but I couldn't find published times. Call before you go.</p>
+      <div class="list" id="listUnknown"></div>
+    </details>
+  </div>
+</div>
+
+<section class="about">
+  <div>
+    <h2>How to read the tags</h2>
+    <ul>
+      <li><b>Confirmed</b>: times come from the place's own site, its Google business listing, or a post or review from the last 12 months or so.</li>
+      <li><b>Likely</b>: a chain's standard schedule, a third-party guide, or evidence 1–3 years old, or times I had to partly infer (marked "times approximate").</li>
+      <li><b>Unverified</b>: only old listings or thin evidence. Hidden unless you turn on "Include unverified".</li>
+    </ul>
+  </div>
+  <div>
+    <h2>Where this came from</h2>
+    <p>I pulled every bar, pub, restaurant with a bar, chain, brewery and lounge Google Maps shows in the area (about 550 results, trimmed to about 190 real candidates), then did the same sweep for Taylor down to Eureka Rd (about 45 more). For each one I checked Google's happy-hour tags and business hours, searched its Google reviews for "happy hour" and noted how recent they were, then checked official sites, Facebook and Instagram posts, and happy hour guides.</p>
+  </div>
+  <div>
+    <h2>Before you go</h2>
+    <p>Bars change specials often, and chain happy hours vary by location. Times ending after midnight count toward the night they start. Several older listings (Double OO Pub, J R's Lounge, La Chambre, Bar Louie Dearborn, Hooters Taylor) turned out to be permanently closed, and Cavill's Lounge and Points n Pints in Taylor are temporarily closed. All were dropped.</p>
+  </div>
+</section>
+</div>
+<button type="button" class="totop" id="toTop" aria-label="Back to the map" tabindex="-1"><span aria-hidden="true">↑</span> Back to map</button>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
