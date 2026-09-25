@@ -99,7 +99,7 @@ input[type=search]{min-width:0;flex:1 1 200px;max-width:340px}
 @media (max-width:900px){.grid{grid-template-columns:1fr}}
 .mapbox{position:sticky;top:calc(var(--ctl-h,110px) + 10px);background:var(--mapbg);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 @media (max-width:900px){.mapbox{position:relative;top:0}}
-.mapbox svg{display:block;width:100%;height:auto;aspect-ratio:1000/1226;max-height:max(380px,calc(100vh - var(--ctl-h,110px) - 70px));touch-action:none;cursor:grab;user-select:none}
+.mapbox svg{display:block;width:100%;height:auto;aspect-ratio:1000/1551;max-height:max(380px,calc(100vh - var(--ctl-h,110px) - 70px));touch-action:none;cursor:grab;user-select:none}
 .mapbox svg.drag{cursor:grabbing}
 .maptools{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:6px}
 .maptools button{width:36px;height:36px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:18px;font-weight:700;line-height:1}

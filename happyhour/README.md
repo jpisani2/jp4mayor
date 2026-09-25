@@ -4,7 +4,7 @@
 A static website: plain HTML, CSS and JavaScript, with no build step and no server code.
 
 ```
-happy-hour-map/
+happyhour/
 ├── index.html          the page
 ├── css/styles.css      styling, including the 10 color palettes
 ├── js/data.js          the venue list (edit this to add/update places)
@@ -31,7 +31,7 @@ Each venue is one line in `js/data.js`. The fields:
 |---|---|
 | `id` | unique key |
 | `n` | name |
-| `c` | city. Taylor, Allen Park and Melvindale count as Downriver; Wayne, Northville and Plymouth get a "nearby" tag; everything else is West Side. |
+| `c` | city. Taylor, Allen Park, Melvindale, Lincoln Park, Ecorse, River Rouge, Wyandotte, Southgate, Riverview, Trenton, Romulus, Brownstown and Woodhaven count as Downriver; Wayne, Northville and Plymouth get a "nearby" tag; everything else is West Side. |
 | `a` | address |
 | `ll` | `[lat, lng]` |
 | `t` | type: `bar`, `rest`, `chain`, `brew`, `lounge` |
@@ -52,4 +52,4 @@ The deal filters (Margaritas, Wings, Half-off, Tacos, Music & karaoke, Pool) are
 ## Reports
 "Something changed?" on each card opens an email to bar@jp4mayor.com with the bar's details filled in. To change the address, edit `REPORT_TO` near the top of `js/app.js`.
 
-Research date: Sep 24, 2026.
+Research date: Sep 24, 2026 (Downriver added Sep 25, 2026).
