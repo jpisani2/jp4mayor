@@ -173,7 +173,9 @@ const labels=[];
 EW.forEach(r=>{const t=el("text",{x:8,y:Y(r[1])-6,fill:"var(--roadlabel)","font-family":FONT,"font-weight":"600","font-size":"17","letter-spacing":"1"},gLbl);t.textContent=r[0].toUpperCase();labels.push({t,kind:"ew",v:r[1],w0:r[2]});});
 DIAG.concat(HWY).forEach(r=>{if(!r[2])return;const t=el("text",{"text-anchor":"middle",fill:"var(--roadlabel)","font-family":FONT,"font-weight":"600","font-size":"17","letter-spacing":"1"},gLbl);t.textContent=r[0].toUpperCase();labels.push({t,kind:"pt",v:r[2]});});
 NSr.forEach(r=>{const t=el("text",{x:X(r[1])+5,y:H-10,fill:"var(--roadlabel)","font-family":FONT,"font-weight":"600","font-size":"17","letter-spacing":"1"},gLbl);t.textContent=r[0].toUpperCase();labels.push({t,kind:"ns",v:r[1],s0:r[2]});});
-svg.appendChild(gPlan);svg.appendChild(gMark);
+const gPlanTop=el("g",{style:"pointer-events:none"});const gSel=el("g",{style:"pointer-events:none;display:none"});
+svg.appendChild(gPlan);svg.appendChild(gMark);svg.appendChild(gPlanTop);svg.appendChild(gSel);
+const selRing=el("circle",{class:"selring",fill:"none",stroke:"var(--ink)"},gSel);const selTag=el("text",{fill:"var(--ink)",stroke:"var(--mapbg)","stroke-linejoin":"round","paint-order":"stroke","font-family":FONT,"font-weight":"800"},gSel);
 const you=el("g",{style:"display:none"},gMark);const youC=el("circle",{r:7,fill:"var(--sign)",stroke:"var(--surface)","stroke-width":3},you);const youR=el("circle",{r:16,fill:"none",stroke:"var(--sign)","stroke-width":2,opacity:.5},you);
 const markers={};
 VENUES.forEach(v=>{const g=el("g",{"data-id":v.id,style:"cursor:pointer"},gMark);const halo=el("circle",{cx:X(v.ll[1]),cy:Y(v.ll[0]),r:0,fill:"var(--glow)",class:"pulse"},g);const c=el("circle",{cx:X(v.ll[1]),cy:Y(v.ll[0]),r:6},g);const title=el("title",{},g);title.textContent=v.n;markers[v.id]={g,c,halo};g.addEventListener("click",e=>{e.stopPropagation();select(v.id,true);});});
@@ -184,16 +186,32 @@ function areaVB(){if(state.area==="near"&&state.me){const d=0.06;return boxVB(st
 function applyVB(){svg.setAttribute("viewBox",`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);const k=vb.w/W;
   labels.forEach(l=>{if(l.kind==="pt"){const x=X(l.v[1]),y=Y(l.v[0]);l.t.setAttribute("x",x);l.t.setAttribute("y",y);l.t.setAttribute("font-size",17*k);l.t.setAttribute("transform",`rotate(${l.v[2]} ${x} ${y}) translate(0 ${-9*k})`);return;}if(l.kind==="ew"){const low=Y(l.v)>vb.y+vb.h-105*k;l.t.setAttribute("x",Math.max(vb.x+(low?150:8)*k,l.w0!=null?X(l.w0)+8*k:-1e9));l.t.setAttribute("font-size",17*k);l.t.setAttribute("y",Y(l.v)-6*k);}else{const x=X(l.v)+5*k,y=Math.min(vb.y+vb.h-10*k,l.s0!=null?Y(l.s0)-10*k:1e9);l.t.setAttribute("x",x);l.t.setAttribute("y",y);l.t.setAttribute("font-size",17*k);l.t.setAttribute("transform",`rotate(-90 ${x} ${y})`);}});
   youC.setAttribute("r",7*k);youC.setAttribute("stroke-width",3*k);youR.setAttribute("r",16*k);youR.setAttribute("stroke-width",2*k);
-  gPlan.querySelectorAll("[data-k]").forEach(n=>{const t=n.dataset.k;if(t==="line")n.setAttribute("stroke-width",4*k),n.setAttribute("stroke-dasharray",`${10*k} ${7*k}`);if(t==="c")n.setAttribute("r",13*k);if(t==="t"){n.setAttribute("font-size",17*k);n.setAttribute("y",+n.dataset.cy+6*k);}});
+  svg.querySelectorAll("[data-k]").forEach(n=>{const t=n.dataset.k;if(t==="line")n.setAttribute("stroke-width",4*k),n.setAttribute("stroke-dasharray",`${10*k} ${7*k}`);if(t==="c")n.setAttribute("r",13*k);if(t==="t"){n.setAttribute("font-size",17*k);n.setAttribute("y",+n.dataset.cy+6*k);}});
   paintMarkers();}
-function zoom(f,cx,cy){const nw=Math.min(W*1.2,Math.max(W/8,vb.w*f));const nh=nw*H/W;if(cx==null){cx=vb.x+vb.w/2;cy=vb.y+vb.h/2;}vb.x=cx-(cx-vb.x)*nw/vb.w;vb.y=cy-(cy-vb.y)*nh/vb.h;vb.w=nw;vb.h=nh;applyVB();}
-function centerOn(ll,w){w=w||W/3.2;const h=w*H/W;vb={x:X(ll[1])-w/2,y:Y(ll[0])-h/2,w,h};applyVB();}
-$("zin").onclick=()=>zoom(0.7);$("zout").onclick=()=>zoom(1/0.7);$("zreset").onclick=()=>{vb=areaVB();applyVB();};
+let animId=0;function stopAnim(){if(animId){cancelAnimationFrame(animId);animId=0;}}
+function glideTo(t){stopAnim();const from={...vb};const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce){vb=t;applyVB();return;}const t0=performance.now(),D=480;
+  const step=now=>{const p=Math.min(1,(now-t0)/D),e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+    vb={x:from.x+(t.x-from.x)*e,y:from.y+(t.y-from.y)*e,w:from.w+(t.w-from.w)*e,h:from.h+(t.h-from.h)*e};applyVB();
+    animId=p<1?requestAnimationFrame(step):0;};animId=requestAnimationFrame(step);}
+/* Move the map to a place picked from the list/timeline. Stays put if it's already in view; otherwise
+   zooms out just enough to show it and the previously selected place (never zooms in, never past the full map). */
+const MX=.1,MT=.1,MB=.25;
+function inView(v){const x=X(v.ll[1]),y=Y(v.ll[0]);return x>=vb.x+vb.w*MX&&x<=vb.x+vb.w*(1-MX)&&y>=vb.y+vb.h*MT&&y<=vb.y+vb.h*(1-MB);}
+function focusPlace(id,prevId){const v=VENUES.find(x=>x.id===id);if(!v||inView(v))return;
+  const pv=prevId&&prevId!==id?VENUES.find(x=>x.id===prevId&&visible(x)):null;const pts=[v].concat(pv?[pv]:[]).map(p=>[X(p.ll[1]),Y(p.ll[0])]);
+  const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]),x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  let w=Math.max(vb.w,(x1-x0)/(1-2*MX),(y1-y0)/(1-MT-MB)*W/H);let t;
+  if(w>=W){t={x:0,y:0,w:W,h:H};}else{const h=w*H/W;t={x:(x0+x1)/2-w/2,y:(y0+y1)/2-h*(MT+(1-MT-MB)/2),w,h};}
+  glideTo(t);}
+function zoom(f,cx,cy){stopAnim();const nw=Math.min(W*1.2,Math.max(W/8,vb.w*f));const nh=nw*H/W;if(cx==null){cx=vb.x+vb.w/2;cy=vb.y+vb.h/2;}vb.x=cx-(cx-vb.x)*nw/vb.w;vb.y=cy-(cy-vb.y)*nh/vb.h;vb.w=nw;vb.h=nh;applyVB();}
+function centerOn(ll,w){stopAnim();w=w||W/3.2;const h=w*H/W;vb={x:X(ll[1])-w/2,y:Y(ll[0])-h/2,w,h};applyVB();}
+$("zin").onclick=()=>zoom(0.7);$("zout").onclick=()=>zoom(1/0.7);$("zreset").onclick=()=>{stopAnim();vb=areaVB();applyVB();};
 function fit(){const r=svg.getBoundingClientRect();const s=Math.min(r.width/vb.w,r.height/vb.h)||1;return{r,s,ox:(r.width-vb.w*s)/2,oy:(r.height-vb.h*s)/2};}
 function toUser(cx,cy){const f=fit();return{x:vb.x+(cx-f.r.left-f.ox)/f.s,y:vb.y+(cy-f.r.top-f.oy)/f.s};}
 svg.addEventListener("wheel",e=>{e.preventDefault();const p=toUser(e.clientX,e.clientY);zoom(e.deltaY>0?1.15:1/1.15,p.x,p.y);},{passive:false});
 let drag=null;const ptrs=new Map();
-svg.addEventListener("pointerdown",e=>{ptrs.set(e.pointerId,e);if(ptrs.size===1){drag={x:e.clientX,y:e.clientY,vx:vb.x,vy:vb.y,moved:false};}else drag=null;});
+svg.addEventListener("pointerdown",e=>{stopAnim();ptrs.set(e.pointerId,e);if(ptrs.size===1){drag={x:e.clientX,y:e.clientY,vx:vb.x,vy:vb.y,moved:false};}else drag=null;});
 svg.addEventListener("pointermove",e=>{if(ptrs.has(e.pointerId)){const prev=ptrs.get(e.pointerId);ptrs.set(e.pointerId,e);
   if(ptrs.size===2){const [a,b]=[...ptrs.values()];const o=[...ptrs.entries()].find(([k])=>k!==e.pointerId)[1];const d1=Math.hypot(prev.clientX-o.clientX,prev.clientY-o.clientY),d2=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);if(d1>0&&d2>0){const q=toUser((a.clientX+b.clientX)/2,(a.clientY+b.clientY)/2);zoom(d1/d2,q.x,q.y);}return;}}
   if(!drag)return;const f=fit();const dx=(e.clientX-drag.x)/f.s,dy=(e.clientY-drag.y)/f.s;if(!drag.moved&&Math.abs(e.clientX-drag.x)+Math.abs(e.clientY-drag.y)>4){drag.moved=true;svg.classList.add("drag");try{svg.setPointerCapture(e.pointerId)}catch(_){}}if(!drag.moved)return;vb.x=drag.vx-dx;vb.y=drag.vy-dy;svg.setAttribute("viewBox",`${vb.x} ${vb.y} ${vb.w} ${vb.h}`);});
@@ -205,11 +223,17 @@ let statusMap={};
 function paintMarkers(){const k=vb.w/W;VENUES.forEach(v=>{const m=markers[v.id];const st=statusMap[v.id];const show=visible(v);m.g.style.display=show?"":"none";if(!show)return;
   let r=5.5,fill="var(--idle)",stroke="var(--mapbg)",sw=1.5;if(st==="now"){r=9;fill="var(--glow)";stroke="var(--glow-ink)";}else if(st==="later"){r=7;fill="var(--mapbg)";stroke="var(--later)";sw=3;}else if(st==="unknown"){r=5;fill="var(--mapbg)";stroke="var(--idle)";sw=2;}
   if(favs.has(v.id)&&st!=="now"){stroke="var(--glow)";sw=Math.max(sw,2.5);}
-  if(state.sel===v.id){r+=4;sw+=1.5;stroke="var(--ink)";}
-  m.c.setAttribute("r",r*k);m.c.setAttribute("fill",fill);m.c.setAttribute("stroke",stroke);m.c.setAttribute("stroke-width",sw*k);m.halo.setAttribute("r",st==="now"?18*k:0);
+  const isSel=state.sel===v.id;if(isSel){r=19;fill="var(--ink)";stroke="var(--mapbg)";sw=4.5;}
+  m.c.setAttribute("r",r*k);m.c.setAttribute("fill",fill);m.c.setAttribute("stroke",stroke);m.c.setAttribute("stroke-width",sw*k);m.halo.setAttribute("r",st==="now"&&!isSel?18*k:0);
   if(st==="now")gMark.appendChild(m.g);});
   if(state.me){you.style.display="";you.setAttribute("transform",`translate(${X(state.me[1])} ${Y(state.me[0])})`);gMark.appendChild(you);}
-  if(state.sel&&markers[state.sel])gMark.appendChild(markers[state.sel].g);}
+  if(state.sel&&markers[state.sel])gMark.appendChild(markers[state.sel].g);paintSel();}
+function paintSel(){const v=state.sel&&VENUES.find(x=>x.id===state.sel);if(!v||!visible(v)){gSel.style.display="none";return;}
+  const k=vb.w/W,cx=X(v.ll[1]),cy=Y(v.ll[0]);gSel.style.display="";
+  selRing.setAttribute("cx",cx);selRing.setAttribute("cy",cy);selRing.setAttribute("r",19*k);selRing.setAttribute("stroke-width",4*k);
+  selTag.textContent=v.n;selTag.setAttribute("font-size",27*k);selTag.setAttribute("stroke-width",7*k);selTag.setAttribute("y",cy+9*k);
+  let tw=v.n.length*13*k;try{tw=selTag.getComputedTextLength()||tw;}catch(e){}
+  const right=cx+30*k+tw<=vb.x+vb.w-8*k;selTag.setAttribute("text-anchor",right?"start":"end");selTag.setAttribute("x",right?cx+30*k:cx-30*k);}
 
 function select(id,fromMap){state.sel=id;document.querySelectorAll(".card.sel").forEach(c=>c.classList.remove("sel"));const tip=$("tip");
   if(!id){tip.hidden=true;paintMarkers();return;}const v=VENUES.find(x=>x.id===id);if(!v)return;
@@ -232,7 +256,7 @@ unvChip.setAttribute("aria-pressed",state.unv);unvChip.onclick=()=>{state.unv=!s
 $("favChip").onclick=()=>{state.fav=!state.fav;$("favChip").setAttribute("aria-pressed",state.fav);if(state.fav&&!favs.size)toast("Tap the ☆ on any card to add favorites");render();};
 $("lateChip").onclick=()=>{state.late=!state.late;$("lateChip").setAttribute("aria-pressed",state.late);if(state.late&&state.t<20*60&&state.t>=5*60){state.t=21*60+30;syncTimeInputs();}render();};
 let qT;q.addEventListener("input",()=>{clearTimeout(qT);qT=setTimeout(()=>{state.q=q.value.trim().toLowerCase();render();},150);});
-function setArea(a,noZoom){state.area=a;document.querySelectorAll("#areaSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.area===a));if(a!=="near")save();if(!noZoom){vb=areaVB();applyVB();}render();}
+function setArea(a,noZoom){state.area=a;document.querySelectorAll("#areaSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.area===a));if(a!=="near")save();if(!noZoom){stopAnim();vb=areaVB();applyVB();}render();}
 document.querySelectorAll("#areaSeg button").forEach(b=>b.onclick=()=>{const a=b.dataset.area;if(a==="near"){locate(true);return;}setArea(a);});
 function locate(asArea){if(!navigator.geolocation){toast("Location isn't available in this browser");return;}
   toast("Finding you…");
@@ -243,9 +267,9 @@ function locate(asArea){if(!navigator.geolocation){toast("Location isn't availab
 const lists=$("lists");
 lists.addEventListener("click",e=>{const fb=e.target.closest("[data-fav]");if(fb){const id=fb.dataset.fav;if(favs.has(id))favs.delete(id);else favs.add(id);store.set("clockout.favs",[...favs]);
     document.querySelectorAll(`[data-fav="${id}"]`).forEach(b=>{b.setAttribute("aria-pressed",favs.has(id));b.setAttribute("aria-label",(favs.has(id)?"Remove from":"Add to")+" favorites");});toast(favs.has(id)?"Added to favorites":"Removed from favorites");if(state.fav)render();else paintMarkers();return;}
-  const row=e.target.closest(".tl-row");if(row){select(row.dataset.id,false);centerOn(VENUES.find(v=>v.id===row.dataset.id).ll,vb.w);return;}
-  if(e.target.closest("a,summary,details,button"))return;const c=e.target.closest(".card");if(c)select(c.dataset.id,false);});
-lists.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.classList.contains("card"))select(e.target.dataset.id,false);});
+  const row=e.target.closest(".tl-row");if(row){const pr=state.sel;select(row.dataset.id,false);focusPlace(row.dataset.id,pr);return;}
+  if(e.target.closest("a,summary,details,button"))return;const c=e.target.closest(".card");if(c){const pr=state.sel;select(c.dataset.id,false);focusPlace(c.dataset.id,pr);}});
+lists.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.classList.contains("card")){const pr=state.sel;select(e.target.dataset.id,false);focusPlace(e.target.dataset.id,pr);}});
 function setTab(t){state.tab=t;$("tabList").setAttribute("aria-selected",t==="list");$("tabTimeline").setAttribute("aria-selected",t==="timeline");$("listView").hidden=t!=="list";$("timelineView").hidden=t!=="timeline";render();}
 $("tabList").onclick=()=>setTab("list");$("tabTimeline").onclick=()=>setTab("timeline");
 
@@ -256,7 +280,7 @@ function sorter(kind){return(a,b)=>{const s=state.sort;
   if(s==="cheap"){const pa=a.v.pr?a.v.pr[0]:99,pb=b.v.pr?b.v.pr[0]:99;return pa-pb||(b.v.r||0)-(a.v.r||0);}
   if(kind==="now")return a.i.left-b.i.left||a.v.cf-b.v.cf;if(kind==="later")return a.i.s-b.i.s||a.v.cf-b.v.cf;return(b.v.r||0)-(a.v.r||0);};}
 let nowList=[],laterList=[];
-function render(){const d=state.day,t=state.t;statusMap={};const now=[],later=[],unknown=[],special=[];let otherDays=0;
+function render(){if(planKey!==null&&(routeKey()!==planKey||Math.abs(state.t-planT)>2))clearPlan();const d=state.day,t=state.t;statusMap={};const now=[],later=[],unknown=[],special=[];let otherDays=0;
   VENUES.forEach(v=>{const vis=visible(v);if(baseVisible(v)&&spFor(v,d).length)special.push({v});
     if(!v.win.length){statusMap[v.id]="unknown";if(vis)unknown.push({v});return;}
     const a=activeNow(v,d,t);if(a){statusMap[v.id]="now";if(vis)now.push({v,i:a});return;}
@@ -305,13 +329,17 @@ function showPlan(shuffle){const start=toMin($("planStart").value||hhmm(state.t)
   $("planSub").textContent=`${DAYS[state.day]} · ${state.area==="near"?"near you":AREAS[state.area].name}${state.deals.size?" · with your deal filters":""}${state.me?"":" · turn on Near me to start from your location"}`;
   if(!steps.length){$("planOut").innerHTML=`<div class="empty">Nothing lines up from ${fmtT(start)} on ${DAYS[state.day]}. Try an earlier start, another day or a different area.</div>`;return;}
   $("planOut").innerHTML=steps.map((s,i)=>`${i&&s.drive?`<div class="plan-drive">🚗 about ${s.drive} min drive (${s.dm.toFixed(1)} mi)</div>`:""}<div class="plan-step"><span class="num">${i+1}</span><div><h3>${esc(s.v.n)}</h3><div class="where">${esc(s.v.c)} · ${esc(s.v.a)}</div><div class="sched"><b>${fmtT(s.arrive)}–${fmtT(s.leave)}</b> · happy hour until ${fmtT(s.end)}</div>${spFor(s.v,state.day).map(x=>`<div class="special"><b>${DS[state.day]}:</b> ${esc(x.txt)}</div>`).join("")}${s.v.d?`<div class="deals">${esc(s.v.d)}</div>`:""}</div></div>`).join("");}
-function drawPlan(){gPlan.innerHTML="";if(!lastPlan||!lastPlan.length)return;const k=vb.w/W;
+let planKey=null,planT=0;
+function routeKey(){return [state.day,state.area,[...state.types].sort().join(),[...state.deals].sort().join(),state.unv,state.late,state.fav,state.q].join("|");}
+function clearPlan(){gPlan.innerHTML="";gPlanTop.innerHTML="";planKey=null;$("clearRoute").hidden=true;}
+function drawPlan(){clearPlan();if(!lastPlan||!lastPlan.length)return;planKey=routeKey();planT=state.t;$("clearRoute").hidden=false;const k=vb.w/W;
   const pts=lastPlan.map(s=>[X(s.v.ll[1]),Y(s.v.ll[0])]);
   if(pts.length>1)el("polyline",{"data-k":"line",points:pts.map(p=>p.join(",")).join(" "),fill:"none",stroke:"var(--ink)","stroke-width":4*k,"stroke-dasharray":`${10*k} ${7*k}`,"stroke-linecap":"round"},gPlan);
-  pts.forEach((p,i)=>{el("circle",{"data-k":"c",cx:p[0],cy:p[1],r:13*k,fill:"var(--ink)"},gPlan);const t=el("text",{"data-k":"t","data-cy":p[1],x:p[0],y:p[1]+6*k,"text-anchor":"middle",fill:"var(--bg)","font-family":FONT,"font-weight":"800","font-size":17*k},gPlan);t.textContent=i+1;});
-  const lats=lastPlan.map(s=>s.v.ll[0]),lngs=lastPlan.map(s=>s.v.ll[1]);vb=boxVB(Math.min(...lats)-0.01,Math.max(...lats)+0.01,Math.min(...lngs)-0.015,Math.max(...lngs)+0.015,0.15);applyVB();}
+  pts.forEach((p,i)=>{el("circle",{"data-k":"c",cx:p[0],cy:p[1],r:13*k,fill:"var(--ink)",stroke:"var(--mapbg)","stroke-width":2*k},gPlanTop);const t=el("text",{"data-k":"t","data-cy":p[1],x:p[0],y:p[1]+6*k,"text-anchor":"middle",fill:"var(--bg)","font-family":FONT,"font-weight":"800","font-size":17*k},gPlanTop);t.textContent=i+1;});
+  const lats=lastPlan.map(s=>s.v.ll[0]),lngs=lastPlan.map(s=>s.v.ll[1]);stopAnim();vb=boxVB(Math.min(...lats)-0.01,Math.max(...lats)+0.01,Math.min(...lngs)-0.015,Math.max(...lngs)+0.015,0.15);applyVB();}
 $("planBtn").onclick=()=>{$("planStart").value=hhmm(state.t);showPlan(false);openPop("planPop");};
 $("planStart").onchange=()=>showPlan(false);$("planStops").onchange=()=>showPlan(false);$("planShuffle").onclick=()=>showPlan(true);
+$("clearRoute").onclick=()=>{clearPlan();toast("Route cleared");};
 $("planMap").onclick=()=>{closePop("planPop");drawPlan();if(lastPlan&&lastPlan.length){select(lastPlan[0].v.id,false);toast("Your route is on the map");document.getElementById("mapbox").scrollIntoView({behavior:"smooth",block:"nearest"});}};
 
 /* ---------- popups & toast ---------- */
@@ -361,8 +389,8 @@ window.addEventListener("resize",fitCtl);
 /* ---------- start ---------- */
 const fromLink=readParams();
 document.querySelectorAll("#areaSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.area===state.area));
-vb=areaVB();applyVB();
+stopAnim();vb=areaVB();applyVB();
 if(fromLink){syncTimeInputs();render();}else setNow();
-setInterval(()=>{const n=new Date();const tm=n.getHours()*60+n.getMinutes();if(+daySel.value===n.getDay()&&Math.abs(state.t-tm)<=2&&tm!==state.t){state.t=tm;syncTimeInputs();render();}},60000);
+setInterval(()=>{const n=new Date();const tm=n.getHours()*60+n.getMinutes();if(+daySel.value===n.getDay()&&Math.abs(state.t-tm)<=2&&tm!==state.t){state.t=tm;if(planKey!==null)planT=tm;syncTimeInputs();render();}},60000);
 try{if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol)&&window.top===window.self)navigator.serviceWorker.register("sw.js").catch(()=>{});}catch(e){}
 })();
