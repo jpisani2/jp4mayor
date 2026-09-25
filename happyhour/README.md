@@ -6,9 +6,11 @@ A static website: plain HTML, CSS and JavaScript, with no build step and no serv
 ```
 happyhour/
 ├── index.html          the page
+├── check.html          data checker: open after editing js/data.js
 ├── css/styles.css      styling, including the 10 color palettes
-├── js/data.js          the venue list (edit this to add/update places)
+├── js/data.js          the venue list and city→area lists (edit this to add/update places)
 ├── js/app.js           map, filters, list, timeline, planner, themes
+├── js/check.js         the rules check.html runs
 ├── sw.js               offline support (caches the site on phones)
 ├── img/                favicon + app icons
 └── site.webmanifest    lets phones "Add to Home Screen" like an app
@@ -18,27 +20,31 @@ happyhour/
 Double-click `index.html`. Everything works from the folder except two things that need a real web address: offline mode and Share links. Fonts need internet; without it the page falls back to system fonts.
 
 ## Put it online (free options)
-- **Netlify Drop:** go to app.netlify.com/drop and drag the whole `happy-hour-map` folder onto the page. You get a public link in seconds.
+- **Netlify Drop:** go to app.netlify.com/drop and drag the whole `happyhour` folder onto the page. You get a public link in seconds.
 - **GitHub Pages:** create a repo, upload the contents of this folder, then turn on Settings → Pages → "Deploy from branch" (main, root).
 - **Cloudflare Pages:** create a project, choose "Upload assets", and upload the folder.
 
-After you change files on a live site, open `sw.js` and change the `VERSION` line (any new text works) so phones pick up the update. Do the same for the `?v=` numbers in `index.html`.
+After you change files on a live site, change the three `?v=` values in `index.html` (find-and-replace the old one; any new text works, e.g. `2026-10-02-1`). That's the only place the version lives: the offline cache in `sw.js` picks it up from there. Venue data and the page itself are always fetched fresh when online, so a data update still reaches people if you forget; styling and app changes reach them one visit later.
 
 ## Updating a place
-Each venue is one line in `js/data.js`. The fields:
+Each venue is one line in `js/data.js`. After editing, open `check.html` (double-click it, or visit `/check.html` on the live site). It lists **errors** (the venue will show wrong or not at all, e.g. a bad time, a city that isn't listed, coordinates off the map) and **warnings** (probably a mistake, e.g. a happy hour on a day the business hours say it's closed). Fix the errors before you publish.
+
+A new city has to be added to `AREA_CITIES` at the top of `js/data.js` under `west` or `downriver` (and to `NEARBY_CITIES` if it should get the "nearby" tag).
+
+The fields:
 
 | field | meaning |
 |---|---|
 | `id` | unique key |
 | `n` | name |
-| `c` | city. Taylor, Allen Park, Melvindale, Lincoln Park, Ecorse, River Rouge, Wyandotte, Southgate, Riverview, Trenton, Romulus, Brownstown and Woodhaven count as Downriver; Wayne, Northville and Plymouth get a "nearby" tag; everything else is West Side. |
+| `c` | city. Must be listed in `AREA_CITIES` at the top of `js/data.js`, which decides whether it's West Side or Downriver. |
 | `a` | address |
 | `ll` | `[lat, lng]` |
 | `t` | type: `bar`, `rest`, `chain`, `brew`, `lounge` |
 | `r`, `rc` | Google rating and review count |
 | `ph` | phone (powers the Call button) |
 | `w` | website |
-| `hh` | happy-hour windows `["days","start","end","label"]`, where days are digits 0=Sun … 6=Sat. Example: `["12345","15:00","18:00"]` = Mon–Fri 3–6pm. Times past midnight go above 24:00 (`"26:00"` = 2am). An empty list means "has happy hour, times unknown". |
+| `hh` | happy-hour windows `["days","start","end","label"]`, where days are digits 0=Sun … 6=Sat. Example: `["12345","15:00","18:00"]` = Mon–Fri 3–6pm. Times past midnight go above 24:00 (`"26:00"` = 2am). A happy hour that starts at or after midnight (`"24:00"`) goes on the night it belongs to, e.g. Friday for early Saturday morning. An empty list means "has happy hour, times unknown". |
 | `ap` | `1` = times approximate |
 | `d` | everyday deals (shown every day) |
 | `sp` | day-specific specials `["days","text"]`, e.g. `["2","$1.99 Taco Tuesday"]`. These only show on those days. |

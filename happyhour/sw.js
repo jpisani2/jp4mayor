@@ -1,12 +1,22 @@
-/* Clock Out offline cache. Bump VERSION when site files change. */
-const VERSION="clockout-2026-09-25-3";
-const FILES=["./","index.html","css/styles.css?v=2026-09-25-3","js/data.js?v=2026-09-25-3","js/app.js?v=2026-09-25-3","img/favicon.svg","img/icon-192.png","site.webmanifest"];
+/* Clock Out offline cache. The version comes from the ?v= that app.js registers this file with,
+   which it takes from the ?v= on its own <script> tag, so index.html is the only place to bump it. */
+const V=new URL(location.href).searchParams.get("v")||"dev";
+const VERSION="clockout-"+V;
+const FILES=["./","index.html","css/styles.css?v="+V,"js/data.js?v="+V,"js/app.js?v="+V,"img/favicon.svg","img/icon-192.png","site.webmanifest"];
+
+function put(req,res){if(res&&res.ok){const cp=res.clone();caches.open(VERSION).then(c=>c.put(req,cp));}return res;}
+/* network first, cache when offline (ignoreSearch so any cached ?v= still works offline) */
+function networkFirst(req,fallback){return fetch(req).then(r=>put(req,r)).catch(()=>caches.match(req,{ignoreSearch:true}).then(r=>r||(fallback&&caches.match(fallback))));}
+/* serve from cache right away, refresh the cache in the background */
+function staleWhileRevalidate(req){return caches.match(req).then(hit=>{const net=fetch(req).then(r=>put(req,r));if(hit){net.catch(()=>{});return hit;}return net;});}
+
 self.addEventListener("install",e=>{e.waitUntil(caches.open(VERSION).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()));});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==VERSION).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener("fetch",e=>{const req=e.request;if(req.method!=="GET")return;const url=new URL(req.url);
   if(url.origin===location.origin){
-    // pages: network first so updates show up; fall back to cache offline
-    if(req.mode==="navigate"){e.respondWith(fetch(req).then(r=>{const cp=r.clone();caches.open(VERSION).then(c=>c.put(req,cp));return r;}).catch(()=>caches.match(req).then(r=>r||caches.match("index.html"))));return;}
-    e.respondWith(caches.match(req).then(r=>r||fetch(req).then(res=>{const cp=res.clone();caches.open(VERSION).then(c=>c.put(req,cp));return res;})));return;}
-  if(/fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)){e.respondWith(caches.match(req).then(r=>r||fetch(req).then(res=>{const cp=res.clone();caches.open(VERSION).then(c=>c.put(req,cp));return res;}).catch(()=>r)));}
+    // pages and venue data: always try for the latest, so an update shows up even if a ?v= bump is missed
+    if(req.mode==="navigate"){e.respondWith(networkFirst(req,"index.html"));return;}
+    if(url.pathname.endsWith("/js/data.js")){e.respondWith(networkFirst(req));return;}
+    e.respondWith(staleWhileRevalidate(req));return;}
+  if(/fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)){e.respondWith(caches.match(req).then(r=>r||fetch(req).then(res=>{if(res.ok||res.type==="opaque"){const cp=res.clone();caches.open(VERSION).then(c=>c.put(req,cp));}return res;})));}
 });

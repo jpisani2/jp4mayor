@@ -1,5 +1,13 @@
 /* Clock Out — venue data. Researched Sep 24, 2026; Downriver added Sep 25, 2026.
    One place per line. See README.md for what each field means. */
+
+/* Which area filter each city belongs to. Every venue's `c` must be listed here; check.html flags any that aren't.
+   NEARBY_CITIES are West Side cities just outside the core area; their cards get a "nearby" tag. */
+const AREA_CITIES={
+  west:["Livonia","Dearborn","Dearborn Heights","Inkster","Westland","Garden City","West Detroit","Farmington","Farmington Hills","Redford","Wayne","Northville","Plymouth"],
+  downriver:["Taylor","Allen Park","Melvindale","Lincoln Park","Ecorse","River Rouge","Wyandotte","Southgate","Riverview","Trenton","Romulus","Brownstown","Woodhaven"]};
+const NEARBY_CITIES=["Wayne","Northville","Plymouth"];
+
 const VENUES=[
 {id:"blacklabel",n:"The Black Label Tavern",c:"Livonia",a:"34110 Plymouth Rd",ll:[42.3685,-83.3803],t:"rest",r:4.3,rc:2857,ph:"(734) 469-2400",w:"https://blacklabeltavern.com/livonia-black-label-tavern-happy-hour-menu",hh:[["12345","15:00","18:00"]],d:"$4 wells, $6 house wine, $8 house martinis, domestic bottle specials, half-off select apps.",sp:[["4","Ladies Night 7–11pm"]],pr:[4,"cocktails"],cf:1,ev:"Google business listing shows Mon–Fri 3–6. Reviews from Mar and May 2026 mention the happy hour menu. Prices via the 4PM Detroit guide.",dt:"May 2026"},
 {id:"3nickssports",n:"3 Nicks Sports Bar",c:"Dearborn",a:"4822 Greenfield Rd",ll:[42.321,-83.195],t:"bar",r:4.4,rc:407,ph:"(313) 551-3526",w:"https://3nicksbars.com",hh:[["12345","15:00","19:00"]],d:"Drink and appetizer specials.",cf:1,ev:"Google business listing: Mon–Fri 3–7. The 3 Nicks site says 'happy hour every Monday–Friday 3–7'.",dt:"2026"},

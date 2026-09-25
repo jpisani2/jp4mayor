@@ -7,8 +7,10 @@ const TYPES={bar:"Bars & pubs",rest:"Restaurants",chain:"Chains",brew:"Breweries
 const TYPE1={bar:"Bar / pub",rest:"Restaurant",chain:"Chain",brew:"Brewery / wine bar",lounge:"Lounge"};
 const CF={1:"Confirmed",2:"Likely",3:"Unverified"};
 const REPORT_TO="bar@jp4mayor.com";
-const DOWNRIVER=new Set(["Taylor","Allen Park","Melvindale","Lincoln Park","Ecorse","River Rouge","Wyandotte","Southgate","Riverview","Trenton","Romulus","Brownstown","Woodhaven"]);
-const NEARBY=new Set(["Wayne","Northville","Plymouth"]);
+const DOWNRIVER=new Set(AREA_CITIES.downriver);
+const NEARBY=new Set(NEARBY_CITIES);
+/* version from this script's ?v=, so index.html is the only place it's set */
+const VERSION=(document.currentScript&&new URL(document.currentScript.src).searchParams.get("v"))||"dev";
 const AREAS={all:{name:"All areas",box:[42.118,42.492,-83.452,-83.122]},west:{name:"West Side",box:[42.255,42.492,-83.452,-83.122]},downriver:{name:"Downriver",box:[42.118,42.295,-83.415,-83.125]}};
 const DEALS=[
   {k:"marg",lab:"Margaritas",re:/margarit|\brita\b|ritas\b/i},
@@ -71,7 +73,8 @@ function activeNow(v,d,t){let best=null;const prev=(d+6)%7;
   for(const w of effWins(v,d)){if(w.s<=t&&t<w.e){const left=w.e-t;if(!best||left>best.left)best={w,left,end:w.e};}}
   for(const w of effWins(v,prev)){if(w.e>1440&&t+1440>=w.s&&t+1440<w.e){const left=w.e-(t+1440);if(!best||left>best.left)best={w,left,end:w.e};}}
   return best;}
-function laterToday(v,d,t){let best=null;for(const w of effWins(v,d)){if(w.s>t&&w.s<1440){if(!best||w.s<best.s)best={w,s:w.s};}}return best;}
+/* includes windows starting after midnight (e.g. "24:00"), which belong to that night */
+function laterToday(v,d,t){let best=null;for(const w of effWins(v,d)){if(w.s>t){if(!best||w.s<best.s)best={w,s:w.s};}}return best;}
 function openInfo(v,d,t){if(!v.hoD)return null;const today=v.hoD[d],prev=v.hoD[(d+6)%7];
   if(prev)for(const r of prev){if(r[1]>1440&&t+1440<r[1])return{open:true,until:r[1]};}
   if(today===null)return null;if(today.length===0)return{closedDay:true};
@@ -88,7 +91,7 @@ function lateOK(v,d){return effWins(v,d).some(w=>w.s>=1200||w.e>=1320)||effWins(
 
 /* ---------- state ---------- */
 const saved=store.get("clockout.state",{});
-const state={day:0,t:0,types:new Set(saved.types||Object.keys(TYPES)),deals:new Set(saved.deals||[]),unv:!!saved.unv,sort:saved.sort||"ending",area:saved.area&&saved.area!=="near"?saved.area:"all",q:"",late:false,fav:false,sel:null,me:null,tab:"list"};
+const state={day:0,t:0,types:new Set(saved.types||Object.keys(TYPES)),deals:new Set(saved.deals||[]),unv:!!saved.unv,sort:saved.sort||"ending",area:saved.area&&saved.area!=="near"?saved.area:"all",q:"",late:false,fav:false,sel:null,me:null,tab:"list",live:false};
 let favs=new Set(store.get("clockout.favs",[]));
 function save(){store.set("clockout.state",{types:[...state.types],deals:[...state.deals],unv:state.unv,sort:state.sort,area:state.area});}
 
@@ -247,14 +250,17 @@ DAYS.forEach((d,i)=>{const o=document.createElement("option");o.value=i;o.textCo
 Object.entries(TYPES).forEach(([k,lab])=>{const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=lab;b.setAttribute("aria-pressed",state.types.has(k));b.onclick=()=>{if(state.types.has(k))state.types.delete(k);else state.types.add(k);b.setAttribute("aria-pressed",state.types.has(k));save();render();};$("typeChips").appendChild(b);});
 DEALS.forEach(d=>{const b=document.createElement("button");b.type="button";b.className="chip deal";b.textContent=d.lab;b.dataset.k=d.k;b.setAttribute("aria-pressed",state.deals.has(d.k));b.onclick=()=>{if(state.deals.has(d.k))state.deals.delete(d.k);else state.deals.add(d.k);b.setAttribute("aria-pressed",state.deals.has(d.k));save();render();};$("dealChips").appendChild(b);});
 function syncTimeInputs(){daySel.value=state.day;timeIn.value=hhmm(state.t);}
-function setNow(){const n=new Date();state.day=n.getDay();state.t=n.getHours()*60+n.getMinutes();syncTimeInputs();render();}
-daySel.onchange=()=>{state.day=+daySel.value;render();};
-timeIn.onchange=()=>{if(timeIn.value){state.t=toMin(timeIn.value);render();}};
+/* "live" = following the clock. Set by Now; picking a day or time by hand turns it off. */
+function setNow(){const n=new Date();state.live=true;state.day=n.getDay();state.t=n.getHours()*60+n.getMinutes();syncTimeInputs();render();}
+function tick(){if(!state.live)return;const n=new Date();const d=n.getDay(),tm=n.getHours()*60+n.getMinutes();if(d===state.day&&tm===state.t)return;
+  const keepPlan=planKey!==null;state.day=d;state.t=tm;if(keepPlan){planKey=routeKey();planT=tm;}syncTimeInputs();render();}
+daySel.onchange=()=>{state.live=false;state.day=+daySel.value;render();};
+timeIn.onchange=()=>{if(timeIn.value){state.live=false;state.t=toMin(timeIn.value);render();}};
 $("nowBtn").onclick=setNow;
 sortSel.value=state.sort;sortSel.onchange=()=>{state.sort=sortSel.value;if(state.sort==="near"&&!state.me)locate(false);save();render();};
 unvChip.setAttribute("aria-pressed",state.unv);unvChip.onclick=()=>{state.unv=!state.unv;unvChip.setAttribute("aria-pressed",state.unv);save();render();};
 $("favChip").onclick=()=>{state.fav=!state.fav;$("favChip").setAttribute("aria-pressed",state.fav);if(state.fav&&!favs.size)toast("Tap the ☆ on any card to add favorites");render();};
-$("lateChip").onclick=()=>{state.late=!state.late;$("lateChip").setAttribute("aria-pressed",state.late);if(state.late&&state.t<20*60&&state.t>=5*60){state.t=21*60+30;syncTimeInputs();}render();};
+$("lateChip").onclick=()=>{state.late=!state.late;$("lateChip").setAttribute("aria-pressed",state.late);if(state.late&&state.t<20*60&&state.t>=5*60){state.live=false;state.t=21*60+30;syncTimeInputs();}render();};
 let qT;q.addEventListener("input",()=>{clearTimeout(qT);qT=setTimeout(()=>{state.q=q.value.trim().toLowerCase();render();},150);});
 function setArea(a,noZoom){state.area=a;document.querySelectorAll("#areaSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.area===a));if(a!=="near")save();if(!noZoom){stopAnim();vb=areaVB();applyVB();}render();}
 document.querySelectorAll("#areaSeg button").forEach(b=>b.onclick=()=>{const a=b.dataset.area;if(a==="near"){locate(true);return;}setArea(a);});
@@ -301,7 +307,7 @@ function render(){if(planKey!==null&&(routeKey()!==planKey||Math.abs(state.t-pla
   fitCtl();}
 
 function renderTimeline(){const d=state.day,t=state.t,A=600,Z=1560,span=Z-A;const pc=m=>Math.max(0,Math.min(100,(m-A)/span*100));
-  const rows=[];VENUES.forEach(v=>{if(!visible(v))return;const ws=effWins(v,d).filter(w=>w.s<1440);if(ws.length)rows.push({v,ws,s:Math.min(...ws.map(w=>w.s))});});
+  const rows=[];VENUES.forEach(v=>{if(!visible(v))return;const ws=effWins(v,d).filter(w=>w.s<Z);if(ws.length)rows.push({v,ws,s:Math.min(...ws.map(w=>w.s))});});
   rows.sort((a,b)=>a.s-b.s||a.ws[0].e-b.ws[0].e);$("tlDay").textContent="on "+DAYS[d];$("nTl").textContent=rows.length;
   const ticks=[[600,"10a"],[720,"noon"],[900,"3p"],[1080,"6p"],[1260,"9p"],[1440,"12a"],[1560,"2a"]];
   const nowL=t>=A&&t<=Z?`<span class="nowline" style="left:${pc(t)}%"></span>`:"";
@@ -391,6 +397,8 @@ const fromLink=readParams();
 document.querySelectorAll("#areaSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.area===state.area));
 stopAnim();vb=areaVB();applyVB();
 if(fromLink){syncTimeInputs();render();}else setNow();
-setInterval(()=>{const n=new Date();const tm=n.getHours()*60+n.getMinutes();if(+daySel.value===n.getDay()&&Math.abs(state.t-tm)<=2&&tm!==state.t){state.t=tm;if(planKey!==null)planT=tm;syncTimeInputs();render();}},60000);
-try{if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol)&&window.top===window.self)navigator.serviceWorker.register("sw.js").catch(()=>{});}catch(e){}
+/* phones pause timers in the background, so also catch up whenever the page is shown again */
+setInterval(tick,20000);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)tick();});addEventListener("pageshow",tick);
+try{if("serviceWorker" in navigator&&/^https?:$/.test(location.protocol)&&window.top===window.self)navigator.serviceWorker.register("sw.js?v="+encodeURIComponent(VERSION)).catch(()=>{});}catch(e){}
 })();

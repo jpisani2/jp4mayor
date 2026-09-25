@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Clock Out data check</title>
+<style>
+  :root{--bg:#EEF2EF;--ink:#14231C;--muted:#5A6B62;--ok:#1D6A4D;--meh:#9A6300;--bad:#B3261E;--line:#D5DDD8}
+  @media (prefers-color-scheme:dark){:root{--bg:#0E1719;--ink:#E4ECE8;--muted:#93A39B;--ok:#56B88C;--meh:#F2B23A;--bad:#FF8A80;--line:#24343A}}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+  main{max-width:860px;margin:0 auto;padding:24px 16px 48px}
+  h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:28px 0 2px}
+  .meta{color:var(--muted);margin:0 0 8px}
+  .sum{font-size:20px;font-weight:700;margin:16px 0 4px}.ok{color:var(--ok)}.meh{color:var(--meh)}.bad{color:var(--bad)}
+  ul{padding:0;list-style:none;margin:0}li{padding:8px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+  code{color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Clock Out data check</h1>
+  <p class="meta">Checks <code>js/data.js</code>. Reload this page after each edit.</p>
+  <div id="out"><p class="sum bad">The check didn't run.</p></div>
+</main>
+<script>
+/* a typo in data.js (like a missing comma) stops it loading at all; say so plainly */
+let failed=false;
+addEventListener("error",e=>{if(failed)return;failed=true;const inData=/data\.js/.test(e.filename||"");
+  document.getElementById("out").innerHTML='<p class="sum bad"></p><p class="meta"></p>';
+  document.querySelector("#out .sum").textContent=inData?"js/data.js has a syntax error, so the site won’t load.":"The check itself hit an error.";
+  document.querySelector("#out .meta").textContent=(e.message||"")+(e.lineno?" (line "+e.lineno+")":"");});
+</script>
+<script src="js/data.js"></script>
+<script src="js/check.js"></script>
+</body>
+</html>
