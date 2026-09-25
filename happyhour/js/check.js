@@ -2,10 +2,9 @@
    Errors: the app will show something wrong or nothing at all. Warnings: probably a mistake, worth a look. */
 (function(){
 "use strict";
-/* keep in step with TYPES and the map bounds (LAT0/LAT1/LNG0/LNG1) in js/app.js */
-const TYPES=["bar","rest","chain","brew","lounge"];
-const BOUNDS={lat0:42.1179,lat1:42.492,lng0:-83.452,lng1:-83.122};
-const DAYS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const TYPES=Object.keys(CO.config.TYPES);
+const BOUNDS=CO.config.MAP;
+const DAYS=CO.config.DS;
 
 const errors=[],warnings=[];
 const err=(v,msg)=>errors.push({id:v&&v.id,n:v&&v.n,msg}),warn=(v,msg)=>warnings.push({id:v&&v.id,n:v&&v.n,msg});

@@ -13,11 +13,13 @@
 <link rel="icon" href="img/icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
-<script>try{var p=localStorage.getItem("clockout.pal");if(p){p=JSON.parse(p);document.documentElement.dataset.pal=p;document.documentElement.dataset.theme=/afterhours|lastcall|neondive|chrome|lakeeffect/.test(p)?"dark":"light";}}catch(e){}</script>
+<script src="js/config.js?v=2026-09-25-5"></script>
+<script>/* apply the saved theme before the page draws, so it doesn't flash */
+try{var p=JSON.parse(localStorage.getItem("clockout.pal"));var pal=CO.config.PALS.filter(function(x){return x.id===p;})[0];if(pal){document.documentElement.dataset.pal=pal.id;document.documentElement.dataset.theme=pal.dark?"dark":"light";}}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="css/styles.css?v=2026-09-25-4">
+<link rel="stylesheet" href="css/styles.css?v=2026-09-25-5">
 </head>
 <body>
 <div class="wrap">
@@ -159,7 +161,19 @@
   <div id="planOut"></div><p class="plan-note">Drive times are rough straight-line estimates. Hours and deals can change, so call ahead. Plan a safe ride home.</p></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <button type="button" class="totop" id="toTop" aria-label="Back to the map" tabindex="-1"><span aria-hidden="true">↑</span> Back to map</button>
-<script src="js/data.js?v=2026-09-25-4"></script>
-<script src="js/app.js?v=2026-09-25-4"></script>
+<!-- order matters: each file uses what the ones above it set up (see js/config.js).
+     To publish an update, change every ?v= in this file to the same new value. -->
+<script src="js/data.js?v=2026-09-25-5"></script>
+<script src="js/util.js?v=2026-09-25-5"></script>
+<script src="js/hours.js?v=2026-09-25-5"></script>
+<script src="js/venues.js?v=2026-09-25-5"></script>
+<script src="js/state.js?v=2026-09-25-5"></script>
+<script src="js/cards.js?v=2026-09-25-5"></script>
+<script src="js/map.js?v=2026-09-25-5"></script>
+<script src="js/plan.js?v=2026-09-25-5"></script>
+<script src="js/lists.js?v=2026-09-25-5"></script>
+<script src="js/themes.js?v=2026-09-25-5"></script>
+<script src="js/share.js?v=2026-09-25-5"></script>
+<script src="js/app.js?v=2026-09-25-5"></script>
 </body>
 </html>

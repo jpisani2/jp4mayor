@@ -9,22 +9,49 @@ happyhour/
 ├── check.html          data checker: open after editing js/data.js
 ├── css/styles.css      styling, including the 10 color palettes
 ├── js/data.js          the venue list and city→area lists (edit this to add/update places)
-├── js/app.js           map, filters, list, timeline, planner, themes
-├── js/check.js         the rules check.html runs
+├── js/                 the app, one job per file (see "How the code is organized")
 ├── sw.js               offline support (caches the site on phones)
 ├── img/                favicon + app icons
-└── site.webmanifest    lets phones "Add to Home Screen" like an app
+├── site.webmanifest    lets phones "Add to Home Screen" like an app
+└── tools/serve.ps1     a local web server for testing (nothing to install)
 ```
 
 ## Open it on your computer
 Double-click `index.html`. Everything works from the folder except two things that need a real web address: offline mode and Share links. Fonts need internet; without it the page falls back to system fonts.
+
+To test those two as well, run a local web server from PowerShell, then open http://localhost:8765/ (Ctrl+C stops it):
+
+```
+powershell -ExecutionPolicy Bypass -File tools\serve.ps1
+```
+
+## How the code is organized
+Plain scripts, no build step and nothing to install. Each file in `js/` does one job and shares it on `window.CO` (for example `CO.hours`); later files use what earlier ones shared. `index.html` loads them in this order:
+
+| file | what it does |
+|---|---|
+| `config.js` | names, areas, map bounds, deal filters and themes; loaded in `<head>` and by `check.html` |
+| `data.js` | the venues and which area each city is in |
+| `util.js` | formatting, distance, saved settings, toast, pop-ups, layout |
+| `hours.js` | time logic: business hours, happy-hour windows, what's running when |
+| `venues.js` | gets the venue data ready once on load |
+| `state.js` | what the user has picked, and which venues pass the filters |
+| `cards.js` | the HTML for a venue card |
+| `map.js` | the hand-drawn map, markers, pan/zoom and the planner's route |
+| `plan.js` | Plan my night |
+| `lists.js` | the lists, timeline and status line, and selecting a place |
+| `themes.js`, `share.js` | color themes and Share links |
+| `app.js` | the filter controls, the clock, location and start-up |
+| `check.js` | the rules `check.html` runs (not part of the site itself) |
+
+A new file goes in `index.html` in the right spot, with the same `?v=` as the others; the offline cache finds it automatically.
 
 ## Put it online (free options)
 - **Netlify Drop:** go to app.netlify.com/drop and drag the whole `happyhour` folder onto the page. You get a public link in seconds.
 - **GitHub Pages:** create a repo, upload the contents of this folder, then turn on Settings → Pages → "Deploy from branch" (main, root).
 - **Cloudflare Pages:** create a project, choose "Upload assets", and upload the folder.
 
-After you change files on a live site, change the three `?v=` values in `index.html` (find-and-replace the old one; any new text works, e.g. `2026-10-02-1`). That's the only place the version lives: the offline cache in `sw.js` picks it up from there. Venue data and the page itself are always fetched fresh when online, so a data update still reaches people if you forget; styling and app changes reach them one visit later.
+After you change files on a live site, change every `?v=` value in `index.html` to the same new one (find-and-replace the old value; any new text works, e.g. `2026-10-02-1`). That's the only place the version lives: the offline cache in `sw.js` picks it up from there. Venue data and the page itself are always fetched fresh when online, so a data update still reaches people if you forget; styling and app changes reach them one visit later.
 
 ## Updating a place
 Each venue is one line in `js/data.js`. After editing, open `check.html` (double-click it, or visit `/check.html` on the live site). It lists **errors** (the venue will show wrong or not at all, e.g. a bad time, a city that isn't listed, coordinates off the map) and **warnings** (probably a mistake, e.g. a happy hour on a day the business hours say it's closed). Fix the errors before you publish.

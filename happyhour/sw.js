@@ -2,7 +2,11 @@
    which it takes from the ?v= on its own <script> tag, so index.html is the only place to bump it. */
 const V=new URL(location.href).searchParams.get("v")||"dev";
 const VERSION="clockout-"+V;
-const FILES=["./","index.html","css/styles.css?v="+V,"js/data.js?v="+V,"js/app.js?v="+V,"img/favicon.svg","img/icon-192.png","site.webmanifest"];
+/* what to save for offline use: the page plus every local file it links to (scripts, styles, icons),
+   read from index.html itself so there's no second list to keep up to date */
+function filesToCache(){return fetch("index.html",{cache:"no-cache"}).then(r=>r.text()).then(html=>{
+  const refs=[...html.matchAll(/(?:src|href)="([^"]+)"/g)].map(m=>m[1]).filter(u=>!/^([a-z]+:|\/\/|#)/i.test(u));
+  return ["./","index.html",...new Set(refs)];});}
 
 function put(req,res){if(res&&res.ok){const cp=res.clone();caches.open(VERSION).then(c=>c.put(req,cp));}return res;}
 /* network first, cache when offline (ignoreSearch so any cached ?v= still works offline) */
@@ -10,7 +14,7 @@ function networkFirst(req,fallback){return fetch(req).then(r=>put(req,r)).catch(
 /* serve from cache right away, refresh the cache in the background */
 function staleWhileRevalidate(req){return caches.match(req).then(hit=>{const net=fetch(req).then(r=>put(req,r));if(hit){net.catch(()=>{});return hit;}return net;});}
 
-self.addEventListener("install",e=>{e.waitUntil(caches.open(VERSION).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()));});
+self.addEventListener("install",e=>{e.waitUntil(filesToCache().then(files=>caches.open(VERSION).then(c=>c.addAll(files))).then(()=>self.skipWaiting()));});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==VERSION).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener("fetch",e=>{const req=e.request;if(req.method!=="GET")return;const url=new URL(req.url);
   if(url.origin===location.origin){
