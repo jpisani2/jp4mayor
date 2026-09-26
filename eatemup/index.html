@@ -1,0 +1,1468 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Walkable game-day guide for Sunday 9/27/2026 in downtown Detroit: Lions 1:00, Tigers 3:10.">
+<meta name="theme-color" content="#0076B6">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230076B6'/%3E%3Cpath d='M32 2a30 30 0 0 1 0 60z' fill='%23FA4616'/%3E%3C/svg%3E">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>Eat Em Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#EEF2F5; --surface:#FFFFFF; --surface-2:#F5F8FA; --ink:#0E1822; --muted:#52606C; --line:#D2DBE2; --accent:#0070B0; --accent-soft:#E0EEF7; --accent2:#0070B0; --lions:#0070B0; --lions-soft:#E0EEF7; --tigers:#D9531E; --tigers-soft:#FBE9E1; --hero-bg:#0076B6; --hero-ink:#FFFFFF; --hero-muted:#D3E6F3; --hero-l:#FFFFFF; --hero-t:#FF9A6E; --band-bg:#0B2A40; --band-num:#B0B7BC; --good:#2E7D4F; --good-soft:#E3F2E8; --turf:#E4EAE3;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){color-scheme:dark; --bg:#07131D; --surface:#0E1E2B; --surface-2:#132636; --ink:#E4ECF2; --muted:#8FA3B3; --line:#22384A; --accent:#4DAAE3; --accent-soft:#0F2B40; --accent2:#B0B7BC; --lions:#4DAAE3; --lions-soft:#0F2B40; --tigers:#F07A4E; --tigers-soft:#3A1E14; --hero-bg:#003B5C; --hero-ink:#FFFFFF; --hero-muted:#A9C6DA; --hero-l:#7CC4F0; --hero-t:#F07A4E; --band-bg:#003B5C; --band-num:#B0B7BC; --good:#5CC38A; --good-soft:#12291C; --turf:#13241C;}
+}
+:root[data-theme="dark"]{color-scheme:dark; --bg:#07131D; --surface:#0E1E2B; --surface-2:#132636; --ink:#E4ECF2; --muted:#8FA3B3; --line:#22384A; --accent:#4DAAE3; --accent-soft:#0F2B40; --accent2:#B0B7BC; --lions:#4DAAE3; --lions-soft:#0F2B40; --tigers:#F07A4E; --tigers-soft:#3A1E14; --hero-bg:#003B5C; --hero-ink:#FFFFFF; --hero-muted:#A9C6DA; --hero-l:#7CC4F0; --hero-t:#F07A4E; --band-bg:#003B5C; --band-num:#B0B7BC; --good:#5CC38A; --good-soft:#12291C; --turf:#13241C;}
+/* crew-picked skins win over the viewer theme */
+html:root[data-skin="lions-light"]{color-scheme:light; --bg:#EEF2F5; --surface:#FFFFFF; --surface-2:#F5F8FA; --ink:#0E1822; --muted:#52606C; --line:#D2DBE2; --accent:#0070B0; --accent-soft:#E0EEF7; --accent2:#0070B0; --lions:#0070B0; --lions-soft:#E0EEF7; --tigers:#D9531E; --tigers-soft:#FBE9E1; --hero-bg:#0076B6; --hero-ink:#FFFFFF; --hero-muted:#D3E6F3; --hero-l:#FFFFFF; --hero-t:#FF9A6E; --band-bg:#0B2A40; --band-num:#B0B7BC; --good:#2E7D4F; --good-soft:#E3F2E8; --turf:#E4EAE3;}
+html:root[data-skin="lions-dark"]{color-scheme:dark; --bg:#07131D; --surface:#0E1E2B; --surface-2:#132636; --ink:#E4ECF2; --muted:#8FA3B3; --line:#22384A; --accent:#4DAAE3; --accent-soft:#0F2B40; --accent2:#B0B7BC; --lions:#4DAAE3; --lions-soft:#0F2B40; --tigers:#F07A4E; --tigers-soft:#3A1E14; --hero-bg:#003B5C; --hero-ink:#FFFFFF; --hero-muted:#A9C6DA; --hero-l:#7CC4F0; --hero-t:#F07A4E; --band-bg:#003B5C; --band-num:#B0B7BC; --good:#5CC38A; --good-soft:#12291C; --turf:#13241C;}
+html:root[data-skin="tigers-light"]{color-scheme:light; --bg:#EEF0F4; --surface:#FFFFFF; --surface-2:#F6F7F9; --ink:#0C1A2E; --muted:#555F70; --line:#D5D9E1; --accent:#0C2340; --accent-soft:#E3E8F0; --accent2:#D94A12; --lions:#0070B0; --lions-soft:#E0EEF7; --tigers:#D94A12; --tigers-soft:#FBE7DE; --hero-bg:#0C2340; --hero-ink:#FFFFFF; --hero-muted:#AEB9CB; --hero-l:#4DAAE3; --hero-t:#FA4616; --band-bg:#0C2340; --band-num:#FA6A33; --good:#2E7D4F; --good-soft:#E3F2E8; --turf:#E7EAE4;}
+html:root[data-skin="tigers-dark"]{color-scheme:dark; --bg:#070D18; --surface:#0F1829; --surface-2:#152136; --ink:#E8ECF2; --muted:#95A0B4; --line:#243149; --accent:#FA7A45; --accent-soft:#3A1C10; --accent2:#FA7A45; --lions:#4DAAE3; --lions-soft:#10283A; --tigers:#FA7A45; --tigers-soft:#3A1C10; --hero-bg:#0C2340; --hero-ink:#FFFFFF; --hero-muted:#9AA8BF; --hero-l:#4DAAE3; --hero-t:#FA4616; --band-bg:#0C2340; --band-num:#FA6A33; --good:#5CC38A; --good-soft:#12291C; --turf:#131F1A;}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;margin:0}
+a{color:var(--accent)}
+.wrap{max-width:880px;margin:0 auto;padding-inline:16px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05}
+.eyebrow{font-family:var(--display);font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* Header / scoreboard */
+.hero{background:var(--hero-bg);color:var(--hero-ink);padding-block:28px 22px}
+.hero .eyebrow{color:var(--hero-muted)}
+.hero h1{font-size:clamp(40px,9vw,68px);font-weight:800;letter-spacing:.01em;text-transform:uppercase;margin-top:6px}
+.hero p.lede{color:var(--hero-muted);max-width:60ch;margin:10px 0 0}
+.board{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.game{border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:12px 14px;display:grid;gap:4px;background:rgba(255,255,255,.03)}
+.game .who{font-family:var(--display);font-weight:700;font-size:22px;text-transform:uppercase;letter-spacing:.02em}
+.game .who small{font-weight:500;color:var(--hero-muted);font-size:16px}
+.game .when{font-family:var(--mono);font-size:22px;font-weight:600}
+.game .where{color:var(--hero-muted);font-size:14px}
+.game.l{border-top:4px solid var(--hero-l)}
+.game.t{border-top:4px solid var(--hero-t)}
+.game .cd{font-family:var(--mono);font-size:13px;color:var(--hero-muted)}
+@media (max-width:520px){.board{grid-template-columns:1fr}}
+
+/* sticky status + nav */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--surface);border-bottom:1px solid var(--line)}
+.status{display:flex;gap:10px;align-items:center;padding-block:8px;font-size:14px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:13px;padding:3px 9px;border-radius:999px;background:var(--turf);color:var(--ink)}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--good)}
+.status .msg{color:var(--muted)}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:0 0 auto;text-decoration:none;color:var(--ink);font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:15px;padding:6px 12px;border-radius:4px;border:1px solid var(--line);background:var(--surface-2)}
+nav.tabs a:hover,nav.tabs a:focus-visible{border-color:var(--accent);outline:none}
+
+section{padding-block:34px 8px;scroll-margin-top:100px}
+section > h2{font-size:34px;font-weight:800;text-transform:uppercase;letter-spacing:.01em}
+section > .sub{color:var(--muted);margin:6px 0 18px;max-width:65ch}
+
+/* Play selector */
+.plays{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.play-btn{appearance:none;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:6px;padding:10px 12px;cursor:pointer;display:grid;gap:2px;font:inherit}
+.play-btn .code{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.play-btn .nm{font-family:var(--display);font-weight:700;font-size:20px;text-transform:uppercase;line-height:1.1}
+.play-btn .ds{font-size:13px;color:var(--muted);line-height:1.35}
+.play-btn[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.play-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:620px){.plays{grid-template-columns:1fr}}
+.play-meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin:16px 0 6px;color:var(--muted);font-size:14px}
+.play-meta b{color:var(--ink);font-weight:600}
+
+/* Timeline */
+.tl{list-style:none;margin:10px 0 0;padding:0;position:relative}
+.tl::before{content:"";position:absolute;left:66px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.tl li{display:grid;grid-template-columns:58px 1fr;gap:18px;padding-block:10px;position:relative}
+.tl .t{font-family:var(--mono);font-weight:600;font-size:14px;text-align:right;padding-top:2px}
+.tl .node{position:absolute;left:61px;top:15px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--muted)}
+.tl li.lions .node{border-color:var(--lions);background:var(--lions)}
+.tl li.tigers .node{border-color:var(--tigers);background:var(--tigers)}
+.tl .what{font-weight:600}
+.tl .alt{color:var(--muted);font-size:14px;margin-top:2px}
+.tl .alt b{color:var(--ink);font-weight:600}
+.tl .walk{display:inline-block;font-family:var(--mono);font-size:12px;color:var(--muted);border:1px dashed var(--line);border-radius:3px;padding:0 6px;margin-left:6px;vertical-align:1px}
+.tl li.now{background:var(--good-soft);border-radius:6px}
+.tl li.now .t::after{content:"NOW";display:block;font-size:10px;color:var(--good);letter-spacing:.1em}
+
+/* Wristband audibles */
+.band{background:var(--band-bg);color:var(--hero-ink);border-radius:10px;padding:14px;display:grid;grid-template-columns:repeat(2,1fr);gap:1px;overflow:hidden}
+.band-head{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;padding:2px 4px 10px;font-family:var(--display);text-transform:uppercase;letter-spacing:.08em;color:var(--hero-muted);font-size:13px}
+.call{background:rgba(255,255,255,.04);padding:12px 14px;display:grid;grid-template-columns:44px 1fr;gap:4px 12px;border:1px solid rgba(255,255,255,.07)}
+.call .num{font-family:var(--mono);font-weight:600;font-size:24px;color:var(--band-num);grid-row:span 4;line-height:1}
+.call .nm{font-family:var(--display);font-weight:800;font-size:20px;text-transform:uppercase;letter-spacing:.03em}
+.call .if{font-size:14px;color:var(--hero-muted)}
+.call .do{font-size:14.5px}
+@media (max-width:620px){.band{grid-template-columns:1fr}}
+
+/* Filters */
+.filters{display:grid;gap:10px;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.filters .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.filters label.small{font-size:13px;color:var(--muted);font-family:var(--display);text-transform:uppercase;letter-spacing:.1em;font-weight:600;min-width:44px}
+.count{font-size:14px;color:var(--muted)}
+
+/* Spot cards */
+.spots{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:640px){.spots{grid-template-columns:1fr}}
+.spot{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:8px;align-content:start}
+.spot.done{opacity:.62}
+.spot .top{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start}
+.spot .n{font-family:var(--mono);font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:4px;padding:1px 5px;color:var(--muted);margin-top:4px}
+.spot h3{font-size:22px;font-weight:700}
+.spot .addr{font-size:13px;color:var(--muted)}
+.walkbox{text-align:right;font-family:var(--mono);line-height:1.1}
+.walkbox b{display:block;font-size:20px;color:var(--accent2)}
+.walkbox span{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:12px;font-weight:600;padding:1px 8px;border-radius:3px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+.tag.zone{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.hours{font-size:14px}
+.hours b{font-weight:600}
+.note{font-size:14.5px;color:var(--ink)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:10px}
+.actions a{font-weight:600;font-size:14px;text-decoration:none}
+.actions .ph{font-family:var(--mono);font-size:13px;color:var(--muted);user-select:all}
+.check{display:inline-flex;gap:6px;align-items:center;font-size:14px;font-weight:600;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--good)}
+.warn{font-size:12px;font-weight:700;color:var(--tigers);text-transform:uppercase;letter-spacing:.06em}
+
+/* Map */
+.mapcard{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px}
+.mapwrap{overflow-x:auto}
+.mapwrap svg{display:block;width:100%;min-width:320px;max-width:560px;margin:0 auto;height:auto}
+.maplegend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);padding:8px 6px 2px}
+.maplegend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:0}
+
+/* Logistics */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:640px){.grid2{grid-template-columns:1fr}}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px}
+.box h3{font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;margin-bottom:8px}
+.box ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.box li{font-size:15px}
+.box.accent{border-left:4px solid var(--tigers)}
+.hrs-list li{font-size:14.5px}
+.sources{font-size:13px;color:var(--muted);columns:2;column-gap:24px}
+.sources a{color:var(--muted)}
+.sources li{break-inside:avoid;margin-bottom:4px}
+@media (max-width:640px){.sources{columns:1}}
+footer{padding-block:30px 50px;color:var(--muted);font-size:13px}
+.skins{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:16px}
+.skins .lbl{font-family:var(--display);font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:12px;color:var(--hero-muted);margin-right:4px}
+.skin{appearance:none;font:inherit;font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:14px;color:var(--hero-ink);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:4px 12px 4px 6px;display:inline-flex;gap:7px;align-items:center;cursor:pointer}
+.skin .sw{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.7)}
+.skin[aria-pressed="true"]{background:var(--hero-ink);color:var(--hero-bg);border-color:var(--hero-ink)}
+.skin:focus-visible{outline:2px solid var(--hero-ink);outline-offset:2px}
+.play-btn.custom{grid-column:1/-1;border-style:dashed}
+.live-ctrl{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center}
+.live-ctrl label,.b-head label{font-family:var(--display);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+select,input[type="time"]{font:inherit;font-size:15px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);max-width:100%}
+#here-sel{min-width:0;flex:1 1 200px}
+select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.clocknote{font-size:13px;color:var(--muted);margin:8px 0 12px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media (max-width:560px){.tiles{grid-template-columns:1fr 1fr}.tiles .tile:nth-child(2){grid-column:1/-1;order:-1}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:2px;align-content:start}
+.tile .k{font-family:var(--display);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:12px;color:var(--muted)}
+.tile .v{font-family:var(--mono);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
+.tile .s{font-size:13px;color:var(--muted)}
+.tile.warn{border-color:var(--accent2);box-shadow:inset 0 0 0 1px var(--accent2)}
+.tile.late{border-color:var(--tigers);background:var(--tigers-soft)}
+.tile.late .v{color:var(--tigers)}
+.audlive{margin:10px 0 0;padding:8px 12px;border-radius:6px;background:var(--tigers-soft);font-size:14px}
+.next-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin:20px 0 8px}
+.next{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+.next li{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.nx-main{flex:1 1 240px;min-width:0}
+.gd{font-size:13.5px;margin-top:6px;color:var(--ink);line-height:1.45}
+.gd-k{font-family:var(--display);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:var(--accent);margin-right:4px}
+.gd-src{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+.gd-src a{color:var(--muted)}
+.fr{display:inline-block;font-size:11px;font-weight:600;padding:0 6px;border-radius:3px;white-space:nowrap}
+.fr.fresh{background:var(--good-soft);color:var(--good)}
+.fr.old{background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.gd-legend{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+.herecard{margin-top:14px;background:var(--surface);border:1px solid var(--accent);box-shadow:inset 0 0 0 1px var(--accent);border-radius:8px;padding:12px 14px}
+.hc-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px}
+.hc-name{font-family:var(--display);font-weight:800;font-size:24px;text-transform:uppercase;line-height:1.1;margin:2px 0}
+.nx-name{font-weight:700;font-size:16px}
+.nx-sub{font-size:13px;color:var(--muted)}
+.nx-btns,.act-btns{display:flex;gap:6px;flex-wrap:wrap}
+.nx-btns .chip,.act-btns .chip,.b-tools .chip,.audbanner .chip{font-size:13px;padding:4px 11px}
+.st{font-weight:700}
+.st-open{color:var(--good)} .st-later,.st-unk{color:var(--muted)} .st-closed{color:var(--tigers)}
+.audbanner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--tigers-soft);border:1px solid var(--tigers);border-radius:8px;padding:10px 12px;margin:14px 0 4px;font-size:14.5px}
+.aud-code{font-family:var(--mono);font-weight:600;color:var(--tigers)}
+.tl li.aud .node{border-color:var(--tigers);background:var(--tigers-soft)}
+.tl li.aud .what{color:var(--ink)}
+.callrow{grid-column:2;margin-top:6px}
+.callbtn{appearance:none;font:inherit;font-family:var(--display);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:14px;background:var(--band-num);color:var(--band-bg);border:0;border-radius:4px;padding:5px 14px;cursor:pointer}
+.callbtn:focus-visible{outline:2px solid var(--hero-ink);outline-offset:2px}
+.b-title{font-family:var(--display);font-weight:800;font-size:22px;text-transform:uppercase}
+.b-how{margin:0;font-size:14px;color:var(--muted)}
+.b-add{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.b-add select{flex:1 1 220px;min-width:0}
+.chip.addbtn{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.b-sugg{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.b-sl{font-size:13px;color:var(--muted);width:100%}
+.chip.sg{font-size:13px;padding:4px 10px;text-align:left}
+.sg-w{font-weight:500;color:var(--muted);font-size:12px}
+.b-msg{margin:0;font-size:14px;padding:8px 10px;border-radius:6px;background:var(--accent-soft);color:var(--ink)}
+.chip.custbtn{font-size:13px;padding:4px 11px;margin-left:auto}
+.play-meta{align-items:center}
+.builder{margin:14px 0 6px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:10px}
+.b-head{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.b-sum{font-size:14px;color:var(--muted)}
+.warns{margin:0;padding:10px 12px 10px 28px;background:var(--tigers-soft);border-radius:6px;font-size:14px;display:grid;gap:4px}
+.ok{margin:0;font-size:14px;color:var(--good);font-weight:600}
+.empty{margin:0;color:var(--muted);font-size:14px}
+.rlist{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.rlist li{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:var(--surface-2)}
+.r-main{display:flex;gap:10px;align-items:center;min-width:0}
+.r-n{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:4px;padding:0 6px;color:var(--muted)}
+.r-name{font-weight:700}
+.r-sub{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.r-ctl{display:flex;gap:4px;align-items:center}
+.mini{appearance:none;font:inherit;width:32px;height:32px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-weight:700}
+.mini.x{color:var(--tigers)}
+.mini:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.r-d{font-family:var(--mono);font-size:13px;min-width:56px;text-align:center}
+.b-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.spot.here{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.tag.heretag{background:var(--accent);color:var(--surface);border-color:transparent}
+.spot .ph{font-family:var(--mono);font-size:13px;color:var(--muted);user-select:all}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Sunday · Sept 27, 2026 · Downtown Detroit · Crew of 4</div>
+    <h1>Eat Em Up</h1>
+    <p class="lede">Two games, four of us, all on foot. Pick a play, run it, and call an audible when the day changes. Latest forecast: mostly cloudy in the morning, turning sunny, high near 72°. Cool at breakfast.</p>
+    <div class="board">
+      <div class="game l">
+        <div class="who">Lions <small>vs Jets</small></div>
+        <div class="when">1:00 PM</div>
+        <div class="where">Ford Field · on FOX · watching from a bar</div>
+        <div class="cd" id="cd-lions">&nbsp;</div>
+      </div>
+      <div class="game t">
+        <div class="who">Tigers <small>vs Pirates</small></div>
+        <div class="when">3:10 PM</div>
+        <div class="where">Comerica Park · gates ~1:30 PM · final regular-season game</div>
+        <div class="cd" id="cd-tigers">&nbsp;</div>
+      </div>
+    </div>
+    <div class="skins" id="skins" role="group" aria-label="Color theme"><span class="lbl">Theme</span></div>
+  </div>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="status"><span class="pill"><span class="dot"></span><span id="phase">Game plan</span></span><span class="msg" id="phase-msg">Sunday forecast: sunny, ~70°F</span></div>
+    <nav class="tabs" aria-label="Sections">
+      <a href="#live">Live</a><a href="#plan">Plan</a><a href="#audibles">Audibles</a><a href="#intel">Intel</a><a href="#spots">Spots</a><a href="#map">Map</a><a href="#logistics">Logistics</a>
+    </nav>
+  </div>
+</div>
+
+<main class="wrap">
+
+<section id="live">
+  <div class="eyebrow">On the move</div>
+  <h2>Where are we?</h2>
+  <p class="sub">Set where you are and the page shows the closest next moves, what's open when you'd get there, and when you need to leave for the gate. Each phone remembers its own spot.</p>
+  <div class="live-ctrl">
+    <label for="here-sel">We're at</label><select id="here-sel"></select>
+    <label for="clock-in">Time</label><input type="time" id="clock-in" step="300"><button type="button" class="chip" id="clock-real">Use real time</button>
+  </div>
+  <p class="clocknote" id="clock-note"></p>
+  <div class="tiles" id="tiles"></div>
+  <p class="audlive" id="aud-live" hidden></p>
+  <div class="herecard" id="here-card" hidden></div>
+  <div class="next-head"><span id="next-from" class="eyebrow"></span><label class="check"><input type="checkbox" id="hide-done"> Hide spots we've hit</label></div>
+  <div class="chips" id="next-chips"></div>
+  <p class="gd-legend">Each game-day note lists its source. <span class="fr fresh">Green</span> means this season (checked or published in 2026). <span class="fr old">Gray</span> means older coverage, like a 2024 playoff game, so treat it as a hint.</p>
+  <ol class="next" id="next-list"></ol>
+</section>
+
+<section id="plan">
+  <div class="eyebrow">Base plays</div>
+  <h2>Pick a play</h2>
+  <p class="sub">Four base plays, or build your own. Each one ends with you in the ballpark for first pitch. Tap a play to switch. When you call an audible, the rest of the day re-routes from where you are.</p>
+  <div class="plays" id="plays" role="group" aria-label="Choose a plan"></div>
+  <div class="play-meta" id="play-meta"></div>
+  <div class="builder" id="builder" hidden></div>
+  <div class="audbanner" id="aud-banner" hidden></div>
+  <ol class="tl" id="timeline"></ol>
+</section>
+
+<section id="audibles">
+  <div class="eyebrow">Wristband</div>
+  <h2>Audibles</h2>
+  <p class="sub">When something changes, yell the number and tap Call. The page re-routes the rest of your day from where you are right now, using the spot you set in Live (or where the plan says you should be). It still gets you to Comerica.</p>
+  <div class="band" id="band"><div class="band-head"><span>Play card · 9/27</span><span>Lions 1:00 · Tigers 3:10</span></div></div>
+</section>
+
+<section id="intel">
+  <div class="eyebrow">Re-checked Sat, Sept 26</div>
+  <h2>Tailgate intel</h2>
+  <p class="sub">What recent coverage says about the tailgate scene this season, plus every hour we re-checked for Sunday. Reddit blocks automated access, so none of this comes from Reddit threads. It's from venue sites, Eastern Market, Ford Field and local news.</p>
+  <div class="grid2">
+    <div class="box accent">
+      <h3>Eastern Market is ticket-only</h3>
+      <ul>
+        <li>Every space is sold online in advance through Passage. There are <b>no walk-up sales</b>.</li>
+        <li>Wristbands are color-coded for each game and can't be transferred. The ticket holder has to stay with the space.</li>
+        <li>Lots run 8 AM–5 PM Sunday. At the Sept 13 opener, crews were set up by 9 with beer pong, lawn games and full grills.</li>
+        <li>Big games have sold out ahead of time. Vivio's owner says playoff days doubled his usual business.</li>
+        <li><b>For you:</b> hang on the edges at Vivio's, Bert's, EMBC and the Sunday Market (10–4, with a craft market in Shed 5). Don't wander into anyone's space.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Free, no-ticket tailgate</h3>
+      <ul>
+        <li><b>Pride Plaza</b> on Brush St, between the stadiums, starts at 10 AM. It has food trucks, Bud Light bars, a DJ and games, and runs until kickoff.</li>
+        <li>Ford Field's gates and Power Hour deals (10:30) are only for Lions ticket holders, so they don't apply to you.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Want your own tailgate?</h3>
+      <ul>
+        <li><b>Gratiot 1000</b> (1000 Gratiot Ave, ~0.3 mi from Ford Field) is one of the few lots that allows it. It opens 8 AM and costs $70–300 a spot, with up to 5 people per car space, gas grills only, and tents needing an extra space.</li>
+        <li><b>Catch:</b> it closes 2 hours after "the event." Confirm it covers the Tigers game before leaving a car there.</li>
+        <li>The garages next to Ford Field ban both tailgating and re-entry. They open about 4 hours before kickoff.</li>
+        <li>The $65 all-inclusive premium tailgate in Eastern Market's Shed 2 (9 AM–1 PM) is <b>sold out</b>.</li>
+      </ul>
+    </div>
+    <div class="box accent">
+      <h3>Tailgating west of Woodward</h3>
+      <ul>
+        <li><b>The lots around Little Caesars Arena and the District mostly ban it.</b> 313 Presents says tailgating is prohibited in lots run by Olympia Development before, during and after events.</li>
+        <li><b>Park N Party lots west of Woodward allow it by their rules:</b> 125 W. Elizabeth (35 spots, porta-potties, opens 3 hrs before, a block from Vollmer's), 1428 Griswold (20 spots, only around your car), 97 Winder by LCA, and 3420 Cass. All are gas grills only, and a tent needs an extra space.</li>
+        <li><b>Catch:</b> when checked Saturday, none of those west-side lots showed a bookable date for Sunday. Only Gratiot 1000 (east side) did. Call Park N Party at <span class="mono">888-926-7275</span> before counting on one.</li>
+        <li><b>Closest thing to a west-side tailgate:</b> Harry's parking-lot party (tent, bar, DJ or live music) runs for every home game, and its events page lists both of Sunday's games. Bookies' rooftop is the other open-air option.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>New since Friday</h3>
+      <ul>
+        <li><b>Plaza de los Leones:</b> the Lions' game-day post (Sat, Sept 26) says the party starts at 10 AM on Brush St as Plaza de los Leones for Latino Heritage Month, with food trucks and entertainment. Last year's version had mariachi, ballet folklórico and a DJ. This year's lineup isn't posted.</li>
+        <li>Inside Ford Field, the first 25,000 fans get a Miller Lite trucker hat and there's a corgi race at halftime. That's for Lions ticket holders only.</li>
+        <li><b>Elwood</b> still lists 9 AM–6 PM for Sunday. <b>Detroit Beer Co.</b> lists 10 AM–10 PM for the Lions game. <b>Harry's</b> lists both games and its lot party.</li>
+        <li><b>Detroit City Distillery's</b> tailgate collab was for the Saints game. Nothing is posted for Sunday.</li>
+        <li><b>Bookies</b> still shows "spring hours" (Sun 11–8) on its homepage, but its fall schedule says 10 AM on Lions days. Call 313-962-0319 to settle it.</li>
+        <li><b>Tin Roof's</b> calendar page hasn't been updated in years, so its Sunday lineup (band on the roof 4–8 PM) may be stale.</li>
+        <li><b>Nothing new posted</b> for Vivio's, Bert's, EMBC, Union Assembly, Brass Rail, Frita, Nemo's, Firebird, Old Shillelagh, Oktoberfest or Vollmer's, which still lists Sunday at 5 PM.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Tigers side</h3>
+      <ul>
+        <li>Sunday is <b>Chevy Sunday Kids Day</b>, with face painting, free Ferris wheel rides and postgame base-running for kids. Expect families in the park.</li>
+        <li><b>Correction:</b> Justin Verlander's final start and farewell are <b>Saturday</b> (1:10 PM), not Sunday. No Sunday ceremony has been announced.</li>
+        <li>It's the final regular-season game and the last one under the Comerica Park name.</li>
+        <li>Tin Roof has a band on its roof from 4–8 PM, after you're already in the ballpark.</li>
+      </ul>
+    </div>
+    <div class="box" style="grid-column:1/-1">
+      <h3>Hours we re-checked for Sunday</h3>
+      <ul class="hrs-list">
+        <li><b>Louie's Ham &amp; Corned Beef is closed Sundays.</b> We pulled it and moved Play A's brunch to the Old Shillelagh.</li>
+        <li><b>Bookies:</b> 10 AM–8 PM on Lions home game days (its fall schedule). You were right that it opens early, just not by much. Play D now starts there at 10.</li>
+        <li><b>Elwood:</b> its calendar lists <b>9 AM–6 PM</b> for Sept 27 because of both games.</li>
+        <li><b>Vivio's:</b> Sunday bar hours are 11 AM–6 PM. The site says Lions days can shift, so call.</li>
+        <li><b>Bert's</b> 11–10 · <b>EMBC</b> 11–7 · <b>Detroit City Distillery</b> noon–6 · <b>Creole Gumbo</b> 11–6</li>
+        <li><b>Old Shillelagh:</b> weekends 10 AM, with brunch listed from 9. It opens earlier on Lions days but doesn't post a time.</li>
+        <li><b>Tin Roof</b> 11 AM, early on Tigers days · <b>Harry's</b> 11 AM, extended on game days · <b>Detroit Beer Co.</b> 10 AM</li>
+        <li><b>Union Assembly</b> 11 AM (has opened at 10 for Lions brunch) · <b>Brass Rail</b>, <b>Frita</b>, <b>Mootz</b>, <b>Nemo's</b> 11 AM · <b>Firebird</b> and <b>Pegasus</b> 11:30 AM</li>
+        <li>Almost nobody posts separate hours for a 1 PM Lions game. Where a place says it opens early on game days without a time, expect around 10 AM, and call before building your morning around it.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="spots">
+  <div class="eyebrow">Directory</div>
+  <h2>Every spot in range</h2>
+  <p class="sub">All within walking distance of the stadiums, kept north of Campus Martius and away from the Riverwalk like you asked. Times are rough walks to Comerica Park's main gate. Tick a spot once you've hit it. Hours were checked Sept 25; game-day hours move, so call anything flagged.</p>
+  <div class="filters">
+    <div class="row"><label class="small">Type</label><div class="chips" id="type-chips"></div></div>
+    <div class="row"><label class="small">Area</label><div class="chips" id="zone-chips"></div></div>
+    <div class="row"><label class="small">Sort</label><div class="chips" id="sort-chips"></div><span class="count" id="count"></span></div>
+  </div>
+  <div class="spots" id="spot-list"></div>
+</section>
+
+<section id="map">
+  <div class="eyebrow">Layout</div>
+  <h2>How it fits together</h2>
+  <p class="sub">Not to scale. The four areas you'll bounce between, with walking times. Use each spot's Directions link for real turn-by-turn.</p>
+  <div class="mapcard">
+    <div class="mapwrap">
+      <svg viewBox="0 0 400 540" role="img" aria-labelledby="maptitle">
+        <title id="maptitle">Schematic of downtown Detroit: Eastern Market to the northeast, Brush Park to the north, the West Side around Bookies and Grand Circus Park, stadiums in the middle, Greektown to the south.</title>
+        <defs>
+          <style>
+            .road{stroke:var(--line);fill:none}
+            .fwy{stroke:var(--line);stroke-width:14;fill:none;stroke-linecap:round;opacity:.9}
+            .rlabel{font:600 11px var(--display);letter-spacing:.12em;fill:var(--muted);text-transform:uppercase}
+            .zone{stroke-width:1.5}
+            .zlabel{font:800 15px var(--display);fill:var(--ink);text-transform:uppercase;letter-spacing:.04em}
+            .zsub{font:500 11px var(--body);fill:var(--muted)}
+            .route{stroke:var(--ink);stroke-width:1.5;stroke-dasharray:4 4;fill:none;opacity:.55}
+            .mins{font:600 11px var(--mono);fill:var(--ink)}
+            .minsbg{fill:var(--surface);stroke:var(--line)}
+          </style>
+        </defs>
+        <rect x="0" y="0" width="400" height="540" fill="var(--surface-2)"/>
+        <!-- freeways -->
+        <path class="fwy" d="M -10 300 L 258 300 L 258 -10"/>
+        <path class="fwy" d="M 258 300 C 275 360 295 420 305 550"/>
+        <text class="rlabel" x="18" y="290">I-75</text>
+        <text class="rlabel" x="266" y="30">I-75</text>
+        <text class="rlabel" x="312" y="520">I-375</text>
+        <!-- streets -->
+        <path class="road" stroke-width="5" d="M 225 550 L 150 415 L 40 160 L 5 60"/>
+        <text class="rlabel" transform="translate(14 128) rotate(-70)">Woodward</text>
+        <path class="road" stroke-width="5" d="M 245 540 L 330 312 L 400 196"/>
+        <text class="rlabel" x="348" y="320">Gratiot</text>
+        <!-- routes -->
+        <path class="route" d="M 300 196 L 232 340"/>
+        <path class="route" d="M 318 206 L 340 245"/>
+        <path class="route" d="M 336 262 L 232 350"/>
+        <path class="route" d="M 283 452 L 196 392"/>
+        <path class="route" d="M 172 258 L 180 372"/>
+        <!-- zones -->
+        <circle class="zone" cx="305" cy="175" r="54" fill="var(--tigers-soft)" stroke="var(--tigers)"/>
+        <text class="zlabel" x="305" y="170" text-anchor="middle">Eastern</text>
+        <text class="zlabel" x="305" y="186" text-anchor="middle">Market</text>
+        <text class="zsub" x="305" y="201" text-anchor="middle">tailgate lots · bars</text>
+
+        <circle class="zone" cx="352" cy="258" r="20" fill="var(--surface)" stroke="var(--tigers)"/>
+        <text class="zsub" x="352" y="255" text-anchor="middle" style="font-weight:700;fill:var(--ink)">Okto-</text>
+        <text class="zsub" x="352" y="267" text-anchor="middle" style="font-weight:700;fill:var(--ink)">berfest</text>
+
+        <circle class="zone" cx="160" cy="236" r="40" fill="var(--turf)" stroke="var(--good)"/>
+        <text class="zlabel" x="160" y="233" text-anchor="middle">Brush Park</text>
+        <text class="zsub" x="160" y="248" text-anchor="middle">Victorian mansions</text>
+
+
+        <rect x="140" y="360" width="66" height="50" rx="6" fill="var(--tigers-soft)" stroke="var(--tigers)" stroke-width="1.5"/>
+        <text class="zlabel" x="173" y="382" text-anchor="middle" style="font-size:13px">Comerica</text>
+        <text class="zsub" x="173" y="397" text-anchor="middle">3:10 PM</text>
+        <rect x="214" y="318" width="60" height="56" rx="6" fill="var(--lions-soft)" stroke="var(--lions)" stroke-width="1.5"/>
+        <text class="zlabel" x="244" y="342" text-anchor="middle" style="font-size:13px">Ford</text>
+        <text class="zlabel" x="244" y="356" text-anchor="middle" style="font-size:13px">Field</text>
+        <text class="zsub" x="244" y="368" text-anchor="middle">1:00 PM</text>
+        <text class="zsub" x="211" y="339" text-anchor="end" style="font-weight:700;fill:var(--lions)">Pride</text>
+        <text class="zsub" x="211" y="352" text-anchor="end" style="font-weight:700;fill:var(--lions)">Plaza</text>
+
+        <path class="route" d="M 110 402 L 140 394"/>
+        <circle class="zone" cx="70" cy="412" r="40" fill="var(--accent-soft)" stroke="var(--accent)"/>
+        <text class="zlabel" x="70" y="407" text-anchor="middle">West Side</text>
+        <text class="zsub" x="70" y="421" text-anchor="middle">Bookies · Brass Rail</text>
+        <text class="zsub" x="70" y="433" text-anchor="middle">Frita · Vollmer's</text>
+        <g><rect class="minsbg" x="106" y="440" width="44" height="16" rx="3"/><text class="mins" x="128" y="452" text-anchor="middle">6 min</text></g>
+
+        <circle class="zone" cx="286" cy="462" r="34" fill="var(--lions-soft)" stroke="var(--lions)"/>
+        <text class="zlabel" x="286" y="460" text-anchor="middle">Greektown</text>
+        <text class="zsub" x="286" y="475" text-anchor="middle">Shillelagh · Firebird</text>
+        <g><rect x="296" y="380" width="18" height="18" rx="3" fill="var(--ink)"/><text x="305" y="394" text-anchor="middle" style="font:800 13px var(--display);fill:var(--bg)">P</text></g>
+        <text class="zsub" x="319" y="393">garage</text>
+
+        <!-- minute labels -->
+        <g><rect class="minsbg" x="244" y="254" width="52" height="18" rx="3"/><text class="mins" x="270" y="267" text-anchor="middle">~20 min</text></g>
+        <g><rect class="minsbg" x="324" y="216" width="40" height="16" rx="3"/><text class="mins" x="344" y="228" text-anchor="middle">5 min</text></g>
+        <g><rect class="minsbg" x="266" y="302" width="48" height="16" rx="3"/><text class="mins" x="290" y="314" text-anchor="middle">13 min</text></g>
+        <g><rect class="minsbg" x="214" y="418" width="48" height="16" rx="3"/><text class="mins" x="238" y="430" text-anchor="middle">10 min</text></g>
+        <g><rect class="minsbg" x="150" y="296" width="48" height="16" rx="3"/><text class="mins" x="174" y="308" text-anchor="middle">10 min</text></g>
+        <text class="zsub" x="200" y="530" text-anchor="middle" style="font-style:italic">Campus Martius &amp; the Riverwalk are south of this frame (out of bounds)</text>
+      </svg>
+    </div>
+    <div class="maplegend"><span><i style="background:var(--tigers)"></i>Tailgate &amp; market side</span><span><i style="background:var(--lions)"></i>Bars by the stadiums</span><span><i style="background:var(--good)"></i>Rooftops &amp; sights</span><span>Dashed lines are walks</span></div>
+  </div>
+</section>
+
+<section id="logistics">
+  <div class="eyebrow">Before you leave the house</div>
+  <h2>Logistics</h2>
+  <p class="sub">Parking, gates, what to carry, and how to get out.</p>
+  <div class="grid2">
+    <div class="box accent">
+      <h3>Parking (book it Saturday)</h3>
+      <ul>
+        <li><b>Coming in separate cars? Book the same garage.</b> Everyone starts and ends at the same spot, and the meetup is easy.</li>
+        <li><b>Pre-book on SpotHero or ParkWhiz.</b> Lions days push close-in lots to roughly $40–80+. Lots a few blocks out run much cheaper.</li>
+        <li><b>Best base: Greektown or east of Ford Field.</b> It's central to all three plays and about 10 minutes from Comerica for the walk back. The Hollywood Casino Greektown self-park garage is at 1211 Chrysler Dr; its game-day rate isn't posted, so check the apps.</li>
+        <li><b>Harry's Detroit</b> (2482 Clifford) gives customers free parking plus a shuttle to Comerica and Ford Field. Confirm at <span class="mono">313-964-1575</span>; the lot fills.</li>
+        <li><b>Stadium garages next to Ford Field ban tailgating and re-entry.</b> For a tailgate with your car, Gratiot 1000 allows it (see Intel).</li>
+        <li><b>Eastern Market lots aren't general parking</b> on Lions days. They're tailgate spaces sold ahead of time on easternmarket.org.</li>
+        <li><b>Street meters:</b> Detroit enforces some zones on Sundays. Pay in the ParkDetroit app and read the signs.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Comerica gates &amp; rules</h3>
+      <ul>
+        <li>Gates open about <b>1 hr 40 min before first pitch</b>, so around 1:30 PM.</li>
+        <li><b>No re-entry.</b> Once you're in, you're in.</li>
+        <li><b>Bags:</b> nothing bigger than a 4" × 6" × 1.5" pouch or wallet. No backpacks or purses. Leave them in the cars.</li>
+        <li>One factory-sealed water, 20 oz or smaller, plus one empty plastic bottle. No outside food.</li>
+        <li><b>Cashless.</b> Cash-to-card kiosks are inside.</li>
+        <li>It's the last game under the Comerica Park name. It becomes Fifth Third Park in 2027, so get the photo out front.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Carry list</h3>
+      <ul>
+        <li>Tickets loaded in the MLB Ballpark app on at least two phones</li>
+        <li>A pocket-size battery pack (it has to fit the tiny-bag rule)</li>
+        <li>ID, a card, sunglasses, sunscreen</li>
+        <li>A light layer for the 50s morning that you can tie around your waist by noon</li>
+        <li>A sober driver for each car, or a plan to rideshare home and grab the cars later</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Getting out</h3>
+      <ul>
+        <li>The Lions crowd clears out around 4:15 while you're still in the ballpark. By the final out (~6 PM), most of that traffic is gone.</li>
+        <li>Highway options are I-75, I-375/Gratiot heading east, and the Lodge (M-10). Check live traffic before you pull out.</li>
+        <li><b>Car closures near Greektown</b> (Downtown Detroit Partnership): Brush St is closed to cars between Lafayette and Macomb through December. Monroe was listed closed to cars between Randolph and St. Antoine. Westbound Broadway is closed between Gratiot and Grand River. On foot, none of it matters. Driving in, come from the I-375 service drive (Chrysler Dr).</li>
+        <li><b>Free backup rides:</b> the People Mover is free and runs Sundays 10 AM–10 PM, with stops at Greektown, Broadway, Grand Circus Park and Cadillac Center. The QLine streetcar on Woodward is free too.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Closed Sundays (don't get burned)</h3>
+      <ul>
+        <li>Louie's Ham &amp; Corned Beef, Eastern Market (Mon–Sat, 6 AM–4 PM)</li>
+        <li>Supino Pizzeria, Eastern Market (Tue–Sat)</li>
+        <li>Zeff's Coney Island, Eastern Market (Mon–Sat)</li>
+        <li>Cutter's Bar &amp; Grill (listed Mon–Sat; call if you're set on the burger)</li>
+        <li>Hockeytown Cafe (only opens for events at Little Caesars Arena)</li>
+        <li>Cheli's Chili Bar has closed. Tin Roof is in that building now.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Coneys?</h3>
+      <ul>
+        <li>Lafayette and American Coney Island sit on Lafayette Blvd by Campus Martius, which is outside the range you set.</li>
+        <li>Inside the range, your best bet for a hot dog is the ballpark's concession stands.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="font-size:20px;text-transform:uppercase;margin:28px 0 10px">Sources</h3>
+  <ul class="sources">
+    <li><a href="https://www.si.com/nfl/scoreboard/jets-vs-lions-9-27-2026-422" target="_blank" rel="noopener">SI: Jets vs Lions, 9/27</a></li>
+    <li><a href="https://sports.yahoo.com/articles/pirates-vs-tigers-schedule-dates-110001551.html" target="_blank" rel="noopener">Yahoo: Pirates vs Tigers series times</a></li>
+    <li><a href="https://www.mlb.com/news/tigers-ballpark-name-changed-to-fifth-third-park" target="_blank" rel="noopener">MLB.com: Fifth Third Park rename</a></li>
+    <li><a href="https://www.mlb.com/tigers/ballpark/guide" target="_blank" rel="noopener">Tigers: Comerica Park policies</a></li>
+    <li><a href="https://www.fox2detroit.com/sports/comerica-park-bag-policy-2026-whats-allowed-prohibited-tigers-games" target="_blank" rel="noopener">FOX 2: 2026 bag policy</a></li>
+    <li><a href="https://www.detroitlions.com/game-day/pride-plaza" target="_blank" rel="noopener">Lions: Pride Plaza</a></li>
+    <li><a href="https://easternmarket.org/events/eastern-market-detroit-lions-tailgate-sept-27/" target="_blank" rel="noopener">Eastern Market: Lions tailgate 9/27</a></li>
+    <li><a href="https://www.fox2detroit.com/news/lions-tailgating-returns-eastern-market-new-rules" target="_blank" rel="noopener">FOX 2: Eastern Market tailgate rules</a></li>
+    <li><a href="https://easternmarket.org/" target="_blank" rel="noopener">Eastern Market: market hours</a></li>
+    <li><a href="https://littleguidedetroit.com/event/st-joseph-shrine-oktoberfest/2026-09-25/" target="_blank" rel="noopener">St. Joseph Oktoberfest hours</a></li>
+    <li><a href="https://visitdetroit.com/inside-the-d/tailgating/" target="_blank" rel="noopener">Visit Detroit: Lions tailgating</a></li>
+    <li><a href="https://www.fox2detroit.com/sports/where-park-detroit-tigers-opening-day-2026" target="_blank" rel="noopener">FOX 2: Where to park, 2026</a></li>
+    <li><a href="https://forecast.weather.gov/MapClick.php?lat=42.3314&lon=-83.0458" target="_blank" rel="noopener">NWS Detroit forecast</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Detroit_People_Mover" target="_blank" rel="noopener">People Mover (fare-free)</a></li>
+    <li><a href="https://tinroofdetroit.com/about/" target="_blank" rel="noopener">Tin Roof Detroit</a></li>
+    <li><a href="https://www.unionassembly.com/" target="_blank" rel="noopener">Union Assembly</a></li>
+    <li><a href="https://oldshillelagh.com/" target="_blank" rel="noopener">The Old Shillelagh</a></li>
+    <li><a href="https://www.harrysdetroit.com/events" target="_blank" rel="noopener">Harry's Detroit</a></li>
+    <li><a href="https://detroitbeerco.com/" target="_blank" rel="noopener">Detroit Beer Co.</a></li>
+    <li><a href="https://www.easternmarket.beer/" target="_blank" rel="noopener">Eastern Market Brewing Co.</a></li>
+    <li><a href="https://www.detroitcitydistillery.com/" target="_blank" rel="noopener">Detroit City Distillery</a></li>
+    <li><a href="https://visitdetroit.com/inside-the-d/your-guide-to-eastern-market-restaurants/" target="_blank" rel="noopener">Visit Detroit: Eastern Market eats</a></li>
+    <li><a href="https://firebirdtavern.com/" target="_blank" rel="noopener">Firebird Tavern</a></li>
+    <li><a href="https://www.elwoodgrill.com/" target="_blank" rel="noopener">Elwood Bar &amp; Grill</a></li>
+    <li><a href="https://www.bookiesbar.com/" target="_blank" rel="noopener">Bookies Bar &amp; Grille</a></li>
+    <li><a href="http://www.bookiesbar.com/map-contacts/" target="_blank" rel="noopener">Bookies fall / Lions-day hours</a></li>
+    <li><a href="https://easternmarket.org/happenings/" target="_blank" rel="noopener">Eastern Market: Sept 27 happenings &amp; tailgate rules</a></li>
+    <li><a href="https://www.tailgreeter.com/premium-tailgate-party-detroit-lions-vs-new-york-jets" target="_blank" rel="noopener">Tailgreeter: Shed 2 premium tailgate (sold out)</a></li>
+    <li><a href="https://www.parknparty.com/site/lot/343/Ford-Field-RV-Parking" target="_blank" rel="noopener">Park N Party: Gratiot 1000 lot</a></li>
+    <li><a href="https://www.fordfield.com/plan-your-visit/parking" target="_blank" rel="noopener">Ford Field parking rules</a></li>
+    <li><a href="https://www.si.com/nfl/lions/news/what-you-need-to-know-about-lions-tailgating-ford-field" target="_blank" rel="noopener">SI: Lions tailgating guide</a></li>
+    <li><a href="https://sports.yahoo.com/articles/tailgaters-eastern-market-ready-lions-141632794.html" target="_blank" rel="noopener">Yahoo: Sept 13 opener tailgaters</a></li>
+    <li><a href="https://www.wxyz.com/news/eastern-market-tailgating-culture-has-proven-itself-to-be-unlike-anything-else-in-america" target="_blank" rel="noopener">WXYZ: Eastern Market tailgate culture</a></li>
+    <li><a href="https://www.elwoodgrill.com/" target="_blank" rel="noopener">Elwood event calendar</a></li>
+    <li><a href="http://www.viviosdetroit.net/hours" target="_blank" rel="noopener">Vivio's hours</a></li>
+    <li><a href="https://bertsentertainmentcomplex.squarespace.com/" target="_blank" rel="noopener">Bert's hours</a></li>
+    <li><a href="https://louieseasternmarket.com/" target="_blank" rel="noopener">Louie's hours (closed Sun)</a></li>
+    <li><a href="https://louisianacreolegumbo.com/locations" target="_blank" rel="noopener">Louisiana Creole Gumbo hours</a></li>
+    <li><a href="https://mootzpizzeria.com/" target="_blank" rel="noopener">Mootz hours</a></li>
+    <li><a href="https://www.atheneumsuites.com/pegasus-taverna-restaurant" target="_blank" rel="noopener">Pegasus Taverna hours</a></li>
+    <li><a href="https://tinroofdetroit.com/calendar/" target="_blank" rel="noopener">Tin Roof calendar</a></li>
+    <li><a href="https://www.detroitlions.com/news/lions-vs-jets-how-to-watch-listen-and-follow-2026" target="_blank" rel="noopener">Lions: Jets game-day post (Sep 26)</a></li>
+    <li><a href="https://latinodetroit.com/detroit-lions-regresan-al-ford-field-para-recibir-a-los-new-york-jets-en-la-semana-3-de-nfl/" target="_blank" rel="noopener">Latino Detroit: Plaza de los Leones Sunday</a></li>
+    <li><a href="https://www.clickondetroit.com/sports/2026/09/26/justin-verlander-gets-emotional-as-detroit-tigers-prepare-to-say-goodbye-before-final-start-at-comerica-park/" target="_blank" rel="noopener">ClickOnDetroit: Verlander's final start (Sat)</a></li>
+    <li><a href="https://www.313presents.com/venue/little-caesars-arena/little-caesars-a-z-guide" target="_blank" rel="noopener">313 Presents: LCA-area tailgating policy</a></li>
+    <li><a href="https://www.parknparty.com/site/lot/307/tigers-tailgating" target="_blank" rel="noopener">Park N Party: 125 W. Elizabeth</a></li>
+    <li><a href="https://www.parknparty.com/site/lot/315/detroit-tigers-tailgating-lots" target="_blank" rel="noopener">Park N Party: 1428 Griswold</a></li>
+    <li><a href="https://www.parknparty.com/site/lot/345/Best-Little-Caesars-Arena-Parkin" target="_blank" rel="noopener">Park N Party: 97 Winder</a></li>
+    <li><a href="https://downtowndetroit.org/experience-downtown/getting-around/road-closures/" target="_blank" rel="noopener">Downtown Detroit Partnership: road closures</a></li>
+    <li><a href="https://www.getpromonight.com/mlb/detroit-tigers" target="_blank" rel="noopener">Tigers promos 9/27</a></li>
+    <li><a href="https://www.axios.com/local/detroit/2024/09/06/downtown-detroit-prepares-for-massive-crowds-on-lions-game-day" target="_blank" rel="noopener">Axios: Lions game-day crowds</a></li>
+    <li><a href="https://www.bookiesbar.com/shuttle-service/" target="_blank" rel="noopener">Bookies shuttle status</a></li>
+    <li><a href="https://brassraildetroit.com/" target="_blank" rel="noopener">Brass Rail Pizza Bar</a></li>
+    <li><a href="https://www.fritafamilia.com/location/detroit/" target="_blank" rel="noopener">Frita Batidos Detroit</a></li>
+    <li><a href="https://nemosdetroit.com/" target="_blank" rel="noopener">Nemo's</a></li>
+    <li><a href="https://local.yahoo.com/info-236824615-vollmer%E2%80%99s-bar-detroit/" target="_blank" rel="noopener">Vollmer's listing</a></li>
+    <li><a href="https://eu.detroitnews.com/story/entertainment/dining/2024/10/09/storied-corner-bar-gets-new-life-as-vollmers-in-downtown-detroit/75555340007/" target="_blank" rel="noopener">Detroit News: Vollmer's (Oct 2024)</a></li>
+    <li><a href="https://www.313presents.com/plan-your-visit/restaurants" target="_blank" rel="noopener">313 Presents: nearby restaurants</a></li>
+  </ul>
+</section>
+
+<footer>Built Sept 25, re-checked Sept 26, 2026. Hours and prices come from venue sites and local news that week. Anything tagged "call first" didn't post Sunday hours.</footer>
+</main>
+
+<script>
+(function(){
+  // ---------- data ----------
+  var ZONES = {em:"Eastern Market", st:"Stadiums", wd:"West Side", bp:"Brush Park", gt:"Greektown"};
+  var TYPES = {tailgate:"Tailgate", bar:"Bars", food:"Food", brew:"Brews", roof:"Rooftops", sights:"Sights"};
+  var SPOTS = [
+    {id:"pride", n:"Pride Plaza (Plaza de los Leones Sunday)", z:"st", t:["tailgate","food"], addr:"Brush St between Ford Field & Comerica", hrs:"From 10 AM until kickoff · free, no ticket", walk:4, note:"The Lions' official street party, this Sunday themed as Plaza de los Leones for Latino Heritage Month. Food trucks, a Bud Light bar, a DJ and games. It's the one tailgate you can walk into without buying anything.", q:"Pride Plaza Brush Street Detroit"},
+    {id:"emlots", n:"Eastern Market Lions tailgate", z:"em", t:["tailgate"], addr:"2934 Russell St · the sheds", hrs:"Lots 8 AM–5 PM · ticketed", walk:20, note:"The biggest tailgate scene in town. Every space is sold online in advance, with no walk-up sales. Wristbands are color-coded for each game, can't be transferred, and the ticket holder has to stay with the space. Without a space, enjoy it from the bars and the Sunday Market around the lots.", ph:"313-833-9300", q:"Eastern Market 2934 Russell St Detroit"},
+    {id:"market", n:"Eastern Market Sunday Market", z:"em", t:["food","sights"], addr:"Market sheds on Russell St", hrs:"Sun 10 AM–4 PM", walk:20, note:"Vendors, snacks and produce stalls. The Sunday Market runs June through September, so this is one of the last of the season.", q:"Eastern Market Detroit Sunday Market"},
+    {id:"vivios", n:"Vivio's Food & Spirits", z:"em", t:["bar","food"], addr:"2460 Market St", hrs:"Sun bar 11 AM–6 PM · may shift on Lions days", call:true, walk:18, note:"Open since 1967. Known for its Bloody Marys (they bottle their own mix) and mussels. A Lions Sunday classic in the middle of the tailgates, and the owner has said big game days double their usual business, so expect a crowd.", ph:"313-393-1711", q:"Vivio's 2460 Market St Detroit"},
+    {id:"berts", n:"Bert's Market Place", z:"em", t:["bar","food"], addr:"2727 Russell St", hrs:"Sun 11 AM–10 PM", walk:20, note:"Soul food, BBQ and live entertainment. Loud and fun, and about as Eastern Market as it gets.", ph:"313-567-2030", q:"Bert's Market Place 2727 Russell St Detroit"},
+    {id:"embc", n:"Eastern Market Brewing Co.", z:"em", t:["brew","bar"], addr:"2515 Riopelle St", hrs:"Sun 11 AM–7 PM", walk:20, note:"Taproom pouring house IPAs and lagers. There's no kitchen, but you can order pizza in.", ph:"313-764-7641", q:"Eastern Market Brewing 2515 Riopelle St Detroit"},
+    {id:"dcd", n:"Detroit City Distillery", z:"em", t:["brew","bar"], addr:"2462 Riopelle St", hrs:"Sun 12–6 PM", walk:20, note:"Tasting room with house whiskey, gin and cocktails. A good change of pace from beer before the walk down.", ph:"313-338-3760", q:"Detroit City Distillery 2462 Riopelle St"},
+    {id:"gumbo", n:"Louisiana Creole Gumbo", z:"em", t:["food"], addr:"2830 Gratiot Ave (per its website)", hrs:"Sun 11 AM–6 PM", walk:20, note:"Cajun and Creole takeout near the market. Its website lists 2830 Gratiot, but some older listings say 2051 Gratiot, so check the map pin before you walk.", ph:"313-567-1200", q:"Louisiana Creole Gumbo Gratiot Detroit"},
+    {id:"okt", n:"St. Joseph Shrine Oktoberfest", z:"em", t:["brew","food","sights"], addr:"DeSales Park · Gratiot & St. Aubin", hrs:"Sun 10 AM–7 PM", walk:17, note:"German beer and food, live bands and a stein-holding contest. Sunday is the last day of the three-day fest. Admission isn't posted, so bring a card.", q:"St. Joseph Shrine Detroit DeSales Park"},
+    {id:"murals", n:"Murals in the Market", z:"em", t:["sights"], addr:"Around Russell, Riopelle & Division", hrs:"Outdoors, any time", walk:22, note:"Building-size murals from the annual Murals in the Market festival. Good for wandering between drinks.", q:"Murals in the Market Eastern Market Detroit"},
+    {id:"tinroof", n:"Tin Roof", z:"st", t:["bar","roof","food"], addr:"47 E Adams Ave", hrs:"Listed 11 AM–2 AM · opens early on Tigers game days", walk:2, note:"Three floors plus a rooftop, live music, and game sound on every floor on Lions days. It took over the old Cheli's building. This is the closest kickoff bar to the gate. The band on the roof Sunday doesn't start until 4.", ph:"313-262-6114", q:"Tin Roof 47 E Adams Ave Detroit"},
+    {id:"elwood", n:"Elwood Bar & Grill", z:"st", t:["bar","food"], addr:"300 E Adams Ave", hrs:"9/27: 9 AM–6 PM (its event calendar)", walk:3, note:"A 1936 Art Moderne diner that's now a game-day bar. Cheap beers and pub food, right between the two stadiums. It only opens on event days, and its own calendar lists 9 AM on Sunday.", ph:"313-962-2337", q:"Elwood Bar and Grill 300 E Adams Detroit"},
+    {id:"union", n:"Union Assembly", z:"st", t:["food","bar"], addr:"2131 Woodward Ave", hrs:"Sun kitchen 11–9 · bar 11–10 · has opened at 10 for Lions brunch", walk:3, note:"A big comfort-food spot across Woodward from the outfield. It has 2.5 floors, so walk-ins have a decent shot, but game-day tables go fast. Treat it as a backup.", ph:"313-636-6000", q:"Union Assembly 2131 Woodward Detroit"},
+    {id:"dbc", n:"Detroit Beer Co.", z:"st", t:["brew","food","bar"], addr:"1529 Broadway St", hrs:"Sun 10 AM–10 PM", walk:5, note:"A brewpub since 2003 in the historic Hartz Building. House beers, nachos and pizza, a few blocks from the gate.", ph:"313-962-1529", q:"Detroit Beer Company 1529 Broadway Detroit"},
+    {id:"bookies", n:"Bookies Bar & Grille", z:"wd", t:["bar","roof","food"], addr:"2208 Cass Ave", hrs:"Lions home game days 10 AM–8 PM", walk:6, note:"A multi-level sports bar with rooftop seating, west of Grand Circus Park. Its fall schedule opens at 10 AM on Lions home game days, an hour earlier than a normal Sunday. The website says the game shuttle isn't running right now, but the gate is only a 6-minute walk.", ph:"313-962-0319", q:"Bookies Bar 2208 Cass Ave Detroit"},
+    {id:"vollmers", n:"Vollmer's (The Old Park Bar)", z:"wd", t:["bar","food"], addr:"2040 Park Ave", hrs:"Listed Sun 5 PM–2 AM · some listings say noon", call:true, unk:"Sunday hours unclear", walk:5, note:"The old Park Bar corner, reopened in 2024 as Vollmer's and still listed under both names. It's a classic tavern next to Cliff Bell's, a block off Grand Circus Park. Small menu of sliders, fries, onion rings and cheese curds, with indoor and outdoor seating. Its Sunday listing says 5 PM, which is after you're in the ballpark, but one listing shows noon. Call before counting on it pregame.", ph:"313-962-2933", q:"Vollmer's Bar 2040 Park Ave Detroit"},
+    {id:"welizabeth", n:"W. Elizabeth tailgate lot (Park N Party)", z:"wd", t:["tailgate"], addr:"125 W. Elizabeth St", hrs:"Opens 3 hrs before events · no Sunday listing yet", call:true, unk:"Not listed for Sunday", walk:5, note:"A small 35-spot surface lot west of Woodward that allows tailgating: gas grills only, a tent needs an extra space, porta-potties, no re-entry. When checked Saturday it showed no bookable date for Sunday, so call Park N Party (888-926-7275) before counting on it.", ph:"888-926-7275", q:"125 W Elizabeth St Detroit"},
+    {id:"brassrail", n:"Brass Rail Pizza Bar", z:"wd", t:["bar","food"], addr:"18 W Adams Ave", hrs:"Sun 11 AM–11 PM", walk:4, note:"A sports bar with 22 TVs, plus pizza, burgers and wings, on the south side of Grand Circus Park. It's a big room with lots of screens, so it's a strong walk-in kickoff pick on the west side.", ph:"313-964-0782", q:"Brass Rail Pizza Bar 18 W Adams Detroit"},
+    {id:"frita", n:"Frita Batidos", z:"wd", t:["food"], addr:"66 W Columbia St", hrs:"Sun 11 AM–10 PM", walk:5, note:"Cuban street food around the corner from Bookies. Get the frita (a spicy chorizo burger) and a batido (tropical milkshake).", ph:"313-725-4100", q:"Frita Batidos 66 W Columbia Detroit"},
+    {id:"nemos", n:"Nemo's (Corktown stretch)", z:"wd", t:["bar","food"], addr:"1384 Michigan Ave", hrs:"Sun 11 AM–10:30 PM kitchen", walk:22, note:"The classic Detroit sports bar, known for its burger. It's west of downtown, so it's a hike, but Nemo's shuttles to Lions and Tigers home games.", ph:"313-965-3180", q:"Nemo's Bar 1384 Michigan Ave Detroit"},
+    {id:"fox", n:"Fox Theatre & Grand Circus Park", z:"wd", t:["sights"], addr:"2211 Woodward Ave", hrs:"Outdoors, any time", walk:4, note:"The 1928 movie palace marquee and the park's fountains. A 10-minute photo loop before the gates open.", q:"Fox Theatre 2211 Woodward Detroit"},
+    {id:"comerica", n:"Comerica Park, one last time", z:"st", t:["sights"], addr:"2100 Woodward Ave", hrs:"Gates ~1:30 PM", walk:0, note:"The final game under the Comerica name before it becomes Fifth Third Park in 2027. Get the group photo with the big tiger statues at the main gate. Inside are the carousel and the Ferris wheel.", q:"Comerica Park main gate Detroit"},
+    {id:"harrys", n:"Harry's Detroit", z:"wd", t:["bar","food"], addr:"2482 Clifford St", hrs:"Sun 11–9 listed · extended on Lions & Tigers days", walk:11, note:"Sets up a tent and bar in its lot on event days. Customers get free parking and a shuttle to Comerica and Ford Field. First come, first served. Game-day opening time isn't posted, so call if you're planning to start here.", ph:"313-964-1575", q:"Harry's Detroit Bar 2482 Clifford St"},
+    {id:"brushpark", n:"Brush Park mansion walk", z:"bp", t:["sights"], addr:"Alfred St & Edmund Pl", hrs:"Outdoors, any time", walk:10, note:"Restored 1800s Victorian mansions a few blocks north of the stadiums, across I-75. A good walk-and-talk stretch.", q:"Alfred Street Brush Park Detroit"},
+    {id:"shillelagh", n:"The Old Shillelagh", z:"gt", t:["bar","roof","food"], addr:"349 Monroe St", hrs:"Weekends from 10 AM · brunch listed 9–2 · opens earlier on Lions days", walk:10, note:"A three-story Irish pub with a rooftop and one of Detroit's biggest Lions bars. Runs a free shuttle to the stadiums. It doesn't post its exact Lions-day opening time.", q:"Old Shillelagh 349 Monroe St Detroit"},
+    {id:"g1000", n:"Gratiot 1000 tailgate lot", z:"gt", t:["tailgate"], addr:"1000 Gratiot Ave", hrs:"Opens 8 AM (5 hrs before kickoff) · Sunday is bookable", walk:10, note:"One of the few lots near Ford Field that allows tailgating, and the only one we found taking reservations for Sunday. It costs $70–300 per spot, allows up to 5 people per car space, and only gas grills. A tent needs its own extra space. It closes 2 hours after the event, so confirm it stays open until the Tigers game ends before you leave a car there.", q:"1000 Gratiot Ave Detroit"},
+    {id:"firebird", n:"Firebird Tavern", z:"gt", t:["bar","food"], addr:"419 Monroe St", hrs:"Sun 11:30 AM–9 PM", walk:10, note:"Wings, burgers and mac and cheese. It's on the same block as Shillelagh, so it's the backup when that place is packed.", q:"Firebird Tavern 419 Monroe Detroit"},
+    {id:"pegasus", n:"Pegasus Taverna", z:"gt", t:["food"], addr:"558 Monroe St", hrs:"Sun 11:30 AM–11 PM", walk:11, note:"A Greektown classic. Order the flaming saganaki.", ph:"313-964-6800", q:"Pegasus Taverna 558 Monroe Detroit"},
+    {id:"mootz", n:"Mootz Pizzeria + Bar", z:"st", t:["food","bar"], addr:"1230 Library St", hrs:"Daily 11 AM–midnight", walk:8, note:"New York-style pies, and a slice counter for a quick fill-up a few blocks south of the ballpark.", ph:"313-243-1230", q:"Mootz Pizzeria 1230 Library St Detroit"},
+  ];
+  SPOTS.forEach(function(s,i){ s.num = i+1; });
+  var byId = {}; SPOTS.forEach(function(s){ byId[s.id]=s; });
+
+  var PLAYS = [
+    {id:"sweep", code:"PLAY A · RECOMMENDED", nm:"The Full Sweep", ds:"Brunch in Greektown, walk up to the Eastern Market tailgates, then work back down to the ballpark.",
+     meta:[["Meet","9:15 at The Old Shillelagh"],["Park","Greektown / east of Ford Field"],["Walking","~2.5 mi all day"],["Best for","Tailgate energy, food, variety"]],
+     steps:[
+      ["9:00","Everyone parks. Bags stay in the cars.","Ideally all in the same pre-booked Greektown garage. Meet at the Old Shillelagh door, 349 Monroe, at 9:15."],
+      ["9:15","Brunch at <b>The Old Shillelagh</b>.","Weekend brunch is listed from 9, and it opens early on Lions days. Backup: <b>Elwood</b>, which lists 9 AM today."],
+      ["10:15","Walk up Gratiot to Eastern Market.","Crosses over I-75.",20],
+      ["10:35","Walk the tailgate lots, the murals and the Sunday Market.","The lots have been going since 8 and the market opens at 10. The lots are wristband-only, so stick to the edges and the market."],
+      ["11:15","Bloody Marys at <b>Vivio's</b>.","Opens at 11 on Sundays. Or: <b>Eastern Market Brewing</b> or <b>Bert's</b> (both open at 11), or <b>Detroit City Distillery</b> (noon)."],
+      ["12:00","<b>Oktoberfest</b> at DeSales Park.","German beer and bands, 5 min from the market.",5],
+      ["12:30","Walk down Gratiot to <b>Pride Plaza</b>.","Grab food from the trucks. Pride Plaza wraps up at kickoff.",13],
+      ["12:50","Get settled for kickoff at <b>Elwood</b>.","Open 9–6 today per its calendar. Or: <b>Tin Roof</b>, or <b>Union Assembly</b> if there's room. All are 2–3 min from the gate."],
+      ["1:00","Lions kickoff vs Jets.","First half at the bar.","L"],
+      ["2:30","Around halftime, walk to the Comerica gate.","Gates opened at 1:30. Take the photo with the tiger statues on the way in.",3],
+      ["3:10","First pitch vs Pirates.","Keep the Lions second half on your phones.","T"],
+      ["6:00","Final out. Walk back to the cars.","Lions traffic cleared out around 4:15.",10]
+     ]},
+    {id:"stadium", code:"PLAY B · LEAST WALKING", nm:"Stadium Stay", ds:"Everything within 15 minutes of Comerica: street party, rooftops, kickoff bar.",
+     meta:[["Meet","10:00 at Pride Plaza"],["Park","Brush Park / Foxtown"],["Walking","~1.5 mi all day"],["Best for","Low effort, rooftops"]],
+     steps:[
+      ["9:30","Everyone parks north of the stadiums.","Foxtown or Brush Park lots, or <b>Harry's</b> if you'll eat there. Meet at Pride Plaza on Brush St at 10."],
+      ["10:00","<b>Pride Plaza</b> opens on Brush St.","Free Lions street party with bars, trucks and a DJ."],
+      ["11:00","A round at <b>Harry's</b> tent and bar in its lot.","First come, first served. Or: <b>Detroit Beer Co.</b> (open from 10).",10],
+      ["12:00","Walk the <b>Brush Park</b> mansions, then the <b>Fox Theatre</b> and Grand Circus Park.","Easy 20-minute loop."],
+      ["12:40","Grab spots for kickoff at <b>Tin Roof</b>.","Rooftop if it's open. Backups: <b>Elwood</b>, <b>Union Assembly</b>."],
+      ["1:00","Lions kickoff vs Jets.","Watch the first half here, maybe into the third quarter.","L"],
+      ["2:45","Walk to the gate.","It's across the street.",2],
+      ["3:10","First pitch vs Pirates.","Last game with the Comerica name.","T"],
+      ["6:00","Final out. Short walk back to the cars.","",10]
+     ]},
+    {id:"greek", code:"PLAY C · PUB BASE", nm:"Greektown Base", ds:"One big Lions bar as home base, with short walks out to the street party and a brewpub.",
+     meta:[["Meet","9:45 at The Old Shillelagh"],["Park","Greektown casino garage area"],["Walking","~1.5 mi all day"],["Best for","A classic Lions-bar crowd"]],
+     steps:[
+      ["9:30","Everyone parks in Greektown.","The Hollywood Casino garage at 1211 Chrysler Dr, or pre-booked lots nearby. Meet at the Old Shillelagh door, 349 Monroe, at 9:45."],
+      ["9:45","Brunch at <b>The Old Shillelagh</b>.","Weekend brunch runs 9–2, and they open early on Lions home days."],
+      ["11:00","Walk to <b>Pride Plaza</b>.","Street party between the stadiums.",9],
+      ["12:00","A pint and nachos at <b>Detroit Beer Co.</b>","Or: <b>Tin Roof</b> for a rooftop round.",5],
+      ["12:40","Back to Greektown for kickoff.","<b>Old Shillelagh</b>, or <b>Firebird Tavern</b> on the same block if it's packed. <b>Pegasus</b> for saganaki.",10],
+      ["1:00","Lions kickoff vs Jets.","","L"],
+      ["2:40","Walk to Comerica.","",10],
+      ["3:10","First pitch vs Pirates.","","T"],
+      ["6:00","Final out. Walk back to the cars.","",10]
+     ]},
+    {id:"west", code:"PLAY D · WEST SIDE", nm:"Bookies Start", ds:"Start at Bookies when it opens, pop over to the street party, then crawl the west side before the gate.",
+     meta:[["Meet","10:00 at Bookies, 2208 Cass Ave"],["Park","Around Cass & Columbia, or near Little Caesars Arena"],["Walking","~1.5 mi all day"],["Best for","A sports-bar crawl away from the Lions crush"]],
+     steps:[
+      ["9:45","Everyone parks on the west side.","Lots around Cass Ave and Columbia St, or <b>Harry's</b> (free for customers). The Lodge (M-10) is right there for getting out later."],
+      ["10:00","Meet at <b>Bookies</b> as it opens.","Its fall schedule opens at 10 AM on Lions home game days. Grab the rooftop for the first round."],
+      ["11:00","Walk over to <b>Pride Plaza</b>.","Free Lions street party on Brush St.",10],
+      ["12:00","Food at <b>Frita Batidos</b>.","Cuban fritas and batidos, open from 11. Or: pizza at <b>Brass Rail</b>.",12],
+      ["12:40","Settle in for kickoff at <b>Brass Rail</b>.","22 TVs and 4 minutes to the gate. Or: back to <b>Bookies</b>.",4],
+      ["1:00","Lions kickoff vs Jets.","First half at the bar.","L"],
+      ["2:40","Walk to the Comerica gate.","Pass the Fox Theatre marquee on the way.",5],
+      ["3:10","First pitch vs Pirates.","","T"],
+      ["6:00","Final out. Walk back west to the cars.","Hop on the Lodge or I-75.",8]
+     ]}
+  ];
+
+  var CALLS = [
+    ["21","Hot Lot","The tailgate scene is too good to leave.","Stay. Watch the first half from Vivio's or Bert's, then leave Eastern Market by 2:40. It's a 20-minute walk to the gate and you'll make first pitch."],
+    ["32","Red Zone","The line is over 15 minutes or the bar's at capacity.","Bounce to the paired backup. Tin Roof, Elwood and Union Assembly are a block apart. Bookies, Brass Rail and Frita are two blocks apart. Shillelagh and Firebird share a block. Vivio's, Bert's and EMBC are all a couple minutes apart."],
+    ["14","Two-Minute Drill","The Lions game is tight and it's already 3:00.","Stay for the third quarter. The Tigers are already out of the race, so missing an inning or two costs little. From Tin Roof or Elwood the gate is 2 minutes, but there's no re-entry, so decide once."],
+    ["40","Feed the Line","Somebody needs food right now.","Eastern Market: gumbo, Bert's, or Sunday Market stalls. Stadiums: Pride Plaza trucks, Union Assembly, Detroit Beer Co. West Side: Frita Batidos, Brass Rail. Greektown: Firebird, Pegasus."],
+    ["55","Sky","Somebody wants a rooftop.","Tin Roof's roof (2 min to the gate), Bookies' rooftop seating (6), or Old Shillelagh's roof (10)."],
+    ["90","Flea Flicker","You want a real tailgate home base.","The free option is to post up at Pride Plaza. The paid option is an Eastern Market Double Space: 10 wristbands, 1 car, 1 tent. That covers parking too, if spaces are still left on easternmarket.org."],
+    ["66","Split","The group gets separated or phones die.","Rally point is the tiger statues at Comerica's main gate at 2:50 PM. Backup is the Pride Plaza stage at 12:45."],
+    ["70","Weather Flip","No rain is forecast, but just in case.","Indoor stack: Detroit Beer Co., Union Assembly, Old Shillelagh, the EMBC taproom. The morning starts cloudy and cool, so bring a layer."],
+    ["81","Pace Car","It's a 9-hour day of beers.","Drink a water every round and eat at Oktoberfest or the market. Sort out who drives each car home, or rideshare and get the cars tomorrow."],
+    ["88","Corktown Reverse","The crew wants an old-school sports bar.","Nemo's on Michigan Ave opens at 11 and shuttles to Lions and Tigers home games. It's about a 20-minute walk from the Bookies side, so ride the shuttle back."],
+    ["99","Late Snap","Someone shows up late.","Skip Eastern Market and meet at Tin Roof. It's 2 minutes to the gate, and tickets are in the app."]
+  ];
+
+  PLAYS.push({id:"custom", code:"PLAY E · YOURS", nm:"Build Your Own", ds:"Pick your own stops right here (or copy a base play and edit it). The page times out the day, walking included, and warns you if you'd miss first pitch.", meta:[], steps:[]});
+  var PLAY_SPOTS = {
+    sweep:[null,"shillelagh",null,"emlots","vivios","okt","pride","elwood","elwood","comerica","comerica",null],
+    stadium:[null,"pride","harrys","brushpark","tinroof","tinroof","comerica","comerica",null],
+    greek:[null,"shillelagh","pride","dbc","shillelagh","shillelagh","comerica","comerica",null],
+    west:[null,"bookies","pride","frita","brassrail","brassrail","comerica","comerica",null]
+  };
+  // lat, lng, Sunday open, close (minutes after midnight; null = not posted, -1 = outdoors)
+  var GEO = {
+    pride:[42.3395,-83.0470,600,780], emlots:[42.3470,-83.0418,480,1020], market:[42.3465,-83.0420,600,960],
+    vivios:[42.3456,-83.0425,660,1080], berts:[42.3468,-83.0418,660,1320], embc:[42.3458,-83.0402,660,1140],
+    dcd:[42.3453,-83.0404,720,1080], louies:[42.3525,-83.0390,null,null], gumbo:[42.3478,-83.0352,660,1080],
+    okt:[42.3440,-83.0393,600,1140], murals:[42.3485,-83.0405,-1,-1], tinroof:[42.3379,-83.0508,660,1560],
+    elwood:[42.3382,-83.0475,540,1080], union:[42.3396,-83.0518,660,1320], dbc:[42.3363,-83.0480,600,1320],
+    bookies:[42.3386,-83.0540,600,1200], brassrail:[42.3366,-83.0507,660,1380], frita:[42.3378,-83.0530,660,1320],
+    nemos:[42.3313,-83.0625,660,1350], fox:[42.3380,-83.0525,-1,-1], comerica:[42.3383,-83.0497,810,1110],
+    harrys:[42.3432,-83.0547,660,1260], brushpark:[42.3440,-83.0492,-1,-1], shillelagh:[42.3352,-83.0443,540,1560],
+    firebird:[42.3352,-83.0433,690,1260], pegasus:[42.3353,-83.0417,690,1380], mootz:[42.3345,-83.0470,660,1440], vollmers:[42.3372,-83.0526,null,null], welizabeth:[42.3378,-83.0515,null,null], g1000:[42.3378,-83.0428,480,1095]
+  };
+  SPOTS.forEach(function(s){ var g=GEO[s.id]; s.lat=g[0]; s.lng=g[1]; s.o=g[2]; s.c=g[3]; });
+
+  // game-day notes per spot, with where each fact came from and how fresh it is
+  // date codes: "c" = undated venue page we checked Sept 25, 2026 · "p:<date>" = published date · "u" = undated article
+  var SRC = {
+    lionsPP:["Detroit Lions: Pride Plaza","c2","https://www.detroitlions.com/game-day/pride-plaza"],
+    em927:["Eastern Market: Sept 27 tailgate","c2","https://easternmarket.org/events/eastern-market-detroit-lions-tailgate-sept-27/"],
+    emhap:["Eastern Market: Happenings","c2","https://easternmarket.org/happenings/"],
+    yahoo913:["Yahoo Sports: opener tailgaters","p:Sep 13, 2026","https://sports.yahoo.com/articles/tailgaters-eastern-market-ready-lions-141632794.html"],
+    tailgreeter:["Tailgreeter: Shed 2 party","c","https://www.tailgreeter.com/premium-tailgate-party-detroit-lions-vs-new-york-jets"],
+    viv:["Vivio's hours page","c2","http://www.viviosdetroit.net/hours"],
+    wxyz:["WXYZ: Eastern Market tailgating","u","https://www.wxyz.com/news/eastern-market-tailgating-culture-has-proven-itself-to-be-unlike-anything-else-in-america"],
+    berts:["Bert's website","c2","https://bertsentertainmentcomplex.squarespace.com/"],
+    freep24:["Free Press (via AOL): spots near Ford Field","p:Jan 2024, night playoff game","https://www.aol.com/21-detroit-restaurants-hotspots-dine-200744780.html"],
+    freepOpener:["Free Press (via AOL): home opener specials","p:Sep 2024, night game","https://www.aol.com/detroit-lions-home-opener-restaurants-100639228.html"],
+    embc:["Eastern Market Brewing website","c2","https://www.easternmarket.beer/"],
+    dcd:["Detroit City Distillery website","c2","https://www.detroitcitydistillery.com/"],
+    gumbo:["Louisiana Creole Gumbo website","c","https://louisianacreolegumbo.com/locations"],
+    okt:["LittleGuide Detroit: Oktoberfest","c2","https://littleguidedetroit.com/event/st-joseph-shrine-oktoberfest/2026-09-25/"],
+    tin:["Tin Roof website & calendar","c2","https://tinroofdetroit.com/calendar/"],
+    elw:["Elwood event calendar","c2","https://www.elwoodgrill.com/"],
+    union:["Union Assembly website","c2","https://www.unionassembly.com/"],
+    dbc:["Detroit Beer Co. website","c2","https://detroitbeerco.com/"],
+    bookies:["Bookies hours page","c2","http://www.bookiesbar.com/map-contacts/"],
+    bookiesSh:["Bookies shuttle page","c","https://www.bookiesbar.com/shuttle-service/"],
+    brass:["Brass Rail website","c2","https://brassraildetroit.com/"],
+    frita:["Frita Batidos website","c2","https://www.fritafamilia.com/location/detroit/"],
+    nemos:["Nemo's website","c2","https://nemosdetroit.com/"],
+    promo:["PromoNight: Tigers 2026 promos","c","https://www.getpromonight.com/mlb/detroit-tigers"],
+    mlbname:["MLB.com: Fifth Third Park rename","p:Sep 21, 2026","https://www.mlb.com/news/tigers-ballpark-name-changed-to-fifth-third-park"],
+    harrys:["Harry's website","c2","https://www.harrysdetroit.com/events"],
+    shil:["Old Shillelagh website","c2","https://oldshillelagh.com/"],
+    g1000:["Park N Party: Gratiot 1000","c2","https://www.parknparty.com/site/lot/343/Ford-Field-RV-Parking"],
+    fire:["Firebird Tavern website","c2","https://firebirdtavern.com/"],
+    peg:["Atheneum Suites: Pegasus","c","https://www.atheneumsuites.com/pegasus-taverna-restaurant"],
+    mootz:["Mootz website","c","https://mootzpizzeria.com/"],
+    lionsJets:["Detroit Lions: Jets game-day post","p:Sep 26, 2026","https://www.detroitlions.com/news/lions-vs-jets-how-to-watch-listen-and-follow-2026"],
+    latinoDet:["Latino Detroit: Lions host the Jets","p:Sep 25, 2026","https://latinodetroit.com/detroit-lions-regresan-al-ford-field-para-recibir-a-los-new-york-jets-en-la-semana-3-de-nfl/"],
+    plaza25:["Detroit Lions: Plaza de los Leones page (2025 lineup)","u","https://www.detroitlions.com/game-day/plaza-de-los-leones"],
+    cod926:["ClickOnDetroit: Verlander's final start","p:Sep 26, 2026","https://www.clickondetroit.com/sports/2026/09/26/justin-verlander-gets-emotional-as-detroit-tigers-prepare-to-say-goodbye-before-final-start-at-comerica-park/"],
+    pnpEliz:["Park N Party: 125 W. Elizabeth","c2","https://www.parknparty.com/site/lot/307/tigers-tailgating"],
+    vollY:["Yahoo Local: Vollmer's listing","c2","https://local.yahoo.com/info-236824615-vollmer%E2%80%99s-bar-detroit/"],
+    vollW:["Wanderlog: The Old Park Bar","c","https://wanderlog.com/place/details/10765280/vollmers-bar"],
+    vollDN:["Detroit News: Park Bar corner becomes Vollmer's","p:Oct 9, 2024","https://eu.detroitnews.com/story/entertainment/dining/2024/10/09/storied-corner-bar-gets-new-life-as-vollmers-in-downtown-detroit/75555340007/"]
+  };
+  var GD = {
+    pride:["Sunday's pregame is billed as Plaza de los Leones for Latino Heritage Month. It starts at 10 AM on Brush St with food trucks and entertainment. The regular Pride Plaza setup has a DJ, games, a Bud Light bar and the Leaping Lion photo spot. Last year's Plaza de los Leones added mariachi and ballet folklórico, but this year's lineup isn't posted.",["lionsJets","latinoDet","lionsPP","plaza25"]],
+    emlots:["Lots run 8 AM–5 PM for Jets week. At the Sept 13 opener, crews were set up by 9 with beer pong, lawn games and full grills. The $65 all-inclusive Shed 2 party (9 AM–1 PM) is sold out.",["em927","yahoo913","tailgreeter"]],
+    market:["Sunday Market runs 10–4 with local makers, artisans and apparel, plus events in Shed 5.",["emhap"]],
+    vivios:["Bloody Marys from open. The owner told WXYZ a past playoff day doubled his normal business, so expect a line. Sunday hours can shift on Lions days.",["viv","wxyz"]],
+    berts:["Sunday is open-mic day on its entertainment calendar. For a 2024 playoff game it opened at 9 AM with fried chicken and ribs, but it hasn't posted Lions-day hours for this season.",["berts","freep24"]],
+    embc:["No game-day event posted. Regular taproom, and you can have pizza delivered in.",["embc"]],
+    dcd:["Its tailgate collab this season was for the Saints game. Nothing is posted for Sunday. Tasting room is open noon–6.",["dcd"]],
+    gumbo:["No game-day event posted. Quick takeout.",["gumbo"]],
+    okt:["Final day of the three-day fest: live bands, German food and beer, a stein-holding contest, carnival rides and church tours.",["okt","emhap"]],
+    tinroof:["On Lions days: game sound on every floor, NFL Sunday Ticket and bucket specials. Its calendar lists the band BEJAXX on the roof Sunday 4–8 PM, but that page hasn't been updated in years, so treat it as unconfirmed.",["tin"]],
+    elwood:["Open 9 AM–6 PM for the Lions–Tigers double. For a 2024 playoff game it ran a tailgate-style menu of hot dogs, burgers, chili and sausages.",["elw","freep24"]],
+    union:["For the 2024 home opener it served brunch 10–2, then a game menu with pasta from Mom's Spaghetti. Nothing posted yet for this Sunday.",["union","freepOpener"]],
+    dbc:["Its site lists 10 AM–10 PM for the Lions game. No specials posted.",["dbc"]],
+    bookies:["Its fall schedule says 10 AM on Lions home game days, but the homepage still shows spring hours (Sun 11–8). Call to confirm. The shuttle page says it isn't running.",["bookies","bookiesSh"]],
+    brassrail:["22 TVs. No game-day event posted.",["brass"]],
+    frita:["For a 2024 playoff game it opened at 10 AM. Its normal Sunday opening is 11.",["frita","freep24"]],
+    nemos:["Runs shuttles to Lions and Tigers home games.",["nemos"]],
+    comerica:["Chevy Sunday Kids Day: face painting, free Ferris wheel rides and postgame base-running for kids. Verlander's farewell start is Saturday, and no Sunday ceremony has been announced. Last game under the Comerica Park name.",["promo","cod926","mlbname"]],
+    harrys:["Its events page lists Sunday's Lions and Tigers games and a parking-lot party for every home game: tent, bar, DJ or live music. Free parking and a shuttle for customers, and no table holds.",["harrys"]],
+    shillelagh:["Opens earlier on Lions home days. Weekend live music, brunch 9–2, a to-go window and a free stadium shuttle.",["shil"]],
+    g1000:["Sunday's Jets game is listed as bookable ($70–300). Staffed lot that opens 5 hours before kickoff. Gas grills only, and tents need an extra space.",["g1000"]],
+    firebird:["For a 2024 playoff game it served burgers, wings and \"Lions Kool-Aid\" shots. Nothing posted for this Sunday.",["fire","freep24"]],
+    pegasus:["No game-day event posted.",["peg"]],
+    mootz:["Slice counter for a quick bite. No game-day event posted.",["mootz"]],
+    welizabeth:["Allows tailgating by its rules, but it showed no bookable date for Sunday when checked Saturday.",["pnpEliz"]],
+    vollmers:["No game-day event posted. Reviewers suggest going after games or shows to skip the parking crush, which makes it a good last stop. Sunday hours are listed as 5 PM in one place and noon in another.",["vollY","vollW","vollDN"]]
+  };
+  function srcDate(code){
+    if(code==="c") return {txt:"checked Sep 25, 2026", fresh:true};
+    if(code==="c2") return {txt:"re-checked Sep 26, 2026", fresh:true};
+    if(code==="u") return {txt:"undated article", fresh:false};
+    var d=code.slice(2); return {txt:"published "+d, fresh:/2026/.test(d)};
+  }
+  function gdHtml(s){
+    var g=GD[s.id]; if(!g) return "";
+    var srcs=g[1].map(function(k){ var x=SRC[k], d=srcDate(x[1]);
+      return '<a href="'+x[2]+'" target="_blank" rel="noopener">'+esc(x[0])+'</a> <span class="fr '+(d.fresh?"fresh":"old")+'">'+esc(d.txt)+'</span>'; }).join('<span class="sep"> · </span>');
+    return '<div class="gd"><span class="gd-k">Game day</span> '+esc(g[0])+'</div><div class="gd-src">Source: '+srcs+'</div>';
+  }
+
+  // ---------- storage helpers ----------
+  function get(k,d){ try{ var v=localStorage.getItem(k); return v==null?d:JSON.parse(v);}catch(e){ return d; } }
+  function set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+
+  // ---------- time ----------
+  var DAY = "2026-09-27";
+  function etNow(){
+    var p = new Intl.DateTimeFormat("en-US",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date());
+    var o={}; p.forEach(function(x){o[x.type]=x.value;});
+    var h = +o.hour; if(h===24) h=0;
+    return {date:o.year+"-"+o.month+"-"+o.day, mins:h*60+ +o.minute};
+  }
+  function toMins(t){ var a=t.split(":"); var h=+a[0], m=+a[1]; if(h<9) h+=12; return h*60+m; }
+  function fmtDur(m){ if(m<=0) return "now"; var h=Math.floor(m/60), mm=m%60; return (h? h+"h ":"")+mm+"m"; }
+  var KICK = 13*60, PITCH = 15*60+10, GATES = 13*60+30;
+
+  function daysUntil(){
+    var now = etNow(); var a = new Date(now.date+"T12:00:00Z"), b = new Date(DAY+"T12:00:00Z");
+    return Math.round((b-a)/864e5);
+  }
+
+  function updateStatus(){
+    var now = etNow(), phase="Game plan", msg="", cdl="", cdt="";
+    var d = daysUntil();
+    if(d>0){
+      phase = d===1 ? "Tomorrow" : d+" days out";
+      msg = "Book parking now. Everything else is walk-in. Forecast: clouds clearing to sun, high ~72°F.";
+      cdl = "Kickoff in "+d+(d===1?" day":" days"); cdt = "First pitch in "+d+(d===1?" day":" days");
+    } else if(d<0){
+      phase = "Final"; msg = "That's a wrap. Hope the Lions won."; cdl="Final"; cdt="Final";
+    } else {
+      var m = now.mins;
+      if(m < 10*60){ phase="Early"; msg="Breakfast and the lots. Pride Plaza opens around 10."; }
+      else if(m < KICK){ phase="Pregame"; msg="Kickoff in "+fmtDur(KICK-m)+". Get to your kickoff bar by 12:50."; }
+      else if(m < 14*60+30){ phase="Lions on"; msg="First half. Comerica gates "+(m<GATES?"open in "+fmtDur(GATES-m):"are open")+"."; }
+      else if(m < PITCH){ phase="Head over"; msg="First pitch in "+fmtDur(PITCH-m)+". The gate is 2 minutes from Tin Roof or Elwood."; }
+      else if(m < 18*60+30){ phase="Tigers on"; msg="Keep the Lions on your phones. The cars are ~10 min away."; }
+      else { phase="Final"; msg="Walk back to the cars and check traffic before pulling out."; }
+      cdl = m<KICK ? "Kickoff in "+fmtDur(KICK-m) : (m<16*60+20 ? "In progress" : "Final");
+      cdt = m<PITCH ? "First pitch in "+fmtDur(PITCH-m) : (m<18*60+30 ? "In progress" : "Final");
+    }
+    document.getElementById("phase").textContent = phase;
+    document.getElementById("phase-msg").textContent = msg;
+    document.getElementById("cd-lions").textContent = cdl;
+    document.getElementById("cd-tigers").textContent = cdt;
+    markNow();
+  }
+
+  // ---------- plays + live engine ----------
+  function esc(x){ return String(x).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  function pad(n){ return (n<10?"0":"")+n; }
+  function fmt(m){ m=Math.round(m); var h=Math.floor(m/60)%24, mm=((m%60)+60)%60; return (((h+11)%12)+1)+":"+pad(mm); }
+  function hasType(s,t){ return !!s && s.t.indexOf(t)>-1; }
+  var GATE = byId.comerica;
+  function walkMin(a,b){
+    if(!a||!b||a===b) return 0;
+    if(b.id==="comerica") return a.walk;
+    if(a.id==="comerica") return b.walk;
+    var x=(b.lng-a.lng)*Math.cos((a.lat+b.lat)/2*Math.PI/180), y=b.lat-a.lat;
+    var m=Math.round(Math.sqrt(x*x+y*y)*69.05*1.25*20);
+    if((a.z==="em")!==(b.z==="em")) m+=2;
+    return Math.max(2,m);
+  }
+  function status(s,t){
+    if(s.o===-1) return {k:"open",txt:"Outdoors · any time"};
+    if(s.o==null) return {k:"unk",txt:s.unk||"Hours not posted"};
+    if(t<s.o) return {k:"later",txt:"Opens "+fmt(s.o)};
+    if(t>=s.c) return {k:"closed",txt:s.id==="pride"?"Wrapped at kickoff":"Closed by then"};
+    if(s.c-t<=60) return {k:"open",txt:"Open · until "+fmt(s.c)};
+    return {k:"open",txt:"Open"};
+  }
+  function usable(s,t){ var k=status(s,t).k; return k==="open"||k==="unk"; }
+  function nearest(from, pred, t, excl){
+    var list=SPOTS.filter(function(s){ return s!==from && s.id!=="comerica" && pred(s) && !(excl&&excl[s.id]); });
+    list.sort(function(a,b){
+      var ua=usable(a,t+walkMin(from,a))?0:1, ub=usable(b,t+walkMin(from,b))?0:1;
+      return ua-ub || walkMin(from,a)-walkMin(from,b);
+    });
+    return list[0]||null;
+  }
+  var OUTDOOR = {pride:1, emlots:1, market:1, murals:1, fox:1, brushpark:1, okt:1, comerica:1};
+
+  // clock: real time on game day, otherwise a preview time
+  var preview = get("gd_preview", null);
+  function isGameDay(){ return daysUntil()===0; }
+  function clock(){ if(preview!=null) return preview; if(isGameDay()) return etNow().mins; return 11*60; }
+  function clockSet(){ return preview!=null || isGameDay(); }
+
+  var hereId = get("gd_here", null); if(hereId && !byId[hereId]) hereId=null;
+  var audible = get("gd_aud", null);
+  var route = get("gd_route", []); if(!Array.isArray(route)) route=[];
+  route = route.filter(function(r){ return r && byId[r.id]; });
+  var rStart = get("gd_rstart", 570);
+
+  var current = get("gd_play","sweep"); if(!PLAYS.some(function(p){return p.id===current;})) current="sweep";
+  function playById(id){ return PLAYS.filter(function(p){return p.id===id;})[0]; }
+
+  function baseSteps(pid){
+    if(pid==="custom") return customPlan().steps;
+    var p=playById(pid), map=PLAY_SPOTS[pid]||[];
+    return p.steps.map(function(s,i){
+      return {t:toMins(s[0]), what:s[1], alt:s[2]||"", walk:typeof s[3]==="number"?s[3]:null, kind:(s[3]==="L"||s[3]==="T")?s[3]:null, sp:map[i]||null};
+    });
+  }
+  function baseSpotAt(t){
+    var st=baseSteps(current), sp=null;
+    st.forEach(function(s){ if(s.t<=t && s.sp) sp=s.sp; });
+    return sp ? byId[sp] : null;
+  }
+  function hereSpot(){ return hereId ? byId[hereId] : (baseSpotAt(clock()) || byId.pride); }
+
+  function finale(t){
+    var out=[];
+    if(t < PITCH+30) out.push({t:PITCH, what:"First pitch vs Pirates.", alt:"Keep the Lions second half on your phones.", kind:"T", sp:"comerica"});
+    out.push({t:18*60, what:"Final out. Walk back to the cars.", alt:""});
+    return out;
+  }
+  function rewalk(steps, from){
+    var prev=from;
+    steps.forEach(function(s){
+      if(!s.sp) return;
+      var sp=byId[s.sp];
+      if(s.ride){ s.walk=null; prev=sp; return; }
+      if(prev && sp!==prev){ s.walk = walkMin(prev, sp); } else if(prev===sp){ s.walk=null; }
+      prev=sp;
+    });
+    return steps;
+  }
+  function ensureGate(steps, from){
+    var ti=-1; steps.forEach(function(s,i){ if(s.kind==="T" && ti<0) ti=i; });
+    if(ti<0) return steps;
+    var hasGate = steps.slice(0,ti).some(function(s){ return s.sp==="comerica"; });
+    if(hasGate) return steps;
+    var last=from, lastT=0;
+    steps.slice(0,ti).forEach(function(s){ if(s.sp) last=byId[s.sp]; lastT=Math.max(lastT,s.t); });
+    var w=walkMin(last,GATE);
+    steps.splice(ti,0,{t:Math.max(lastT, PITCH-w-10), what:"Walk to the Comerica gate.", alt:"Latest safe exit: "+fmt(PITCH-w-5)+".", walk:w, sp:"comerica"});
+    return steps;
+  }
+  function tailFrom(tStart, base){ return base.filter(function(s){ return s.t>=tStart; }).map(function(s){ return Object.assign({},s); }); }
+
+  function insertStop(c, target, D, why){
+    if(!target) return {msg:"Nothing nearby fits that call right now."};
+    var w=walkMin(c.here,target), arrive=c.t+w;
+    var leaveBy=PITCH-walkMin(target,GATE)-10, end=arrive+D;
+    if(arrive<leaveBy && end>leaveBy) end=leaveBy;
+    var st=status(target,arrive), spans=arrive<KICK && end>KICK;
+    var steps=[
+      {t:c.t, what:"Head to <b>"+esc(target.n)+"</b>.", alt:why, sp:target.id, aud:true},
+      {t:arrive, what:"At "+esc(target.n)+" until about "+fmt(end)+".", alt:st.txt+(target.call?" · call first":"")+(spans?". Lions kickoff happens while you're here.":""), sp:target.id, aud:true}
+    ];
+    var rest=tailFrom(end, c.base);
+    return {steps: ensureGate(rewalk(steps.concat(rest), c.here), c.here)};
+  }
+
+  var RULES = {
+    "21": function(c){
+      var h=c.here, watch=hasType(h,"bar")?h:nearest(h,function(s){return hasType(s,"bar");},c.t);
+      var steps=[{t:c.t, what:"Stay put at <b>"+esc(h.n)+"</b>.", alt:"Skip the next stops and enjoy it.", sp:h.id, aud:true}], cur=h;
+      if(c.t<KICK && watch && watch!==h){ steps.push({t:Math.max(c.t,KICK-15), what:"Slide over to <b>"+esc(watch.n)+"</b> for kickoff.", alt:"Closest bar with the game on.", sp:watch.id, aud:true}); cur=watch; }
+      if(c.t<KICK) steps.push({t:KICK, what:"Lions kickoff vs Jets.", alt:"Watching from "+esc(cur.n)+".", kind:"L", sp:cur.id});
+      var w=walkMin(cur,GATE);
+      steps.push({t:Math.max(c.t,PITCH-w-10), what:"Leave for the Comerica gate.", alt:"Latest safe exit from "+esc(cur.n)+".", sp:"comerica"});
+      return {steps: rewalk(steps.concat(finale(c.t)), h)};
+    },
+    "32": function(c){
+      var h=c.here, main=["bar","food","brew","roof"].indexOf(h.t[0])>-1 ? h.t[0] : "bar";
+      var ex={}; ex[h.id]=1;
+      var alt=nearest(h,function(s){ return hasType(s,main); },c.t,ex) || nearest(h,function(s){ return hasType(s,"bar")||hasType(s,"food"); },c.t,ex);
+      return insertStop(c,alt,45,"Too packed at "+esc(h.n)+". This is the closest backup.");
+    },
+    "14": function(c){
+      var h=c.here, bar=(hasType(h,"bar") && walkMin(h,GATE)<=12) ? h : nearest(GATE,function(s){return hasType(s,"bar");},Math.max(c.t,14*60));
+      var w=walkMin(bar,GATE), leave=Math.max(c.t, 15*60+40);
+      var steps=[], mt=c.t;
+      if(c.t<12*60+40){ steps=tailFrom(c.t,c.base).filter(function(s){ return s.t<12*60+40 && !s.kind && s.sp!=="comerica"; }); mt=12*60+40; }
+      if(bar!==h) steps.push({t:mt, what:"Move to <b>"+esc(bar.n)+"</b>, close to the gate.", alt:"So the walk in is short when you do go.", sp:bar.id, aud:true});
+      else steps.push({t:mt, what:"Stay at <b>"+esc(bar.n)+"</b>.", alt:"You're already close to the gate.", sp:bar.id, aud:true});
+      if(c.t<KICK) steps.push({t:KICK, what:"Lions kickoff vs Jets.", alt:"", kind:"L", sp:bar.id});
+      steps.push({t:Math.max(c.t,15*60), what:"Keep watching through the third quarter.", alt:"No re-entry at Comerica, so leave once.", sp:bar.id, aud:true});
+      steps.push({t:leave, what:"Walk to the Comerica gate.", alt:"", sp:"comerica"});
+      steps.push({t:leave+w+5, what:"In the ballpark around the 3rd inning.", alt:"First pitch was 3:10.", kind:"T", sp:"comerica"});
+      steps.push({t:18*60, what:"Final out. Walk back to the cars.", alt:""});
+      return {steps: rewalk(steps,h)};
+    },
+    "40": function(c){ return insertStop(c, nearest(c.here,function(s){return hasType(s,"food");},c.t), 40, "Closest food that should be open."); },
+    "55": function(c){ return insertStop(c, nearest(c.here,function(s){return hasType(s,"roof");},c.t), 45, "Closest rooftop."); },
+    "90": function(c){
+      if(c.t < KICK-20){ var w=walkMin(c.here,byId.pride); return insertStop(c, byId.pride, Math.max(20, KICK-15-(c.t+w)), "Free, public and no ticket needed. It wraps at kickoff."); }
+      return insertStop(c, byId.emlots, 60, "Pride Plaza wraps at kickoff. The Eastern Market lots run until 5.");
+    },
+    "66": function(c){
+      var early=c.t<12*60+30, rally=early?byId.pride:GATE, rt=early?12*60+45:Math.max(c.t,14*60+50);
+      var steps=[{t:c.t, what:"Everyone heads to "+(early?"the Pride Plaza stage":"the tiger statues at Comerica's main gate")+".", alt:"Rally at "+fmt(rt)+". Phones dead? Be there anyway.", sp:rally.id, aud:true},
+                 {t:rt, what:"Rally point.", alt:"Count heads, then carry on.", sp:rally.id, aud:true}];
+      var rest=tailFrom(rt+1, c.base);
+      return {steps: ensureGate(rewalk(steps.concat(rest), c.here), c.here)};
+    },
+    "70": function(c){ return insertStop(c, nearest(c.here,function(s){ return !OUTDOOR[s.id] && (hasType(s,"bar")||hasType(s,"brew")||hasType(s,"food")); },c.t), 60, "Closest indoor spot."); },
+    "81": function(c){ return insertStop(c, nearest(c.here,function(s){return hasType(s,"food");},c.t), 30, "Eat something and drink a round of water."); },
+    "88": function(c){
+      var n=byId.nemos, w=walkMin(c.here,n), arrive=c.t+w;
+      if(arrive > 14*60+40) return {msg:"Not enough time. Nemo's is "+w+" min away and you'd need to catch its shuttle back by about 2:40."};
+      var steps=[{t:c.t, what:"Head to <b>Nemo's</b> in Corktown.", alt:"About "+w+" min on foot, or grab a rideshare.", sp:"nemos", aud:true},
+                 {t:arrive, what:"Burgers and the Lions at Nemo's.", alt:"Kitchen opens at 11.", sp:"nemos", aud:true}];
+      if(c.t<KICK && arrive<KICK) steps.push({t:KICK, what:"Lions kickoff vs Jets.", alt:"Watching from Nemo's.", kind:"L", sp:"nemos"});
+      steps.push({t:14*60+40, what:"Ride the Nemo's shuttle to Comerica.", alt:"Confirm shuttle times with the bar: 313-965-3180.", aud:true, sp:"comerica", ride:true});
+      return {steps: rewalk(steps.concat(finale(c.t)), c.here)};
+    },
+    "99": function(c){
+      var steps=tailFrom(c.t, c.base);
+      var early=c.t<14*60+30, mt=early?Math.max(c.t,12*60+45):Math.max(c.t,14*60+50);
+      steps.push({t:mt, what:"Latecomer meets the crew "+(early?"at <b>Tin Roof</b>":"at the tiger statues at the main gate")+".", alt:early?"2 minutes from the gate.":"Tickets are in the app.", aud:true});
+      steps.sort(function(a,b){return a.t-b.t;});
+      return {steps: rewalk(steps, c.here)};
+    }
+  };
+
+  function activeSteps(){
+    var base=baseSteps(current);
+    if(audible && audible.play===current && RULES[audible.code]){
+      var here=byId[audible.here]||byId.pride;
+      var r=RULES[audible.code]({t:audible.t, here:here, base:base});
+      if(r.steps) return {steps:r.steps, aud:true};
+      return {steps:base, aud:false, msg:r.msg};
+    }
+    return {steps:base, aud:false};
+  }
+
+  function callAudible(code){
+    var here=hereSpot();
+    audible={code:code, t:clock(), here:here.id, play:current};
+    set("gd_aud", audible);
+    renderTimeline(); renderLive();
+    var el=document.getElementById("plan"); if(el && el.scrollIntoView) el.scrollIntoView();
+  }
+  function clearAudible(){ audible=null; set("gd_aud",null); renderTimeline(); renderLive(); }
+
+  // ---------- custom route ----------
+  function customPlan(){
+    var steps=[], warns=[], t=rStart, prev=null, totalWalk=0;
+    route.forEach(function(r){
+      var s=byId[r.id], w=prev?walkMin(prev,s):0, arrive=t+w, end=arrive+r.d, st=status(s,arrive);
+      totalWalk+=w;
+      if(st.k==="later") warns.push(s.n+" won't be open yet when you get there at "+fmt(arrive)+" ("+st.txt.toLowerCase()+").");
+      if(st.k==="closed") warns.push(s.n+" will be closed when you get there at "+fmt(arrive)+".");
+      steps.push({t:arrive, what:"<b>"+esc(s.n)+"</b>", alt:st.txt+(s.call?" · call first":"")+" · stay "+r.d+" min", walk:w||null, sp:s.id});
+      if(arrive<=KICK && end>KICK){
+        steps.push({t:KICK, what:"Lions kickoff vs Jets.", alt:"You'll be at "+esc(s.n)+".", kind:"L", sp:s.id});
+        if(!hasType(s,"bar")) warns.push("You'll be at "+s.n+" at kickoff, and it isn't a bar with the game on.");
+      }
+      t=end; prev=s;
+    });
+    if(!prev) return {steps:[], warns:[], walk:0, end:rStart};
+    var hasKick=steps.some(function(x){return x.kind==="L";});
+    if(!hasKick && t>KICK && rStart<KICK){
+      var ki=steps.findIndex(function(x){return x.t>KICK;}); if(ki<0) ki=steps.length;
+      steps.splice(ki,0,{t:KICK, what:"Lions kickoff vs Jets.", alt:"You'll be walking between stops.", kind:"L"});
+      warns.push("You'll be walking between stops at kickoff (1:00). Stay longer at the stop before, or move a bar to that slot.");
+    }
+    if(t<=KICK) warns.push("Your route ends at "+fmt(t)+", before kickoff. Add a bar to watch the Lions.");
+    var gw=walkMin(prev,GATE), gArr=t+gw; totalWalk+=gw;
+    steps.push({t:t, what:"Walk to the Comerica gate.", alt:gArr<GATES?"Gates open at 1:30, so you'll wait a bit.":"", walk:gw, sp:"comerica"});
+    if(gArr+5>PITCH) warns.push("You'd reach the gate around "+fmt(gArr)+", which misses first pitch. Trim a stop or shorten a stay.");
+    steps.push({t:PITCH, what:"First pitch vs Pirates.", alt:"", kind:"T", sp:"comerica"});
+    steps.push({t:18*60, what:"Final out. Walk back to the cars.", alt:""});
+    return {steps:steps, warns:warns, walk:totalWalk, end:t};
+  }
+  function saveRoute(){ set("gd_route",route); set("gd_rstart",rStart); }
+  function inRoute(id){ return route.some(function(r){return r.id===id;}); }
+  function toggleRoute(id){
+    if(inRoute(id)) route=route.filter(function(r){return r.id!==id;}); else route.push({id:id,d:45});
+    saveRoute(); renderSpots(); renderLive(); if(current==="custom") renderTimeline();
+  }
+  function copyPlay(pid){
+    var st=baseSteps(pid).filter(function(s){ return s.sp && s.sp!=="comerica"; });
+    var seq=[]; st.forEach(function(s){ if(!seq.length || seq[seq.length-1].sp!==s.sp) seq.push({sp:s.sp,t:s.t}); });
+    route = seq.map(function(s,i){
+      var nxt=seq[i+1], d = nxt ? nxt.t - s.t - walkMin(byId[s.sp],byId[nxt.sp]) : 60;
+      if(!nxt){ var gateStep=baseSteps(pid).filter(function(x){return x.sp==="comerica" && !x.kind;})[0]; if(gateStep) d=gateStep.t-s.t; }
+      return {id:s.sp, d:Math.max(15,Math.min(240,Math.ceil(d/5)*5))};
+    });
+    if(seq.length) rStart=seq[0].t;
+    saveRoute(); renderTimeline(); renderSpots();
+  }
+  var bMsg="";
+  function routeWalk(list){
+    var tot=0, prev=null;
+    list.forEach(function(r){ var sp=byId[r.id]; if(prev) tot+=walkMin(prev,sp); prev=sp; });
+    if(prev) tot+=walkMin(prev,GATE);
+    return tot;
+  }
+  function permute(arr){
+    if(arr.length<=1) return [arr.slice()];
+    var out=[];
+    arr.forEach(function(x,i){ var rest=arr.slice(0,i).concat(arr.slice(i+1)); permute(rest).forEach(function(p){ out.push([x].concat(p)); }); });
+    return out;
+  }
+  function autoOrder(){
+    if(route.length<3){ bMsg = route.length<2 ? "Add at least two more stops first. Your first stop stays put as your starting point." : "With two stops there's nothing to reorder. Your first stop stays put as your starting point."; renderBuilder(); return; }
+    var before=routeWalk(route), first=route[0], rest=route.slice(1), best=null, bestW=Infinity;
+    if(rest.length<=7){
+      permute(rest).forEach(function(p){ var cand=[first].concat(p), w=routeWalk(cand); if(w<bestW){ bestW=w; best=cand; } });
+    } else {
+      var out=[first], cur=byId[first.id], pool=rest.slice();
+      while(pool.length){ pool.sort(function(x,y){ return walkMin(cur,byId[x.id])-walkMin(cur,byId[y.id]); }); var nx=pool.shift(); out.push(nx); cur=byId[nx.id]; }
+      best=out; bestW=routeWalk(out);
+    }
+    if(bestW>=before){ bMsg="Already the shortest order: ~"+before+" min of walking, counting the final walk to the gate."; }
+    else { route=best; saveRoute(); bMsg="Reordered. Walking dropped from ~"+before+" to ~"+bestW+" min. Your first stop stayed put."; }
+    renderTimeline(); renderSpots();
+  }
+  function addStop(id){
+    if(!id || !byId[id] || inRoute(id)) return;
+    route.push({id:id,d:45}); saveRoute();
+    bMsg="Added "+byId[id].n+". Change how long you stay with − and +, or move it with ↑ ↓.";
+    renderTimeline(); renderSpots(); renderLive();
+  }
+  function customize(pid){
+    copyPlay(pid);
+    current="custom"; set("gd_play",current);
+    if(audible){ audible=null; set("gd_aud",null); }
+    bMsg="Copied "+playById(pid).nm+" into your own plan. Add, remove, or reorder stops below.";
+    renderPlays(); renderTimeline(); renderLive();
+  }
+
+  function renderBuilder(){
+    var box=document.getElementById("builder");
+    if(current!=="custom"){ box.hidden=true; bMsg=""; return; }
+    box.hidden=false;
+    var cp=customPlan();
+    var h='<div class="b-title">Your stops</div>'+
+      '<p class="b-how">Add stops here, pick how long you\'ll stay at each, and the timeline below updates as you go. It warns you if a place is closed when you\'d arrive or if you\'d miss first pitch.</p>'+
+      '<div class="b-head"><label for="r-start">Start at</label><input type="time" id="r-start" step="300" value="'+pad(Math.floor(rStart/60))+':'+pad(rStart%60)+'">'+
+      '<span class="b-sum">'+route.length+' stop'+(route.length===1?'':'s')+' · ~'+cp.walk+' min of walking</span></div>';
+
+    // add a stop
+    var avail=SPOTS.filter(function(x){ return x.id!=="comerica" && !inRoute(x.id); });
+    h+='<div class="b-add"><select id="r-add" aria-label="Pick a stop to add"><option value="">Pick a stop to add…</option>';
+    Object.keys(ZONES).forEach(function(z){
+      var opts=avail.filter(function(x){return x.z===z;}); if(!opts.length) return;
+      h+='<optgroup label="'+esc(ZONES[z])+'">'+opts.map(function(x){ return '<option value="'+x.id+'">'+esc(x.n)+'</option>'; }).join("")+'</optgroup>';
+    });
+    h+='</select><button type="button" class="chip addbtn" id="r-add-btn">Add stop</button></div>';
+
+    // suggestions near the last stop
+    var last = route.length ? byId[route[route.length-1].id] : null;
+    var from = last || byId.pride;
+    var tEnd = route.length ? cp.end : rStart;
+    var sugg = avail.filter(function(x){ return x!==from; }).sort(function(x,y){
+      return walkMin(from,x)-walkMin(from,y) || x.num-y.num;
+    }).slice(0,6);
+    if(sugg.length){
+      h+='<div class="b-sugg"><span class="b-sl">'+(last?'Close to '+esc(last.n)+':':'Good first stops near the stadiums:')+'</span>'+
+        sugg.map(function(x){ var w=walkMin(from,x), st=status(x,tEnd+w); return '<button type="button" class="chip sg" data-id="'+x.id+'">+ '+esc(x.n)+' <span class="sg-w">~'+w+' min'+(st.k==="later"?' · '+esc(st.txt.toLowerCase()):st.k==="closed"?' · closed':'')+'</span></button>'; }).join("")+'</div>';
+    }
+
+    if(cp.warns.length) h+='<ul class="warns">'+cp.warns.map(function(w){return "<li>"+esc(w)+"</li>";}).join("")+'</ul>';
+    else if(route.length) h+='<p class="ok">Timing works. You make first pitch.</p>';
+    if(bMsg) h+='<p class="b-msg" role="status">'+esc(bMsg)+'</p>';
+    if(!route.length) h+='<p class="empty">No stops yet. Pick one above, tap a suggestion, or start from a base play below.</p>';
+
+    h+='<ol class="rlist">';
+    var t=rStart, prev=null;
+    route.forEach(function(r,i){
+      var sp=byId[r.id], w=prev?walkMin(prev,sp):0, arr=t+w;
+      h+='<li><div class="r-main"><span class="r-n">'+(i+1)+'</span><div><div class="r-name">'+esc(sp.n)+'</div><div class="r-sub">'+(w?'~'+w+' min walk · ':'')+'arrive '+fmt(arr)+' · leave '+fmt(arr+r.d)+'</div></div></div>'+
+        '<div class="r-ctl"><button type="button" class="mini" data-act="dm" data-i="'+i+'" aria-label="Shorter stay">−</button><span class="r-d">'+r.d+' min</span><button type="button" class="mini" data-act="dp" data-i="'+i+'" aria-label="Longer stay">+</button>'+
+        '<button type="button" class="mini" data-act="up" data-i="'+i+'" aria-label="Move up">↑</button><button type="button" class="mini" data-act="dn" data-i="'+i+'" aria-label="Move down">↓</button><button type="button" class="mini x" data-act="rm" data-i="'+i+'" aria-label="Remove">✕</button></div></li>';
+      t=arr+r.d; prev=sp;
+    });
+    h+='</ol><div class="b-tools"><button type="button" class="chip" id="r-auto">Shortest walk order</button>'+
+      '<select id="r-copy" aria-label="Start from a base play"><option value="">Start from a base play…</option>'+PLAYS.filter(function(p){return p.id!=="custom";}).map(function(p){return '<option value="'+p.id+'">'+esc(p.nm)+' (replaces your stops)</option>';}).join("")+'</select>'+
+      '<button type="button" class="chip" id="r-clear">Clear all</button></div>';
+    box.innerHTML=h;
+    bMsg="";
+    document.getElementById("r-start").addEventListener("change",function(e){ var v=e.target.value.split(":"); if(v.length===2){ rStart=(+v[0])*60+(+v[1]); saveRoute(); renderTimeline(); } });
+    var sel=document.getElementById("r-add");
+    sel.addEventListener("change",function(){ if(sel.value) addStop(sel.value); });
+    document.getElementById("r-add-btn").addEventListener("click",function(){ if(sel.value) addStop(sel.value); else { bMsg="Pick a stop from the list first, or tap one of the suggestions."; renderBuilder(); } });
+    box.querySelectorAll("button.sg").forEach(function(b){ b.addEventListener("click",function(){ addStop(b.dataset.id); }); });
+    document.getElementById("r-auto").addEventListener("click",autoOrder);
+    document.getElementById("r-clear").addEventListener("click",function(){ route=[]; saveRoute(); bMsg="Cleared."; renderTimeline(); renderSpots(); renderLive(); });
+    document.getElementById("r-copy").addEventListener("change",function(e){ var v=e.target.value; if(v){ copyPlay(v); bMsg="Loaded "+playById(v).nm+". Edit it however you like."; renderBuilder(); } });
+    box.querySelectorAll("button.mini").forEach(function(b){
+      b.addEventListener("click",function(){
+        var i=+b.dataset.i, a=b.dataset.act;
+        if(a==="dm") route[i].d=Math.max(15,route[i].d-15);
+        if(a==="dp") route[i].d=Math.min(240,route[i].d+15);
+        if(a==="up" && i>0){ var x=route[i-1]; route[i-1]=route[i]; route[i]=x; }
+        if(a==="dn" && i<route.length-1){ var y=route[i+1]; route[i+1]=route[i]; route[i]=y; }
+        if(a==="rm"){ bMsg="Removed "+byId[route[i].id].n+"."; route.splice(i,1); renderSpots(); renderLive(); }
+        saveRoute(); renderTimeline();
+      });
+    });
+  }
+
+  // ---------- render plays + timeline ----------
+  function renderPlays(){
+    var box = document.getElementById("plays"); box.innerHTML="";
+    PLAYS.forEach(function(p){
+      var b=document.createElement("button"); b.className="play-btn"+(p.id==="custom"?" custom":""); b.type="button"; b.id="play-"+p.id;
+      b.setAttribute("aria-pressed", p.id===current ? "true":"false");
+      b.innerHTML='<span class="code">'+p.code+'</span><span class="nm">'+p.nm+'</span><span class="ds">'+p.ds+'</span>';
+      b.addEventListener("click", function(){ if(current!==p.id){ current=p.id; set("gd_play",current); if(audible){ audible=null; set("gd_aud",null); } } renderPlays(); renderTimeline(); renderLive(); });
+      box.appendChild(b);
+    });
+  }
+  function renderTimeline(){
+    var p = playById(current);
+    var meta = p.meta;
+    if(current==="custom"){ var cp=customPlan(); meta=[["Stops",String(route.length)],["Walking","~"+cp.walk+" min"],["Starts",fmt(rStart)]]; }
+    document.getElementById("play-meta").innerHTML = meta.map(function(m){ return "<span>"+m[0]+": <b>"+m[1]+"</b></span>"; }).join("") +
+      (current!=="custom" ? '<button type="button" class="chip custbtn" id="cust-btn">Customize this play</button>' : '');
+    var cb=document.getElementById("cust-btn"); if(cb) cb.addEventListener("click",function(){ customize(current); });
+    var a=activeSteps(), ban=document.getElementById("aud-banner");
+    if(audible && audible.play===current){
+      var c=CALLS.filter(function(x){return x[0]===audible.code;})[0];
+      var from=byId[audible.here];
+      ban.hidden=false;
+      ban.innerHTML='<div><span class="aud-code">'+esc(audible.code)+'</span> <b>'+esc(c?c[1]:"Audible")+'</b> called at '+fmt(audible.t)+(from?' from '+esc(from.n):'')+'. '+(a.msg?esc(a.msg):'The rest of the day is re-routed below.')+'</div><button type="button" class="chip" id="aud-clear">Back to the base play</button>';
+      document.getElementById("aud-clear").addEventListener("click", clearAudible);
+    } else { ban.hidden=true; ban.innerHTML=""; }
+    var ol = document.getElementById("timeline"); ol.innerHTML="";
+    a.steps.forEach(function(s){
+      var li=document.createElement("li");
+      var cls=[]; if(s.kind==="L") cls.push("lions"); if(s.kind==="T") cls.push("tigers"); if(s.aud) cls.push("aud");
+      li.className=cls.join(" ");
+      li.dataset.t = s.t;
+      var walk = s.walk ? '<span class="walk">walk ~'+s.walk+' min</span>' : "";
+      li.innerHTML = '<div class="t">'+fmt(s.t)+'</div><span class="node" aria-hidden="true"></span><div><div class="what">'+s.what+walk+'</div>'+(s.alt?'<div class="alt">'+s.alt+'</div>':"")+'</div>';
+      ol.appendChild(li);
+    });
+    if(!a.steps.length){ ol.innerHTML='<li><div class="t"></div><span class="node" aria-hidden="true"></span><div class="alt">Add stops below to build your day.</div></li>'; }
+    renderBuilder();
+    markNow();
+  }
+  function markNow(){
+    var items = document.querySelectorAll("#timeline li"); if(!items.length) return;
+    items.forEach(function(li){ li.classList.remove("now"); });
+    if(!clockSet()) return;
+    var m = clock(), idx=-1;
+    items.forEach(function(li,i){ if(li.dataset.t!=="" && +li.dataset.t <= m) idx=i; });
+    if(idx>=0) items[idx].classList.add("now");
+  }
+
+  // ---------- live ("we're here") ----------
+  var nextType = get("gd_next","all"), hideDone = get("gd_hide", true);
+  function setHere(id, markPrev){
+    if(markPrev && hereId && hereId!==id){ done[hereId]=true; set("gd_done",done); }
+    hereId=id; set("gd_here",hereId);
+    renderLive(); renderSpots();
+  }
+  function renderLive(){
+    var sel=document.getElementById("here-sel");
+    if(!sel.options.length){
+      var o=document.createElement("option"); o.value=""; o.textContent="Pick where you are…"; sel.appendChild(o);
+      Object.keys(ZONES).forEach(function(z){
+        var g=document.createElement("optgroup"); g.label=ZONES[z];
+        SPOTS.filter(function(s){return s.z===z;}).forEach(function(s){ var op=document.createElement("option"); op.value=s.id; op.textContent=s.n; g.appendChild(op); });
+        sel.appendChild(g);
+      });
+      sel.addEventListener("change", function(){ setHere(sel.value||null, false); });
+    }
+    sel.value = hereId || "";
+    var t=clock(), ci=document.getElementById("clock-in");
+    ci.value = pad(Math.floor(t/60)%24)+":"+pad(t%60);
+    var note=document.getElementById("clock-note");
+    if(preview!=null) note.textContent = "Previewing "+fmt(t)+". "+(isGameDay()?"Tap Use real time to follow the clock.":"On game day it follows the real clock once you tap Use real time.");
+    else if(isGameDay()) note.textContent = "Following the real clock.";
+    else note.textContent = "It's not game day yet, so this is a preview at "+fmt(t)+". Change the time to test-drive the day.";
+    document.getElementById("clock-real").hidden = preview==null;
+
+    var here = hereId ? byId[hereId] : null;
+    var tiles=[];
+    tiles.push(t<KICK ? ["Lions kickoff", "in "+fmtDur(KICK-t), "1:00 PM · FOX", ""] : (t<16*60+15 ? ["Lions", "On now", "Ends ~4:15", ""] : ["Lions", "Final", "", ""]));
+    if(here){
+      var w=walkMin(here,GATE), lb=PITCH-w-10;
+      if(t<lb) tiles.push(["Leave "+(here.id==="comerica"?"":"here ")+"for the gate by", fmt(lb), "~"+w+" min walk from "+here.n, lb-t<=30?"warn":""]);
+      else if(t<PITCH) tiles.push(["Leave for the gate", "Now", "~"+w+" min walk. First pitch 3:10.", "late"]);
+      else tiles.push(["Tigers", t<18*60+15?"On now":"Final", "~"+w+" min to the gate", ""]);
+    } else tiles.push(["Leave for the gate by", "—", "Pick where you are above", ""]);
+    tiles.push(t<GATES ? ["Comerica gates", "1:30", "open in "+fmtDur(GATES-t), ""] : ["Comerica gates", "Open", "No re-entry", ""]);
+    document.getElementById("tiles").innerHTML = tiles.map(function(x){ return '<div class="tile '+x[3]+'"><div class="k">'+esc(x[0])+'</div><div class="v">'+esc(x[1])+'</div><div class="s">'+esc(x[2])+'</div></div>'; }).join("");
+
+    var al=document.getElementById("aud-live");
+    if(audible){ var c=CALLS.filter(function(x){return x[0]===audible.code;})[0]; al.hidden=false; al.innerHTML='Audible <b>'+esc(audible.code)+' '+esc(c?c[1]:"")+'</b> is on. <a href="#plan">See the re-routed plan</a>.'; }
+    else { al.hidden=true; al.innerHTML=""; }
+
+    chipRow("next-chips", [["all","All"]].concat(Object.keys(TYPES).map(function(k){return [k,TYPES[k]];})), nextType, function(v){ nextType=v; set("gd_next",v); renderLive(); });
+    var hd=document.getElementById("hide-done"); hd.checked=!!hideDone;
+
+    var hc=document.getElementById("here-card");
+    if(here){
+      var hst=status(here,t);
+      hc.hidden=false;
+      hc.innerHTML='<div class="hc-top"><span class="eyebrow">You\'re at</span><span class="st st-'+hst.k+'">'+esc(hst.txt)+'</span></div><div class="hc-name">'+esc(here.n)+'</div><div class="nx-sub">'+esc(here.addr)+' · Sunday: '+esc(here.hrs)+'</div>'+(gdHtml(here)||'<div class="gd">No game-day events for this spot.</div>');
+    } else { hc.hidden=true; hc.innerHTML=""; }
+    var list=document.getElementById("next-list"); list.innerHTML="";
+    var from = here || byId.pride;
+    var cand=SPOTS.filter(function(s){ return s!==here && s.id!=="comerica" && (nextType==="all"||hasType(s,nextType)) && !(hideDone && done[s.id]); });
+    cand.sort(function(a,b){ return walkMin(from,a)-walkMin(from,b) || a.num-b.num; });
+    cand.slice(0,8).forEach(function(s){
+      var w=walkMin(from,s), arr=t+w, st=status(s,arr);
+      var li=document.createElement("li");
+      li.innerHTML='<div class="nx-main"><div class="nx-name"></div><div class="nx-sub"><span class="st st-'+st.k+'">'+esc(st.txt)+'</span> · ~'+w+' min · there by '+fmt(arr)+'</div>'+gdHtml(s)+'</div>'+
+        '<div class="nx-btns"><button type="button" class="chip go">Go here</button><button type="button" class="chip add">'+(inRoute(s.id)?"In route ✓":"+ Route")+'</button></div>';
+      li.querySelector(".nx-name").textContent=s.n;
+      li.querySelector(".go").addEventListener("click",function(){ setHere(s.id,true); });
+      li.querySelector(".add").addEventListener("click",function(){ toggleRoute(s.id); });
+      list.appendChild(li);
+    });
+    if(!here) list.insertAdjacentHTML("beforebegin","");
+    document.getElementById("next-from").textContent = here ? "Closest from "+here.n : "Closest from Pride Plaza (pick where you are for better picks)";
+  }
+  function wireLive(){
+    document.getElementById("clock-in").addEventListener("change",function(e){ var v=e.target.value.split(":"); if(v.length===2){ preview=(+v[0])*60+(+v[1]); set("gd_preview",preview); renderLive(); markNow(); } });
+    document.getElementById("clock-real").addEventListener("click",function(){ preview=null; set("gd_preview",null); renderLive(); markNow(); });
+    document.getElementById("hide-done").addEventListener("change",function(e){ hideDone=e.target.checked; set("gd_hide",hideDone); renderLive(); });
+  }
+
+  // ---------- audibles ----------
+  function renderBand(){
+    var band=document.getElementById("band");
+    CALLS.forEach(function(c){
+      var d=document.createElement("div"); d.className="call";
+      d.innerHTML='<div class="num">'+c[0]+'</div><div class="nm">'+c[1]+'</div><div class="if">If: '+c[2]+'</div><div class="do">'+c[3]+'</div><div class="callrow"><button type="button" class="callbtn" id="call-'+c[0]+'">Call '+c[0]+'</button></div>';
+      d.querySelector(".callbtn").addEventListener("click",function(){ callAudible(c[0]); });
+      band.appendChild(d);
+    });
+  }
+
+  // ---------- spots ----------
+  var fType = get("gd_type","all"), fZone = get("gd_zone","all"), sortBy = get("gd_sort","list");
+  var done = get("gd_done",{}); if(typeof done!=="object"||!done) done={};
+  function chipRow(elId, opts, val, onPick){
+    var el=document.getElementById(elId); el.innerHTML="";
+    opts.forEach(function(o){
+      var b=document.createElement("button"); b.type="button"; b.className="chip"; b.id=elId+"-"+o[0];
+      b.textContent=o[1]; b.setAttribute("aria-pressed", o[0]===val?"true":"false");
+      b.addEventListener("click", function(){ onPick(o[0]); });
+      el.appendChild(b);
+    });
+  }
+  function renderFilters(){
+    chipRow("type-chips", [["all","All"]].concat(Object.keys(TYPES).map(function(k){return [k,TYPES[k]];})), fType, function(v){ fType=v; set("gd_type",v); renderFilters(); renderSpots(); });
+    chipRow("zone-chips", [["all","Everywhere"]].concat(Object.keys(ZONES).map(function(k){return [k,ZONES[k]];})), fZone, function(v){ fZone=v; set("gd_zone",v); renderFilters(); renderSpots(); });
+    chipRow("sort-chips", [["list","By area"],["near","Closest to Comerica"],["left","Not visited first"]], sortBy, function(v){ sortBy=v; set("gd_sort",v); renderFilters(); renderSpots(); });
+  }
+  var zoneOrder = {em:0, st:1, wd:2, bp:3, gt:4};
+  function renderSpots(){
+    var list = SPOTS.filter(function(s){ return (fType==="all"||s.t.indexOf(fType)>-1) && (fZone==="all"||s.z===fZone); });
+    if(sortBy==="near") list.sort(function(a,b){return a.walk-b.walk;});
+    else if(sortBy==="left") list.sort(function(a,b){ return (done[a.id]?1:0)-(done[b.id]?1:0) || a.num-b.num; });
+    else list.sort(function(a,b){ return zoneOrder[a.z]-zoneOrder[b.z] || a.num-b.num; });
+    var el=document.getElementById("spot-list"); el.innerHTML="";
+    var visited = SPOTS.filter(function(s){return done[s.id];}).length;
+    document.getElementById("count").textContent = list.length+" shown · "+visited+" of "+SPOTS.length+" hit";
+    list.forEach(function(s){
+      var c=document.createElement("article"); c.className="spot"+(done[s.id]?" done":"")+(hereId===s.id?" here":"");
+      var url="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(s.q);
+      var walkTxt = s.walk===0 ? "<b>0</b><span>you're here</span>" : "<b>~"+s.walk+"</b><span>min walk</span>";
+      c.innerHTML =
+        '<div class="top"><span class="n">'+String(s.num).padStart(2,"0")+'</span><div><h3></h3><div class="addr"></div></div><div class="walkbox">'+walkTxt+'</div></div>'+
+        '<div class="tags"><span class="tag zone">'+ZONES[s.z]+'</span>'+s.t.map(function(t){return '<span class="tag">'+TYPES[t]+'</span>';}).join("")+(hereId===s.id?'<span class="tag heretag">You are here</span>':'')+'</div>'+
+        '<div class="hours"><b>Sunday:</b> <span class="h"></span>'+(s.call?' <span class="warn">· call first</span>':'')+'</div>'+
+        '<div class="note"></div>'+
+        (s.ph?'<div class="ph"></div>':'')+
+        '<div class="actions"><a target="_blank" rel="noopener">Directions ↗</a><div class="act-btns">'+(s.id!=="comerica"?'<button type="button" class="chip addr-btn">'+(inRoute(s.id)?"In route ✓":"+ Route")+'</button>':'')+'<button type="button" class="chip here-btn">We\'re here</button></div><label class="check"><input type="checkbox" id="done-'+s.id+'"> Been here</label></div>';
+      c.querySelector("h3").textContent=s.n;
+      c.querySelector(".addr").textContent=s.addr;
+      c.querySelector(".h").textContent=s.hrs;
+      c.querySelector(".note").textContent=s.note;
+      var a=c.querySelector(".actions a"); a.href=url;
+      if(s.ph) c.querySelector(".ph").textContent=s.ph;
+      var rb=c.querySelector(".addr-btn"); if(rb) rb.addEventListener("click",function(){ toggleRoute(s.id); });
+      c.querySelector(".here-btn").addEventListener("click",function(){ setHere(s.id,true); var l=document.getElementById("live"); if(l&&l.scrollIntoView) l.scrollIntoView(); });
+      var cb=c.querySelector("input"); cb.checked=!!done[s.id];
+      cb.addEventListener("change", function(){ if(cb.checked) done[s.id]=true; else delete done[s.id]; set("gd_done",done); renderSpots(); renderLive(); });
+      el.appendChild(c);
+    });
+    if(!list.length){ el.innerHTML='<p class="count">Nothing matches that combo. Try "Everywhere".</p>'; }
+  }
+
+  // ---------- skins ----------
+  var SKINS=[["lions-light","Lions Light","linear-gradient(135deg,#0076B6 50%,#FFFFFF 50%)"],["lions-dark","Lions Dark","linear-gradient(135deg,#0076B6 50%,#07131D 50%)"],["tigers-light","Tigers Light","linear-gradient(135deg,#FA4616 50%,#FFFFFF 50%)"],["tigers-dark","Tigers Dark","linear-gradient(135deg,#FA4616 50%,#0C2340 50%)"]];
+  var skin = get("gd_skin", null); if(!SKINS.some(function(k){return k[0]===skin;})) skin=null;
+  function effectiveSkin(){
+    if(skin) return skin;
+    var t=document.documentElement.getAttribute("data-theme");
+    var dark = t==="dark" || (t!=="light" && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+    return dark ? "lions-dark" : "lions-light";
+  }
+  function renderSkins(){
+    if(skin) document.documentElement.setAttribute("data-skin", skin); else document.documentElement.removeAttribute("data-skin");
+    var box=document.getElementById("skins"); box.querySelectorAll(".skin").forEach(function(b){ b.remove(); });
+    var eff=effectiveSkin();
+    SKINS.forEach(function(k){
+      var b=document.createElement("button"); b.type="button"; b.className="skin"; b.id="skin-"+k[0];
+      b.setAttribute("aria-pressed", k[0]===eff?"true":"false");
+      b.innerHTML='<span class="sw" style="background:'+k[2]+'"></span>'+k[1];
+      b.addEventListener("click", function(){ skin=k[0]; set("gd_skin",skin); renderSkins(); });
+      box.appendChild(b);
+    });
+  }
+  renderSkins();
+  try{ matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function(){ if(!skin) renderSkins(); }); }catch(e){}
+
+  renderPlays(); renderTimeline(); renderBand(); renderFilters(); renderSpots(); wireLive(); renderLive(); updateStatus();
+  setInterval(function(){ updateStatus(); if(preview==null && isGameDay()) renderLive(); }, 30000);
+})();
+</script>
+</body>
+</html>
