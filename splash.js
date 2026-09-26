@@ -9,6 +9,8 @@
  *                  (e.g. jp4mayor.com/#platform); the visitor's device asks
  *                  for reduced motion.
  * Skip:            Skip button, a click/tap anywhere, or Esc.
+ * Sound:           off until the "Sound on" button is tapped (browsers block
+ *                  audio before a tap). All synthesized in code, see SND.
  * To rewatch:      jp4mayor.com/?splash  (always plays; ?splash&t=6 freezes at 6s)
  *
  * Dialogue, timings and bubble positions live in the LINES array below.
@@ -54,11 +56,12 @@ style.textContent = `
 #sp-vignette{position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(120% 90% at 50% 38%,rgba(12,29,55,0) 55%,rgba(12,29,55,.32) 100%)}
 #sp-dim{position:absolute;inset:0;background:#0C1D37;pointer-events:none;opacity:1}
-#sp-skip{position:absolute;top:max(14px,env(safe-area-inset-top));right:14px;font-family:inherit;font-size:11px;font-weight:800;
-  letter-spacing:.18em;text-transform:uppercase;color:#fff;background:rgba(12,29,55,.78);border:0;border-radius:2px;
-  padding:9px 12px;cursor:pointer;transition:opacity .3s}
-#sp-skip:hover{background:#0C1D37}
-#sp-skip.gone{opacity:0;pointer-events:none}
+#sp-ctrls{position:absolute;top:max(14px,env(safe-area-inset-top));right:14px;display:flex;gap:8px;transition:opacity .3s}
+#sp-ctrls.gone{opacity:0;pointer-events:none}
+#sp-root .sp-btn{font-family:inherit;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#fff;
+  background:rgba(12,29,55,.78);border:0;border-radius:2px;padding:9px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;line-height:1}
+#sp-root .sp-btn:hover{background:#0C1D37}
+#sp-root .sp-btn svg{width:14px;height:14px;flex:none}
 #sp-root .sp-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 `;
 document.head.appendChild(style);
@@ -231,7 +234,10 @@ root.innerHTML = `
 </svg>
 <div id="sp-vignette"></div>
 <div id="sp-dim"></div>
-<button id="sp-skip" type="button">Skip &rsaquo;</button>
+<div id="sp-ctrls">
+  <button id="sp-sound" class="sp-btn" type="button" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6h3l4-3v10L5 10H2z" fill="currentColor"/><path d="M11.2 5.6a3.4 3.4 0 0 1 0 4.8M13 3.8a6 6 0 0 1 0 8.4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg><span>Sound on</span></button>
+  <button id="sp-skip" class="sp-btn" type="button">Skip &rsaquo;</button>
+</div>
 <p class="sp-sr">Reporters: Mr. Mayor! Mr. Mayor! Candidate: I'm not the mayor. Reporter: Sir, people are saying it's real! Candidate: It's not real. Get away. Reporter: Then explain the yard signs! Candidate: I didn't print those. Reporter: How does a cat even ride a bike? (He pictures himself cycling down a protected bike lane in a helmet.) Candidate: In a protected lane. Reporters: He's running! Candidate: Get away.</p>`;
 (document.body || document.documentElement).appendChild(root);
 const htmlStyle = document.documentElement.style, prevOverflow = htmlStyle.overflow;
@@ -705,7 +711,7 @@ const pupL = $('pupL'), pupR = $('pupR'), hlL = $('hlL'), hlR = $('hlR');
 const mouthO = $('mouthO'), mO = $('mO'), mT = $('mT'), wL = $('wL'), wR = $('wR');
 const armR = $('armR'), cuffR = $('cuffR'), pawR = $('pawR'), pawRb = $('pawRb'), beans = $('beans'), pawToes = $('pawToes');
 const tail = $('tail'), micL = $('micL'), micR = $('micR');
-const dim = $('dim'), skip = $('skip');
+const dim = $('dim'), ctrls = $('ctrls');
 const cats = LINES.filter(b => b.who === 'cat');
 
 function speaking(t){
@@ -855,9 +861,267 @@ function render(t){
   /* ---- fades ---- */
   dim.style.opacity = trStart(t).toFixed(3);
   if (!leaving) root.style.opacity = trOut(t).toFixed(3);
-  skip.classList.toggle('gone', t >= 16.1);
+  ctrls.classList.toggle('gone', t >= 16.1);
 }
 
+
+/* ---------------- sound ---------------- */
+// Off until the visitor taps "Sound on" — browsers (iPhone especially) block
+// audio until a tap. Everything is synthesized right here: the voices are
+// formant "babble", the effects are oscillators and filtered noise. No audio
+// files, nothing to license, nothing extra to download.
+const SND = (() => {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const btn = $('sound'), label = btn.querySelector('span');
+  const none = {update(){}, stop(){}};
+  if (!AC){ btn.remove(); return none; }
+  const SR = 24000;
+  const VOW = [[730,1090],[530,1840],[270,2290],[570,840],[300,870],[660,1720],[490,1350],[640,1190]];
+  let ctx = null, master, pa, dreamFx, crowdGain, noiseBuf, clickBuf;
+  let ready = false, muted = true, cues = [], next = -1, lastT = 0;
+
+  function setLabel(){
+    label.textContent = muted ? 'Sound on' : 'Mute';
+    btn.setAttribute('aria-pressed', String(!muted));
+  }
+  // A few syllables of vowel-ish babble: a sawtooth "voice" through two
+  // resonant formant filters, with consonant clicks at syllable starts.
+  function voiceData(o){
+    const n = Math.ceil(o.dur*SR), out = new Float32Array(n), r = rng(o.seed);
+    const syl = [];
+    for (let s = 0; s < o.dur - .04;){ const d = (.65 + r()*.7)/o.rate; syl.push({t0:s, d, v:VOW[(r()*VOW.length)|0], c:r() < .55, a:.75 + r()*.25}); s += d; }
+    let k = 0, ph = 0, l1 = 0, b1 = 0, l2 = 0, b2 = 0, lp = 0, peak = 1e-6;
+    let F1 = syl[0].v[0]*o.bright, F2 = syl[0].v[1]*o.bright;
+    for (let i = 0; i < n; i++){
+      const tt = i/SR;
+      while (k < syl.length - 1 && tt >= syl[k].t0 + syl[k].d) k++;
+      const s = syl[k], u = (tt - s.t0)/s.d;
+      let env = (u < .12 ? u/.12 : u > .78 ? Math.max(0, (1 - u)/.22) : 1) * s.a;
+      env *= Math.max(0, Math.min(1, tt/.03, (o.dur - tt)/.06));
+      const prog = tt/o.dur;
+      const f0 = o.f0*(1 + .07*Math.sin(k*1.9 + o.seed) - .08*prog + o.rise*Math.max(0, prog - .7)*3.3)*(1 + .012*Math.sin(tt*34));
+      ph += f0/SR; if (ph >= 1) ph -= 1;
+      let x = ((2*ph - 1) + (r()*2 - 1)*o.breath)*env;
+      if (s.c && u < .09) x += (r()*2 - 1)*.7*(1 - u/.09)*s.a;
+      F1 += (s.v[0]*o.bright - F1)*.004; F2 += (s.v[1]*o.bright - F2)*.004;
+      const g1 = 2*Math.sin(Math.PI*F1/SR), g2 = 2*Math.sin(Math.PI*F2/SR);
+      l1 += g1*b1; b1 += g1*(x - l1 - .22*b1);
+      l2 += g2*b2; b2 += g2*(x - l2 - .22*b2);
+      lp += (b1 + .55*b2 - lp)*.5;
+      out[i] = lp; const a = Math.abs(lp); if (a > peak) peak = a;
+    }
+    const g = o.gain/peak; for (let i = 0; i < n; i++) out[i] *= g;
+    return out;
+  }
+  // A loop of overlapping murmur for the press pack (wraps, so it loops cleanly).
+  function crowdData(){
+    const n = 6*SR, out = new Float32Array(n), r = rng(77);
+    for (let j = 0; j < 22; j++){
+      const v = voiceData({dur:1.2 + r()*1.8, f0:95 + r()*160, rate:5 + r()*3, bright:.9 + r()*.3, rise:(r() - .5)*.4, breath:.25, seed:100 + j, gain:.2 + r()*.2});
+      const off = (r()*n)|0;
+      for (let i = 0; i < v.length; i++) out[(off + i) % n] += v[i];
+    }
+    let b = 0, peak = 1e-6;
+    for (let i = 0; i < n; i++){ b += ((r()*2 - 1) - b)*.05; out[i] += b*.1; peak = Math.max(peak, Math.abs(out[i])); }
+    for (let i = 0; i < n; i++) out[i] *= .6/peak;
+    return out;
+  }
+  // Camera shutter: two short clicks (curtain + mirror) with a little ring.
+  function clickData(){
+    const n = (.09*SR)|0, out = new Float32Array(n), r = rng(5);
+    let hp = 0, prev = 0;
+    for (let i = 0; i < n; i++){
+      const tt = i/SR;
+      const e = Math.exp(-tt/.004) + (tt >= .045 ? .7*Math.exp(-(tt - .045)/.005) : 0);
+      const x = (r()*2 - 1)*e;
+      hp = .6*(hp + x - prev); prev = x;
+      out[i] = hp*.9 + Math.sin(tt*2*Math.PI*3100)*e*.25;
+    }
+    return out;
+  }
+  function toBuf(data){ const b = ctx.createBuffer(1, data.length, SR); b.getChannelData(0).set(data); return b; }
+  function playBuf(buf, w, o = {}){
+    const s = ctx.createBufferSource(); s.buffer = buf; s.playbackRate.value = o.rate || 1;
+    const g = ctx.createGain(); g.gain.value = o.gain == null ? 1 : o.gain;
+    s.connect(g);
+    let node = g;
+    if (o.pan && ctx.createStereoPanner){ const p = ctx.createStereoPanner(); p.pan.value = o.pan; g.connect(p); node = p; }
+    node.connect(o.dest || master);
+    s.start(w);
+  }
+  function tone(w, o){
+    const dur = o.dur, f1 = o.f1 || o.f0;
+    const osc = ctx.createOscillator(); osc.type = o.type || 'sine';
+    osc.frequency.setValueAtTime(o.f0, w);
+    if (f1 !== o.f0) osc.frequency.exponentialRampToValueAtTime(f1, w + dur);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(.0001, w);
+    g.gain.exponentialRampToValueAtTime(o.gain, w + (o.att || .005));
+    g.gain.exponentialRampToValueAtTime(.0001, w + dur);
+    osc.connect(g); g.connect(o.dest || master);
+    osc.start(w); osc.stop(w + dur + .05);
+  }
+  function sweep(w, o){
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf; s.loop = true;
+    const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = o.q || 1.2;
+    f.frequency.setValueAtTime(o.f0, w); f.frequency.exponentialRampToValueAtTime(o.f1, w + o.dur);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(.0001, w);
+    g.gain.exponentialRampToValueAtTime(o.gain, w + o.dur*(o.att || .3));
+    g.gain.exponentialRampToValueAtTime(.0001, w + o.dur);
+    s.connect(f); f.connect(g); g.connect(o.dest || master);
+    s.start(w); s.stop(w + o.dur + .05);
+  }
+  function thump(w, gain){   // a hand bumping the podium mics, through the PA
+    tone(w, {f0:95, f1:38, dur:.22, gain, dest:pa});
+    sweep(w, {dur:.05, f0:2200, f1:1400, q:.8, gain:gain*.25, att:.1, dest:pa});
+  }
+  function bell(w, gain){    // bike bell: inharmonic partials, striker tremolo
+    for (const [f, a] of [[2250,1],[2790,.55],[4480,.28],[6120,.12]]){
+      const o = ctx.createOscillator(); o.frequency.value = f;
+      const e = ctx.createGain();
+      e.gain.setValueAtTime(.0001, w);
+      e.gain.exponentialRampToValueAtTime(a*gain, w + .004);
+      e.gain.exponentialRampToValueAtTime(.0001, w + .85);
+      const am = ctx.createGain(); am.gain.value = .6;
+      const lfo = ctx.createOscillator(); lfo.frequency.value = 26;
+      const depth = ctx.createGain(); depth.gain.value = .4;
+      lfo.connect(depth); depth.connect(am.gain);
+      o.connect(e); e.connect(am); am.connect(dreamFx);
+      o.start(w); o.stop(w + .9); lfo.start(w); lfo.stop(w + .9);
+    }
+  }
+  function build(){
+    // --- mixing desk
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -14; comp.ratio.value = 4;
+    comp.connect(ctx.destination);
+    master = ctx.createGain(); master.gain.value = 0; master.connect(comp);
+    // the candidate is on a PA: tighter band, a slap of room
+    pa = ctx.createGain(); pa.gain.value = 1;
+    const hpf = ctx.createBiquadFilter(); hpf.type = 'highpass'; hpf.frequency.value = 170;
+    const pk = ctx.createBiquadFilter(); pk.type = 'peaking'; pk.frequency.value = 2600; pk.gain.value = 4;
+    const dl = ctx.createDelay(1); dl.delayTime.value = .12;
+    const fb = ctx.createGain(); fb.gain.value = .25;
+    const lpf = ctx.createBiquadFilter(); lpf.type = 'lowpass'; lpf.frequency.value = 2400;
+    const wet = ctx.createGain(); wet.gain.value = .3;
+    pa.connect(hpf); hpf.connect(pk); pk.connect(master);
+    pk.connect(dl); dl.connect(lpf); lpf.connect(fb); fb.connect(dl); lpf.connect(wet); wet.connect(master);
+    // daydream sounds get a soft echo
+    dreamFx = ctx.createGain();
+    const ddl = ctx.createDelay(1); ddl.delayTime.value = .21;
+    const dfb = ctx.createGain(); dfb.gain.value = .35;
+    const dlp = ctx.createBiquadFilter(); dlp.type = 'lowpass'; dlp.frequency.value = 3200;
+    const dwet = ctx.createGain(); dwet.gain.value = .35;
+    dreamFx.connect(master); dreamFx.connect(ddl); ddl.connect(dlp); dlp.connect(dfb); dfb.connect(ddl); dlp.connect(dwet); dwet.connect(master);
+
+    // --- sources
+    const nd = new Float32Array(SR); const rn = rng(9); for (let i = 0; i < SR; i++) nd[i] = rn()*2 - 1;
+    noiseBuf = toBuf(nd);
+    clickBuf = toBuf(clickData());
+    crowdGain = ctx.createGain(); crowdGain.gain.value = 0;
+    const cf = ctx.createBiquadFilter(); cf.type = 'lowpass'; cf.frequency.value = 1900;
+    const crowd = ctx.createBufferSource(); crowd.buffer = toBuf(crowdData()); crowd.loop = true;
+    crowd.connect(cf); cf.connect(crowdGain); crowdGain.connect(master); crowd.start();
+
+    // --- the cue sheet (scene time -> sound)
+    const cue = (t, fn) => cues.push({t, fn});
+    const PITCH = {b330:150, b700:205, b1265:185, f470:165, f1065:235, f1320:262};
+    for (const b of LINES){
+      const chars = b.text.join(' ').length;
+      if (b.who === 'cat'){
+        // deadpan, low, flat — and falling at the end of every line
+        const segs = b.speak.length === 3 ? [[0, b.speak[0]], [b.speak[1], b.speak[2]]] : [[0, b.speak[0]]];
+        segs.forEach(([a, z], i) => {
+          const buf = toBuf(voiceData({dur:z - a, f0:b.id === 'c5' ? 94 : 106, rate:5.3, bright:.9, rise:-.07, breath:.12, seed:300 + chars*3 + i, gain:.6}));
+          cue(b.t0 + .08 + a, w => playBuf(buf, w, {dest:pa}));
+        });
+      } else {
+        const shout = /RUNNING/.test(b.text[0]);
+        const ask = /\?/.test(b.text.join(''));
+        const dur = clamp(.062*chars, .45, b.t1 - b.t0 - .2);
+        const p = byKey[b.by];
+        const buf = toBuf(voiceData({dur, f0:(PITCH[b.by] || 190)*(shout ? 1.28 : 1), rate:shout ? 8.2 : 7.4, bright:1.08,
+          rise:ask ? .3 : -.02, breath:.2, seed:(500 + chars + b.t0*10)|0, gain:b.small ? .34 : .5}));
+        cue(b.t0 + .03, w => playBuf(buf, w, {pan:clamp((p.x - 800)/700, -.75, .75)}));
+      }
+    }
+    for (const f of FLASHES) cue(f.t, w => {
+      const s = SAFE[mode], fx = s.x + 40 + f.u*(s.w - 80);
+      playBuf(clickBuf, w, {gain:.14 + .12*f.z, pan:clamp((fx - 800)/700, -.8, .8), rate:.9 + f.v*.3});
+    });
+    cue(1.9,  w => thump(w, .5));                                                     // taps the mic
+    cue(5.4,  w => sweep(w, {dur:.22, f0:700, f1:2200, q:.9, gain:.08}));              // paw up
+    cue(6.85, w => sweep(w, {dur:.3, f0:400, f1:1500, q:.7, gain:.16}));               // yard sign goes up
+    cue(13.28,w => thump(w, .32));                                                    // leans into the mic
+    cue(13.3, w => tone(w, {f0:2900, f1:3050, dur:.45, gain:.018, att:.3, dest:pa}));  // a whisper of feedback
+    cue(15.2, w => sweep(w, {dur:.22, f0:700, f1:2200, q:.9, gain:.08}));              // paw up again
+    cue(15.55,w => sweep(w, {dur:.42, f0:1800, f1:260, q:.8, gain:.2, att:.25}));      // ducks
+    cue(15.72,w => { thump(w, .4); tone(w + .05, {f0:330, f1:300, dur:.25, gain:.05, type:'triangle', dest:pa}); }); // mics wobble
+    // the daydream
+    DREAM.dots.forEach((d, i) => cue(d, w => tone(w, {f0:520*(1 + i*.25), f1:1040*(1 + i*.25), dur:.09, gain:.16, dest:dreamFx})));
+    cue(DREAM.in, w => {
+      [523, 587, 659, 784, 880, 1047, 1175, 1319].forEach((f, i) =>
+        tone(w + i*.045, {f0:f, dur:1.1, gain:.09, type:'triangle', dest:dreamFx}));
+      const len = DREAM.out - DREAM.in + .25;
+      for (const f of [262, 330, 392, 494]){
+        const o = ctx.createOscillator(); o.frequency.value = f;
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(0, w); g.gain.linearRampToValueAtTime(.03, w + .4);
+        g.gain.setValueAtTime(.03, w + len - .3); g.gain.linearRampToValueAtTime(0, w + len);
+        o.connect(g); g.connect(dreamFx); o.start(w); o.stop(w + len + .05);
+      }
+    });
+    cue(DREAM.in + .45, w => bell(w, .09));
+    cue(DREAM.in + .95, w => bell(w, .08));
+    for (let x = DREAM.in + .15; x < DREAM.out - .05; x += .085) cue(x, w => playBuf(clickBuf, w, {gain:.035, rate:1.7}));  // freewheel
+    cue(DREAM.out, w => {
+      sweep(w, {dur:.09, f0:1800, f1:900, q:2, gain:.3, att:.1});
+      tone(w, {f0:900, f1:260, dur:.12, gain:.2});
+    });
+    cues.sort((a, b) => a.t - b.t);
+    ready = true;
+  }
+  btn.addEventListener('click', e => {
+    e.stopPropagation();   // a tap anywhere else skips; this one doesn't
+    if (!ctx){
+      try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (err) {}
+      try { ctx = new AC(); } catch (err) { btn.remove(); return; }
+      // unlock on iOS: play a silent sample inside the tap itself
+      const s = ctx.createBufferSource(); s.buffer = ctx.createBuffer(1, 1, 22050); s.connect(ctx.destination); s.start(0);
+      if (ctx.resume) ctx.resume();
+      muted = false; setLabel();
+      setTimeout(() => { try { build(); } catch (err) { btn.remove(); } }, 0);
+      return;
+    }
+    muted = !muted; setLabel();
+    if (!muted && ctx.state !== 'running') ctx.resume();
+  });
+  if (force) window.__splashSnd = () => ({ready, cues:cues.length, next, state:ctx && ctx.state, muted});
+  const onVis = () => { if (ctx) document.hidden ? ctx.suspend() : ctx.resume(); };
+  document.addEventListener('visibilitychange', onVis);
+  return {
+    update(t, playing){
+      if (!ready) return;
+      const now = ctx.currentTime;
+      master.gain.setTargetAtTime(muted ? 0 : trOut(t), now, .05);
+      crowdGain.gain.setTargetAtTime(.05 + .32*trSurge(t), now, .12);
+      if (!playing) return;
+      if (next < 0 || t < lastT - .01){ next = cues.findIndex(c => c.t >= t - .02); if (next < 0) next = cues.length; }
+      lastT = t;
+      while (next < cues.length && cues[next].t < t + .25){
+        const c = cues[next++];
+        if (c.t >= t - .03) c.fn(now + Math.max(0, c.t - t));
+      }
+    },
+    stop(){
+      document.removeEventListener('visibilitychange', onVis);
+      if (!ctx) return;
+      if (ready) master.gain.setTargetAtTime(0, ctx.currentTime, .08);
+      setTimeout(() => { try { ctx.close(); } catch (err) {} }, 700);
+    }
+  };
+})();
 
 /* ---------------- playback ---------------- */
 let t = 0, playing = true, last = null, done = false;
@@ -869,6 +1133,7 @@ function finish(){
   root.classList.add('sp-leaving');
   htmlStyle.overflow = prevOverflow;
   removeEventListener('keydown', onKey);
+  SND.stop();
   setTimeout(() => { root.remove(); style.remove(); }, 500);
 }
 function frame(ts){
@@ -877,6 +1142,7 @@ function frame(ts){
   const dt = Math.min(.05, (ts - last)/1000); last = ts;
   if (playing){ t += dt; if (t >= END){ t = END; render(t); finish(); return; } }
   render(t);
+  SND.update(t, playing);
   requestAnimationFrame(frame);
 }
 function onKey(e){ if (e.key === 'Escape') finish(); }
