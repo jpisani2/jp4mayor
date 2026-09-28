@@ -14,12 +14,11 @@ import * as settle from "./screens/settle.js";
 import * as stats from "./screens/stats.js";
 import * as idle from "./screens/idle.js";
 import * as roster from "./screens/roster.js";
-import * as rules from "./screens/rules.js";
 
 const root = document.getElementById("app");
 const dot = document.getElementById("live");
 
-const SCREENS = { join, seat, room, setup, closeout, settle, stats, idle, roster, rules };
+const SCREENS = { join, seat, room, setup, closeout, settle, stats, idle, roster };
 
 const STATIC = {
   loading: () => `<div class="center"><p>Connecting…</p></div>`,
@@ -34,6 +33,11 @@ const STATIC = {
 
 };
 
+/* A new screen starts at the top. Without this, opening Settle or Stats from
+   halfway down the board lands mid-page with its Back button scrolled off
+   the top — on an iPhone, tucked up under the address bar. */
+let shown = null;
+
 function render() {
   dot.dataset.live = state.live ? "1" : "0";
 
@@ -43,6 +47,11 @@ function render() {
     screen.wire(root);
   } else {
     root.innerHTML = (STATIC[state.screen] ?? STATIC.loading)();
+  }
+
+  if (state.screen !== shown) {
+    shown = state.screen;
+    window.scrollTo(0, 0);
   }
 }
 

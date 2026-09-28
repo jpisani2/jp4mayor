@@ -51,6 +51,22 @@ export function ifThisHits(bet, side, stake) {
   return pot(bet, stake) / list.length - risk;
 }
 
+/* What one player stands to lose on bets not yet graded: their side's risk
+   on every locked bet, plus current picks on open bets (which can still
+   change). Sitting out risks nothing. */
+export function inPlay(bets, playerId, stake) {
+  const out = { locked: 0, open: 0, total: 0 };
+  bets.forEach(bet => {
+    if (bet.status !== "locked" && bet.status !== "open") return;
+    const side = bet.picks.find(p => p.player_id === playerId)?.side;
+    const risk = side === "A" ? riskA(bet.p, stake)
+               : side === "B" ? riskB(bet.p, stake) : 0;
+    out[bet.status] += risk;
+  });
+  out.total = out.locked + out.open;
+  return out;
+}
+
 /* Per-player totals across a set of graded bets. */
 export function rollUp(bets, players, stake) {
   const rows = {};

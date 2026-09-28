@@ -2,10 +2,10 @@
 
 import { state, stake, nameOf, betsBy, awaiting, isPregame, isBlind,
          pick, lock, grade, ungrade, pull, openProposeSheet,
-         kickOff, goto, openMenu } from "../store.js";
+         kickOff, goto, openMenu, visibleBets, toggleInPlayAll } from "../store.js";
 import { MAX_OPEN_BETS } from "../config.js";
 import { esc, money, matchup } from "../format.js";
-import { riskA, riskB, takers, pot, canLock, settle, ifThisHits, rollUp } from "../scoring.js";
+import { riskA, riskB, takers, pot, canLock, settle, ifThisHits, rollUp, inPlay } from "../scoring.js";
 import * as propose from "./propose.js";
 import * as menu from "./menu.js";
 
@@ -17,6 +17,7 @@ export function view() {
 
   return `
   <div class="wrap">
+    ${inPlayBar()}
     <header class="head">
       <div>
         <h1 class="cond">${esc(matchup(state.game))}</h1>
@@ -86,6 +87,9 @@ export function wire(root) {
   const kick = root.querySelector("#kickoff");
   if (kick) kick.onclick = () => state.admin ? kickOff() : goto("setup");
 
+  const allLink = root.querySelector("#inplayall");
+  if (allLink) allLink.onclick = () => toggleInPlayAll();
+
   const menuLink = root.querySelector("#menulink");
   if (menuLink) menuLink.onclick = () => openMenu(true);
 
@@ -94,6 +98,34 @@ export function wire(root) {
 }
 
 /* --- pieces -------------------------------------------------------------- */
+
+/* Pinned to the top: how much you have riding on bets not yet graded.
+   Before kickoff other people's totals stay hidden — with risk depending on
+   the side taken, a total would give away a blind pick. */
+function inPlayBar() {
+  const bets = visibleBets(), s = stake();
+  const me = inPlay(bets, state.me, s);
+  const others = !isPregame();
+  const rows = state.players
+    .map(p => ({ p, t: inPlay(bets, p.id, s) }))
+    .filter(r => r.p.id === state.me || r.t.total > 0.001)
+    .sort((x, y) => y.t.total - x.t.total);
+
+  return `<div class="inplay">
+    <div class="ipline">
+      <div><span class="ipk">You have in play</span>
+        <span class="ipv cond num">${money(me.total)}</span></div>
+      ${others ? `<button class="linkish" id="inplayall">${
+        state.inPlayAll ? "hide" : "everyone"}</button>` : ""}
+    </div>
+    <div class="ipsplit num">${money(me.locked)} locked · ${money(me.open)} on open bets</div>
+    ${others && state.inPlayAll ? `<div class="ipall num">${rows.map(r => {
+      const you = r.p.id === state.me ? ` class="you"` : "";
+      return `<span${you}>${esc(r.p.name)}</span><span${you}>${money(r.t.total)}</span>`;
+    }).join("")}</div>
+    <div class="ipnote">Locked bets plus current picks, not yet graded.</div>` : ""}
+  </div>`;
+}
 
 const tone = n => n > 0.001 ? "up" : n < -0.001 ? "down" : "";
 const section = title => `<div class="sechead"><span>${esc(title)}</span><span class="rule"></span></div>`;

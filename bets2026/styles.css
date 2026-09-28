@@ -90,7 +90,7 @@ code{background:var(--surface2);padding:1px 5px;border-radius:4px;font-size:.9em
 /* --- layout -------------------------------------------------------------- */
 .wrap{max-width:520px;margin:0 auto;padding:0 14px 130px}
 .center{max-width:400px;margin:0 auto;padding:30px 20px;min-height:100vh;
-  display:flex;flex-direction:column;justify-content:center}
+  min-height:100dvh;display:flex;flex-direction:column;justify-content:center}
 .center h1{font-size:34px;margin:0 0 6px;line-height:1}
 .center p{color:var(--ink2);font-size:14px;margin:0 0 20px;line-height:1.5}
 
@@ -209,12 +209,34 @@ input[type=range]{width:100%;accent-color:var(--a)}
 .fab .inner{max-width:520px;margin:0 auto}
 
 /* --- propose sheet ------------------------------------------------------- */
+/* iPhone Safari measures vh as if the address bar were hidden, so 88vh can
+   be taller than what's actually on screen and push the sheet's top (the
+   Close button) up under the bar. dvh tracks the visible area; the vh line
+   stays as a fallback for older browsers. */
 .sheet{position:fixed;inset:0;background:color-mix(in srgb,var(--ground) 82%,transparent);
-  display:flex;align-items:flex-end;z-index:50}
+  display:flex;align-items:flex-end;z-index:50;
+  padding-top:calc(12px + env(safe-area-inset-top,0px))}
 .sheetbody{background:var(--ground);border-top:1px solid var(--line);
-  border-radius:16px 16px 0 0;width:100%;max-height:88vh;overflow-y:auto;
-  padding:16px 14px 34px;max-width:520px;margin:0 auto}
+  border-radius:16px 16px 0 0;width:100%;max-height:88vh;max-height:88dvh;
+  max-height:min(88dvh,100%);overflow-y:auto;overscroll-behavior:contain;
+  padding:16px 14px calc(34px + env(safe-area-inset-bottom,0px));
+  max-width:520px;margin:0 auto}
+.sheettop{position:sticky;top:-16px;margin:-16px -14px 0;padding:16px 14px 10px;
+  background:var(--ground);z-index:1}
 .sheettop{display:flex;justify-content:space-between;align-items:center}
+
+/* --- in play bar (room) -------------------------------------------------- */
+.inplay{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;
+  margin:0 -14px;padding:9px 30px 9px 14px;background:var(--ground);
+  border-bottom:1px solid var(--line)}
+.ipline{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.ipk{font-size:12px;color:var(--ink2)}
+.ipv{font-size:22px;line-height:1;color:var(--ink);margin-left:6px}
+.ipsplit{font-size:12px;color:var(--ink3);margin-top:3px}
+.ipall{margin-top:8px;display:grid;grid-template-columns:1fr auto;gap:3px 12px;
+  font-size:13px;color:var(--ink2)}
+.ipall .you{color:var(--ink)}
+.ipnote{font-size:11px;color:var(--ink3);margin-top:6px}
 .sheettop strong{font-size:17px}
 .sheetq{font-size:17px;line-height:1.3;margin:5px 0 14px}
 .riskline{font-size:13px;color:var(--ink2);margin:12px 0 14px}
@@ -376,10 +398,3 @@ select.field{appearance:none;
 .swatches[data-swatch="michigan-state"] i:nth-child(1){background:#FFFFFF}
 .swatches[data-swatch="michigan-state"] i:nth-child(2){background:#18453B}
 .swatches[data-swatch="michigan-state"] i:nth-child(3){background:#0B8A57}
-
-/* --- house rules --------------------------------------------------------- */
-.rules{margin:0;padding-left:22px}
-.rules li{margin-bottom:13px;line-height:1.45}
-.ruletext{font-size:15px}
-.rulewhy{display:block;font-size:12px;color:var(--ink3);margin-top:4px;line-height:1.5;
-  border-left:2px solid var(--line);padding-left:9px}

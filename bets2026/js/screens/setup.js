@@ -125,24 +125,6 @@ function pinView() {
   </div>`;
 }
 
-let typing;
-
-/* Redraw without dropping whatever field has focus. Anything clicked or tapped
-   keeps working because it is found again by id after the redraw. */
-function redrawKeepingFocus() {
-  clearTimeout(typing);
-  if (state.screen !== "setup") return;
-  const active = document.activeElement;
-  const id = active && active.id;
-  let start = null, end = null;
-  try { start = active.selectionStart; end = active.selectionEnd; } catch (e) { /* not a text field */ }
-  goto("setup");
-  const again = id && document.getElementById(id);
-  if (!again) return;
-  again.focus();
-  try { if (start !== null) again.setSelectionRange(start, end); } catch (e) { /* number or date field */ }
-}
-
 export function wire(root) {
   const $ = sel => root.querySelector(sel);
   const redraw = () => goto("setup");
@@ -158,23 +140,16 @@ export function wire(root) {
     return;
   }
 
-  /* The board depends on every field, so each one redraws the screen. A
-     redraw replaces every input, so it puts focus (and the cursor) back where
-     it was. Team names redraw once typing pauses rather than on blur: a blur
-     redraw ran mid-tap and swallowed the tap on the next field. Numbers redraw
-     on change, a beat later, once focus has already moved to wherever the
-     person tapped next. */
+  /* Text fields keep their value in the draft without redrawing, so typing
+     isn't interrupted. Numbers redraw, since the board depends on them. */
   ["home_team", "away_team"].forEach(key => {
     const el = $(`#f-${key}`);
-    el.oninput = () => {
-      form[key] = el.value;
-      clearTimeout(typing);
-      typing = setTimeout(redrawKeepingFocus, 500);
-    };
+    el.oninput = () => { form[key] = el.value; };
+    el.onblur = redraw;
   });
   ["kickoff_date", "base_stake", "spread", "total"].forEach(key => {
     const el = $(`#f-${key}`);
-    el.onchange = () => { form[key] = el.value; setTimeout(redrawKeepingFocus, 0); };
+    el.onchange = () => { form[key] = el.value; redraw(); };
   });
 
   root.querySelectorAll("[data-fav]").forEach(el => {
