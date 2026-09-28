@@ -23,6 +23,7 @@ export const state = {
   proposing: false,
   menu: false,
   inPlayAll: false,    // everyone's in-play totals expanded in the room
+  bigScreen: false,    // this device is the shared dashboard, not a player
   admin: false,
   history: { games: [], bets: [], payments: [], loaded: false },
   roster: { flags: [], changes: [], loaded: false },
@@ -69,7 +70,20 @@ export const presentPlayers = () =>
 export const awaiting = bet =>
   presentPlayers().filter(p => !bet.picks.some(x => x.player_id === p.id));
 
+/* Where Back goes: the big screen if this device is one, otherwise the board
+   or the midweek screen. */
+export const home = () => state.bigScreen ? "big" : state.game ? "room" : "idle";
+
 /* --- loading ------------------------------------------------------------- */
+
+/* The big screen shows balances across every game, so it keeps the full
+   history current rather than loading it once like the settle-up screen. */
+async function refreshHistory() {
+  const [games, bets, payments] = await Promise.all([
+    db.fetchGames(), db.fetchAllBets(), db.fetchPayments(),
+  ]);
+  state.history = { games, bets, payments, loaded: true };
+}
 
 let loading = false;
 
@@ -82,6 +96,7 @@ export async function reload({ announce = false } = {}) {
     state.game = game;
     state.players = players;
     state.bets = await db.fetchBets(game?.id);
+    if (state.bigScreen) await refreshHistory();
     if (announce && betsBy("open").length > openBefore) beep();
     state.error = "";
     render();
@@ -112,8 +127,14 @@ export async function boot() {
 
   const saved = localStorage.getItem("betroom.player");
   const known = saved && state.players.some(p => p.id === saved);
+  const big = localStorage.getItem("betroom.bigscreen") === "1"
+           && localStorage.getItem("betroom.pw");
 
-  if (known) {
+  if (big) {
+    state.bigScreen = true;
+    state.screen = "big";
+    refreshHistory().then(render).catch(e => setError(e.message || e));
+  } else if (known) {
     state.me = saved;
     state.screen = state.game ? "room" : "idle";
     db.markPresent(state.game?.id, saved);
@@ -156,6 +177,27 @@ export async function takeSeat(playerId) {
     state.screen = state.game ? "room" : "idle";
     render();
   } catch (e) { setError(e.message || e); }
+}
+
+/* The big screen is reached from the seat picker and remembered on this
+   device, so a laptop left on the coffee table comes back to it on refresh. */
+export function enterBigScreen() {
+  state.bigScreen = true;
+  state.screen = "big";
+  state.error = "";
+  try { localStorage.setItem("betroom.bigscreen", "1"); } catch (e) { /* private mode */ }
+  render();
+  refreshHistory().then(render).catch(e => setError(e.message || e));
+}
+
+export function leaveBigScreen() {
+  state.bigScreen = false;
+  try { localStorage.removeItem("betroom.bigscreen"); } catch (e) { /* private mode */ }
+  const saved = localStorage.getItem("betroom.player");
+  const known = saved && state.players.some(p => p.id === saved);
+  if (known) state.me = saved;
+  state.screen = known ? (state.game ? "room" : "idle") : "seat";
+  render();
 }
 
 export async function addPlayer(name) {
@@ -393,7 +435,7 @@ export async function closeOutNight() {
     await db.voidBets(stillOpen.map(b => b.id));
     await db.setGamePhase(state.game.id, "closed", "closed_at");
     await reload();
-    state.screen = "idle";
+    state.screen = home();
     render();
   } catch (e) { setError(e.message || e); }
 }
@@ -402,7 +444,7 @@ export async function scrapGame() {
   try {
     await db.deleteGame(state.game.id);
     await reload();
-    state.screen = "idle";
+    state.screen = home();
     render();
   } catch (e) { setError(e.message || e); }
 }

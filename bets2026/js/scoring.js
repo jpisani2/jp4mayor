@@ -67,6 +67,22 @@ export function inPlay(bets, playerId, stake) {
   return out;
 }
 
+/* Headline numbers for one game, for the big screen. Wagered counts what
+   was actually committed — locked and settled bets, voids excluded. In play
+   is every pot still unresolved, open bets included. */
+export function gameTotals(bets, stake) {
+  const committed = bets.filter(b =>
+    b.status === "locked" || (b.status === "graded" && b.result !== "VOID"));
+  const pots = committed.map(b => pot(b, stake));
+  return {
+    called: bets.length,
+    wagered: pots.reduce((sum, v) => sum + v, 0),
+    biggestPot: pots.length ? Math.max(...pots) : 0,
+    inPlay: bets.filter(b => b.status === "open" || b.status === "locked")
+      .reduce((sum, b) => sum + pot(b, stake), 0),
+  };
+}
+
 /* Per-player totals across a set of graded bets. */
 export function rollUp(bets, players, stake) {
   const rows = {};

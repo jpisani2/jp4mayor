@@ -58,6 +58,8 @@ js/
     idle.js         Midweek: what you owe, last game, season table.
     roster.js       Admin: merge, rename, delete, move a stray pick.
     menu.js         Everything that isn't the board, plus the theme picker.
+    bigscreen.js    The shared dashboard for a laptop or iPad. Not a player:
+                    it locks, grades and closes out, but never picks.
 ```
 
 ## Two things that look odd but aren't

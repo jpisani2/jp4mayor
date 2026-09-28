@@ -27,6 +27,27 @@ export function balances(bets, players, payments, stake) {
   });
 }
 
+/* Balances across every game. One stake per game, so each game settles on
+   its own stake and the results are summed, then payments come off. */
+export function balancesAcrossGames(games, bets, payments, players) {
+  const running = new Map();
+  games.forEach(g => {
+    const mine = bets.filter(b => b.game_id === g.id);
+    balances(mine, players, [], Number(g.base_stake)).forEach(row => {
+      running.set(row.id, (running.get(row.id) ?? 0) + row.exact);
+    });
+  });
+
+  const live = payments.filter(p => !p.voided_at);
+  return players.map(p => {
+    const received = live.filter(x => x.payee_id === p.id)
+      .reduce((s, x) => s + Number(x.amount), 0);
+    const paid = live.filter(x => x.payer_id === p.id)
+      .reduce((s, x) => s + Number(x.amount), 0);
+    return { id: p.id, name: p.name, exact: (running.get(p.id) ?? 0) - received + paid };
+  });
+}
+
 /* Round against yourself: whoever owes rounds up, whoever is owed rounds
    down. One sentence you can say out loud, and it never leaves a creditor
    waiting on change. */

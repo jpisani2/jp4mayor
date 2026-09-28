@@ -398,3 +398,83 @@ select.field{appearance:none;
 .swatches[data-swatch="michigan-state"] i:nth-child(1){background:#FFFFFF}
 .swatches[data-swatch="michigan-state"] i:nth-child(2){background:#18453B}
 .swatches[data-swatch="michigan-state"] i:nth-child(3){background:#0B8A57}
+
+/* --- big screen ---------------------------------------------------------- */
+/* A laptop or iPad everyone can see from the couch. Type scales with the
+   window so it reads across a room without being enormous on a phone. */
+.bigentry{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink3);line-height:1.4}
+.bigentry .btn{flex:0 0 auto}
+
+.big{font-size:clamp(15px,1.15vw,20px);max-width:1680px;margin:0 auto;
+  padding:0 clamp(14px,2vw,32px) 40px}
+.big .sechead{font-size:.85em;margin:1.2em 0 .6em}
+.big .empty{font-size:.9em}
+.big .banner{font-size:1em;margin-top:12px}
+
+.bhead{display:flex;justify-content:space-between;align-items:center;gap:16px;
+  flex-wrap:wrap;padding:1.1em 0 .9em;border-bottom:1px solid var(--line)}
+.btitle{display:flex;align-items:baseline;gap:.7em;flex-wrap:wrap}
+.btitle h1{margin:0;font-size:2.2em;line-height:1}
+.bsub{font-size:.8em;color:var(--ink3)}
+.bphase{font-size:.72em;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:.25em .7em;border-radius:99px;background:var(--brand);color:var(--brand-ink)}
+.bphase.pre{background:var(--surface2);color:var(--ink2);border:1px solid var(--line)}
+.bactions{display:flex;align-items:center;gap:16px;padding-right:18px}
+.bactions .btn{font-size:.85em}
+
+.btiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:1em 0 .2em}
+.btile{background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:.8em 1em}
+.btv{font-size:2em;line-height:1.05}
+.btl{font-size:.75em;color:var(--ink3);margin-top:.35em}
+
+.bgrid{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:clamp(16px,2vw,32px)}
+.bcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,22em),1fr));gap:12px}
+.bcard{margin-bottom:0;display:flex;flex-direction:column}
+.bcard .grp{font-size:.72em}
+.bcard .q{font-size:1.15em}
+.bcard .lineup{font-size:.9em;flex:1}
+.bcard .potrow{font-size:.85em;flex-wrap:wrap;margin-top:auto}
+.bcard .rowbtns .btn{font-size:.9em;padding:.7em}
+.bwait{color:var(--ink3);font-size:.9em}
+
+.bsides{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.4em}
+.bsidebox{background:var(--surface2);border:1px solid var(--line);border-radius:10px;
+  padding:.6em .7em}
+.bside-A{border-left:3px solid var(--a)}
+.bside-B{border-left:3px solid var(--b)}
+.bsn{font-weight:600;font-size:1em;line-height:1.2}
+.bsr{font-size:.75em;color:var(--ink2);margin-top:.25em}
+.bsidebox .chip{font-size:.72em}
+.bnone{font-size:.72em;color:var(--ink3)}
+
+.bgrades{gap:8px}
+.bgrades .gbtn{font-size:.9em;padding:.75em .4em;min-width:5em}
+
+.bside .bpanel{background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:.2em 1em 1em;margin-top:1.2em}
+.bside .bpanel .sechead{margin-top:.8em}
+.bside .board{font-size:.9em}
+.bfeed{padding:.6em 0;border-bottom:1px solid var(--line)}
+.bfeed:last-child{border-bottom:none}
+.bfq{font-size:.95em;line-height:1.3}
+.bfr{font-size:.8em;color:var(--ink2);margin-top:.2em}
+.bfn{font-size:.8em;margin-top:.25em;line-height:1.5}
+.bfeed .linkish{font-size:.72em;margin-top:.3em}
+.btransfer{display:flex;justify-content:space-between;gap:10px;font-size:1.05em;
+  padding:.45em 0;border-bottom:1px solid var(--line)}
+.btransfer .arrow{color:var(--ink3);margin:0 .3em}
+.btransfer .num{color:var(--up)}
+.bpanel .hint{margin-top:.6em;font-size:.72em}
+.bidle{padding:3em 0}
+.bidle h2{font-size:2em;margin:0 0 .3em}
+.bidle p{color:var(--ink2);margin:0}
+
+@media(max-width:1000px){
+  .bgrid{grid-template-columns:1fr}
+  .bside{display:grid;grid-template-columns:repeat(auto-fit,minmax(18em,1fr));gap:0 14px}
+}
+@media(max-width:640px){
+  .btiles{grid-template-columns:repeat(2,1fr)}
+}

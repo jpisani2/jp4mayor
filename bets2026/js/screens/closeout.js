@@ -6,7 +6,7 @@
    buttons, so answering is one tap per bet rather than a chore. */
 
 import { state, stake, nameOf, unlockAdmin, goto, grade,
-         closeOutNight, scrapGame } from "../store.js";
+         closeOutNight, scrapGame, home } from "../store.js";
 import { esc, money, matchup } from "../format.js";
 import { takers, rollUp } from "../scoring.js";
 
@@ -135,7 +135,7 @@ export function wire(root) {
   const $ = sel => root.querySelector(sel);
   const redraw = () => goto("closeout");
 
-  if ($("#back")) $("#back").onclick = () => goto(state.game ? "room" : "idle");
+  if ($("#back")) $("#back").onclick = () => goto(home());
 
   if (!state.admin) {
     const pin = $("#pin");
