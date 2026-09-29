@@ -5,9 +5,14 @@
    =========================================================================== */
 
 import * as db from "./db.js";
-import { DORMANT_AFTER } from "./config.js";
+import { DORMANT_AFTER, MAX_OPEN_BETS } from "./config.js";
 import { isDormant, canLock } from "./scoring.js";
-import { beep } from "./format.js";
+import { beep, withTeams } from "./format.js";
+
+/* Big screen random bets: interval choices in minutes, and where this device
+   remembers its setting. Declared before state, which reads them. */
+export const AUTO_EVERY = [2, 3, 5, 10];   // minutes
+const AUTO_KEY = "betroom.autobet";
 
 export const state = {
   screen: "loading",   // loading | unconfigured | join | seat | idle | room
@@ -24,6 +29,8 @@ export const state = {
   menu: false,
   inPlayAll: false,    // everyone's in-play totals expanded in the room
   bigScreen: false,    // this device is the shared dashboard, not a player
+  fresh: {},           // big screen: bet id -> when it first appeared
+  autoBet: loadAutoBet(), // big screen: random bets { on, every, nextAt }
   admin: false,
   history: { games: [], bets: [], payments: [], loaded: false },
   roster: { flags: [], changes: [], loaded: false },
@@ -92,18 +99,136 @@ export async function reload({ announce = false } = {}) {
   loading = true;
   try {
     const openBefore = betsBy("open").length;
+    const known = new Set(state.bets.map(b => b.id));
     const [game, players] = await Promise.all([db.fetchOpenGame(), db.fetchPlayers()]);
     state.game = game;
     state.players = players;
     state.bets = await db.fetchBets(game?.id);
-    if (state.bigScreen) await refreshHistory();
-    if (announce && betsBy("open").length > openBefore) beep();
+    if (state.bigScreen) {
+      await refreshHistory();
+      markFresh(betsBy("open").filter(b => !known.has(b.id)));
+    } else if (announce && betsBy("open").length > openBefore) beep();
     state.error = "";
     render();
   } catch (e) {
     setError(e.message || e);
   } finally {
     loading = false;
+  }
+}
+
+/* --- big screen: new-bet alert ------------------------------------------ */
+
+/* How long a new bet stays lit up on the big screen. */
+export const FRESH_MS = 45000;
+
+function markFresh(bets) {
+  if (!bets.length) return;
+  const now = Date.now();
+  bets.forEach(b => {
+    state.fresh[b.id] = now;
+    setTimeout(() => { delete state.fresh[b.id]; render(); }, FRESH_MS);
+  });
+  beep();
+  setTimeout(beep, 320);   // a double chime, so it carries across the room
+}
+
+/* --- big screen: random bets --------------------------------------------- */
+
+
+function loadAutoBet() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(AUTO_KEY) || "{}");
+    const every = AUTO_EVERY.includes(saved.every) ? saved.every : 3;
+    return { on: Boolean(saved.on), every,
+             nextAt: saved.on ? Date.now() + every * 60000 : 0 };
+  } catch (e) { return { on: false, every: 3, nextAt: 0 }; }
+}
+
+function saveAutoBet() {
+  try {
+    localStorage.setItem(AUTO_KEY,
+      JSON.stringify({ on: state.autoBet.on, every: state.autoBet.every }));
+  } catch (e) { /* private mode */ }
+}
+
+/* Random bets only run while a game is live: the pregame board is its own
+   fixed set, and there is nothing to bet on between games. */
+export const autoPaused = () => !state.game || isPregame();
+
+export function setAutoBet(on) {
+  state.autoBet.on = on;
+  state.autoBet.nextAt = on ? Date.now() + state.autoBet.every * 60000 : 0;
+  saveAutoBet();
+  render();
+}
+
+export function setAutoEvery(minutes) {
+  state.autoBet.every = minutes;
+  if (state.autoBet.on) state.autoBet.nextAt = Date.now() + minutes * 60000;
+  saveAutoBet();
+  render();
+}
+
+let throwing = false;
+let ticker = null;
+
+function startTicker() {
+  if (ticker) return;
+  ticker = setInterval(() => {
+    const auto = state.autoBet;
+    if (!state.bigScreen || !auto.on || throwing) return;
+    if (autoPaused()) { auto.nextAt = Date.now() + auto.every * 60000; return; }
+    if (Date.now() >= auto.nextAt) {
+      auto.nextAt = Date.now() + auto.every * 60000;
+      throwRandomBet();
+    }
+  }, 1000);
+}
+
+const HOUSE_SQL = "alter table bets alter column proposer_id drop not null;";
+
+/* Throw a random catalog bet onto the board. The big screen never takes a
+   side. If nobody touched the last one it threw, that one is swapped out
+   rather than left clogging the board. */
+export async function throwRandomBet() {
+  if (throwing || autoPaused()) return;
+  throwing = true;
+  try {
+    const untouched = state.bets.filter(b =>
+      b.status === "open" && !b.proposer_id && !b.picks.length);
+    for (const bet of untouched) await db.deleteBet(bet.id);
+
+    const stillOpen = state.bets.filter(b => b.status === "open").length - untouched.length;
+    if (stillOpen >= MAX_OPEN_BETS) {
+      notify(`Board is full — no random bet this time`);
+      return;
+    }
+
+    const used = new Set(state.bets.map(b => b.body));
+    const fresh = state.catalog.filter(c => !used.has(withTeams(c.body, state.game)));
+    const pool = fresh.length ? fresh : state.catalog;
+    if (!pool.length) return setError("The bet catalog is empty, so there's nothing to throw out.");
+
+    const c = pool[Math.floor(Math.random() * pool.length)];
+    await db.createHouseBet({
+      game_id: state.game.id, status: "open",
+      category: c.category,
+      body: withTeams(c.body, state.game),
+      side_a: withTeams(c.side_a, state.game),
+      side_b: withTeams(c.side_b, state.game),
+      p: Number(c.p), odds_edited: false, even_money: false,
+    });
+    await reload();
+  } catch (e) {
+    if (e?.code === "23502" || /proposer_id/.test(e?.message ?? "")) {
+      state.autoBet.on = false;
+      saveAutoBet();
+      setError("The database won't take a bet without a proposer yet. In Supabase, " +
+               "open the SQL editor and run this once: " + HOUSE_SQL);
+    } else setError(e.message || e);
+  } finally {
+    throwing = false;
   }
 }
 
@@ -133,6 +258,7 @@ export async function boot() {
   if (big) {
     state.bigScreen = true;
     state.screen = "big";
+    startTicker();
     refreshHistory().then(render).catch(e => setError(e.message || e));
   } else if (known) {
     state.me = saved;
@@ -184,6 +310,7 @@ export async function takeSeat(playerId) {
 export function enterBigScreen() {
   state.bigScreen = true;
   state.screen = "big";
+  startTicker();
   state.error = "";
   try { localStorage.setItem("betroom.bigscreen", "1"); } catch (e) { /* private mode */ }
   render();
@@ -197,6 +324,19 @@ export function leaveBigScreen() {
   const known = saved && state.players.some(p => p.id === saved);
   if (known) state.me = saved;
   state.screen = known ? (state.game ? "room" : "idle") : "seat";
+  render();
+}
+
+/* Hand this device to someone else, or turn it into the big screen. Only
+   the device forgets who it was: picks belong to the player, not the phone,
+   so nothing moves. The room password and admin unlock stay put. */
+export function switchPlayer() {
+  state.me = null;
+  state.menu = false;
+  state.inPlayAll = false;
+  try { localStorage.removeItem("betroom.player"); } catch (e) { /* private mode */ }
+  state.screen = "seat";
+  state.error = "";
   render();
 }
 

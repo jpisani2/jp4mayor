@@ -84,6 +84,15 @@ export async function createBet(bet, proposerId, side) {
   return data;
 }
 
+/* A bet thrown out by the big screen. Nobody proposed it, so it starts with
+   no proposer and no pick — players take whichever sides they like. */
+export async function createHouseBet(bet) {
+  const { data, error } = await client.from("bets")
+    .insert({ ...bet, proposer_id: null }).select().single();
+  if (error) throw error;
+  return data;
+}
+
 export async function savePick(betId, playerId, side) {
   const { error } = await client.from("picks").upsert(
     { bet_id: betId, player_id: playerId, side, auto: false,

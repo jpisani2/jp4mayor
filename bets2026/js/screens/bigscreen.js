@@ -6,7 +6,9 @@
    the one everybody can see. */
 
 import { state, stake, nameOf, betsBy, awaiting, isPregame, isBlind,
-         lock, grade, ungrade, goto, leaveBigScreen } from "../store.js";
+         lock, grade, ungrade, pull, goto, leaveBigScreen,
+         FRESH_MS, AUTO_EVERY, autoPaused, setAutoBet, setAutoEvery,
+         throwRandomBet } from "../store.js";
 import { esc, money, matchup } from "../format.js";
 import { riskA, riskB, takers, pot, canLock, settle, rollUp, inPlay,
          gameTotals } from "../scoring.js";
@@ -14,12 +16,15 @@ import { balancesAcrossGames, roundAgainstYourself, suggestTransfers } from "../
 import * as closeout from "./closeout.js";
 
 const FEED_LENGTH = 8;
+const FLASH_MS = 2600;      // the whole-screen flash when a bet lands
+const BANNER_MS = 12000;    // the "new bet" banner across the top
 const tone = n => n > 0.005 ? "up" : n < -0.005 ? "down" : "";
 const plus = n => (n > 0.005 ? "+" : "") + money(n);
 
 export function view() {
   return `<div class="big">
     ${header()}
+    ${alerts()}
     ${state.notice ? `<div class="banner">${esc(state.notice)}</div>` : ""}
     ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
     ${state.game ? liveView() : idleView()}
@@ -49,6 +54,7 @@ function liveView() {
   const open = betsBy("open"), locked = betsBy("locked");
   return `
     ${tiles()}
+    ${autoBar()}
     <div class="bgrid">
       <main class="bmain">
         ${section(`${isPregame() ? "Pregame board" : "Taking picks"} (${open.length})`)}
@@ -80,6 +86,55 @@ function idleView() {
 
 const section = title =>
   `<div class="sechead"><span>${esc(title)}</span><span class="rule"></span></div>`;
+
+/* --- new-bet alert ------------------------------------------------------- */
+
+/* The screen re-renders on every change, which would restart a CSS animation
+   each time. A negative delay equal to the time already elapsed picks each
+   animation up where it left off instead. */
+const since = id => Date.now() - state.fresh[id];
+const resume = ms => `style="animation-delay:-${Math.max(0, ms)}ms"`;
+
+function alerts() {
+  const ids = Object.keys(state.fresh);
+  if (!ids.length) return "";
+  const newest = ids.sort((a, b) => state.fresh[b] - state.fresh[a])[0];
+  const age = since(newest);
+  const bet = state.bets.find(b => b.id === newest);
+  return `
+    ${age < FLASH_MS ? `<div class="bflash" ${resume(age)}></div>` : ""}
+    ${bet && age < BANNER_MS ? `<div class="bnew" ${resume(age)}>
+      <span class="bnewk">New bet</span>
+      <span class="bnewq">${esc(bet.body)}</span>
+      ${bet.proposer_id ? `<span class="bnewby">called by ${esc(nameOf(bet.proposer_id))}</span>`
+                        : `<span class="bnewby">thrown out by the big screen</span>`}
+    </div>` : ""}`;
+}
+
+/* --- random bets --------------------------------------------------------- */
+
+function autoBar() {
+  const auto = state.autoBet;
+  return `<div class="bauto">
+    <span class="bautok">Random bets</span>
+    <button class="sw" id="bautoon" data-on="${auto.on ? 1 : 0}" role="switch"
+      aria-checked="${auto.on}" aria-label="Throw out a random bet on a timer"></button>
+    <span class="bautoevery">every
+      ${AUTO_EVERY.map(m => `<button class="vbtn" data-every="${m}"
+        data-on="${auto.every === m ? 1 : 0}">${m} min</button>`).join("")}
+    </span>
+    <span class="bnext num" id="bnext">${nextLabel()}</span>
+    <button class="btn sm" id="bthrow" ${autoPaused() ? "disabled" : ""}>Throw one now</button>
+  </div>`;
+}
+
+function nextLabel() {
+  const auto = state.autoBet;
+  if (!auto.on) return "off";
+  if (autoPaused()) return "paused until kickoff";
+  const left = Math.max(0, Math.ceil((auto.nextAt - Date.now()) / 1000));
+  return `next in ${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
+}
 
 /* --- summary tiles ------------------------------------------------------- */
 
@@ -117,9 +172,13 @@ function openCard(bet) {
   const lockable = canLock(bet);
   const missing = awaiting(bet);
   const inCount = takers(bet, "A").length + takers(bet, "B").length;
+  const fresh = state.fresh[bet.id] !== undefined;
+  const house = !bet.proposer_id;
 
-  return `<article class="card bcard">
-    <div class="grp">${esc(bet.category)}</div>
+  return `<article class="card bcard${fresh ? " fresh" : ""}" ${fresh ? resume(since(bet.id)) : ""}>
+    <div class="grp">${fresh ? `<span class="bnewtag">new</span> ` : ""}${esc(bet.category)}${
+      house ? " · thrown out by the big screen" : ""}${
+      house && !bet.picks.length ? ` · <button class="linkish" data-pull="${bet.id}">pull</button>` : ""}</div>
     <div class="q">${esc(bet.body)}</div>
     <div class="bsides">${sideBlock(bet, "A", blind)}${sideBlock(bet, "B", blind)}</div>
     <div class="potrow">
@@ -130,6 +189,7 @@ function openCard(bet) {
     ${blind ? "" : `<div class="rowbtns">
       <button class="btn wide" data-lock="${bet.id}" ${lockable ? "" : "disabled"}>
         ${lockable ? "Lock it"
+          : !takers(bet, "A").length && !takers(bet, "B").length ? "Needs someone on each side"
           : `Needs someone on ${esc(takers(bet, "A").length ? bet.side_b : bet.side_a)}`}
       </button></div>`}
   </article>`;
@@ -238,10 +298,32 @@ export function wire(root) {
   root.querySelectorAll("[data-ungrade]").forEach(el => {
     el.onclick = () => ungrade(el.dataset.ungrade);
   });
+  root.querySelectorAll("[data-pull]").forEach(el => {
+    el.onclick = () => pull(el.dataset.pull);
+  });
+  root.querySelectorAll("[data-every]").forEach(el => {
+    el.onclick = () => setAutoEvery(Number(el.dataset.every));
+  });
+  const autoOn = root.querySelector("#bautoon");
+  if (autoOn) autoOn.onclick = () => setAutoBet(!state.autoBet.on);
+  const throwNow = root.querySelector("#bthrow");
+  if (throwNow) throwNow.onclick = () => throwRandomBet();
+  startCountdown();
 
   const close = root.querySelector("#bclose");
   if (close) close.onclick = () => { closeout.reset(); goto("closeout"); };
   root.querySelector("#bexit").onclick = () => leaveBigScreen();
+}
+
+/* The countdown ticks by rewriting one line of text, not by re-rendering the
+   whole screen every second — that would swallow taps mid-press. */
+let countdown = null;
+function startCountdown() {
+  if (countdown) return;
+  countdown = setInterval(() => {
+    const el = document.getElementById("bnext");
+    if (el) el.textContent = nextLabel();
+  }, 1000);
 }
 
 /* A dashboard that dims itself after two minutes isn't much of a dashboard.

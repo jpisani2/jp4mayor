@@ -1,7 +1,7 @@
 /* Everything that isn't the board: the other screens, and the theme picker.
    Kept behind one link so the room header stays a board and not a navbar. */
 
-import { state, goto, openMenu } from "../store.js";
+import { state, goto, openMenu, nameOf, switchPlayer } from "../store.js";
 import { esc } from "../format.js";
 import { THEMES, current, apply } from "../theme.js";
 import * as settle from "./settle.js";
@@ -27,6 +27,8 @@ export function view() {
         <span>merge, rename, move a stray pick</span></button>
       <button class="menuitem" id="m-admin">${state.game ? "Close out the night" : "Set up a game"}
         <span>admin${state.admin ? "" : " — needs the PIN"}</span></button>
+      <button class="menuitem" id="m-switch">Switch player
+        <span>you're ${esc(nameOf(state.me))} — pick another name, or use this as the big screen</span></button>
     </div>
 
     <div class="sechead"><span>Theme</span><span class="rule"></span></div>
@@ -54,6 +56,7 @@ export function wire(root) {
   $("#m-settle").onclick = () => { close(); settle.reset(); goto("settle"); };
   $("#m-stats").onclick  = () => { close(); stats.reset();  goto("stats"); };
   $("#m-roster").onclick = () => { close(); roster.reset(); goto("roster"); };
+  $("#m-switch").onclick = () => switchPlayer();
   $("#m-admin").onclick  = () => {
     close();
     if (state.game) { closeout.reset(); goto("closeout"); }

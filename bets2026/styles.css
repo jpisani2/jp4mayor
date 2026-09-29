@@ -478,3 +478,44 @@ select.field{appearance:none;
 @media(max-width:640px){
   .btiles{grid-template-columns:repeat(2,1fr)}
 }
+
+/* Big screen: a new bet lights up. --brand is the theme's own accent, so the
+   glow never borrows a side color or a money color. */
+.bcard.fresh{border-color:var(--brand);animation:bglow 1.6s ease-in-out infinite}
+@keyframes bglow{
+  0%,100%{box-shadow:0 0 0 1px var(--brand),0 0 0 0 transparent}
+  50%{box-shadow:0 0 0 3px var(--brand),0 0 32px 8px color-mix(in srgb,var(--brand) 45%,transparent)}
+}
+.bnewtag{display:inline-block;font-size:.95em;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;padding:.1em .55em;border-radius:99px;
+  background:var(--brand);color:var(--brand-ink);margin-right:.2em}
+
+.bflash{position:fixed;inset:0;pointer-events:none;z-index:70;
+  box-shadow:inset 0 0 0 10px var(--brand),inset 0 0 160px 40px color-mix(in srgb,var(--brand) 55%,transparent);
+  opacity:0;animation:bflash 2.6s ease-out forwards}
+@keyframes bflash{0%{opacity:0}8%{opacity:1}28%{opacity:.15}44%{opacity:1}100%{opacity:0}}
+
+.bnew{display:flex;align-items:baseline;gap:.8em;flex-wrap:wrap;margin-top:12px;
+  padding:.8em 1.1em;border-radius:12px;background:var(--brand);color:var(--brand-ink);
+  max-height:8em;overflow:hidden;animation:bnew 12s ease-out forwards}
+/* Fades, then folds away, so it never leaves an empty gap behind. */
+@keyframes bnew{0%{opacity:0;transform:translateY(-8px)}4%{opacity:1;transform:none}
+  85%{opacity:1;max-height:8em;padding-top:.8em;padding-bottom:.8em;margin-top:12px}
+  100%{opacity:0;max-height:0;padding-top:0;padding-bottom:0;margin-top:0}}
+.bnewk{font-size:.8em;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.bnewq{font-size:1.5em;font-weight:600;line-height:1.2}
+.bnewby{font-size:.8em;opacity:.8}
+
+.bauto{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;margin:12px 0 0;
+  padding:.6em 1em;background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  font-size:.85em;color:var(--ink2)}
+.bautok{color:var(--ink);font-weight:600}
+.bautoevery{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.bnext{color:var(--ink3);min-width:9em}
+.bauto .btn{margin-left:auto}
+
+@media (prefers-reduced-motion:reduce){
+  .bcard.fresh{animation:none;box-shadow:0 0 0 3px var(--brand)}
+  .bflash{display:none}
+  .bnew{animation:none}
+}

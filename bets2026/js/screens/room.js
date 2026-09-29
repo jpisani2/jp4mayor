@@ -159,7 +159,8 @@ function openCard(bet) {
   const inCount = takers(bet, "A").length + takers(bet, "B").length;
 
   return `<article class="card">
-    <div class="grp">${esc(bet.category)}${badge(bet)}</div>
+    <div class="grp">${esc(bet.category)}${badge(bet)}${
+      bet.proposer_id ? "" : ` · from the big screen`}</div>
     <div class="q">${esc(bet.body)}</div>
     <div class="sides">${sideButton(bet, "A", blind)}${sideButton(bet, "B", blind)}</div>
 
