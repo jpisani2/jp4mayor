@@ -16,11 +16,13 @@
     text-decoration:underline;cursor:pointer}
 </style>
 <script>
-  /* Every visit starts fresh: skip the room password, forget the seat and the
-     admin PIN, keep only the theme someone picked. Uses its own keys, so it
-     never touches the real app's storage on the same site. */
+  /* Every visit starts fresh: skip the room password, forget the seat, the
+     admin PIN, the big screen and its random-bet timer. Keep only the theme and
+     the sound setting someone picked. Uses its own keys, so it never touches
+     the real app's storage on the same site. */
   try {
-    ["player", "admin", "device"].forEach(k => localStorage.removeItem("betroom-demo." + k));
+    ["player", "admin", "device", "bigscreen", "autobet"]
+      .forEach(k => localStorage.removeItem("betroom-demo." + k));
     localStorage.setItem("betroom-demo.pw", "1");
   } catch (e) { /* storage blocked: the app still runs, it just asks for a password (any works) */ }
 </script>

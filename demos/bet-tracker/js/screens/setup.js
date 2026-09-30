@@ -2,17 +2,18 @@
    Gated behind the shared PIN — anyone who knows it gets admin on their own
    device, which is what survives the admin's phone dying at halftime. */
 
-import { state, stake, unlockAdmin, goto, createGameWithBoard } from "../store.js";
-import { esc, money } from "../format.js";
+import { state, unlockAdmin, goto, home, isBusy, holdRender,
+         createGameWithBoard } from "../store.js";
+import { esc, money, matchup, localDate } from "../format.js";
 import { riskA, riskB } from "../scoring.js";
 import { buildBoard, toBetRows } from "../pregame.js";
+import * as closeout from "./closeout.js";
 
 let form;
 
 export function reset() {
-  const sunday = nextSunday();
   form = {
-    kickoff_date: sunday,
+    kickoff_date: nextSunday(),
     home_team: "",
     away_team: "",
     favorite: "home",
@@ -24,18 +25,35 @@ export function reset() {
 }
 reset();
 
+/* Next Sunday — or today, on a Sunday — in this device's own time zone. */
 function nextSunday() {
   const d = new Date();
   d.setDate(d.getDate() + ((7 - d.getDay()) % 7));
-  return d.toISOString().slice(0, 10);
+  return localDate(d);
 }
 
-const ready = () => form.home_team.trim() && form.away_team.trim();
+const teamsIn = () => form.home_team.trim() && form.away_team.trim();
+
+/* Why the board can't be opened yet, or "" if it can. */
+function problem() {
+  const num = v => (String(v).trim() === "" ? NaN : Number(v));
+  if (!teamsIn()) return "Fill in both teams to build the board.";
+  if (form.home_team.trim().toLowerCase() === form.away_team.trim().toLowerCase()) {
+    return "Home and away can't be the same team.";
+  }
+  if (!(num(form.base_stake) > 0)) return "Base stake has to be more than $0.";
+  if (!(num(form.spread) >= 0)) return "Enter the spread — 0 or more.";
+  if (!(num(form.total) > 0)) return "Enter the total — it has to be more than 0.";
+  if (!form.kickoff_date) return "Pick the kickoff date.";
+  return "";
+}
 
 export function view() {
   if (!state.admin) return pinView();
+  if (state.game) return stillOpenView();
 
-  const board = ready() ? buildBoard(form, form.overrides) : [];
+  const issue = problem();
+  const board = issue ? [] : buildBoard(form, form.overrides);
   const favName = form.favorite === "home" ? form.home_team : form.away_team;
 
   return `<div class="page">
@@ -54,18 +72,18 @@ export function view() {
       <div><label class="flabel">Kickoff date</label>
         <input class="field" type="date" id="f-kickoff_date" value="${esc(form.kickoff_date)}"></div>
       <div><label class="flabel">Away team</label>
-        <input class="field" id="f-away_team" value="${esc(form.away_team)}" placeholder="Bears"></div>
+        <input class="field" id="f-away_team" value="${esc(form.away_team)}" placeholder="Bears" autocomplete="off"></div>
       <div><label class="flabel">Home team</label>
-        <input class="field" id="f-home_team" value="${esc(form.home_team)}" placeholder="Packers"></div>
+        <input class="field" id="f-home_team" value="${esc(form.home_team)}" placeholder="Packers" autocomplete="off"></div>
       <div><label class="flabel">Base stake</label>
         <input class="field num" type="number" step="0.5" min="0.5" id="f-base_stake"
-               value="${form.base_stake}"></div>
+               value="${esc(form.base_stake)}"></div>
       <div><label class="flabel">Spread</label>
         <input class="field num" type="number" step="0.5" min="0" id="f-spread"
-               value="${form.spread}"></div>
+               value="${esc(form.spread)}"></div>
       <div><label class="flabel">Total</label>
-        <input class="field num" type="number" step="0.5" id="f-total"
-               value="${form.total}"></div>
+        <input class="field num" type="number" step="0.5" min="0" id="f-total"
+               value="${esc(form.total)}"></div>
     </div>
 
     <div class="favrow">
@@ -74,18 +92,37 @@ export function view() {
         ${esc(form.away_team || "away")}</button>
       <button class="vbtn" data-fav="home" data-on="${form.favorite === "home" ? 1 : 0}">
         ${esc(form.home_team || "home")}</button>
-      <span class="hint">${ready()
-        ? `${esc(favName)} by ${form.spread}. Home field is already priced into
+      <span class="hint">${!issue
+        ? `${esc(favName)} by ${esc(form.spread)}. Home field is already priced into
            the spread, so this only decides who the bets are written about.`
-        : "Fill in both teams to build the board."}</span>
+        : ""}</span>
     </div>
 
-    ${ready() ? boardView(board) : ""}
+    ${issue ? `<div class="warn" style="margin-top:14px">${esc(issue)}</div>` : boardView(board)}
   </div>`;
 }
 
+/* A game is already running. Setting up another would push it out of view,
+   and the database won't allow two anyway. */
+function stillOpenView() {
+  return `<div class="center">
+    <h1 class="cond">One at a time</h1>
+    <p>Tonight's game — ${esc(matchup(state.game))} — is still open. Close it
+       out before setting up another.</p>
+    <button class="btn primary wide" id="tocloseout">Go to close-out</button>
+    <button class="linkish" id="back" style="margin-top:14px">Back</button>
+  </div>`;
+}
+
+const stakeNow = () => Number(form.base_stake) || 1;
+
+function rowNumbers(row) {
+  const s = stakeNow(), p = row.pct / 100;
+  return `${money(riskA(p, s))} / ${money(riskB(p, s))}`;
+}
+
 function boardView(board) {
-  const s = Number(form.base_stake) || 1;
+  const busy = isBusy("setup");
   return `
     <div class="sechead"><span>Pregame board</span><span class="rule"></span></div>
     ${board.map(row => `<div class="setrow">
@@ -97,14 +134,14 @@ function boardView(board) {
       <div class="setctl">
         <input type="range" min="3" max="97" value="${row.pct}" data-odds="${row.key}"
                style="accent-color:${row.changed ? "var(--edit)" : "var(--a)"}">
-        <span class="setpct cond num ${row.changed ? "edited" : ""}">${row.pct}%</span>
-        <span class="setrisk num">${money(riskA(row.pct / 100, s))} /
-          ${money(riskB(row.pct / 100, s))}</span>
+        <span class="setpct cond num ${row.changed ? "edited" : ""}" id="pct-${row.key}">${row.pct}%</span>
+        <span class="setrisk num" id="risk-${row.key}">${rowNumbers(row)}</span>
       </div>
     </div>`).join("")}
 
     <div class="rowbtns" style="margin-top:20px">
-      <button class="btn primary" id="post">Open the pregame board</button>
+      <button class="btn primary" id="post" ${busy ? "disabled" : ""}>${
+        busy ? "Opening…" : "Open the pregame board"}</button>
       <button class="btn" id="resetodds" ${Object.keys(form.overrides).length ? "" : "disabled"}>
         Reset to the derived numbers</button>
     </div>
@@ -125,72 +162,69 @@ function pinView() {
   </div>`;
 }
 
-let typing;
-
-/* Redraw without dropping whatever field has focus. Anything clicked or tapped
-   keeps working because it is found again by id after the redraw. */
-function redrawKeepingFocus() {
-  clearTimeout(typing);
-  if (state.screen !== "setup") return;
-  const active = document.activeElement;
-  const id = active && active.id;
-  let start = null, end = null;
-  try { start = active.selectionStart; end = active.selectionEnd; } catch (e) { /* not a text field */ }
-  goto("setup");
-  const again = id && document.getElementById(id);
-  if (!again) return;
-  again.focus();
-  try { if (start !== null) again.setSelectionRange(start, end); } catch (e) { /* number or date field */ }
-}
-
 export function wire(root) {
   const $ = sel => root.querySelector(sel);
   const redraw = () => goto("setup");
 
-  if ($("#back")) $("#back").onclick = () => goto(state.game ? "room" : "idle");
+  if ($("#back")) $("#back").onclick = () => goto(home());
 
   if (!state.admin) {
     const pin = $("#pin");
     const go = () => unlockAdmin(pin.value.trim());
     $("#unlock").onclick = go;
     pin.onkeydown = e => { if (e.key === "Enter") go(); };
-    pin.focus();
+    if (document.activeElement?.id !== "pin") pin.focus();
     return;
   }
 
-  /* The board depends on every field, so each one redraws the screen. A
-     redraw replaces every input, so it puts focus (and the cursor) back where
-     it was. Team names redraw once typing pauses rather than on blur: a blur
-     redraw ran mid-tap and swallowed the tap on the next field. Numbers redraw
-     on change, a beat later, once focus has already moved to wherever the
-     person tapped next. */
+  if (state.game) {
+    $("#tocloseout").onclick = () => { closeout.reset(); goto("closeout"); };
+    return;
+  }
+
+  /* Text fields keep their value in the draft without redrawing, so typing
+     isn't interrupted. Leaving a field redraws, since the board depends on
+     it — but only once the tap that moved you has landed, or the box you
+     tapped into would be swapped out from under your finger. */
+  const soon = () => setTimeout(redraw, 0);
   ["home_team", "away_team"].forEach(key => {
     const el = $(`#f-${key}`);
-    el.oninput = () => {
-      form[key] = el.value;
-      clearTimeout(typing);
-      typing = setTimeout(redrawKeepingFocus, 500);
-    };
+    let typed = false;   // a redraw removing the field also "leaves" it
+    el.oninput = () => { form[key] = el.value; typed = true; };
+    el.onblur = () => { if (typed) { typed = false; soon(); } };
   });
   ["kickoff_date", "base_stake", "spread", "total"].forEach(key => {
     const el = $(`#f-${key}`);
-    el.onchange = () => { form[key] = el.value; setTimeout(redrawKeepingFocus, 0); };
+    el.onchange = () => { form[key] = el.value; soon(); };
   });
 
   root.querySelectorAll("[data-fav]").forEach(el => {
     el.onclick = () => { form.favorite = el.dataset.fav; redraw(); };
   });
 
+  /* While a slider is dragged, only its own numbers change; the board
+     redraws once on release, so the drag isn't cancelled mid-move. */
   root.querySelectorAll("[data-odds]").forEach(el => {
-    el.oninput = () => {
-      form.overrides[el.dataset.odds] = +el.value;
-      redraw();
+    const key = el.dataset.odds;
+    const move = () => {
+      form.overrides[key] = +el.value;
+      const row = buildBoard(form, form.overrides).find(r => r.key === key);
+      const pct = $(`#pct-${key}`);
+      pct.textContent = `${row.pct}%`;
+      pct.classList.toggle("edited", row.changed);
+      $(`#risk-${key}`).textContent = rowNumbers(row);
+      el.style.accentColor = row.changed ? "var(--edit)" : "var(--a)";
     };
+    el.addEventListener("pointerdown", () => holdRender(true));
+    el.addEventListener("touchstart", () => holdRender(true), { passive: true });
+    el.oninput = () => { holdRender(true); move(); };
+    el.onchange = () => { move(); holdRender(false); redraw(); };
   });
 
   if ($("#resetodds")) $("#resetodds").onclick = () => { form.overrides = {}; redraw(); };
 
   if ($("#post")) $("#post").onclick = () => {
+    if (problem()) return redraw();
     const board = buildBoard(form, form.overrides);
     createGameWithBoard({
       kickoff_date: form.kickoff_date,
@@ -200,6 +234,6 @@ export function wire(root) {
       spread: Number(form.spread),
       total: Number(form.total),
       base_stake: Number(form.base_stake),
-    }, toBetRows(board, null));
+    }, toBetRows(board, null).map(({ game_id, ...row }) => row));
   };
 }

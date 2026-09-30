@@ -8,7 +8,13 @@
 
    Also in here, and not in the real app: a handful of made-up friends who
    pick sides on the bets you post (and occasionally call one of their own),
-   so the board behaves like a room with people in it.
+   so the board behaves like a room with people in it. They also pick sides
+   on the random bets the big screen throws out.
+
+   The real app runs its multi-step jobs (posting, set-up, kickoff, locking,
+   the guarded deletes) as single all-or-nothing steps in the database. Here
+   they are single synchronous steps on the in-memory tables, which comes to
+   the same thing: nothing can land halfway through one.
    =========================================================================== */
 
 export const client = null;
@@ -194,6 +200,8 @@ function seed_() {
     favorite: "home", spread: 4.5, total: 50.5, base_stake: 1,
     phase: "live", kicked_off_at: kick.toISOString(),
   });
+  // Everyone but Ted opened the app tonight.
+  regulars.forEach(p => db.attendance.push({ game_id: game.id, player_id: p.id }));
 
   const pregame = [
     ["Lions covers the spread", "Lions covers", "Buccaneers covers", 0.5, "A"],
@@ -252,10 +260,14 @@ seed_();
 let listener = () => {};
 const changed = () => setTimeout(() => listener(), 0);
 
+const betById = betId => db.bets.find(b => b.id === betId);
+const pickOf = (betId, playerId) =>
+  db.picks.find(x => x.bet_id === betId && x.player_id === playerId);
+
 /* Friends answer a bet over the next few seconds, like people looking up from
    the TV one at a time. Both sides end up covered so it can always lock. */
 function friendsAnswer(betId, skip = []) {
-  const bet = db.bets.find(b => b.id === betId);
+  const bet = betById(betId);
   if (!bet) return;
   const who = friends().filter(p => !skip.includes(p.id))
     .sort(() => live() - 0.5);
@@ -264,9 +276,9 @@ function friendsAnswer(betId, skip = []) {
   who.forEach((p, i) => {
     delay += 700 + live() * 1800;
     setTimeout(() => {
-      const b = db.bets.find(x => x.id === betId);
+      const b = betById(betId);
       if (!b || b.status !== "open") return;
-      if (db.picks.some(x => x.bet_id === betId && x.player_id === p.id)) return;
+      if (pickOf(betId, p.id)) return;
       const taken = db.picks.filter(x => x.bet_id === betId);
       const last = i === who.length - 1;
       let side = live() < 0.15 ? "OUT" : live() < b.p ? "A" : "B";
@@ -281,7 +293,7 @@ function friendsAnswer(betId, skip = []) {
 /* Now and then, someone else calls a bet. */
 function friendCallsOne() {
   const game = db.games.find(g => g.phase === "live");
-  if (!game || !me) return;
+  if (!game || !arrived) return;
   const open = db.bets.filter(b => b.game_id === game.id && b.status === "open");
   if (open.length >= 3) return;
   const caller = friends()[Math.floor(live() * friends().length)];
@@ -302,14 +314,22 @@ function friendCallsOne() {
 }
 setInterval(friendCallsOne, 45000);
 
-function sitDown(playerId) {
-  const first = !me;
-  me = playerId;
-  if (first && pendingSeed) {
+/* The room comes alive once the visitor is in: sat down, or opened the big
+   screen. The bet Nick called just before they arrived gets its answers. */
+let arrived = false;
+function arrive() {
+  if (arrived) return;
+  arrived = true;
+  if (pendingSeed) {
     const nick = db.picks.find(x => x.bet_id === pendingSeed)?.player_id;
-    friendsAnswer(pendingSeed, [nick]);
+    friendsAnswer(pendingSeed, [nick, me]);
     pendingSeed = null;
   }
+}
+
+function sitDown(playerId) {
+  me = playerId;
+  arrive();
 }
 
 /* --- reads --------------------------------------------------------------- */
@@ -320,6 +340,8 @@ const withPicks = b => ({
     .map(({ player_id, side, auto }) => ({ player_id, side, auto })),
 });
 const newestFirst = (a, b) => (b.created_at > a.created_at ? 1 : b.created_at < a.created_at ? -1 : 0);
+const bothSides = bet =>
+  bet.picks.some(p => p.side === "A") && bet.picks.some(p => p.side === "B");
 
 export async function fetchOpenGame() {
   await wait();
@@ -338,10 +360,31 @@ export async function fetchCatalog() {
   return clone(CATALOG.filter(c => !c.retired));
 }
 
+export async function fetchAttendance(gameId) {
+  await wait();
+  if (!gameId) return [];
+  return db.attendance.filter(a => a.game_id === gameId).map(a => a.player_id);
+}
+
 export async function fetchBets(gameId) {
   await wait();
   if (!gameId) return [];
   return db.bets.filter(b => b.game_id === gameId).sort(newestFirst).map(withPicks);
+}
+
+export async function fetchBet(betId) {
+  await wait();
+  const bet = betById(betId);
+  return bet ? withPicks(bet) : null;
+}
+
+export async function fetchHouseBetsSince(gameId, sinceIso) {
+  await wait();
+  return db.bets
+    .filter(b => b.game_id === gameId && !b.proposer_id && !b.is_pregame
+              && b.created_at >= sinceIso)
+    .sort((a, b) => (a.created_at > b.created_at ? 1 : -1))
+    .map(b => ({ id: b.id, created_at: b.created_at }));
 }
 
 /* --- writes -------------------------------------------------------------- */
@@ -362,39 +405,70 @@ export async function rememberDevice(token, playerId) {
 
 export async function markPresent(gameId, playerId) {
   if (playerId) sitDown(playerId);
+  if (!gameId || !playerId) return;
+  if (!db.attendance.some(a => a.game_id === gameId && a.player_id === playerId)) {
+    db.attendance.push({ game_id: gameId, player_id: playerId });
+  }
+}
+
+function newBet(fields, i = 0) {
+  const row = {
+    id: id("b"), category: "Custom", is_pregame: false, odds_edited: false,
+    even_money: false, status: "open", result: null, proposer_id: null,
+    created_at: new Date(Date.now() + i).toISOString(), locked_at: null, graded_at: null,
+    ...fields,
+  };
+  row.p = Number(row.p);
+  db.bets.push(row);
+  return row;
 }
 
 export async function createBet(bet, proposerId, side) {
   await wait();
-  const row = { id: id("b"), result: null, created_at: now(), locked_at: null,
-                graded_at: null, is_pregame: false, ...bet };
-  db.bets.push(row);
+  const row = newBet({ ...bet, proposer_id: proposerId, status: "open" });
   db.picks.push({ bet_id: row.id, player_id: proposerId, side, auto: false, updated_at: now() });
   friendsAnswer(row.id, [proposerId]);
+  return row.id;
+}
+
+/* A random bet from the big screen. Nobody owns it; the friends still pick. */
+export async function createHouseBet(bet) {
+  await wait();
+  arrive();
+  const row = newBet({ ...bet, proposer_id: null });
+  friendsAnswer(row.id, [me]);
   return clone(row);
 }
 
+/* Same rule as the database: no new picks or side changes once a bet is
+   locked, graded or pulled. */
 export async function savePick(betId, playerId, side) {
   await wait();
-  const existing = db.picks.find(x => x.bet_id === betId && x.player_id === playerId);
+  const bet = betById(betId);
+  if (!bet || bet.status !== "open") throw new Error("This bet isn't taking picks any more.");
+  const existing = pickOf(betId, playerId);
   if (existing) Object.assign(existing, { side, auto: false, updated_at: now() });
   else db.picks.push({ bet_id: betId, player_id: playerId, side, auto: false, updated_at: now() });
 }
 
-export async function autoOut(betId, playerIds) {
-  await wait();
+/* Anyone in the room who never answered is marked out. A real pick is never
+   overwritten. */
+function autoOut(betId, playerIds) {
   playerIds.forEach(pid => {
-    if (!db.picks.some(x => x.bet_id === betId && x.player_id === pid)) {
+    if (!pickOf(betId, pid)) {
       db.picks.push({ bet_id: betId, player_id: pid, side: "OUT", auto: true, updated_at: now() });
     }
   });
 }
 
-const betById = betId => db.bets.find(b => b.id === betId);
-
-export async function lockBet(betId) {
+export async function lockBetChecked(betId, presentIds) {
   await wait();
-  Object.assign(betById(betId), { status: "locked", locked_at: now() });
+  const bet = betById(betId);
+  if (!bet || bet.status !== "open") return "not_open";
+  if (!bothSides(withPicks(bet))) return "one_sided";
+  autoOut(betId, presentIds);
+  Object.assign(bet, { status: "locked", locked_at: now() });
+  return "locked";
 }
 
 export async function gradeBet(betId, result) {
@@ -407,27 +481,43 @@ export async function ungradeBet(betId) {
   Object.assign(betById(betId), { status: "locked", result: null, graded_at: null });
 }
 
-export async function deleteBet(betId) {
+export async function voidBets(ids) {
   await wait();
+  ids.forEach(i => {
+    const bet = betById(i);
+    if (bet) Object.assign(bet, { status: "graded", result: "VOID", graded_at: now() });
+  });
+}
+
+function dropBet(betId) {
   db.bets = db.bets.filter(b => b.id !== betId);
   db.picks = db.picks.filter(x => x.bet_id !== betId);
 }
 
-export async function verifyAdminPin() { await wait(); return true; }
-
-export async function createGame(fields) {
+export async function deleteBetIfUnpicked(betId, keep) {
   await wait();
-  return clone(addGame({ ...fields, created_at: now() }));
+  const bet = betById(betId);
+  if (!bet) return true;
+  if (bet.status !== "open") return false;
+  if (db.picks.some(x => x.bet_id === betId && x.player_id !== keep)) return false;
+  dropBet(betId);
+  return true;
 }
 
-export async function createBets(rows) {
+export async function verifyAdminPin() { await wait(); return true; }
+
+/* Only one open game at a time, same as the database's unique index. */
+export async function createGameWithBoard(fields, rows) {
   await wait();
+  if (db.games.some(g => g.phase !== "closed")) {
+    throw Object.assign(new Error("There's already an open game."), { code: "23505" });
+  }
+  const game = addGame({ ...fields, created_at: now() });
   rows.forEach((r, i) => {
-    const row = { id: id("b"), result: null, locked_at: null, graded_at: null,
-                  created_at: new Date(Date.now() + i).toISOString(), ...r };
-    db.bets.push(row);
+    const row = newBet({ ...r, game_id: game.id, status: "open" }, i);
     friendsAnswer(row.id, [me]);
   });
+  return game.id;
 }
 
 export async function setGamePhase(gameId, phase, stampField) {
@@ -437,23 +527,35 @@ export async function setGamePhase(gameId, phase, stampField) {
   if (stampField) g[stampField] = now();
 }
 
-export async function lockBets(ids) {
+export async function kickOff(gameId, presentIds) {
   await wait();
-  ids.forEach(i => Object.assign(betById(i), { status: "locked", locked_at: now() }));
+  const open = db.bets.filter(b => b.game_id === gameId && b.is_pregame && b.status === "open");
+  let locked = 0, voided = 0;
+  open.forEach(bet => {
+    if (bothSides(withPicks(bet))) {
+      autoOut(bet.id, presentIds);
+      Object.assign(bet, { status: "locked", locked_at: now() });
+      locked += 1;
+    } else {
+      Object.assign(bet, { status: "graded", result: "VOID", graded_at: now() });
+      voided += 1;
+    }
+  });
+  const g = db.games.find(x => x.id === gameId);
+  Object.assign(g, { phase: "live", kicked_off_at: now() });
+  return { locked, voided };
 }
 
-export async function voidBets(ids) {
+export async function deleteGameIfUngraded(gameId) {
   await wait();
-  ids.forEach(i => Object.assign(betById(i),
-    { status: "graded", result: "VOID", graded_at: now() }));
-}
-
-export async function deleteGame(gameId) {
-  await wait();
-  const gone = new Set(db.bets.filter(b => b.game_id === gameId).map(b => b.id));
+  const bets = db.bets.filter(b => b.game_id === gameId);
+  if (bets.some(b => b.status === "graded" && b.result !== "VOID")) return false;
+  const gone = new Set(bets.map(b => b.id));
   db.games = db.games.filter(g => g.id !== gameId);
   db.bets = db.bets.filter(b => !gone.has(b.id));
   db.picks = db.picks.filter(x => !gone.has(x.bet_id));
+  db.attendance = db.attendance.filter(a => a.game_id !== gameId);
+  return true;
 }
 
 /* --- history and money --------------------------------------------------- */
@@ -513,6 +615,7 @@ function snapshotFor(playerId) {
   return {
     player: clone(db.players.find(p => p.id === playerId)),
     picks: clone(db.picks.filter(x => x.player_id === playerId)),
+    attendance: clone(db.attendance.filter(a => a.player_id === playerId)),
     payments: clone(db.payments.filter(p =>
       [p.payer_id, p.payee_id, p.recorded_by, p.voided_by].includes(playerId))),
     flags: clone(db.flags.filter(f => f.player_id === playerId || f.similar_to === playerId)),
@@ -527,12 +630,19 @@ export async function mergePlayers(source, target) {
   snap.moved = snap.picks.map(x => x.bet_id).filter(b => !targetPicks.has(b));
   db.picks = db.picks.filter(x => !(x.player_id === source && targetPicks.has(x.bet_id)));
   db.picks.forEach(x => { if (x.player_id === source) x.player_id = target; });
+  db.attendance = db.attendance.filter(a => a.player_id !== source);
+  snap.attendance.forEach(a => {
+    if (!db.attendance.some(x => x.game_id === a.game_id && x.player_id === target)) {
+      db.attendance.push({ game_id: a.game_id, player_id: target });
+    }
+  });
   db.payments.forEach(p => ["payer_id", "payee_id", "recorded_by", "voided_by"]
     .forEach(k => { if (p[k] === source) p[k] = target; }));
   db.flags.forEach(f => {
     if (f.player_id === source || f.similar_to === source) f.resolved_at = f.resolved_at || now();
   });
   db.players = db.players.filter(p => p.id !== source);
+  if (me === source) me = target;
   db.changes.push({ id: id("c"), kind: "merge", subject_name: snap.player.name,
                     target_id: target, created_at: now(), undone_at: null, snap });
 }
@@ -541,6 +651,7 @@ export async function removePlayer(victim) {
   await wait();
   const snap = snapshotFor(victim);
   db.picks = db.picks.filter(x => x.player_id !== victim);
+  db.attendance = db.attendance.filter(a => a.player_id !== victim);
   db.flags.forEach(f => {
     if (f.player_id === victim || f.similar_to === victim) f.resolved_at = f.resolved_at || now();
   });
@@ -560,7 +671,14 @@ export async function undoRosterChange(changeId) {
     const moved = new Set(snap.moved);
     db.picks = db.picks.filter(x => !(x.player_id === change.target_id && moved.has(x.bet_id)));
   }
-  db.picks.push(...clone(snap.picks));
+  // Only picks on bets that still exist come back.
+  const betsNow = new Set(db.bets.map(b => b.id));
+  db.picks.push(...clone(snap.picks.filter(x => betsNow.has(x.bet_id))));
+  snap.attendance.forEach(a => {
+    if (!db.attendance.some(x => x.game_id === a.game_id && x.player_id === a.player_id)) {
+      db.attendance.push(clone(a));
+    }
+  });
   snap.payments.forEach(p => {
     const i = db.payments.findIndex(x => x.id === p.id);
     if (i >= 0) db.payments[i] = clone(p);
@@ -580,7 +698,7 @@ export async function fetchRosterChanges() {
 
 export async function reassignPick(betId, fromId, toId) {
   await wait();
-  const pick = db.picks.find(x => x.bet_id === betId && x.player_id === fromId);
+  const pick = pickOf(betId, fromId);
   if (pick) pick.player_id = toId;
 }
 

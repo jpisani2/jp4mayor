@@ -2,18 +2,19 @@
 
    Every figure is computed from the picks themselves — no stored totals — so
    a corrected grade or a roster merge flows straight through, including back
-   through past seasons. */
+   through past seasons. Voided bets are left out of every figure. */
 
-import { state, goto, loadHistory, historyStale } from "../store.js";
+import { state, goto, home } from "../store.js";
 import { esc, money } from "../format.js";
-import { rollUp, settle, riskA, riskB } from "../scoring.js";
+import { rollUp, settle, riskFor, counts, effectiveResult } from "../scoring.js";
 
 let range = "season";
+let withVoids = false;
 
-export function reset() { range = "season"; }
+export function reset() { range = "season"; withVoids = false; }
 
 /* Seasons run August through July, so a January playoff game belongs to the
-   previous August. Matches the generated column in schema.sql. */
+   previous August. Matches the generated column in the database. */
 const seasonOf = dateStr => {
   const d = new Date(dateStr + "T00:00:00");
   return d.getMonth() >= 7 ? d.getFullYear() : d.getFullYear() - 1;
@@ -49,7 +50,7 @@ function totals(games, bets) {
 
   games.forEach(game => {
     const stake = Number(game.base_stake);
-    const mine = bets.filter(b => b.game_id === game.id && b.status === "graded");
+    const mine = bets.filter(b => b.game_id === game.id && counts(b));
     const rolled = rollUp(mine, state.players, stake);
 
     Object.entries(rolled).forEach(([id, row]) => {
@@ -80,15 +81,16 @@ function streaks(bets) {
   const out = {};
   state.players.forEach(p => { out[p.id] = { current: null, run: 0, longest: 0, kind: null }; });
 
-  [...bets].filter(b => b.status === "graded" && b.graded_at)
+  [...bets].filter(b => counts(b) && b.graded_at)
     .sort((a, b) => new Date(a.graded_at) - new Date(b.graded_at))
     .forEach(bet => {
-      if (bet.result === "PUSH" || bet.result === "VOID") return;
+      const result = effectiveResult(bet);
+      if (result === "PUSH") return;
       bet.picks.forEach(pick => {
         if (pick.side === "OUT") return;
         const row = out[pick.player_id];
         if (!row) return;
-        const kind = bet.result === pick.side ? "W" : "L";
+        const kind = result === pick.side ? "W" : "L";
         if (row.current === kind) row.run += 1;
         else { row.current = kind; row.run = 1; }
         if (row.run > row.longest) { row.longest = row.run; row.kind = kind; }
@@ -104,17 +106,19 @@ export function view() {
   const games = state.history.games.filter(inRange);
   const ids = new Set(games.map(g => g.id));
   const bets = state.history.bets.filter(b => ids.has(b.game_id));
+  const settled = bets.filter(counts);
   const t = totals(games, bets);
   const st = streaks(bets);
   const ranked = [...state.players].sort((a, b) => t[b.id].net - t[a.id].net);
-  const categories = [...new Set(bets.filter(b => b.status === "graded").map(b => b.category))];
+  const categories = [...new Set(settled.map(b => b.category))];
 
   return `<div class="page">
     <header class="head">
       <div>
         <h1 class="cond">Stats</h1>
         <div class="sub">${games.length} game${games.length === 1 ? "" : "s"} ·
-          ${bets.filter(b => b.status === "graded").length} settled bets</div>
+          ${settled.length} settled bets · voids not counted${state.history.refreshing
+          ? ` · <span class="updating">updating…</span>` : ""}</div>
       </div>
       <div class="rangebar">
         ${RANGES.map(([k, label]) => `<button class="vbtn" data-range="${k}"
@@ -123,8 +127,10 @@ export function view() {
       </div>
     </header>
 
+    ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+
     ${games.length ? `
-      <table class="board num">
+      <div class="tablewrap"><table class="board num">
         <thead><tr>
           <th></th><th>Player</th><th>Games</th><th>Bets</th><th>W–L–P</th>
           <th>Win rate</th><th>Risked</th><th>Best</th><th>Worst</th>
@@ -147,7 +153,7 @@ export function view() {
             <td class="${tone(r.net)}">${money(r.net)}</td>
           </tr>`;
         }).join("")}</tbody>
-      </table>
+      </table></div>
 
       <div class="sechead"><span>Who's good at what</span><span class="rule"></span></div>
       <table class="board num">
@@ -158,7 +164,7 @@ export function view() {
             .map(p => ({ name: p.name, v: t[p.id].byCategory[c] }))
             .sort((a, b) => b.v - a.v);
           if (!scored.length) return "";
-          const count = bets.filter(b => b.category === c && b.status === "graded").length;
+          const count = settled.filter(b => b.category === c).length;
           const top = scored[0], bottom = scored[scored.length - 1];
           return `<tr>
             <td>${esc(c)}</td><td>${count}</td>
@@ -168,8 +174,10 @@ export function view() {
         }).join("")}</tbody>
       </table>
 
-      <div class="rowbtns" style="margin-top:22px">
+      <div class="rowbtns" style="margin-top:22px;align-items:center">
         <button class="btn" id="csv">Export this range as CSV</button>
+        <label class="checkline"><input type="checkbox" id="withvoids"
+          ${withVoids ? "checked" : ""}> Include voided bets</label>
       </div>
     ` : `<div class="empty">No games in this range yet.</div>`}
   </div>`;
@@ -178,7 +186,8 @@ export function view() {
 const tone = n => n > 0.005 ? "up" : n < -0.005 ? "down" : "";
 
 /* One row per pick, which is the grain everything else is derived from — so
-   the export can reproduce any figure on this screen. */
+   the export can reproduce any figure on this screen. Voided bets are left
+   out unless asked for, so by default it matches the screen exactly. */
 function csv(games, bets) {
   const nameOf = id => state.players.find(p => p.id === id)?.name ?? "";
   const gameOf = id => games.find(g => g.id === id);
@@ -188,19 +197,18 @@ function csv(games, bets) {
                   "probability", "stake", "player", "picked", "risk", "result", "net"]
                   .map(cell).join(",")];
 
-  bets.filter(b => b.status === "graded").forEach(bet => {
+  bets.filter(b => b.status === "graded" && (withVoids || counts(b))).forEach(bet => {
     const game = gameOf(bet.game_id);
     if (!game) return;
     const stake = Number(game.base_stake);
     const nets = settle(bet, stake);
     bet.picks.forEach(pick => {
-      const risk = pick.side === "A" ? riskA(bet.p, stake)
-                 : pick.side === "B" ? riskB(bet.p, stake) : 0;
       lines.push([
         game.kickoff_date, `${game.away_team} at ${game.home_team}`,
         bet.category, bet.body, bet.side_a, bet.side_b,
         bet.p, stake, nameOf(pick.player_id), pick.side,
-        risk.toFixed(2), bet.result, (nets[pick.player_id] ?? 0).toFixed(2),
+        riskFor(pick.side, bet.p, stake).toFixed(2), effectiveResult(bet),
+        (nets[pick.player_id] ?? 0).toFixed(2),
       ].map(cell).join(","));
     });
   });
@@ -209,16 +217,16 @@ function csv(games, bets) {
 }
 
 export function wire(root) {
-  if (historyStale()) loadHistory();
-  // Still on the loading view: none of the buttons below exist yet, and
-  // loadHistory() redraws (and rewires) once the numbers are in.
   if (!state.history.loaded) return;
 
-  root.querySelector("#back").onclick = () => goto(state.game ? "room" : "idle");
+  root.querySelector("#back").onclick = () => goto(home());
 
   root.querySelectorAll("[data-range]").forEach(el => {
     el.onclick = () => { range = el.dataset.range; goto("stats"); };
   });
+
+  const voids = root.querySelector("#withvoids");
+  if (voids) voids.onchange = () => { withVoids = voids.checked; };
 
   const button = root.querySelector("#csv");
   if (button) button.onclick = () => {
@@ -228,8 +236,8 @@ export function wire(root) {
     const url = URL.createObjectURL(new Blob([text], { type: "text/csv" }));
     const link = document.createElement("a");
     link.href = url;
-    link.download = `bet-room-${range}.csv`;
+    link.download = `bet-room-${range}${withVoids ? "-with-voids" : ""}.csv`;
     link.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 }

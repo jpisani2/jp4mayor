@@ -3,9 +3,9 @@
    Merging reassigns rows and never touches a stored total, because there
    aren't any — so every stat recalculates on its own, and so does the undo. */
 
-import { state, goto, unlockAdmin, loadRoster, loadHistory,
+import { state, goto, home, unlockAdmin, loadRoster,
          renamePlayer, mergePlayers, removePlayer, undoRosterChange,
-         clearFlag, reassignPick, historyStale } from "../store.js";
+         clearFlag, reassignPick } from "../store.js";
 import { esc, money } from "../format.js";
 import { rollUp } from "../scoring.js";
 
@@ -73,7 +73,8 @@ export function view() {
         <h1 class="cond">Roster</h1>
         <div class="sub">Pick two people to merge them into one record. Every
           pick moves across and all the stats recalculate — including the ones
-          from before the merge.</div>
+          from before the merge.${state.history.refreshing
+          ? ` <span class="updating">updating…</span>` : ""}</div>
       </div>
       <button class="btn sm" id="back">Back</button>
     </header>
@@ -216,18 +217,18 @@ export function wire(root) {
   const $ = sel => root.querySelector(sel);
   const redraw = () => goto("roster");
 
-  if ($("#back")) $("#back").onclick = () => goto(state.game ? "room" : "idle");
+  if ($("#back")) $("#back").onclick = () => goto(home());
 
   if (!state.admin) {
     const pin = $("#pin");
     const go = () => unlockAdmin(pin.value.trim());
     $("#unlock").onclick = go;
     pin.onkeydown = e => { if (e.key === "Enter") go(); };
-    pin.focus();
+    if (document.activeElement?.id !== "pin") pin.focus();
     return;
   }
 
-  if (historyStale()) { loadHistory(); return; }
+  if (!state.history.loaded) return;   // on its way — opening the screen fetched it
   if (!state.roster.loaded) { loadRoster(); return; }
 
   root.querySelectorAll("[data-select]").forEach(el => {
@@ -273,7 +274,7 @@ export function wire(root) {
   });
   const renameField = $("#rename");
   if (renameField) {
-    renameField.focus();
+    if (document.activeElement !== renameField) renameField.focus();
     renameField.oninput = () => { draftName = renameField.value; };
     renameField.onkeydown = e => {
       if (e.key === "Enter") { renamePlayer(editing, draftName); editing = null; }

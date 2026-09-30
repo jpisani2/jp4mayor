@@ -1,8 +1,9 @@
 /* The call-a-bet sheet. Owns its own draft; commits through the store. */
 
-import { state, stake, proposeBet, openProposeSheet, setError } from "../store.js";
+import { state, stake, proposeBet, openProposeSheet, setError, isBusy,
+         holdRender } from "../store.js";
 import { esc, money, withTeams } from "../format.js";
-import { riskA, riskB } from "../scoring.js";
+import { riskA, riskB, oneOnOne } from "../scoring.js";
 
 let draft;
 
@@ -25,11 +26,12 @@ export function view() {
   const categories = [...new Set(state.catalog.map(c => c.category))];
   if (!draft.category) draft.category = categories[0];
 
-  return `<div class="sheet" id="sheet"><div class="sheetbody">
+  return `<div class="sheet" id="sheet"><div class="sheetbody" data-keep-scroll="propose">
     <div class="sheettop">
       <strong>Call a bet</strong>
       <button class="btn sm" id="closesheet">Close</button>
     </div>
+    ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
     ${draft.chosen ? chosenView() : draft.tab === "list" ? listView(categories) : customView()}
   </div></div>`;
 }
@@ -41,6 +43,15 @@ function evenToggle(on, id) {
     <button class="sw" id="${id}" data-on="${on ? 1 : 0}" role="switch"
             aria-checked="${Boolean(on)}" aria-label="Even money"></button>
   </div>`;
+}
+
+/* Nobody has picked yet, so what each side wins is the one-on-one figure. */
+function riskLine(p, labelA, labelB) {
+  const s = stake();
+  return `Risk ${money(riskA(p, s))} to take ${esc(labelA)}
+    (wins ${money(oneOnOne("A", p, s))} one-on-one) ·
+    ${money(riskB(p, s))} to take ${esc(labelB)}
+    (wins ${money(oneOnOne("B", p, s))} one-on-one)`;
 }
 
 function listView(categories) {
@@ -55,8 +66,8 @@ function listView(categories) {
       <button class="tab" data-on="0" id="tocustom">Write your own</button>
     </div>
     <input class="field" id="search" placeholder="Search ${state.catalog.length} bets"
-           value="${esc(draft.search)}">
-    ${draft.search ? "" : `<div class="chips">${categories.map(c =>
+           value="${esc(draft.search)}" autocomplete="off">
+    ${draft.search ? "" : `<div class="chips" data-keep-scroll="chips">${categories.map(c =>
       `<button class="gchip" data-on="${c === draft.category ? 1 : 0}"
                data-cat="${esc(c)}">${esc(c)}</button>`).join("")}</div>`}
     ${rows.length ? rows.map(c => `<button class="pick" data-choose="${c.id}">
@@ -66,37 +77,41 @@ function listView(categories) {
     </button>`).join("") : `<div class="empty">Nothing matches that.</div>`}`;
 }
 
+function oddsLabel(labelA, pct, base) {
+  const changed = pct !== base;
+  return `Chance ${esc(labelA)} happens:
+    <span class="${changed ? "edited" : ""}">${pct}%</span>
+    ${changed ? `<span class="edited"> — changed from ${base}%</span>` : ""}`;
+}
+
 function chosenView() {
   const c = draft.chosen;
-  const p = probability();
   const labelA = withTeams(c.side_a, state.game);
   const labelB = withTeams(c.side_b, state.game);
-  const basePct = Math.round(c.p * 100);
-  const changed = draft.pct !== basePct;
+  const base = Math.round(c.p * 100);
+  const changed = draft.pct !== base;
+  const busy = isBusy("post");
 
   return `
     <div class="grp">${esc(c.category)}</div>
     <div class="sheetq">${esc(withTeams(c.body, state.game))}</div>
     ${evenToggle(draft.even, "even")}
     ${draft.even ? "" : `
-      <label class="flabel">Chance ${esc(labelA)} happens:
-        <span class="${changed ? "edited" : ""}">${draft.pct}%</span>
-        ${changed ? `<span class="edited"> — changed from ${basePct}%</span>` : ""}</label>
+      <label class="flabel" id="pctlabel">${oddsLabel(labelA, draft.pct, base)}</label>
       <input type="range" min="1" max="99" value="${draft.pct}" id="pct"
              style="accent-color:${changed ? "var(--edit)" : "var(--a)"}">`}
-    <div class="riskline num">Risk ${money(riskA(p, stake()))} to take ${esc(labelA)} ·
-      ${money(riskB(p, stake()))} to take ${esc(labelB)}</div>
+    <div class="riskline num" id="riskline">${riskLine(probability(), labelA, labelB)}</div>
     <div class="twoup">
-      <button class="btn primary" data-post="A">Post, I'm on ${esc(labelA)}</button>
-      <button class="btn primary" data-post="B">Post, I'm on ${esc(labelB)}</button>
+      <button class="btn primary" data-post="A" ${busy ? "disabled" : ""}>Post, I'm on ${esc(labelA)}</button>
+      <button class="btn primary" data-post="B" ${busy ? "disabled" : ""}>Post, I'm on ${esc(labelB)}</button>
     </div>
     <button class="linkish backlink" id="back">back to the list</button>`;
 }
 
 function customView() {
-  const p = probability();
   const labelA = draft.custom.a || "A";
   const labelB = draft.custom.b || "B";
+  const busy = isBusy("post");
 
   return `
     <div class="tabs">
@@ -105,23 +120,32 @@ function customView() {
     </div>
     <label class="flabel">The bet</label>
     <input class="field" id="cbody" value="${esc(draft.custom.body)}"
-           placeholder="Does Thacker finish the wings before the punt">
+           placeholder="Does Thacker finish the wings before the punt" autocomplete="off">
     <div class="twoup">
       <div><label class="flabel">Side A</label>
-        <input class="field" id="ca" value="${esc(draft.custom.a)}" placeholder="Yes"></div>
+        <input class="field" id="ca" value="${esc(draft.custom.a)}" placeholder="Yes" autocomplete="off"></div>
       <div><label class="flabel">Side B</label>
-        <input class="field" id="cb" value="${esc(draft.custom.b)}" placeholder="No"></div>
+        <input class="field" id="cb" value="${esc(draft.custom.b)}" placeholder="No" autocomplete="off"></div>
     </div>
     ${evenToggle(draft.custom.even, "ceven")}
     ${draft.custom.even ? "" : `
-      <label class="flabel">Chance Side A happens: ${draft.custom.pct}%</label>
+      <label class="flabel" id="cpctlabel">Chance Side A happens: ${draft.custom.pct}%</label>
       <input type="range" min="1" max="99" value="${draft.custom.pct}" id="cpct">`}
-    <div class="riskline num">Risk ${money(riskA(p, stake()))} to take ${esc(labelA)} ·
-      ${money(riskB(p, stake()))} to take ${esc(labelB)}</div>
+    <div class="riskline num" id="riskline">${riskLine(probability(), labelA, labelB)}</div>
     <div class="twoup">
-      <button class="btn" data-cpost="A">Post, I'm on ${esc(labelA)}</button>
-      <button class="btn" data-cpost="B">Post, I'm on ${esc(labelB)}</button>
+      <button class="btn" data-cpost="A" ${busy ? "disabled" : ""}>Post, I'm on ${esc(labelA)}</button>
+      <button class="btn" data-cpost="B" ${busy ? "disabled" : ""}>Post, I'm on ${esc(labelB)}</button>
     </div>`;
+}
+
+/* A slider updates only the numbers beside it while it's being dragged —
+   rebuilding the sheet under a finger cancels the drag on phones — and the
+   sheet redraws once, on release. Other people's updates wait too. */
+function wireSlider(el, onMove, redraw) {
+  el.addEventListener("pointerdown", () => holdRender(true));
+  el.addEventListener("touchstart", () => holdRender(true), { passive: true });
+  el.oninput = () => { holdRender(true); onMove(+el.value); };
+  el.onchange = () => { onMove(+el.value); holdRender(false); redraw(); };
 }
 
 export function wire(root) {
@@ -136,13 +160,11 @@ export function wire(root) {
   if ($("#back")) $("#back").onclick = () => { draft.chosen = null; redraw(); };
 
   const search = $("#search");
-  if (search) {
-    search.oninput = () => { draft.search = search.value; redraw(); };
-    if (draft.search) {
-      search.focus();
-      search.setSelectionRange(search.value.length, search.value.length);
-    }
-  }
+  if (search) search.oninput = () => {
+    if (draft.search === search.value) return;
+    draft.search = search.value;
+    redraw();
+  };
 
   root.querySelectorAll("[data-cat]").forEach(el => {
     el.onclick = () => { draft.category = el.dataset.cat; redraw(); };
@@ -162,8 +184,26 @@ export function wire(root) {
   if ($("#ceven")) $("#ceven").onclick = () => {
     draft.custom.even = !draft.custom.even; redraw();
   };
-  if ($("#pct")) $("#pct").oninput = e => { draft.pct = +e.target.value; redraw(); };
-  if ($("#cpct")) $("#cpct").oninput = e => { draft.custom.pct = +e.target.value; redraw(); };
+
+  if ($("#pct")) {
+    const c = draft.chosen;
+    const labelA = withTeams(c.side_a, state.game), labelB = withTeams(c.side_b, state.game);
+    const base = Math.round(c.p * 100);
+    wireSlider($("#pct"), v => {
+      draft.pct = v;
+      $("#pctlabel").innerHTML = oddsLabel(labelA, v, base);
+      $("#pct").style.accentColor = v !== base ? "var(--edit)" : "var(--a)";
+      $("#riskline").innerHTML = riskLine(probability(), labelA, labelB);
+    }, redraw);
+  }
+  if ($("#cpct")) {
+    wireSlider($("#cpct"), v => {
+      draft.custom.pct = v;
+      $("#cpctlabel").textContent = `Chance Side A happens: ${v}%`;
+      $("#riskline").innerHTML = riskLine(probability(),
+        draft.custom.a || "A", draft.custom.b || "B");
+    }, redraw);
+  }
 
   [["#cbody", "body"], ["#ca", "a"], ["#cb", "b"]].forEach(([sel, key]) => {
     const el = $(sel);
