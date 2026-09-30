@@ -1,6 +1,8 @@
-/* The house rules. Read-only; the text lives in js/rules.js. */
+/* The house rules. Read-only; the text lives in js/rules.js. Reached from
+   the menu and from the "Who are you?" screen, and Back returns to
+   whichever of those it came from. */
 
-import { goto, state } from "../store.js";
+import { closeRules } from "../store.js";
 import { esc } from "../format.js";
 import { SECTIONS } from "../rules.js";
 
@@ -22,9 +24,14 @@ export function view() {
           ${r.settled ? `<span class="rulewhy">${esc(r.settled)}</span>` : ""}
         </li>`).join("")}
       </ol>`).join("")}
+
+    <div class="rowbtns" style="margin-top:22px">
+      <button class="btn" id="back2">Back</button>
+    </div>
   </div>`;
 }
 
 export function wire(root) {
-  root.querySelector("#back").onclick = () => goto(state.game ? "room" : "idle");
+  root.querySelector("#back").onclick = closeRules;
+  root.querySelector("#back2").onclick = closeRules;
 }

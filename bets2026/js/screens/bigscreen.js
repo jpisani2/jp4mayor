@@ -5,15 +5,18 @@
    Pregame sides stay hidden here the same as on the phones — this screen is
    the one everybody can see. */
 
-import { state, stake, nameOf, betsBy, awaiting, isPregame, isBlind,
-         lock, grade, ungrade, pull, goto, leaveBigScreen,
-         FRESH_MS, AUTO_EVERY, autoPaused, setAutoBet, setAutoEvery,
+import { state, stake, nameOf, betsBy, awaiting, isPregame, isBlind, isBusy,
+         lock, ungrade, pull, goto, leaveBigScreen, openSheet,
+         FRESH_MS, AUTO_EVERY, autoPaused, setAutoBet, setAutoEvery, nextThrowAt,
          throwRandomBet } from "../store.js";
 import { esc, money, matchup } from "../format.js";
-import { riskA, riskB, takers, pot, canLock, settle, rollUp, inPlay,
-         gameTotals } from "../scoring.js";
+import { riskFor, takers, pot, canLock, settle, rollUp, inPlay, winIfJoined, oneOnOne,
+         gameTotals, effectiveResult } from "../scoring.js";
 import { balancesAcrossGames, roundAgainstYourself, suggestTransfers } from "../ledger.js";
+import { soundOn, setSound } from "../sound.js";
 import * as closeout from "./closeout.js";
+import * as grading from "./grading.js";
+import * as adminsheet from "./adminsheet.js";
 
 const FEED_LENGTH = 8;
 const FLASH_MS = 2600;      // the whole-screen flash when a bet lands
@@ -26,9 +29,10 @@ export function view() {
     ${header()}
     ${alerts()}
     ${state.notice ? `<div class="banner">${esc(state.notice)}</div>` : ""}
-    ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}
+    ${state.error && !state.sheet ? `<div class="err">${esc(state.error)}</div>` : ""}
     ${state.game ? liveView() : idleView()}
-  </div>`;
+  </div>
+  ${adminsheet.view()}`;
 }
 
 /* --- layout -------------------------------------------------------------- */
@@ -44,7 +48,9 @@ function header() {
       ${g ? `<span class="bsub num">base stake ${money(stake())}</span>` : ""}
     </div>
     <div class="bactions">
+      ${g && isPregame() ? `<button class="btn primary" id="bkickoff">Kick off</button>` : ""}
       ${g ? `<button class="btn" id="bclose">Close out the night</button>` : ""}
+      <button class="linkish" id="bsound">sound ${soundOn() ? "on" : "off"}</button>
       <button class="linkish" id="bexit">exit big screen</button>
     </div>
   </header>`;
@@ -132,7 +138,7 @@ function nextLabel() {
   const auto = state.autoBet;
   if (!auto.on) return "off";
   if (autoPaused()) return "paused until kickoff";
-  const left = Math.max(0, Math.ceil((auto.nextAt - Date.now()) / 1000));
+  const left = Math.max(0, Math.ceil((nextThrowAt() - Date.now()) / 1000));
   return `next in ${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
 }
 
@@ -153,14 +159,16 @@ function tiles() {
 
 /* --- bet cards ----------------------------------------------------------- */
 
+/* What a newcomer would win on this side right now, counting who's already
+   in — or, while sides are hidden, the one-on-one figure. */
 function sideBlock(bet, side, blind) {
   const s = stake();
-  const risk = side === "A" ? riskA(bet.p, s) : riskB(bet.p, s);
-  const other = side === "A" ? riskB(bet.p, s) : riskA(bet.p, s);
+  const win = blind ? `win ${money(oneOnOne(side, bet.p, s))} one-on-one`
+    : `win ${money(winIfJoined(bet, side, s, "(newcomer)"))} now`;
   const names = takers(bet, side);
   return `<div class="bside-${side} bsidebox">
     <div class="bsn">${esc(side === "A" ? bet.side_a : bet.side_b)}</div>
-    <div class="bsr num">risk ${money(risk)} · pays ${(other / risk).toFixed(2)}×</div>
+    <div class="bsr num">risk ${money(riskFor(side, bet.p, s))} · ${win}</div>
     ${blind ? "" : `<div class="takers">${names.length
       ? names.map(id => `<span class="chip">${esc(nameOf(id))}</span>`).join("")
       : `<span class="bnone">nobody yet</span>`}</div>`}
@@ -174,11 +182,13 @@ function openCard(bet) {
   const inCount = takers(bet, "A").length + takers(bet, "B").length;
   const fresh = state.fresh[bet.id] !== undefined;
   const house = !bet.proposer_id;
+  const locking = isBusy(`lock:${bet.id}`);
 
   return `<article class="card bcard${fresh ? " fresh" : ""}" ${fresh ? resume(since(bet.id)) : ""}>
     <div class="grp">${fresh ? `<span class="bnewtag">new</span> ` : ""}${esc(bet.category)}${
       house ? " · thrown out by the big screen" : ""}${
-      house && !bet.picks.length ? ` · <button class="linkish" data-pull="${bet.id}">pull</button>` : ""}</div>
+      house && !bet.picks.length ? ` · <button class="linkish" data-pull="${bet.id}"
+        ${isBusy(`pull:${bet.id}`) ? "disabled" : ""}>pull</button>` : ""}</div>
     <div class="q">${esc(bet.body)}</div>
     <div class="bsides">${sideBlock(bet, "A", blind)}${sideBlock(bet, "B", blind)}</div>
     <div class="potrow">
@@ -187,8 +197,8 @@ function openCard(bet) {
       ${missing.length ? `<span class="bwait">waiting on ${missing.map(p => esc(p.name)).join(", ")}</span>` : ""}
     </div>
     ${blind ? "" : `<div class="rowbtns">
-      <button class="btn wide" data-lock="${bet.id}" ${lockable ? "" : "disabled"}>
-        ${lockable ? "Lock it"
+      <button class="btn wide" data-lock="${bet.id}" ${lockable && !locking ? "" : "disabled"}>
+        ${locking ? "Locking…" : lockable ? "Lock it"
           : !takers(bet, "A").length && !takers(bet, "B").length ? "Needs someone on each side"
           : `Needs someone on ${esc(takers(bet, "A").length ? bet.side_b : bet.side_a)}`}
       </button></div>`}
@@ -204,12 +214,10 @@ function lockedCard(bet) {
       <span class="nmA">${esc(bet.side_a)}</span> — ${names("A")}<br>
       <span class="nmB">${esc(bet.side_b)}</span> — ${names("B")}
     </div>
-    <div class="grades bgrades">
-      <button class="gbtn" data-k="A" data-grade="${bet.id}" data-result="A">${esc(bet.side_a)} hit</button>
-      <button class="gbtn" data-k="B" data-grade="${bet.id}" data-result="B">${esc(bet.side_b)} hit</button>
-      <button class="gbtn" data-grade="${bet.id}" data-result="PUSH">Push</button>
-      <button class="gbtn" data-grade="${bet.id}" data-result="VOID">Void</button>
-    </div>
+    ${canLock(bet) ? "" : `<div class="warn" style="margin-top:.5em">Nobody is on ${
+      esc(takers(bet, "A").length ? bet.side_b : bet.side_a)}, so this settles as a void
+      whichever way it goes.</div>`}
+    ${grading.gradeRow(bet, { extraClass: "bgrades" })}
   </article>`;
 }
 
@@ -248,9 +256,9 @@ function feed() {
     ${section("Results")}
     ${graded.length ? graded.map(bet => {
       const nets = Object.entries(settle(bet, stake()));
-      const label = bet.result === "A" ? bet.side_a : bet.result === "B" ? bet.side_b
-                  : bet.result === "PUSH" ? "Push" : "Void";
-      const flat = bet.result === "PUSH" || bet.result === "VOID";
+      const label = grading.resultLabel(bet);
+      const result = effectiveResult(bet);
+      const flat = result === "PUSH" || result === "VOID";
       return `<div class="bfeed">
         <div class="bfq">${esc(bet.body)}</div>
         <div class="bfr">${esc(label)}${flat ? " — no money moved" : ""}</div>
@@ -258,7 +266,8 @@ function feed() {
           .sort((a, b) => b[1] - a[1])
           .map(([id, n]) => `<span class="${tone(n)}">${esc(nameOf(id))} ${plus(n)}</span>`)
           .join(" · ")}</div>`}
-        <button class="linkish" data-ungrade="${bet.id}">graded wrong — undo</button>
+        <button class="linkish" data-ungrade="${bet.id}"
+          ${isBusy(`grade:${bet.id}`) ? "disabled" : ""}>graded wrong — undo</button>
       </div>`;
     }).join("") : `<div class="empty">Nothing settled yet tonight.</div>`}
   </section>`;
@@ -292,9 +301,7 @@ export function wire(root) {
   root.querySelectorAll("[data-lock]").forEach(el => {
     el.onclick = () => lock(el.dataset.lock);
   });
-  root.querySelectorAll("[data-grade]").forEach(el => {
-    el.onclick = () => grade(el.dataset.grade, el.dataset.result);
-  });
+  grading.wire(root);
   root.querySelectorAll("[data-ungrade]").forEach(el => {
     el.onclick = () => ungrade(el.dataset.ungrade);
   });
@@ -310,9 +317,13 @@ export function wire(root) {
   if (throwNow) throwNow.onclick = () => throwRandomBet();
   startCountdown();
 
+  const kick = root.querySelector("#bkickoff");
+  if (kick) kick.onclick = () => openSheet({ kind: "kickoff" });
   const close = root.querySelector("#bclose");
   if (close) close.onclick = () => { closeout.reset(); goto("closeout"); };
+  root.querySelector("#bsound").onclick = () => { setSound(!soundOn()); goto("big"); };
   root.querySelector("#bexit").onclick = () => leaveBigScreen();
+  adminsheet.wire(root);
 }
 
 /* The countdown ticks by rewriting one line of text, not by re-rendering the

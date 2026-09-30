@@ -1,7 +1,7 @@
 /* Claim a seat. The roster is the only way in: tapping an existing name is
    what prevents duplicates, since typing is what creates them. */
 
-import { state, takeSeat, addPlayer, enterBigScreen } from "../store.js";
+import { state, takeSeat, addPlayer, enterBigScreen, openRules } from "../store.js";
 import { esc } from "../format.js";
 
 export function view() {
@@ -23,6 +23,10 @@ export function view() {
     <div class="bigentry">
       <button class="btn sm" id="bigscreen">Big screen</button>
       <span>For the laptop or iPad everyone can see. Not a player.</span>
+    </div>
+    <div class="bigentry">
+      <button class="btn sm" id="rules">House rules</button>
+      <span>New here? How bets, money and grading work.</span>
     </div>
   </div>`;
 }
@@ -46,6 +50,7 @@ export function wire(root) {
   };
 
   root.querySelector("#bigscreen").onclick = () => enterBigScreen();
+  root.querySelector("#rules").onclick = () => openRules();
 
   root.querySelector("#add").onclick = () => {
     if (input.value.trim()) addPlayer(input.value);

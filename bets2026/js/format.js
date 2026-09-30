@@ -16,18 +16,16 @@ export function withTeams(text, game) {
 
 export const matchup = game => game ? `${game.away_team} at ${game.home_team}` : "";
 
-export function beep() {
-  try {
-    const Ctx = window.AudioContext || window.webkitAudioContext;
-    if (!Ctx) return;
-    const ctx = new Ctx(), osc = ctx.createOscillator(), gain = ctx.createGain();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.setValueAtTime(1320, ctx.currentTime + 0.09);
-    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-    osc.connect(gain).connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.26);
-  } catch (e) { /* audio is a nicety, never a failure */ }
+/* "Amy", "Amy and Bob", "Amy, Bob and Cal". */
+export function listNames(names) {
+  if (names.length <= 1) return names.join("");
+  return names.slice(0, -1).join(", ") + " and " + names[names.length - 1];
+}
+
+export const plural = (n, word, many = word + "s") => `${n} ${n === 1 ? word : many}`;
+
+/* Today's date as YYYY-MM-DD in this device's own time zone. */
+export function localDate(d = new Date()) {
+  const pad = n => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }

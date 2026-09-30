@@ -5,7 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bet Room</title>
 <link rel="stylesheet" href="styles.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- The database library, from our own copy so it never changes underneath
+     us. Until that copy is in js/vendor/, fall back to the public CDN. -->
+<script src="js/vendor/supabase.js"></script>
+<script>
+  window.supabase || document.write(
+    '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"><\/script>');
+</script>
 </head>
 <body>
   <div class="dot" id="live" title="realtime connection"></div>

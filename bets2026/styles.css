@@ -519,3 +519,44 @@ select.field{appearance:none;
   .bflash{display:none}
   .bnew{animation:none}
 }
+
+/* --- fixes, September 2026 ------------------------------------------------ */
+
+/* Grade confirmation: replaces the grade buttons on a card until answered. */
+.gconfirm{margin-top:11px;padding:10px 11px;border:1px solid var(--ink3);
+  border-radius:10px;background:var(--surface2)}
+.gcq{font-size:14px;margin-bottom:5px}
+.gce{font-size:13px;line-height:1.6;color:var(--ink2)}
+.gconfirm .rowbtns{margin-top:9px}
+.big .gconfirm{font-size:.9em}
+
+/* History screens keep the last numbers up while fresh ones load. */
+.updating{color:var(--ink3);font-style:italic}
+
+/* "Tonight's game is up" on the midweek screen: a banner you can tap. */
+.bannerbtn{display:block;width:100%;text-align:left;border:none;cursor:pointer;
+  margin-top:16px}
+
+/* Kickoff and pull-a-bet sheet. */
+.kolist{margin:12px 0 4px}
+.koline{font-size:14px;line-height:1.5;margin-bottom:10px;color:var(--ink2)}
+.koline b{color:var(--ink)}
+.koline ul{margin:6px 0 0;padding-left:18px}
+.koline li{margin-bottom:3px}
+
+/* Stats: the wide table scrolls sideways on a phone instead of the page. */
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.checkline{display:inline-flex;align-items:center;gap:7px;font-size:13px;
+  color:var(--ink2);cursor:pointer}
+.checkline input{width:18px;height:18px;accent-color:var(--a)}
+
+/* House rules. */
+.rules{margin:0;padding-left:22px}
+.rules li{margin-bottom:12px;line-height:1.5;font-size:15px}
+.ruletext{display:block}
+.rulewhy{display:block;font-size:12px;color:var(--ink3);margin-top:3px;font-style:italic}
+
+/* Past games list. */
+.pastgame{width:100%;margin-bottom:8px}
+
+.linkish:disabled{opacity:.4;cursor:default}
