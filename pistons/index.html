@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Pistons Season Hub</title>
-<meta name="description" content="Detroit Pistons 2026-27 schedule, home games, season summary and road-trip planner, with scores updated after every game.">
+<meta name="description" content="Detroit Pistons 2026-27 daily dashboard, betting lines and matchup projections, schedule, home games, season summary and road-trip planner.">
 <meta property="og:title" content="Pistons Season Hub">
-<meta property="og:description" content="Detroit Pistons 2026-27 schedule, home games, season summary and road-trip planner.">
+<meta property="og:description" content="Detroit Pistons 2026-27 daily dashboard, betting lines, schedule and road-trip planner.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#1D428A">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -43,13 +43,19 @@
   </section>
 
   <nav class="tabs" role="tablist" aria-label="Sections">
-    <button type="button" role="tab" id="tab-schedule" data-tab="schedule" aria-selected="true">Schedule</button>
+    <button type="button" role="tab" id="tab-today" data-tab="today" aria-selected="true">Today</button>
+    <button type="button" role="tab" id="tab-betting" data-tab="betting" aria-selected="false">Betting</button>
+    <button type="button" role="tab" id="tab-schedule" data-tab="schedule" aria-selected="false">Schedule</button>
     <button type="button" role="tab" id="tab-home" data-tab="home" aria-selected="false">Home games</button>
     <button type="button" role="tab" id="tab-summary" data-tab="summary" aria-selected="false">Season summary</button>
     <button type="button" role="tab" id="tab-trips" data-tab="trips" aria-selected="false">Road trips</button>
   </nav>
 
-  <section id="p-schedule" role="tabpanel">
+  <section id="p-today" role="tabpanel"></section>
+
+  <section id="p-betting" role="tabpanel" hidden></section>
+
+  <section id="p-schedule" role="tabpanel" hidden>
     <div class="bar">
       <div class="seg" role="group" aria-label="View">
         <button type="button" id="v-list" data-view="list" aria-pressed="true">List</button>
@@ -73,7 +79,7 @@
   <section id="p-trips" role="tabpanel" hidden></section>
 
   <footer class="foot">
-    <div id="status">Scores update nightly after games.</div>
+    <div id="status">Scores and the Today dashboard update every morning.</div>
     <div>Schedule: CBS Sports and Yahoo Sports (pulled Sept 21, 2026). Times ET and subject to change. Two December games (Dec 3–11) are TBD pending the NBA Cup knockout round.</div>
     <div>Unofficial fan page. Not affiliated with the Detroit Pistons or the NBA.</div>
   </footer>
