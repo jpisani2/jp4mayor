@@ -14,6 +14,7 @@ import { riskFor, takers, pot, canLock, settle, rollUp, inPlay, winIfJoined, one
          gameTotals, effectiveResult } from "../scoring.js";
 import { balancesAcrossGames, roundAgainstYourself, suggestTransfers } from "../ledger.js";
 import { soundOn, setSound } from "../sound.js";
+import { THEMES, current as currentTheme, apply as applyTheme } from "../theme.js";
 import * as closeout from "./closeout.js";
 import * as grading from "./grading.js";
 import * as adminsheet from "./adminsheet.js";
@@ -50,6 +51,9 @@ function header() {
     <div class="bactions">
       ${g && isPregame() ? `<button class="btn primary" id="bkickoff">Kick off</button>` : ""}
       ${g ? `<button class="btn" id="bclose">Close out the night</button>` : ""}
+      <span class="themerow bthemes" style="margin:0">${THEMES.map(t => `<button class="dotbtn" data-theme-id="${t.id}"
+        data-on="${currentTheme() === t.id ? 1 : 0}" data-swatch="${t.id}"
+        title="Theme: ${t.name}" aria-label="Theme: ${t.name}"></button>`).join("")}</span>
       <button class="linkish" id="bsound">sound ${soundOn() ? "on" : "off"}</button>
       <button class="linkish" id="bexit">exit big screen</button>
     </div>
@@ -321,6 +325,9 @@ export function wire(root) {
   if (kick) kick.onclick = () => openSheet({ kind: "kickoff" });
   const close = root.querySelector("#bclose");
   if (close) close.onclick = () => { closeout.reset(); goto("closeout"); };
+  root.querySelectorAll("[data-theme-id]").forEach(el => {
+    el.onclick = () => { applyTheme(el.dataset.themeId); goto("big"); };
+  });
   root.querySelector("#bsound").onclick = () => { setSound(!soundOn()); goto("big"); };
   root.querySelector("#bexit").onclick = () => leaveBigScreen();
   adminsheet.wire(root);

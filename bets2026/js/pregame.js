@@ -15,8 +15,8 @@ const clamp = x => Math.min(0.95, Math.max(0.05, x));
 const ncdf = z => 0.5 * (1 + Math.tanh(0.79788 * z * (1 + 0.044715 * z * z)));
 
 export const TEMPLATES = [
-  { key: "spread", body: "{fav} covers the spread",
-    a: "{fav} covers", b: "{dog} covers",
+  { key: "spread", body: "{fav} cover {spreadneg}",
+    a: "{fav} {spreadneg}", b: "{dog} {spreadpos}",
     derive: () => 0.5, note: "50/50 by definition — that's what the line is for" },
 
   { key: "total", body: "Total points over or under {total}",
@@ -63,6 +63,13 @@ export const TEMPLATES = [
 
 /* A game here is the setup form's draft, not necessarily a saved row. */
 function resolve(text, game) {
+  const sp = Math.abs(Number(game.spread) || 0);
+  const pickem = sp === 0;
+  if (pickem && /\{spread(neg|pos)\}/.test(text)) {
+    /* A pick'em has no number to show. */
+    text = text.replace("cover {spreadneg}", "win the game")
+               .replace(" {spreadneg}", "").replace(" {spreadpos}", "");
+  }
   const fav = game.favorite === "home" ? game.home_team : game.away_team;
   const dog = game.favorite === "home" ? game.away_team : game.home_team;
   return String(text)
@@ -70,7 +77,9 @@ function resolve(text, game) {
     .replace(/\{dog\}/g, dog)
     .replace(/\{home\}/g, game.home_team)
     .replace(/\{away\}/g, game.away_team)
-    .replace(/\{total\}/g, game.total);
+    .replace(/\{total\}/g, game.total)
+    .replace(/\{spreadneg\}/g, `\u2212${sp}`)
+    .replace(/\{spreadpos\}/g, `+${sp}`);
 }
 
 /* Every row the board will post, with derived odds and any override applied. */
