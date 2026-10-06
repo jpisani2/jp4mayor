@@ -2,4 +2,4 @@
    det = Detroit points, opp = opponent points, opponent = city name, home = true/false.
    For a December TBD game you can also add note (e.g. "NBA Cup quarterfinal") and time ("HH:MM", 24h ET).
    Example:  "2026-10-20": {"det": 112, "opp": 105, "opponent": "Boston", "home": true},  */
-window.PISTONS_RESULTS = {"updated":"2026-10-04T05:42:49-04:00","games":{}};
+window.PISTONS_RESULTS = {"updated":"2026-10-06T05:45:15-04:00","games":{}};
