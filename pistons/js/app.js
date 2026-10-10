@@ -404,6 +404,19 @@ function lastGamePanel(g){
     ${Array.isArray(g.leaders) && g.leaders.length ? `<div class="leaders">${g.leaders.map(l => `<div class="leader"><div class="k">${esc(l.k)}</div><b>${esc(l.name)}</b><span>${esc(l.line)}</span></div>`).join("")}</div>` : ""}
     ${box.length ? `<details><summary style="cursor:pointer;font-weight:600">Pistons box score</summary><div class="tbl-wrap" style="margin-top:8px"><table class="mini box"><thead><tr><th>Player</th><th>Min</th><th>Pts</th><th>Reb</th><th>Ast</th><th class="hidden-sm">Stl</th><th class="hidden-sm">Blk</th><th>FG</th><th class="hidden-sm">3PT</th><th class="hidden-sm">+/-</th></tr></thead><tbody>${boxRows}</tbody></table></div></details>` : ""}
     ${link ? `<p style="margin:10px 0 0;font-size:13.5px"><a href="${esc(link)}" target="_blank" rel="noopener">Full box score ↗</a></p>` : ""}
+    ${presserBlock(g)}
+  </div>`;
+}
+
+/* postgame press conferences: links found by the morning task, else a YouTube search */
+function presserBlock(g){
+  const list = (Array.isArray(g.pressers) ? g.pressers : []).map(p => ({ ...p, url: safeUrl(p && p.url) })).filter(p => p.url);
+  const q = encodeURIComponent(`Detroit Pistons postgame press conference ${g.opponent || ""} ${g.date ? fmtDate(g.date, {month:"long", day:"numeric", year:"numeric"}) : ""}`.replace(/\s+/g, " ").trim());
+  const search = `https://www.youtube.com/results?search_query=${q}`;
+  const items = list.map(p => `<li><a href="${esc(p.url)}" target="_blank" rel="noopener"><span class="pr-play" aria-hidden="true">▶</span><span><b>${esc(p.who || p.title || "Press conference")}</b>${p.title && p.who ? `<small>${esc(p.title)}</small>` : ""}</span><em>${esc(p.source || (/youtu/i.test(p.url) ? "YouTube" : "Video"))}</em></a></li>`).join("");
+  return `<div class="pressers"><div class="k">Postgame pressers</div>
+    ${items ? `<ul>${items}</ul>` : `<p class="empty" style="font-size:13.5px">Not posted yet when the dashboard was built.</p>`}
+    <a class="pr-more" href="${esc(search)}" target="_blank" rel="noopener">${items ? "More on YouTube" : "Search YouTube for this game's pressers"} ↗</a>
   </div>`;
 }
 
