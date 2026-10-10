@@ -148,6 +148,7 @@ tr.next-row td:first-child{box-shadow:inset 4px 0 0 var(--red)}
 .kv:last-child{border-bottom:0}
 .kv.sub span:first-child{padding-left:14px;color:var(--muted)}
 .kv b{font-weight:700;white-space:nowrap}
+.kv b.long{min-width:0;white-space:normal;text-align:right;overflow-wrap:anywhere}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
 .tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
 .tile b{display:block;font:800 40px/1 "Saira Condensed",Arial,sans-serif;color:var(--head)}

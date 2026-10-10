@@ -552,7 +552,7 @@ function nextPanel(n, up){
   return `<div class="panel prev"><h3>Next game<span class="tag">${esc(n.type || "")}</span></h3>
     <div class="opp">${n.home ? "vs" : "@"} ${esc(n.opponent)}</div>
     <div class="muted" style="font-size:14px">${n.date ? esc(fmtDate(n.date, {weekday:"long", month:"short", day:"numeric"})) : ""}${n.time ? " · " + esc(fmtTime(n.time)) + " ET" : ""}${n.tv ? " · " + esc(n.tv) : ""}${n.venue ? " · " + esc(n.venue) : ""}</div>
-    ${n.oppRecord ? `<div class="kv" style="margin-top:8px"><span>Opponent record</span><b>${esc(n.oppRecord)}</b></div>` : ""}
+    ${n.oppRecord ? `<div class="kv" style="margin-top:8px"><span class="nowrap" style="flex:none">Opponent record</span><b class="long">${esc(n.oppRecord)}</b></div>` : ""}
     ${n.preview ? `<p>${esc(n.preview)}</p>` : ""}
     ${n.watch ? `<p><b>Watch for:</b> ${esc(n.watch)}</p>` : ""}
     ${Array.isArray(up) && up.length ? `<div class="upnext"><div class="eyebrow" style="margin-bottom:4px">After that</div>${up.map(u => `<div class="kv"><span>${esc(u.date ? fmtDate(u.date) : "")}${u.type && u.type !== "Regular season" ? " · " + esc(u.type) : ""}</span><b>${u.home ? "vs" : "@"} ${esc(u.opponent)}${u.time ? " · " + esc(fmtTime(u.time)) : ""}</b></div>`).join("")}</div>` : ""}
