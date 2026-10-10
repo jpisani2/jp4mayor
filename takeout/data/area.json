@@ -1,0 +1,32 @@
+{
+  "name": "Home zone",
+  "boundary": {
+    "north": "9 Mile Rd (include businesses on BOTH sides of 9 Mile)",
+    "east": "Lahser Rd (include businesses on BOTH sides of Lahser)",
+    "south": "Plymouth Rd (include businesses on BOTH sides of Plymouth)",
+    "west": "Newburgh Rd (include businesses on BOTH sides of Newburgh)"
+  },
+  "rule": "A place is IN if its street address is on or inside the four boundary roads. Nothing north of 9 Mile, east of Lahser, south of Plymouth, or west of Newburgh unless it fronts that boundary road.",
+  "addressHints": [
+    "Livonia E-W roads (Plymouth, 5/6/7/8 Mile): Newburgh is about the 37500 block. Corner plazas AT a Newburgh intersection count (e.g. New Five Plaza 37609-37685 Five Mile, SW corner). Laurel Park Place (37700 Six Mile, by I-275), Haggerty Rd, Victor Pkwy and Seven Mile/Haggerty are OUT.",
+    "Middlebelt ~29000 block, Inkster ~27000, Beech Daly ~25800-26000, Telegraph ~24000-25000 on E-W roads in Redford/Livonia numbering.",
+    "N-S roads: Plymouth Rd is ~11500-12000; Joy Rd (~9000-10000) is OUT. Schoolcraft ~13000, 5 Mile ~15000, 6 Mile ~17000-18000, 7 Mile ~19000, 8 Mile ~20000-20600. Ann Arbor Rd / Ann Arbor Trail addresses are OUT.",
+    "North of 8 Mile the west edge continues as Halsted Rd in Farmington Hills; 9 Mile is the north edge (both sides)."
+  ],
+  "bbox": { "latMin": 42.364, "latMax": 42.466, "lngMin": -83.421, "lngMax": -83.250 },
+  "bboxNote": "Approximate, with a small margin, for sanity checks only. Road-address rule above wins.",
+  "center": [42.415, -83.335],
+  "towns": [
+    "Livonia",
+    "Redford Township",
+    "Farmington Hills (south of 9 Mile)",
+    "Farmington (south of 9 Mile)",
+    "Southfield (west of Lahser, south of 9 Mile)",
+    "Detroit (west side of Lahser / Plymouth Rd edge)"
+  ],
+  "corridors": [
+    "Plymouth Rd", "Schoolcraft Rd / I-96 service drive", "5 Mile Rd", "6 Mile Rd", "7 Mile Rd", "8 Mile Rd", "9 Mile Rd",
+    "Grand River Ave", "Newburgh Rd", "Levan Rd", "Farmington Rd", "Merriman Rd", "Middlebelt Rd", "Inkster Rd",
+    "Beech Daly Rd", "Telegraph Rd", "Lahser Rd", "Orchard Lake Rd (south of 9 Mile)"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "takeout",
+  "private": true,
+  "type": "module",
+  "description": "Dinner Decider — no build step, no dependencies. These scripts are for the weekly routine.",
+  "scripts": {
+    "test": "node --test",
+    "validate": "node scripts/validate.mjs"
+  }
+}

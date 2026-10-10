@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dinner Decider tests</title>
+  <style>
+    body { font: 14px/1.5 system-ui, sans-serif; margin: 16px; background: #fff; color: #111; }
+    .pass { color: #15803d; } .fail { color: #b91c1c; } .warn { color: #a16207; }
+    pre { white-space: pre-wrap; margin: 2px 0 8px 18px; }
+    h2 { font-size: 15px; margin-top: 22px; }
+  </style>
+</head>
+<body>
+  <h1>Tests</h1>
+  <div id="out"></div>
+  <script type="module">
+    import { cases } from "./cases.js";
+    import { validateRestaurants, validateNews, validateMeta } from "../js/validate.js";
+    const out = document.getElementById("out");
+    const line = (cls, txt, detail) => out.insertAdjacentHTML("beforeend",
+      `<div class="${cls}">${cls === "pass" ? "✓" : cls === "fail" ? "✗" : "!"} ${txt}</div>${detail ? `<pre>${detail.replace(/</g, "&lt;")}</pre>` : ""}`);
+    let pass = 0, fail = 0;
+    for (const [name, fn] of cases) {
+      try { await fn(); pass++; line("pass", name); } catch (e) { fail++; line("fail", name, e.message); }
+    }
+    out.insertAdjacentHTML("beforeend", `<h2>Data files</h2>`);
+    const get = (f) => fetch(`../data/${f}`).then((r) => r.json());
+    try {
+      const [area, places, news, meta] = await Promise.all(["area.json", "restaurants.json", "news.json", "meta.json"].map(get));
+      for (const [n, r] of [["restaurants.json", validateRestaurants(places, area)], ["news.json", validateNews(news)], ["meta.json", validateMeta(meta)]]) {
+        if (r.errors.length) { fail++; line("fail", `${n}: ${r.errors.length} errors`, r.errors.join("\n")); } else { pass++; line("pass", `${n} valid`); }
+        if (r.warnings.length) line("warn", `${n}: ${r.warnings.length} warnings`, r.warnings.join("\n"));
+      }
+      line("pass", `${places.length} places, ${places.filter((p) => p.status === "open").length} open`);
+    } catch (e) { fail++; line("fail", "could not load data", e.message); }
+    document.title = `${fail ? "FAIL" : "PASS"} ${pass}/${pass + fail}`;
+    out.insertAdjacentHTML("afterbegin", `<p class="${fail ? "fail" : "pass"}"><b>${pass} passed, ${fail} failed</b></p>`);
+    window.__results = { pass, fail };
+  </script>
+</body>
+</html>
