@@ -1,7 +1,7 @@
 // Bump VERSION whenever app files change (the weekly routine bumps it with each data update).
-const VERSION = "2026-10-10.3";
+const VERSION = "2026-10-10.5";
 const SHELL = [
-  "./", "index.html", "site.webmanifest", "css/styles.css?v=3", "js/app.js?v=3",
+  "./", "index.html", "site.webmanifest", "css/styles.css?v=5", "js/app.js?v=5",
   "js/decide.js", "js/hours.js", "js/cuisine.js", "js/geo.js", "js/store.js", "js/config.js", "img/icon.svg",
 ];
 

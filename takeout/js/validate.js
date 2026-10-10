@@ -31,6 +31,17 @@ export function validateRestaurants(list, area = null) {
       }
     }
 
+    if (r.drive != null && !(typeof r.drive.mi === "number" && typeof r.drive.min === "number")) err("drive must be { mi, min }");
+    if (!r.drive) warn("no driving distance");
+    if (r.reviews != null) {
+      const v = r.reviews;
+      if (typeof v.summary !== "string" || !v.summary.trim()) err("reviews.summary required");
+      else if (v.summary.length > 280) err("reviews.summary must be 280 characters or fewer");
+      if (!["highlighted", "recent"].includes(v.basis)) err('reviews.basis must be "highlighted" or "recent"');
+      for (const k of ["asOf", "newest", "oldest", "checked"]) if (v[k] != null && !DATE.test(v[k])) err(`reviews.${k} must be YYYY-MM-DD`);
+      if (v.basis === "recent" && !v.newest) err("reviews.newest required when basis is recent");
+    }
+
     for (const k of ["cuisines", "tags", "highlights"]) {
       if (r[k] != null && (!Array.isArray(r[k]) || !r[k].every((s) => typeof s === "string" && s.trim()))) err(`${k} must be an array of strings`);
     }

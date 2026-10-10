@@ -13,8 +13,11 @@
     "N-S roads: Plymouth Rd is ~11500-12000; Joy Rd (~9000-10000) is OUT. Schoolcraft ~13000, 5 Mile ~15000, 6 Mile ~17000-18000, 7 Mile ~19000, 8 Mile ~20000-20600. Ann Arbor Rd / Ann Arbor Trail addresses are OUT.",
     "North of 8 Mile the west edge continues as Halsted Rd in Farmington Hills; 9 Mile is the north edge (both sides)."
   ],
-  "bbox": { "latMin": 42.364, "latMax": 42.466, "lngMin": -83.421, "lngMax": -83.250 },
-  "bboxNote": "Approximate, with a small margin, for sanity checks only. Road-address rule above wins.",
+  "boundaryMethod": "Use real road lines in data/roads.json (lat/lng points). A place is IN if its coordinates are inside Newburgh/Halsted (W), Lahser (E), Plymouth (S) and 9 Mile (N); or within ~220 m beyond one of those roads AND its street address is on that road. Get coordinates from the US Census geocoder (geocoding.geo.census.gov, free, no key) — listing-site pins are sometimes miles off.",
+  "bbox": { "latMin": 42.362, "latMax": 42.465, "lngMin": -83.424, "lngMax": -83.250 },
+  "bboxNote": "Outer limits for sanity checks only; the road-line rule above decides.",
+  "origin": { "name": "7 Mile & Inkster", "ll": [42.4276, -83.3162] },
+  "originNote": "Driving distance/time (drive.mi, drive.min) is measured from here with the free OSRM router: https://router.project-osrm.org/table/v1/driving/{lng,lat;lng,lat...}?sources=0&annotations=distance,duration",
   "center": [42.415, -83.335],
   "towns": [
     "Livonia",

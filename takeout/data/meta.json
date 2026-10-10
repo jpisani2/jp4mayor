@@ -1,7 +1,12 @@
 {
-  "updated": "2026-10-10T18:00:00-04:00",
+  "updated": "2026-10-10T20:30:00-04:00",
   "baseline": "2026-10-10",
-  "summary": "Initial research pass: 119 places across Livonia, Redford, and the Farmington / Farmington Hills strip south of 9 Mile.",
-  "counts": { "places": 119, "added": 119, "refreshed": 0, "closed": 0 },
-  "changes": []
+  "summary": "Full sweep: 276 places (157 added from Restaurantji category pages, OpenStreetMap and owner reports), all with real coordinates and driving distance from 7 Mile & Inkster; 23 waiting for confirmation.",
+  "counts": { "places": 276, "added": 157, "refreshed": 0, "closed": 0, "pending": 23 },
+  "changes": [
+    { "date": "2026-10-10", "id": "*", "what": "Added short review summaries to 207 places (from highlighted, undated listing reviews)" },
+    { "date": "2026-10-10", "id": "manhattan-fish-and-chicken-6-mile", "what": "Added (owner reported missing)" },
+    { "date": "2026-10-10", "id": "manhattan-fish-and-chicken", "what": "Added — 22000 W 7 Mile at Lahser (listing pin was ~1.5 mi off; placed by Census address match)" },
+    { "date": "2026-10-10", "id": "*", "what": "Added driving distance/time from 7 Mile & Inkster to every place" }
+  ]
 }

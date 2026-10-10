@@ -40,13 +40,23 @@ Each run does the following:
 
 The home screen shows *"data updated <date>"*. The date turns red if no update has happened in 2 weeks.
 
+### 4. Optional: dated Google reviews
+Review summaries currently come from the few highlighted reviews on each place's listing, which have no dates. To switch to Google's 5 most recent reviews, with dates like "newest 3 days ago":
+1. In [Google Cloud Console](https://console.cloud.google.com/), create a project, enable **Places API (New)**, and create an API key. Under *API restrictions*, limit the key to Places API (New). Google asks for a billing card, but at about 70 lookups a week this stays inside the free monthly allowance (1,000 review lookups a month).
+2. Give the key to the weekly routine as an environment variable named `GOOGLE_PLACES_KEY` (in the routine's environment settings). Don't put it in any file in the repo.
+3. From then on, each weekly run uses `scripts/google-reviews.mjs` for the places it refreshes, and the app shows "From 5 recent Google reviews · newest 3 days ago". Without the key, it keeps the undated summaries.
+
 ## Data
 `data/restaurants.json` has one place per line. The fields are documented in `routine/PROMPT.md`. A few highlights:
 - `ho` is the hours, Sun→Sat, like `"x,11-22,11-22,11-22,11-22,11-23,12-23"`. `x` means closed, `?` means unknown, and times past midnight are written as 24+ (`"17-26"` = 5pm–2am).
 - `cf` is a confidence level (1 confirmed, 2 likely, 3 unverified). `ev` is a note on where the facts came from, and `dt` is the date they were last checked.
 - `specials` uses `[["2","Taco Tuesday"]]` with day digits 0=Sun…6=Sat. A matching special gives a place a small boost on that day.
+- `ll` holds the coordinates (from the US Census address geocoder). `drive` is `{ mi, min }` from 7 Mile and Inkster, from the free OSRM router; times assume no traffic.
+- `reviews` is a short summary written from the reviews, plus where it came from and how recent it is.
 
-`data/area.json` defines the boundary, along with address-number hints the routine uses to decide what's inside.
+- `data/area.json` defines the boundary rule and the home point.
+- `data/roads.json` holds the real road lines used for the boundary check and the drawn map.
+- `data/pending.json` lists places that were found but aren't confirmed yet. The weekly routine confirms or drops them.
 
 ## Local preview and tests
 There's no build step and nothing to install.
@@ -55,4 +65,4 @@ There's no build step and nothing to install.
 powershell -ExecutionPolicy Bypass -File scripts/serve.ps1
 ```
 
-Then open http://localhost:8080. The tests and data validation run at http://localhost:8080/tests/run.html. With Node installed you can also use `npm test` and `npm run validate`.
+Then open http://localhost:8080. If Windows says the port is taken, add `-Port 8090` and use that number. The tests and data validation run at `/tests/run.html`. With Node installed you can also use `npm test` and `npm run validate`.

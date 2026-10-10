@@ -7,7 +7,11 @@ export const DEFAULT_WEIGHTS = {
   novelty: 0.7, // bonus for never-tried places
   favorite: 1,  // bonus for favorites
   special: 0.5, // bonus when a special runs today
+  distance: 1,  // penalty for driving time from home (full penalty at 20+ min)
 };
+
+// "3.1 mi · ~6 min" — driving distance from home (7 Mile & Inkster), precomputed in the data.
+export const driveText = (r) => (r.drive ? `${r.drive.mi < 0.1 ? "<0.1" : r.drive.mi.toFixed(1)} mi · ~${Math.max(1, Math.round(r.drive.min))} min` : "");
 
 const DAY = 86400000;
 const lc = (a) => (a || []).map((s) => String(s).toLowerCase());
@@ -44,11 +48,11 @@ export function externalRating(r) {
 // ---- Filtering ---------------------------------------------------------------
 
 // opts: { mode:'dine_in'|'carry_out'|'any', when:Date, openOnly, allowUnknownHours, cuisines[], tags[],
-//         anyOf[] (craving: matches any cuisine or tag), maxPrice, favoritesOnly, neverTried,
+//         anyOf[] (craving: matches any cuisine or tag), maxPrice, maxMinutes, favoritesOnly, neverTried,
 //         prefs:Map, stats:Map, search }
 export function filterPlaces(places, opts = {}) {
   const { mode = "any", when = new Date(), openOnly = false, allowUnknownHours = true,
-          cuisines = [], tags = [], anyOf = [], maxPrice = null, favoritesOnly = false, neverTried = false,
+          cuisines = [], tags = [], anyOf = [], maxPrice = null, maxMinutes = null, favoritesOnly = false, neverTried = false,
           prefs = new Map(), stats = new Map(), search = "" } = opts;
   const q = search.trim().toLowerCase();
   return places.filter((r) => {
@@ -65,6 +69,7 @@ export function filterPlaces(places, opts = {}) {
     if (anyOf.length && ![...lc(r.cuisines), ...lc(r.tags)].some((t) => anyOf.includes(t))) return false;
     if (tags.length && !tags.every((t) => lc(r.tags).includes(t) || lc(p?.my_tags).includes(t))) return false;
     if (maxPrice && r.price && r.price > maxPrice) return false;
+    if (maxMinutes && r.drive && r.drive.min > maxMinutes) return false;
     if (favoritesOnly && !p?.favorite) return false;
     if (neverTried && stats.get(r.id)) return false;
     if (q && ![r.name, r.town, ...(r.cuisines || []), ...(r.tags || []), ...(r.highlights || [])]
@@ -94,8 +99,11 @@ export function scorePlace(r, ctx) {
   const favorite = p?.favorite ? 1 : 0;
   const specials = todaySpecials(r, when);
 
+  // Distance: 0 at the door, 1 at 20+ minutes away. Unknown distance = middling.
+  const far = r.drive ? Math.min(1, r.drive.min / 20) : 0.5;
+
   let score = w.quality * quality + w.recency * recency + w.novelty * novelty + w.favorite * favorite
-            + w.special * (specials.length ? 1 : 0);
+            + w.special * (specials.length ? 1 : 0) - w.distance * far;
 
   if (s?.lastVisit?.would_return === false) score -= 1.5;
   if (isOpenAt(r.ho, when) === null) score -= 0.3;
@@ -106,7 +114,7 @@ export function scorePlace(r, ctx) {
   score -= 0.6 * Math.min(2, hits(ctx.penalizeTags));
   if (ctx.preferKnown) score += s?.avg >= 4 ? 1.2 : s ? 0 : -0.8;
 
-  return { score, quality, recency, specials };
+  return { score, quality, recency, specials, far };
 }
 
 export function reasons(r, ctx) {
@@ -118,6 +126,7 @@ export function reasons(r, ctx) {
   if (!s) out.push("Never tried");
   else if (s.daysSince != null) out.push(s.daysSince === 0 ? "Went today" : `${s.daysSince} day${s.daysSince === 1 ? "" : "s"} since last visit`);
   if (p?.favorite) out.push("Favorite");
+  if (r.drive) out.push(driveText(r));
   for (const sp of todaySpecials(r, ctx.when || new Date())) out.push(sp);
   out.push(statusText(r.ho, ctx.when || new Date()));
   return out;

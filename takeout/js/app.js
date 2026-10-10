@@ -2,10 +2,10 @@ import * as store from "./store.js";
 import { isOpenAt, statusText, weekText } from "./hours.js";
 import {
   DEFAULT_WEIGHTS, summarize, filterPlaces, pick, rank, reasons, moodToOptions,
-  wheelCandidates, todaySpecials, externalRating,
+  wheelCandidates, todaySpecials, externalRating, driveText,
 } from "./decide.js";
 import { cuisineStyle, CRAVINGS, cravingByKey } from "./cuisine.js";
-import { gridPosition, EW_ROADS, NS_ROADS, roadCol } from "./geo.js";
+import { gridPosition } from "./geo.js";
 
 // ---- state -------------------------------------------------------------------
 const S = {
@@ -13,7 +13,7 @@ const S = {
   visits: [], prefs: new Map(), settings: {}, stats: new Map(),
   mode: lsGet("takeout.mode") || "any",          // any | dine_in | carry_out
   openNow: lsGet("takeout.open") !== "0",
-  browse: { search: "", craving: "", maxPrice: "", fav: false, never: false, sort: "score", view: "list", sel: null },
+  browse: { search: "", craving: "", maxPrice: "", fav: false, never: false, near: false, sort: "score", view: "list", sel: null },
   mood: { step: 0, answers: {} },
   tonight: lsJSON("takeout.tonight"),            // { id, date }
   wheelRot: 0, navCount: 0,
@@ -48,6 +48,15 @@ function openPill(r) {
 }
 const notStatus = (w) => !/^Open|^Opens|^Closed|^Hours/.test(w);
 
+// "From 5 recent Google reviews · newest 3 days ago" (dated) or "From 3 highlighted reviews · listing updated Oct 1" (undated).
+function reviewBasis(rv) {
+  const daysAgo = (iso) => Math.max(0, Math.floor((Date.now() - new Date(iso + "T12:00:00")) / 86400000));
+  const src = { google: "Google", yelp: "Yelp", restaurantji: "" }[rv.source] ?? "";
+  const n = rv.n ? `${rv.n} ` : "";
+  if (rv.newest) return `From ${n}recent ${src ? src + " " : ""}reviews · newest ${ago(daysAgo(rv.newest)).toLowerCase()}${rv.oldest ? `, oldest ${ago(daysAgo(rv.oldest)).toLowerCase()}` : ""}`;
+  return `From ${n}highlighted reviews (undated)${rv.asOf ? ` · listing updated ${fmtDate(rv.asOf)}` : ""}`;
+}
+
 function toast(msg) {
   const t = document.getElementById("toast");
   t.textContent = msg; t.hidden = false;
@@ -72,12 +81,14 @@ function setTheme(t) {
 
 // ---- boot --------------------------------------------------------------------
 async function boot() {
-  const [places, meta, news] = await Promise.all([
+  const [places, meta, news, area, roads] = await Promise.all([
     fetch("data/restaurants.json").then((r) => r.json()).catch(() => []),
     fetch("data/meta.json").then((r) => r.json()).catch(() => ({})),
     fetch("data/news.json").then((r) => r.json()).catch(() => []),
+    fetch("data/area.json").then((r) => r.json()).catch(() => ({})),
+    fetch("data/roads.json").then((r) => r.json()).catch(() => null),
   ]);
-  S.places = places; S.meta = meta; S.news = news;
+  S.places = places; S.meta = meta; S.news = news; S.area = area; S.roads = roads;
   S.byId = new Map(places.map((p) => [p.id, p]));
   try { await store.init(); } catch (e) { console.error(e); toast("Couldn't reach your account — showing device data"); }
   await reload();
@@ -129,12 +140,12 @@ function filterChips({ open = true } = {}) {
 // Compact place row used in lists, alternates and the map card.
 function prow(r, { why = true } = {}) {
   const p = S.prefs.get(r.id);
-  const w = why ? reasons(r, ctx()).filter(notStatus).slice(0, 3).join(" · ") : "";
+  const w = why ? reasons(r, ctx()).filter((x) => notStatus(x) && x !== driveText(r)).slice(0, 3).join(" · ") : "";
   return `<a class="prow" href="#/r/${enc(r.id)}">
     ${ico(r)}
     <div class="body">
       <div class="name">${esc(r.name)}${p?.favorite ? '<span class="fav" aria-label="Favorite">♥</span>' : ""}</div>
-      <div class="meta">${esc(metaLine(r, 2))}</div>
+      <div class="meta">${esc([metaLine(r, 2), driveText(r)].filter(Boolean).join(" · "))}</div>
       ${w ? `<div class="why">${esc(w)}</div>` : ""}
     </div>
     ${openPill(r)}
@@ -242,6 +253,7 @@ function resultHTML(res, c, { includeClosed = false, again, source }) {
       <p class="meta">${esc(metaLine(r))}</p>
     </div>
     <div class="pills">${openPill(r)}${why.map((w) => `<span class="pill ${/★/.test(w) ? "warn" : ""}">${esc(w)}</span>`).join("")}</div>
+    ${r.reviews?.summary ? `<p class="review-line"><i class="ti ti-quote" aria-hidden="true"></i>${esc(r.reviews.summary)}<small>${esc(reviewBasis(r.reviews))}</small></p>` : ""}
     ${dishes.length ? `<h2 style="margin-top:18px">${usual.length ? "Your usual" : "Known for"}</h2>
       <ul class="dishes">${dishes.map(([n, s, mine]) => `<li><b style="font-weight:500">${esc(n)}</b><span class="${mine ? "again" : ""}">${s}</span></li>`).join("")}</ul>` : ""}
     <div class="actions-row">
@@ -346,11 +358,13 @@ function browseList() {
   const crave = cravingByKey(b.craving);
   let list = filterPlaces(S.places, {
     mode: S.mode, openOnly: S.openNow, anyOf: crave ? crave.match : [], maxPrice: b.maxPrice ? Number(b.maxPrice) : null,
+    maxMinutes: b.near ? 10 : null,
     favoritesOnly: b.fav, neverTried: b.never, prefs: S.prefs, stats: S.stats, search: b.search,
   });
   if (b.sort === "score") list = rank(list, ctx()).map((x) => x.r);
   if (b.sort === "name") list.sort((a, z) => a.name.localeCompare(z.name));
   if (b.sort === "rating") list.sort((a, z) => (S.stats.get(z.id)?.avg ?? externalRating(z) ?? 0) - (S.stats.get(a.id)?.avg ?? externalRating(a) ?? 0));
+  if (b.sort === "closest") list.sort((a, z) => (a.drive?.min ?? 999) - (z.drive?.min ?? 999));
   if (b.sort === "longest") list.sort((a, z) => (S.stats.get(z.id)?.daysSince ?? 1e6) - (S.stats.get(a.id)?.daysSince ?? 1e6));
   return list;
 }
@@ -366,11 +380,12 @@ function viewBrowse() {
       <button class="chip" aria-pressed="${b.view === "map"}" data-act="view" data-v="map"><i class="ti ti-map" aria-hidden="true"></i>Map</button>
       ${filterChips()}
       <button class="chip" aria-pressed="${b.fav}" data-act="bchip" data-k="fav"><i class="ti ti-heart" aria-hidden="true"></i>Favorites</button>
+      <button class="chip" aria-pressed="${b.near}" data-act="bchip" data-k="near"><i class="ti ti-car" aria-hidden="true"></i>Under 10 min</button>
       <button class="chip" aria-pressed="${b.never}" data-act="bchip" data-k="never">Never tried</button>
     </div>
     <div class="selects">
       <select data-b="craving" aria-label="Food">${opt("", "All food", b.craving)}${CRAVINGS.map((c) => opt(c.key, esc(c.label), b.craving)).join("")}</select>
-      <select data-b="sort" aria-label="Sort">${opt("score", "Best bet", b.sort)}${opt("rating", "Top rated", b.sort)}${opt("longest", "Longest since visit", b.sort)}${opt("name", "A–Z", b.sort)}</select>
+      <select data-b="sort" aria-label="Sort">${opt("score", "Best bet", b.sort)}${opt("closest", "Closest", b.sort)}${opt("rating", "Top rated", b.sort)}${opt("longest", "Longest since visit", b.sort)}${opt("name", "A–Z", b.sort)}</select>
       <select data-b="maxPrice" aria-label="Price">${opt("", "Any price", b.maxPrice)}${[1, 2, 3].map((p) => opt(p, "Up to " + price(p), b.maxPrice)).join("")}</select>
     </div>
     <div id="blist"></div>`;
@@ -386,33 +401,48 @@ function renderBrowseList() {
   el.innerHTML = head + `<div class="rows">${list.map((r) => prow(r)).join("")}</div>`;
 }
 
-// Drawn road-grid map. Pins are placed from the street address (see geo.js).
+// Drawn map of the home zone: real road shapes (data/roads.json) and real place coordinates (r.ll).
+// Places without coordinates fall back to an address-based grid position (geo.js).
+const BOX = { n: 42.4635, s: 42.3655, w: -83.4225, e: -83.2515 };
+const EDGE_ROADS = ["9 Mile", "Plymouth", "Newburgh", "Lahser"];
 function mapHTML(list) {
-  const W = 340, H = 330, L = 12, Rm = 12, T = 14, B = 44;
-  const X = (col) => L + col * (W - L - Rm), Y = (row) => T + (row / 6) * (H - T - B);
-  const roads = [
-    ...EW_ROADS.map((r) => `<line class="road" x1="${L}" y1="${Y(r.row)}" x2="${W - Rm}" y2="${Y(r.row)}"/><text class="rl" x="${L + 2}" y="${Y(r.row) - 3}">${r.name}</text>`),
-    ...NS_ROADS.map((r, i) => `<line class="road" x1="${X(roadCol(r.num))}" y1="${T}" x2="${X(roadCol(r.num))}" y2="${H - B}"/><text class="rl" x="${X(roadCol(r.num))}" y="${H - B + 12 + (i % 2) * 11}" text-anchor="middle">${r.name}</text>`),
-  ];
-  const gr = [21800, 23500, 25000, 27400, 29400, 32400].map((n) => gridPosition(`${n} Grand River`)).map((p) => `${X(p.col)},${Y(p.row)}`).join(" ");
-  const hash = (s) => [...s].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7);
+  const W = 340, P = 10, B = 26;
+  const k = Math.cos((42.415 * Math.PI) / 180);
+  const Hm = Math.round(((W - 2 * P) * (BOX.n - BOX.s)) / ((BOX.e - BOX.w) * k));
+  const H = Hm + 2 * P + B;
+  const X = (lon) => P + ((lon - BOX.w) / (BOX.e - BOX.w)) * (W - 2 * P);
+  const Y = (lat) => P + ((BOX.n - lat) / (BOX.n - BOX.s)) * Hm;
+  const gridLL = (g) => [BOX.n - (g.row / 6) * (BOX.n - BOX.s), BOX.w + g.col * (BOX.e - BOX.w)];
+
+  const roads = [], labels = [];
+  let nsIdx = 0;
+  for (const [name, pts] of Object.entries(S.roads || {})) {
+    if (!pts?.length) continue;
+    const xy = pts.map(([la, lo]) => `${X(lo).toFixed(1)},${Y(la).toFixed(1)}`).join(" ");
+    roads.push(`<polyline class="road ${EDGE_ROADS.includes(name) ? "edge" : ""} ${name === "Grand River" ? "diag" : ""}" points="${xy}" fill="none"/>`);
+    const ew = /Mile|Plymouth|Schoolcraft/.test(name);
+    if (name === "Grand River") continue;
+    if (ew) { const w0 = pts.reduce((a, b) => (b[1] < a[1] ? b : a)); labels.push(`<text class="rl" x="${P + 2}" y="${(Y(w0[0]) - 3).toFixed(1)}">${esc(name)}</text>`); }
+    else { const s0 = pts.reduce((a, b) => (b[0] < a[0] ? b : a)); labels.push(`<text class="rl" x="${X(s0[1]).toFixed(1)}" y="${H - B + 8 + (nsIdx++ % 2) * 10}" text-anchor="middle">${esc(name)}</text>`); }
+  }
+
   let unplaced = 0;
   const pins = list.map((r) => {
-    const g = gridPosition(r.addr);
-    if (!g) { unplaced++; return ""; }
-    const h = hash(r.id);
-    const x = X(g.col) + ((h % 9) - 4) * 1.6, y = Y(g.row) + (((h >> 4) % 9) - 4) * 1.6; // nudge same-plaza pins apart
+    let ll = r.ll;
+    if (!ll) { const g = gridPosition(r.addr); if (g) ll = gridLL(g); }
+    if (!ll) { unplaced++; return ""; }
     const sel = S.browse.sel === r.id;
     return `<g class="pin ${sel ? "sel" : ""}" data-act="pin" data-id="${esc(r.id)}" role="button" aria-label="${esc(r.name)}" tabindex="0">
-      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${sel ? 8 : 6}" fill="${cuisineStyle(r).color}"/></g>`;
+      <circle cx="${X(ll[1]).toFixed(1)}" cy="${Y(ll[0]).toFixed(1)}" r="${sel ? 8 : 5.5}" fill="${cuisineStyle(r).color}"/></g>`;
   });
+  const home = S.area?.origin?.ll;
+  const homeMark = home ? `<g class="home" aria-label="${esc(S.area.origin.name)}"><circle cx="${X(home[1]).toFixed(1)}" cy="${Y(home[0]).toFixed(1)}" r="7"/><text x="${X(home[1]).toFixed(1)}" y="${(Y(home[0]) + 3.5).toFixed(1)}" text-anchor="middle">⌂</text></g>` : "";
   const selPlace = S.browse.sel && list.find((r) => r.id === S.browse.sel);
   return `<svg class="map" viewBox="0 0 ${W} ${H}" role="img" aria-label="Map of ${list.length} places">
-      ${roads.join("")}
-      <polyline class="road diag" points="${gr}" fill="none"/>
-      ${pins.join("")}
+      ${roads.join("")}${labels.join("")}
+      ${pins.join("")}${homeMark}
     </svg>
-    <div id="map-card">${selPlace ? prow(selPlace) : `<p class="map-note">Tap a dot to see the place.${unplaced ? ` ${unplaced} couldn't be placed from their address.` : ""}</p>`}</div>`;
+    <div id="map-card">${selPlace ? prow(selPlace) : `<p class="map-note">Tap a dot to see the place. ⌂ = 7 Mile & Inkster.${unplaced ? ` ${unplaced} couldn't be placed.` : ""}</p>`}</div>`;
 }
 
 // ---- Place detail ------------------------------------------------------------
@@ -466,6 +496,7 @@ function viewPlace(id) {
     <div class="pills">
       ${openPill(r)}
       ${ext ? `<span class="pill warn">${ext.toFixed(1)}★ online${r.rating?.count ? ` (${r.rating.count})` : ""}</span>` : ""}
+      ${r.drive ? `<span class="pill"><i class="ti ti-car" aria-hidden="true" style="margin-right:4px"></i>${esc(driveText(r))}</span>` : ""}
       ${[r.dineIn && "Dine in", r.carryOut && "Carry-out", r.delivery && "Delivery"].filter(Boolean).map((m) => `<span class="pill">${m}</span>`).join("")}
       ${r.status !== "open" ? `<span class="pill no">${r.status === "closed_temp" ? "Temporarily closed" : "Closed"}</span>` : ""}
     </div>
@@ -481,6 +512,12 @@ function viewPlace(id) {
       ${order.map(([k, u]) => `<a class="btn small" href="${esc(u)}" target="_blank" rel="noopener"><i class="ti ti-shopping-bag" aria-hidden="true"></i>Order${k === "online" ? " online" : " · " + esc(k)}</a>`).join("")}
       ${social.map(([k, u]) => `<a class="btn small round" href="${esc(u)}" target="_blank" rel="noopener" aria-label="${esc(SOCIAL[k]?.[0] || k)}"><i class="ti ti-${SOCIAL[k]?.[1] || "world"}"></i></a>`).join("")}
     </div>
+
+    ${r.reviews?.summary ? `<section class="reviews">
+      <h2>What people say</h2>
+      <p>${esc(r.reviews.summary)}</p>
+      <p class="muted small">${esc(reviewBasis(r.reviews))}${r.reviews.basis === "highlighted" ? " — the listing shows its top reviews, so this leans positive." : ""}</p>
+    </section>` : ""}
 
     <section class="you">
       <h2>You & ${esc(r.name)}</h2>
@@ -611,6 +648,7 @@ const WEIGHT_LABELS = {
   novelty: ["Try new places", "Bonus for places you've never been"],
   favorite: ["Favorites", "Bonus for places you've hearted"],
   special: ["Today's specials", "Bonus when a special runs today"],
+  distance: ["Closer is better", "Penalty for drive time from 7 Mile & Inkster"],
 };
 
 function viewSettings() {
