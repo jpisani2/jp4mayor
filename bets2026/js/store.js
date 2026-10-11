@@ -209,6 +209,13 @@ export async function reload({ announce = false } = {}) {
     const [game, players] = await Promise.all([db.fetchOpenGame(), db.fetchPlayers()]);
     state.game = game;
     state.players = players;
+    // This device's player was removed (merged, deleted, or the data was
+    // wiped): forget the seat rather than write a dead id into new rows.
+    if (state.me && !players.some(p => p.id === state.me)) {
+      state.me = null;
+      try { localStorage.removeItem("betroom.player"); } catch (e) { /* private mode */ }
+      if (!state.bigScreen) state.screen = localStorage.getItem("betroom.pw") ? "seat" : "join";
+    }
     [state.bets, state.attendance] = await Promise.all([
       db.fetchBets(game?.id), db.fetchAttendance(game?.id)]);
     checkIn();
@@ -650,6 +657,12 @@ export async function unlockAdmin(pin) {
   } catch (e) { setError(e.message || e); }
 }
 
+/* The player this device is seated as, only if they're still on the roster.
+   Anything else (big screen, a seat wiped from under an open tab) posts as
+   the house, which the database allows. */
+const knownMe = () =>
+  state.me && state.players.some(p => p.id === state.me) ? state.me : null;
+
 const OPEN_ALREADY = "Tonight's game is still open — close it out before setting up another.";
 
 export function createGameWithBoard(fields, betRows) {
@@ -660,7 +673,7 @@ export function createGameWithBoard(fields, betRows) {
     }
     try {
       await db.createGameWithBoard({ ...fields, phase: "pregame" },
-        betRows.map(r => ({ ...r, proposer_id: state.me })));
+        betRows.map(r => ({ ...r, proposer_id: knownMe() })));
     } catch (e) {
       if (e?.code === "23505") { await reload(); throw new Error(OPEN_ALREADY); }
       throw e;
