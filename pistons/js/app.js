@@ -706,6 +706,32 @@ function changesStrip(){
   return `<div class="chg"><span class="eyebrow">Since ${esc(shortDay(pv.date))}</span>${items.length ? items.map(t => `<span class="c">${t}</span>`).join("") : `<span class="c">No change in results, seed or injuries</span>`}</div>`;
 }
 
+/* ---------- overnight briefing (Phase 5, Oct 2026) ----------
+   dashboard.briefing {asOf, bullets [{text, sec}], storylines [{title, text}], storyFor}: written by the morning task.
+   sec = the section a bullet links to (Today: last next news inj buzz hist; Team: record pace players; League: moves east). */
+const SEC_TAB = { record: "team", pace: "team", players: "team", moves: "league", east: "league" };
+function briefingPanel(D){
+  const b = D && D.briefing;
+  if (!b || !Array.isArray(b.bullets) || !b.bullets.length) return "";
+  const bul = b.bullets.filter(x => x && x.text).slice(0, 7);
+  const st = (Array.isArray(b.storylines) ? b.storylines : []).filter(x => x && (x.title || x.text)).slice(0, 3);
+  const t = b.asOf ? new Date(b.asOf) : null;
+  const when = t && !isNaN(t) ? t.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit"}) : "";
+  return `<div class="panel brief"><h3>Overnight in 60 seconds</h3>${when ? `<p class="hdate">As of ${esc(when)}</p>` : ""}
+    <ul class="brief-list">${bul.map(x => `<li><span>${esc(x.text)}</span>${x.sec && /^[a-z]+$/.test(x.sec) ? ` <a href="#s-${esc(x.sec)}" data-bgo="${esc(x.sec)}" class="brief-go" aria-label="Go to the section">›</a>` : ""}</li>`).join("")}</ul>
+    ${st.length ? `<div class="eyebrow hk">Storylines to watch${b.storyFor ? ` · ${esc(b.storyFor)}` : ""}</div><ol class="story">${st.map(x => `<li>${x.title ? `<b>${esc(x.title)}.</b> ` : ""}${esc(x.text || "")}</li>`).join("")}</ol>` : ""}
+  </div>`;
+}
+function wireBriefing(scope){
+  scope.querySelectorAll("[data-bgo]").forEach(a => a.addEventListener("click", e => {
+    e.preventDefault();
+    const sec = a.dataset.bgo, tab = SEC_TAB[sec];
+    if (tab) { showTab(tab); }
+    const go = () => { const t = document.getElementById("s-" + sec); if (!t) return; const p = t.querySelector(".panel.closed"), btn = p && p.querySelector(".cz-btn"); if (btn) btn.click(); t.scrollIntoView({behavior: "smooth", block: "start"}); };
+    tab ? setTimeout(go, 30) : go();
+  }));
+}
+
 /* Today, Team and League all render from the picked day's dashboard */
 function renderToday(){
   const el = $("#p-today");
@@ -718,6 +744,7 @@ function renderToday(){
     if (DASH_PICK === "latest" && Date.now() - u.getTime() > 36 * 3600e3) sub += " · the next refresh is due tomorrow morning";
   }
   const secs = [
+    ["brief", "Briefing", 12, briefingPanel(D)],
     ["last", "Last game", 7, lastGamePanel(D.lastGame)],
     ["next", "Next game", 5, nextPanel(D.nextGame, D.upcoming)],
     ["news", "Headlines", 7, newsPanel(D.news)],
@@ -729,12 +756,12 @@ function renderToday(){
     ${jumpBar(secs.map(([id, l]) => [id, l]))}
     <div class="dash-top"><div><div class="eyebrow">${esc(D.phase || "Daily dashboard")}</div><h2>${D.date ? esc(fmtDate(D.date, {weekday:"long", month:"long", day:"numeric"})) : "Pistons daily"}</h2><div class="sub">${esc(sub)}</div></div>${picker}</div>
     ${changesStrip()}
-    ${D.headline ? `<div class="headline">${esc(D.headline)}</div>` : ""}
+    ${D.headline && !(D.briefing && Array.isArray(D.briefing.bullets) && D.briefing.bullets.length) ? `<div class="headline">${esc(D.headline)}</div>` : ""}
     <div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
   const sel = $("#dash-day");
   if (sel) sel.addEventListener("change", () => pickDay(sel.value));
   el.querySelectorAll("[data-goto-hist]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); HIST_PICK = a.dataset.gotoHist; showTab("history"); window.scrollTo({top: 0}); }));
-  wireSections(el); wireFeeds(el);
+  wireSections(el); wireFeeds(el); wireBriefing(el);
   renderHero();
   renderTeam();
   renderLeague();

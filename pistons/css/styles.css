@@ -366,6 +366,15 @@ h3.cz-head > .cz-btn{align-self:flex-start}
 .pd{display:inline-block;font-weight:700;padding:2px 6px;border-radius:5px}
 .pd.up{color:var(--win);background:color-mix(in srgb,var(--win) 14%,transparent)}
 .pd.down{color:var(--loss);background:color-mix(in srgb,var(--loss) 14%,transparent)}
+/* overnight briefing (Phase 5) */
+.panel.brief{border-left:4px solid var(--red)}
+.brief-lead{margin:0 0 10px;font-size:16px;font-weight:600}
+.brief-list{margin:0;padding-left:18px;display:grid;gap:7px;font-size:15px}
+.brief-list li::marker{color:var(--kick)}
+.brief-go{display:inline-grid;place-items:center;min-width:28px;height:24px;border-radius:6px;text-decoration:none;font-weight:700;color:var(--link);background:var(--tint);margin-left:2px}
+.brief-go:hover{background:var(--tint-strong)}
+.story{margin:0;padding-left:20px;display:grid;gap:7px;font-size:14.5px}
+.story li::marker{font-weight:700;color:var(--kick)}
 /* team buzz + transactions (Phase 4) */
 .fanpulse{background:var(--tint);border-radius:10px;padding:10px 12px;margin:0 0 12px}
 .fanpulse .eyebrow{color:var(--muted)}
