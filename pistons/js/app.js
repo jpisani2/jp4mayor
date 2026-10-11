@@ -816,11 +816,42 @@ function pacePanel(){
   </div>`;
 }
 
+/* ---------- contracts and cap (Phase 4 leftover, Oct 2026) ----------
+   cap/summary {asOf, season, seasons[], lines {cap, floor, tax, apron1, apron2, source, url}, det {total, players [{name, age, sal[], partial[], guaranteed}], noSalary[], notes, source, url}, league [{team, abbr, total}], note} */
+let CAP = null;
+const mUSD = v => num(v) === null ? "" : "$" + (v / 1e6).toFixed(1) + "M";
+function capStatus(t, L){ return t >= L.apron2 ? ["2nd apron", "a2"] : t >= L.apron1 ? ["1st apron", "a1"] : t >= L.tax ? ["Taxpayer", "tx"] : t >= L.cap ? ["Over cap", "oc"] : ["Under cap", "uc"]; }
+function capPanel(){
+  const c = CAP;
+  if (!c || !c.lines || !c.det || !Array.isArray(c.det.players)) return "";
+  const L = c.lines, T = c.det.total;
+  const rel = (line, label) => { const d = T - line; return `<div><b>${mUSD(Math.abs(d))}</b><span>${d >= 0 ? "Over" : "Under"} ${label}</span></div>`; };
+  const yrs = (c.seasons || []).map(x => x.slice(2, 4) + "-" + x.slice(5));
+  const rows = c.det.players.slice().sort((a, b) => (b.sal[0] || 0) - (a.sal[0] || 0));
+  const cellS = (p, i) => { const v = p.sal && p.sal[i]; return num(v) === null ? "" : mUSD(v) + ((p.partial || []).includes(i) ? "*" : ""); };
+  const thru = p => { let k = -1; (p.sal || []).forEach((v, i) => { if (num(v) !== null) k = i; }); return k >= 0 ? (yrs[k] || "") : ""; };
+  const lg = Array.isArray(c.league) ? c.league.slice().sort((a, b) => b.total - a.total) : [];
+  return `<div class="panel cap"><h3>Contracts and cap<span class="tag">${esc(c.season || "")}</span></h3>
+    <p style="margin:0 0 10px;font-size:15px">Payroll <b>${mUSD(T)}</b> in listed salaries. "Thru" is the last season under contract.</p>
+    <div class="recgrid">${rel(L.cap, "the cap")}${rel(L.tax, "the tax")}${rel(L.apron1, "1st apron")}${rel(L.apron2, "2nd apron")}</div>
+    <p class="muted" style="font-size:12.5px;margin:0 0 12px">Cap ${mUSD(L.cap)} · tax ${mUSD(L.tax)} · 1st apron ${mUSD(L.apron1)} · 2nd apron ${mUSD(L.apron2)} · floor ${mUSD(L.floor)}${safeUrl(L.url) ? ` · <a href="${esc(L.url)}" target="_blank" rel="noopener">${esc(L.source || "Source")} ↗</a>` : ""}</p>
+    <div class="tbl-wrap" style="border:0"><table class="mini box captbl"><thead><tr><th>Player</th><th>${esc(yrs[0] || "")}</th><th>${esc(yrs[1] || "")}</th><th class="hidden-sm">${esc(yrs[2] || "")}</th><th title="Last season under contract">Thru</th></tr></thead><tbody>
+      ${rows.map(p => `<tr><td>${esc(p.name)}</td><td><b>${cellS(p, 0)}</b></td><td>${cellS(p, 1)}</td><td class="hidden-sm">${cellS(p, 2)}</td><td>${esc(thru(p))}</td></tr>`).join("")}
+    </tbody></table></div>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">* not fully guaranteed. ${esc(c.det.notes || "")} ${safeUrl(c.det.url) ? `<a href="${esc(c.det.url)}" target="_blank" rel="noopener">${esc(c.det.source || "Source")} ↗</a>` : ""}</p>
+    ${lg.length ? `<details class="caplg"><summary>League payrolls, ${esc(c.season || "")}</summary>
+      <div class="tbl-wrap" style="border:0;margin-top:8px"><table class="mini captbl"><thead><tr><th>#</th><th>Team</th><th>Payroll</th><th>Status</th></tr></thead><tbody>
+      ${lg.map((t, i) => { const [lab, k] = capStatus(t.total, L); return `<tr class="${t.abbr === "DET" ? "det" : ""}"><td>${i + 1}</td><td><span class="lg-full">${esc(t.team)}</span><span class="lg-ab">${esc(t.abbr)}</span></td><td>${mUSD(t.total)}</td><td><span class="capst ${k}">${esc(lab)}</span></td></tr>`; }).join("")}
+      </tbody></table></div>
+      <p class="muted" style="font-size:12.5px;margin:8px 0 0">Status compares each payroll with the tax line and the aprons. ${esc(c.note || "")} As of ${esc(shortD(c.asOf))}. ${safeUrl(c.leagueUrl) ? `<a href="${esc(c.leagueUrl)}" target="_blank" rel="noopener">${esc(c.leagueSource || "Source")} ↗</a>` : ""}</p></details>` : ""}
+  </div>`;
+}
+
 function renderTeam(){
   const el = $("#p-team");
   if (!el) return;
   const D = DASH || {};
-  const secs = [["record", "Record", 12, recordPanel()], ["pace", "Pace", 12, pacePanel()], ["players", "Players", 12, playersPanel(D.players)]].filter(x => x[3]);
+  const secs = [["record", "Record", 12, recordPanel()], ["pace", "Pace", 12, pacePanel()], ["players", "Players", 12, playersPanel(D.players)], ["cap", "Cap", 12, capPanel()]].filter(x => x[3]);
   el.innerHTML = `${jumpBar(secs.map(([id, l]) => [id, l]))}${dashNote()}<div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
   el.querySelectorAll("[data-pview]").forEach(b => b.addEventListener("click", () => {
     P.view = b.dataset.pview; store.set("pistons-pview", P.view); renderTeam();
@@ -1401,12 +1432,12 @@ function loadScript(path){
   return new Promise(res => { const s = document.createElement("script"); s.src = path + "?t=" + Date.now(); s.onload = () => res(true); s.onerror = () => res(false); document.head.appendChild(s); });
 }
 async function loadStaticDb(){
-  await Promise.all([loadScript("data/results.js"), loadScript("data/daily.js"), loadScript("data/lastseason.js"), loadScript("data/history.js"), loadScript("data/buzz.js"), loadScript("data/transactions.js")]);
+  await Promise.all([loadScript("data/results.js"), loadScript("data/daily.js"), loadScript("data/lastseason.js"), loadScript("data/history.js"), loadScript("data/buzz.js"), loadScript("data/transactions.js"), loadScript("data/cap.js")]);
   const R = window.PISTONS_RESULTS || {}, D = window.PISTONS_DAILY || {}, H = window.PISTONS_HISTORY || {};
   const cols = { results: R.games || {}, games: D.games || {}, lines: D.lines || {}, matchups: D.matchups || {}, daily: D.days || {}, history: H.days || {} };
   const docs = { "dashboard/latest": D.latest || null, "dashboard/index": { dates: Object.keys(D.days || {}) }, "betting/futures": D.futures || null,
     "lastseason/games": window.PISTONS_LASTSEASON || null,
-    "buzz/feed": window.PISTONS_BUZZ || null, "transactions/feed": window.PISTONS_MOVES || null,
+    "buzz/feed": window.PISTONS_BUZZ || null, "transactions/feed": window.PISTONS_MOVES || null, "cap/summary": window.PISTONS_CAP || null,
     "meta/status": Object.assign({}, R.updated ? { updated: R.updated } : (D.updated ? { updated: D.updated } : {}),
       window.PISTONS_BUZZ && window.PISTONS_BUZZ.updated ? { buzz: window.PISTONS_BUZZ.updated } : {},
       window.PISTONS_MOVES && window.PISTONS_MOVES.updated ? { transactions: window.PISTONS_MOVES.updated } : {}) };
@@ -1453,6 +1484,7 @@ async function loadStaticDb(){
     }, () => {});
     db.doc("buzz/feed").onSnapshot(snap => { BUZZ = snap.exists ? (snap.data() || null) : null; renderToday(); renderHealth(); }, () => {});
     db.doc("transactions/feed").onSnapshot(snap => { MOVES = snap.exists ? (snap.data() || null) : null; renderLeague(); renderHealth(); }, () => {});
+    db.doc("cap/summary").get().then(snap => { CAP = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
     db.doc("lastseason/games").get().then(snap => { LAST = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
     db.doc("meta/status").onSnapshot(snap => {
       STATUS = snap.exists ? (snap.data() || null) : null;
