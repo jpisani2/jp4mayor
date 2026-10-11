@@ -440,8 +440,42 @@ function renderSitePills(){
   });
   const nav = document.getElementById("sites");
   if (nav) nav.hidden = !SITE.preview && !SITE.recap;
+  paintSitePills();
+}
+/* state-aware pills (Oct 11, 2026): Pregame lights up on a game day until about 2.5 h after tip;
+   Postgame lights up from then until the end of the next day. Tips come from the schedule and the
+   latest dashboard's next/upcoming games (which include preseason). */
+const FINAL_AFTER = 2.5 * 3600e3;
+function knownTips(){
+  const out = {};
+  GAMES.forEach(g => { if (!g.tbd && g.iso) out[g.date] = new Date(g.iso); });
+  const L = (typeof DASH_LATEST !== "undefined" && DASH_LATEST) || null;
+  if (L) [L.nextGame].concat(Array.isArray(L.upcoming) ? L.upcoming : []).forEach(n => {
+    if (n && /^\d{4}-\d{2}-\d{2}$/.test(n.date || "") && /^\d{2}:\d{2}$/.test(n.time || "") && !out[n.date]) out[n.date] = new Date(n.date + "T" + n.time + ":00" + etOff(n.date));
+  });
+  /* last game with no known tip (preseason drops out of nextGame the next morning): assume 7 p.m. */
+  const lg = L && L.lastGame;
+  if (lg && /^\d{4}-\d{2}-\d{2}$/.test(lg.date || "") && !out[lg.date]) out[lg.date] = new Date(lg.date + "T" + (/^\d{2}:\d{2}$/.test(lg.time || "") ? lg.time : "19:00") + ":00" + etOff(lg.date));
+  return Object.keys(out).sort().map(d => ({ date: d, tip: out[d] })).filter(x => !isNaN(x.tip));
+}
+function siteState(now){
+  now = now || new Date();
+  const tips = knownTips(), today = isoDay(now);
+  const g = tips.find(x => isoDay(x.tip) === today);
+  if (g && now - g.tip < FINAL_AFTER) return { k: "pre", live: now >= g.tip };
+  const past = tips.filter(x => now - x.tip >= FINAL_AFTER).pop();
+  if (past) { const end = dObj(isoDay(past.tip)); end.setDate(end.getDate() + 2); if (now < end) return { k: "post" }; }
+  return { k: "" };
+}
+function paintSitePills(){
+  let st = { k: "" };
+  try { st = siteState(); } catch(e) {}
+  const set = (id, on, tip) => { const a = document.getElementById(id); if (!a) return; a.classList.toggle("lit", on); if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); a.title = tip; };
+  set("site-pre", st.k === "pre", st.k === "pre" ? (st.live ? "Game on: today's preview (opens in a new tab)" : "Today's game preview (opens in a new tab)") : "Pistons Pregame (opens in a new tab)");
+  set("site-post", st.k === "post", st.k === "post" ? "Latest game recap (opens in a new tab)" : "Pistons Postgame (opens in a new tab)");
 }
 renderSitePills();
+setInterval(paintSitePills, 60e3);
 
 /* postgame press conferences: links found by the morning task, else a YouTube search */
 function presserBlock(g){
@@ -1070,6 +1104,7 @@ function renderHealth(){
 /* ---------- boot ---------- */
 function renderAll(){ mergeGames(); renderHero(); renderToday(); renderBetting(); renderSchedule(); renderHome(); renderSummary(); renderTrips(); }
 renderAll();
+paintSitePills();
 showTab(store.get("pistons-tab") || "today");
 
 /* ---------- static data: data/results.js + data/daily.js stand in for the hosted database ---------- */
@@ -1111,7 +1146,7 @@ async function loadStaticDb(){
     db.doc("dashboard/latest").onSnapshot(snap => {
       DASH_LATEST = snap.exists ? snap.data() : null;
       if (DASH_PICK === "latest") { DASH = DASH_LATEST; renderToday(); }
-      renderHealth();
+      renderHealth(); paintSitePills();
     }, () => {});
     db.doc("dashboard/index").onSnapshot(snap => {
       const v = snap.exists ? snap.data() : null;

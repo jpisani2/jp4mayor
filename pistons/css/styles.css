@@ -75,6 +75,12 @@ a{color:var(--link)}
 .site-pill{display:inline-flex;align-items:center;gap:4px;font:600 13px/1 "Source Sans 3",sans-serif;padding:11px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;white-space:nowrap}
 .site-pill:hover{background:var(--tint-strong)}
 .site-pill span{color:var(--kick);font-weight:700}
+/* lit pill: today's preview before/during a game, the recap after it */
+.site-pill.lit{background:var(--lit-bg,#C8102E);border-color:var(--lit-bg,#C8102E);color:#fff;box-shadow:0 2px 8px -2px color-mix(in srgb,var(--lit-bg,#C8102E) 60%,transparent)}
+.site-pill.lit span{color:#fff}
+.site-pill.lit::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;margin-right:2px;flex:none}
+.site-pill.lit:hover{background:var(--lit-bg,#C8102E);filter:brightness(1.08)}
+:root[data-skin="red"]{--lit-bg:#1D428A}
 @media (max-width:560px){
   .top{gap:12px}
   .top-r{width:100%;justify-content:space-between;gap:6px}
