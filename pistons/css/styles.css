@@ -360,3 +360,10 @@ h3.cz-head > .cz-btn{align-self:flex-start}
 .panel .cd span{color:var(--muted)}
 .dash-note{font-size:13px;color:var(--muted);margin:0 0 12px}
 @media (prefers-reduced-motion:reduce){.cz-btn svg{transition:none}}
+/* pace vs last season (Phase 3) */
+.pace-head{font:700 22px/1.15 "Saira Condensed",Arial,sans-serif;color:var(--head);margin:0 0 4px}
+.pace-t td,.pace-t th{text-align:right;white-space:nowrap}.pace-t td:first-child,.pace-t th:first-child{text-align:left;color:var(--muted)}
+.pd{display:inline-block;font-weight:700;padding:2px 6px;border-radius:5px}
+.pd.up{color:var(--win);background:color-mix(in srgb,var(--win) 14%,transparent)}
+.pd.down{color:var(--loss);background:color-mix(in srgb,var(--loss) 14%,transparent)}
+@media (max-width:420px){.pace-t td,.pace-t th{padding:7px 4px}.pace-t{font-size:13.5px}.pace-head{font-size:20px}.pace-t td:first-child{white-space:normal}.pace-t th{letter-spacing:.04em}}

@@ -736,11 +736,59 @@ function renderToday(){
   renderHistory();
 }
 
+/* ---------- pace vs last season (Phase 3, Oct 2026): game N this year vs game N last year, regular season only ---------- */
+let LAST = null;   // lastseason/games {season, final, games [{n, date, home, opponent, det, opp}]}
+const NUMW = ["zero","one","two","three","four","five","six","seven","eight","nine","ten"];
+const capW = n => { const w = n <= 10 ? NUMW[n] : String(n); return w.charAt(0).toUpperCase() + w.slice(1); };
+function paceStats(list){
+  const rec = a => { const w = a.filter(g => g.det > g.opp).length; return [w, a.length - w]; };
+  const n = list.length, sum = k => list.reduce((t, g) => t + g[k], 0);
+  return { n, rec: rec(list), l10: rec(list.slice(-10)), home: rec(list.filter(g => g.home)), road: rec(list.filter(g => !g.home)),
+    margin: n ? (sum("det") - sum("opp")) / n : null, pf: n ? sum("det") / n : null, pa: n ? sum("opp") / n : null };
+}
+function pacePanel(){
+  const r = recordFromGames();
+  const last = LAST && Array.isArray(LAST.games) ? LAST.games.filter(g => num(g.det) !== null && num(g.opp) !== null).sort((a, b) => a.n - b.n) : [];
+  if (!r.n || !last.length) return "";
+  const N = Math.min(r.n, last.length);
+  const cur = paceStats(r.played.slice(0, N).map(g => ({ home: g.home, det: g.det, opp: g.oppPts })));
+  const prv = paceStats(last.slice(0, N));
+  const ahead = (a, b) => ((a[0] - a[1]) - (b[0] - b[1])) / 2;   // games ahead, standings style
+  const dW = ahead(cur.rec, prv.rec);
+  const gamesTxt = x => (Number.isInteger(x) ? capW(x) : String(x)) + (x === 1 ? " game" : " games");
+  const head = dW > 0 ? `${gamesTxt(dW)} ahead of last year's pace after ${N}` : dW < 0 ? `${gamesTxt(-dW)} behind last year's pace after ${N}` : `Right on last year's pace after ${N}`;
+  const wl = a => a[0] + "–" + a[1];
+  const fmtG = x => x === 0 ? "Even" : (x > 0 ? "+" : "–") + Math.abs(x);
+  const fmtP = x => { const v = Math.round(x * 10) / 10; return v === 0 ? "0.0" : (v > 0 ? "+" : "–") + Math.abs(v).toFixed(1); };
+  const one = x => num(x) === null ? "–" : x.toFixed(1);
+  const sm = x => num(x) === null ? "–" : (x > 0 ? "+" : x < 0 ? "–" : "") + Math.abs(x).toFixed(1);
+  const tone = (x, good) => x === 0 ? "" : ((x > 0) === good ? "up" : "down");
+  const l10n = Math.min(10, N);
+  const rows = [
+    ["Record", wl(cur.rec), wl(prv.rec), ahead(cur.rec, prv.rec), "g", true],
+    [N <= 10 ? `Last ${l10n}` : "Last 10", wl(cur.l10), wl(prv.l10), ahead(cur.l10, prv.l10), "g", true],
+    ["Home", wl(cur.home), wl(prv.home), ahead(cur.home, prv.home), "g", true],
+    ["Road", wl(cur.road), wl(prv.road), ahead(cur.road, prv.road), "g", true],
+    ["Avg margin", sm(cur.margin), sm(prv.margin), cur.margin - prv.margin, "p", true],
+    ["Points / game", one(cur.pf), one(prv.pf), cur.pf - prv.pf, "p", true],
+    ["Allowed / game", one(cur.pa), one(prv.pa), cur.pa - prv.pa, "p", false]
+  ];
+  const season = esc(LAST.season || "2025-26"), fin = LAST.final ? ` (finished ${esc(LAST.final)})` : "";
+  return `<div class="panel pace"><h3>Pace vs last season</h3>
+    <p class="pace-head">${esc(head)}</p>
+    <p class="muted" style="margin:0 0 10px;font-size:13.5px">Through game ${N}: this year ${wl(cur.rec)}, last year ${wl(prv.rec)}${fin}.</p>
+    <div class="tbl-wrap" style="border:0"><table class="mini pace-t"><thead><tr><th></th><th>2026-27</th><th>${season}</th><th>Diff</th></tr></thead><tbody>
+    ${rows.map(([l, a, b, d, k, good]) => { const v = k === "g" ? d : Math.round(d * 10) / 10; return `<tr><td>${esc(l)}</td><td><b>${esc(a)}</b></td><td>${esc(b)}</td><td><span class="pd ${tone(v, good)}">${esc(k === "g" ? fmtG(d) : fmtP(d))}</span></td></tr>`; }).join("")}
+    </tbody></table></div>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Game ${N} this season against game ${N} last season, regular season only (no preseason, playoffs or NBA Cup knockout games). Record diffs are games ahead (+) or behind (–), standings style.</p>
+  </div>`;
+}
+
 function renderTeam(){
   const el = $("#p-team");
   if (!el) return;
   const D = DASH || {};
-  const secs = [["record", "Record", 12, recordPanel()], ["players", "Players", 12, playersPanel(D.players)]];
+  const secs = [["record", "Record", 12, recordPanel()], ["pace", "Pace", 12, pacePanel()], ["players", "Players", 12, playersPanel(D.players)]].filter(x => x[3]);
   el.innerHTML = `${jumpBar(secs.map(([id, l]) => [id, l]))}${dashNote()}<div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
   el.querySelectorAll("[data-pview]").forEach(b => b.addEventListener("click", () => {
     P.view = b.dataset.pview; store.set("pistons-pview", P.view); renderTeam();
@@ -1107,15 +1155,16 @@ renderAll();
 paintSitePills();
 showTab(store.get("pistons-tab") || "today");
 
-/* ---------- static data: data/results.js + data/daily.js stand in for the hosted database ---------- */
+/* ---------- static data: data/results.js + data/daily.js (+ lastseason.js, history.js) stand in for the hosted database ---------- */
 function loadScript(path){
   return new Promise(res => { const s = document.createElement("script"); s.src = path + "?t=" + Date.now(); s.onload = () => res(true); s.onerror = () => res(false); document.head.appendChild(s); });
 }
 async function loadStaticDb(){
-  await Promise.all([loadScript("data/results.js"), loadScript("data/daily.js")]);
-  const R = window.PISTONS_RESULTS || {}, D = window.PISTONS_DAILY || {};
-  const cols = { results: R.games || {}, games: D.games || {}, lines: D.lines || {}, matchups: D.matchups || {}, daily: D.days || {} };
+  await Promise.all([loadScript("data/results.js"), loadScript("data/daily.js"), loadScript("data/lastseason.js"), loadScript("data/history.js")]);
+  const R = window.PISTONS_RESULTS || {}, D = window.PISTONS_DAILY || {}, H = window.PISTONS_HISTORY || {};
+  const cols = { results: R.games || {}, games: D.games || {}, lines: D.lines || {}, matchups: D.matchups || {}, daily: D.days || {}, history: H.days || {} };
   const docs = { "dashboard/latest": D.latest || null, "dashboard/index": { dates: Object.keys(D.days || {}) }, "betting/futures": D.futures || null,
+    "lastseason/games": window.PISTONS_LASTSEASON || null,
     "meta/status": R.updated ? { updated: R.updated } : (D.updated ? { updated: D.updated } : null) };
   const snap = v => ({ exists: !!v, data: () => v || undefined });
   const docAt = path => { if (path in docs) return docs[path]; const [c, id] = path.split("/"); return (cols[c] || {})[id] || null; };
@@ -1158,6 +1207,7 @@ async function loadStaticDb(){
       snap.docs.forEach(d => { const v = d.data(); if (v) next[d.id] = v; });
       RESULTS = next; renderAll();
     }, () => {});
+    db.doc("lastseason/games").get().then(snap => { LAST = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
     db.doc("meta/status").onSnapshot(snap => {
       STATUS = snap.exists ? (snap.data() || null) : null;
       renderHealth();
