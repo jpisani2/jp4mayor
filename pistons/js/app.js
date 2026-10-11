@@ -86,21 +86,15 @@ function tick(){
   });
 }
 function renderHero(){
-  const played = GAMES.filter(g => g.wl);
-  const w = played.filter(g => g.wl === "W").length, l = played.length - w;
-  $("#rec-big").textContent = w + "–" + l;
-  const split = f => { const p = played.filter(f); const ww = p.filter(g => g.wl === "W").length; return ww + "–" + (p.length - ww); };
-  const last = played[played.length - 1];
-  $("#rec-splits").innerHTML = played.length
-    ? `<span>Home <b>${split(g => g.home)}</b></span><span>Road <b>${split(g => !g.home)}</b></span><span>Last <b>${last.wl} ${last.det}–${last.oppPts}</b> ${last.home ? "vs" : "@"} ${esc(ABBR[last.opp] || last.opp)}</span>`
-    : `<span>Opening night Oct 20 vs Boston</span><span><b>40</b> home · <b>40</b> road · <b>2</b> TBD</span>`;
-  const up = nextGames();
-  const n1 = up[0];
-  let n2, l2 = "Next home game";
-  if (n1 && n1.home) { n2 = up.slice(1).find(g => g.home); l2 = "Following home game"; }
-  else n2 = up.find(g => g.home);
-  nextCard($("#next-1"), "Next up", n1);
-  nextCard($("#next-2"), l2, n2);
+  const el = $("#recstrip");
+  if (el) {
+    const r = recordFromGames(), d = (typeof DASH !== "undefined" && DASH && DASH.record) || {};
+    const parts = ["DET " + r.overall];
+    if (d.conf) parts.push(esc(d.conf) + " East");
+    if (r.n) parts.push(r.streak);
+    else { const g = GAMES.find(x => !x.tbd); if (g) parts.push("Opener " + esc(fmtDate(g.date, {weekday:"short", month:"short", day:"numeric"})) + " vs " + esc(g.opp)); }
+    el.innerHTML = `<b>${parts.join(" · ")}</b><span>Team ›</span>`;
+  }
   tick();
   if (!cdTimer) cdTimer = setInterval(tick, 1000);
 }
@@ -108,12 +102,15 @@ function renderHero(){
 /* ---------- tabs ---------- */
 function showTab(t){
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === t)));
-  ["today","betting","schedule","home","summary","trips"].forEach(k => $("#p-" + k).hidden = k !== t);
+  if (!$("#p-" + t)) t = "today";
+  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === t)));
+  ["today","team","league","history","betting","schedule","home","summary","trips"].forEach(k => $("#p-" + k).hidden = k !== t);
   store.set("pistons-tab", t);
-  if (t === "today" && typeof renderToday === "function" && GAMES.length) renderToday();
+  if (["today","team","league","history"].includes(t) && typeof renderToday === "function" && GAMES.length) renderToday();
   if (t === "betting" && typeof renderBetting === "function" && GAMES.length) renderBetting();
 }
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+$("#recstrip").addEventListener("click", e => { e.preventDefault(); showTab("team"); const tb = $("#tab-team"); if (tb) tb.scrollIntoView({block:"nearest", inline:"nearest"}); });
 
 /* ---------- schedule ---------- */
 const S = { view: store.get("pistons-view") || "list", f: "all", month: "all", calIdx: 0 };
@@ -237,7 +234,12 @@ function renderHome(){
     return `<tr><td class="muted">${i+1}</td><td class="nowrap">${esc(fmtDate(g.date))}</td><td>${esc(fullName(g.opp))}</td><td class="nowrap">${esc(fmtTime(g.time))}</td><td><span class="tv">${esc(g.tv)}</span></td><td class="muted">${since}</td><td>${resultCell(g)}</td><td>${pills}</td><td class="note hidden-sm">${esc(g.homeNote || "")}</td></tr>`;
   }).join("");
   const byMonth = MONTHS.map(([k,n]) => [n.slice(0,3), count(st.homes, g => g.date.startsWith(k))]);
-  $("#p-home").innerHTML = `
+  const nh = nextGames().find(g => g.home);
+  const nhPanel = nh ? `<div class="panel prev" style="margin-bottom:16px"><h3>Next home game</h3>
+      <div class="opp">vs ${esc(fullName(nh.opp))}</div>
+      <div class="muted" style="font-size:14px">${esc(fmtDate(nh.date, {weekday:"long", month:"short", day:"numeric"}))} · ${esc(fmtTime(nh.time))} ET${nh.tv ? " · " + esc(nh.tv) : ""} · Little Caesars Arena</div>
+      <div class="cd" data-iso="${esc(nh.iso)}" aria-live="off"></div></div>` : "";
+  $("#p-home").innerHTML = nhPanel + `
     <div class="tiles">${tiles.map(([v,l]) => `<div class="tile"><b>${v}</b><span>${l}</span></div>`).join("")}</div>
     <div class="grid" style="margin-bottom:16px">
       <div class="panel"><h3>Key stretches</h3><ul class="stretch">
@@ -363,8 +365,8 @@ function recordFromGames(){
 
 function marginChart(played){
   if (!played.length) return `<p class="empty">The chart fills in after the opener on Oct 20. Each bar is one game's final margin.</p>`;
-  const box = $("#p-today").clientWidth || 0;
-  const W = box ? Math.round(Math.min(720, Math.max(280, (window.innerWidth > 900 ? box * 7 / 12 : box) - 40))) : 640, H = 190, L = 34, R = 8, T = 12, B = 22;
+  const box = ($("#p-team") && $("#p-team").clientWidth) || $("#p-today").clientWidth || 0;
+  const W = box ? Math.round(Math.min(900, Math.max(280, box - 40))) : 640, H = 190, L = 34, R = 8, T = 12, B = 22;
   const max = Math.max(10, ...played.map(g => Math.abs(g.det - g.oppPts)));
   const top = Math.ceil(max / 10) * 10;
   const slots = Math.max(played.length, 20);
@@ -565,6 +567,7 @@ function nextPanel(n, up){
   return `<div class="panel prev"><h3>Next game<span class="tag">${esc(n.type || "")}</span></h3>
     <div class="opp">${n.home ? "vs" : "@"} ${esc(n.opponent)}</div>
     <div class="muted" style="font-size:14px">${n.date ? esc(fmtDate(n.date, {weekday:"long", month:"short", day:"numeric"})) : ""}${n.time ? " · " + esc(fmtTime(n.time)) + " ET" : ""}${n.tv ? " · " + esc(n.tv) : ""}${n.venue ? " · " + esc(n.venue) : ""}</div>
+    ${nextIso(n) ? `<div class="cd" data-iso="${esc(nextIso(n))}" aria-live="off"></div>` : ""}
     ${n.oppRecord ? `<div class="kv" style="margin-top:8px"><span class="nowrap" style="flex:none">Opponent record</span><b class="long">${esc(n.oppRecord)}</b></div>` : ""}
     ${n.preview ? `<p>${esc(n.preview)}</p>` : ""}
     ${n.watch ? `<p><b>Watch for:</b> ${esc(n.watch)}</p>` : ""}
@@ -572,6 +575,68 @@ function nextPanel(n, up){
   </div>`;
 }
 
+/* Eastern offset for a game date (DST ends Nov 1, 2026 and starts Mar 14, 2027) */
+const etOff = d => (d >= "2026-11-01" && d < "2027-03-14") ? "-05:00" : "-04:00";
+function nextIso(n){
+  if (!n || !n.date) return "";
+  const g = GAMES.find(x => x.date === n.date && x.iso);
+  const iso = g ? g.iso : (/^\d{2}:\d{2}$/.test(n.time || "") ? n.date + "T" + n.time + ":00" + etOff(n.date) : "");
+  return iso && new Date(iso) > new Date() ? iso : "";
+}
+
+/* sections: a grid cell with an id (for the jump menu) and a key (for open/closed state) */
+const cell = (span, id, html) => html ? `<div class="span-${span}" id="s-${id}" data-sec="${id}">${html}</div>` : "";
+const jumpBar = items => items.length > 1 ? `<nav class="jump" aria-label="Jump to a section">${items.map(([id, l]) => `<a href="#s-${id}" data-jump="${id}">${esc(l)}</a>`).join("")}</nav>` : "";
+const CLOSED = new Set((() => { try { const v = JSON.parse(store.get("pistons-closed") || "[]"); return Array.isArray(v) ? v : []; } catch(e) { return []; } })());
+function wireSections(scope){
+  scope.querySelectorAll("[data-sec]").forEach(c => {
+    const p = c.querySelector(".panel"), h = p && p.querySelector("h3");
+    if (!h || p.querySelector(".cz-btn")) return;
+    const head = h.parentElement === p ? h : h.parentElement, key = c.dataset.sec;
+    const title = (h.firstChild && h.firstChild.textContent || h.textContent || "section").trim();
+    head.classList.add("cz-head");
+    const btn = document.createElement("button");
+    btn.type = "button"; btn.className = "cz-btn";
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg>';
+    const set = closed => { p.classList.toggle("closed", closed); btn.setAttribute("aria-expanded", String(!closed)); btn.setAttribute("aria-label", (closed ? "Show " : "Hide ") + title); };
+    set(CLOSED.has(key));
+    btn.addEventListener("click", () => { const closed = !p.classList.contains("closed"); if (closed) CLOSED.add(key); else CLOSED.delete(key); store.set("pistons-closed", JSON.stringify([...CLOSED])); set(closed); });
+    head.appendChild(btn);
+  });
+  scope.querySelectorAll("[data-jump]").forEach(a => a.addEventListener("click", e => {
+    e.preventDefault();
+    const t = document.getElementById("s-" + a.dataset.jump);
+    if (!t) return;
+    const p = t.querySelector(".panel.closed"), b = p && p.querySelector(".cz-btn");
+    if (b) b.click();
+    t.scrollIntoView({behavior: "smooth", block: "start"});
+  }));
+}
+const dashNote = () => DASH_PICK !== "latest" && DASH && DASH.date ? `<p class="dash-note">Showing the dashboard for ${esc(fmtDate(DASH.date, {weekday:"short", month:"short", day:"numeric"}))}. Change the day on the Today tab.</p>` : "";
+
+/* what changed since the previous day's dashboard */
+function changesStrip(){
+  const D = DASH;
+  if (!D || !D.date) return "";
+  const pv = prevDash();
+  if (!pv) return "";
+  const P0 = pv.doc || {}, items = [];
+  const lg = D.lastGame, plg = P0.lastGame;
+  if (lg && lg.date && (!plg || plg.date !== lg.date) && num(lg.det) !== null && num(lg.opp) !== null)
+    items.push(`${lg.det > lg.opp ? "W" : "L"} ${lg.det}–${lg.opp} ${lg.home ? "vs" : "@"} ${esc(lg.oppAbbr || lg.opponent || "")}`);
+  const st = D.standings, detRow = st && Array.isArray(st.rows) ? st.rows.find(x => isDet(x.team)) : null;
+  if (detRow) { const m = rankMoves(st), dl = m.moves[teamKey(detRow.team)]; if (dl) items.push(`East seed ${dl > 0 ? "▲" : "▼"}${Math.abs(dl)} to ${ordinal(Number(detRow.rank))}`); }
+  const names = l => new Set((Array.isArray(l) ? l : []).map(i => i && i.name).filter(Boolean));
+  const now = names(D.injuries), was = names(P0.injuries);
+  const added = [...now].filter(n => !was.has(n)), cleared = [...was].filter(n => !now.has(n));
+  if (added.length) items.push(`New on injury report: ${esc(added.join(", "))}`);
+  if (cleared.length) items.push(`Off injury report: ${esc(cleared.join(", "))}`);
+  if (num(D.newMoves)) items.push(`${D.newMoves} new move${D.newMoves > 1 ? "s" : ""}`);
+  if (num(D.newBuzz)) items.push(`${D.newBuzz} new buzz item${D.newBuzz > 1 ? "s" : ""}`);
+  return `<div class="chg"><span class="eyebrow">Since ${esc(shortDay(pv.date))}</span>${items.length ? items.map(t => `<span class="c">${t}</span>`).join("") : `<span class="c">No change in results, seed or injuries</span>`}</div>`;
+}
+
+/* Today, Team and League all render from the picked day's dashboard */
 function renderToday(){
   const el = $("#p-today");
   const D = DASH || {};
@@ -582,30 +647,62 @@ function renderToday(){
     sub = (D.forDate ? "Covers everything through " + fmtDate(D.forDate, {weekday:"short", month:"short", day:"numeric"}) + " · " : "") + "refreshed " + u.toLocaleString("en-US", {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
     if (DASH_PICK === "latest" && Date.now() - u.getTime() > 36 * 3600e3) sub += " · the next refresh is due tomorrow morning";
   }
+  const secs = [
+    ["last", "Last game", 7, lastGamePanel(D.lastGame)],
+    ["next", "Next game", 5, nextPanel(D.nextGame, D.upcoming)],
+    ["news", "Headlines", 7, newsPanel(D.news)],
+    ["inj", "Injuries", 5, injuriesPanel(D.injuries, D.injuryNote)]
+  ];
   el.innerHTML = `
+    ${jumpBar(secs.map(([id, l]) => [id, l]))}
     <div class="dash-top"><div><div class="eyebrow">${esc(D.phase || "Daily dashboard")}</div><h2>${D.date ? esc(fmtDate(D.date, {weekday:"long", month:"long", day:"numeric"})) : "Pistons daily"}</h2><div class="sub">${esc(sub)}</div></div>${picker}</div>
+    ${changesStrip()}
     ${D.headline ? `<div class="headline">${esc(D.headline)}</div>` : ""}
-    <div class="dgrid">
-      <div class="span-7">${lastGamePanel(D.lastGame)}</div>
-      <div class="span-5">${nextPanel(D.nextGame, D.upcoming)}</div>
-      <div class="span-7">${recordPanel()}</div>
-      <div class="span-5">${standingsPanel(D.standings)}</div>
-      <div class="span-12">${playersPanel(D.players)}</div>
-      <div class="span-5">${injuriesPanel(D.injuries, D.injuryNote)}</div>
-      <div class="span-7">${newsPanel(D.news)}</div>
-    </div>`;
+    <div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
   const sel = $("#dash-day");
   if (sel) sel.addEventListener("change", () => pickDay(sel.value));
+  wireSections(el);
+  renderHero();
+  renderTeam();
+  renderLeague();
+  renderHistory();
+}
+
+function renderTeam(){
+  const el = $("#p-team");
+  if (!el) return;
+  const D = DASH || {};
+  const secs = [["record", "Record", 12, recordPanel()], ["players", "Players", 12, playersPanel(D.players)]];
+  el.innerHTML = `${jumpBar(secs.map(([id, l]) => [id, l]))}${dashNote()}<div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
   el.querySelectorAll("[data-pview]").forEach(b => b.addEventListener("click", () => {
-    P.view = b.dataset.pview; store.set("pistons-pview", P.view); renderToday();
+    P.view = b.dataset.pview; store.set("pistons-pview", P.view); renderTeam();
     const again = el.querySelector(`[data-pview="${P.view}"]`); if (again) again.focus();
   }));
   el.querySelectorAll("[data-psort]").forEach(b => b.addEventListener("click", () => {
     const k = b.dataset.psort;
     if (P.sort === k) P.dir = -P.dir; else { P.sort = k; P.dir = k === "name" ? 1 : -1; }
-    renderToday();
+    renderTeam();
     const again = el.querySelector(`[data-psort="${k}"]`); if (again) again.focus();
   }));
+  wireSections(el);
+}
+
+function renderLeague(){
+  const el = $("#p-league");
+  if (!el) return;
+  const D = DASH || {};
+  const secs = [["east", "East standings", 12, standingsPanel(D.standings)]];
+  el.innerHTML = `${jumpBar(secs.map(([id, l]) => [id, l]))}${dashNote()}<div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>
+    <p class="muted" style="font-size:12.5px;margin:14px 0 0">League-wide transactions, the East race, award watch and Motor City Cruise results are added here over the next updates.</p>`;
+  wireSections(el);
+}
+
+function renderHistory(){
+  const el = $("#p-history");
+  if (!el || el.dataset.ready) return;
+  el.dataset.ready = "1";
+  el.innerHTML = `<div class="dgrid">${cell(12, "today-hist", `<div class="panel"><h3>This day in Pistons history</h3><p class="empty">Coming soon: what happened on this date in Pistons history, all-time and in the Cade Cunningham era, with a date picker. It starts showing around opening night (Oct 20).</p></div>`)}</div>`;
+  wireSections(el);
 }
 
 let rzT = null, lastW = window.innerWidth;
@@ -922,6 +1019,20 @@ function renderBetting(){
   wireModel();
 }
 
+/* ---------- site health footer: when each feed last updated ---------- */
+let STATUS = null;
+function renderHealth(){
+  const el = $("#status");
+  if (!el) return;
+  const f = iso => { const t = new Date(iso); return isNaN(t) ? "" : t.toLocaleString("en-US", {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"}); };
+  const bits = [];
+  if (DASH_LATEST && DASH_LATEST.updated && f(DASH_LATEST.updated)) bits.push("Dashboard updated " + f(DASH_LATEST.updated));
+  if (STATUS && STATUS.updated && f(STATUS.updated)) bits.push("scores checked " + f(STATUS.updated));
+  if (STATUS && STATUS.buzz && f(STATUS.buzz)) bits.push("buzz updated " + f(STATUS.buzz));
+  if (STATUS && STATUS.transactions && f(STATUS.transactions)) bits.push("transactions updated " + f(STATUS.transactions));
+  el.textContent = bits.length ? bits.join(" · ") + "." : "Scores and the Today dashboard update every morning.";
+}
+
 /* ---------- boot ---------- */
 function renderAll(){ mergeGames(); renderHero(); renderToday(); renderBetting(); renderSchedule(); renderHome(); renderSummary(); renderTrips(); }
 renderAll();
@@ -966,6 +1077,7 @@ async function loadStaticDb(){
     db.doc("dashboard/latest").onSnapshot(snap => {
       DASH_LATEST = snap.exists ? snap.data() : null;
       if (DASH_PICK === "latest") { DASH = DASH_LATEST; renderToday(); }
+      renderHealth();
     }, () => {});
     db.doc("dashboard/index").onSnapshot(snap => {
       const v = snap.exists ? snap.data() : null;
@@ -978,8 +1090,8 @@ async function loadStaticDb(){
       RESULTS = next; renderAll();
     }, () => {});
     db.doc("meta/status").onSnapshot(snap => {
-      const v = snap.exists ? snap.data() : null;
-      if (v && v.updated) $("#status").textContent = "Scores and the Today dashboard update every morning · scores last checked " + new Date(v.updated).toLocaleString("en-US", {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"}) + ".";
+      STATUS = snap.exists ? (snap.data() || null) : null;
+      renderHealth();
     }, () => {});
   } catch(e) {}
 })();

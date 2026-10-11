@@ -32,20 +32,13 @@
     </div>
   </header>
 
-  <section class="hero" aria-label="Record and next games">
-    <div class="rec">
-      <div class="lab">Record</div>
-      <div class="big" id="rec-big">0–0</div>
-      <div class="splits" id="rec-splits"></div>
-    </div>
-    <div class="nexts">
-      <div class="next" id="next-1"></div>
-      <div class="next" id="next-2"></div>
-    </div>
-  </section>
+  <a class="recstrip" id="recstrip" href="#" aria-label="Record. Open the Team tab"></a>
 
   <nav class="tabs" role="tablist" aria-label="Sections">
     <button type="button" role="tab" id="tab-today" data-tab="today" aria-selected="true">Today</button>
+    <button type="button" role="tab" id="tab-team" data-tab="team" aria-selected="false">Team</button>
+    <button type="button" role="tab" id="tab-league" data-tab="league" aria-selected="false">League</button>
+    <button type="button" role="tab" id="tab-history" data-tab="history" aria-selected="false">History</button>
     <button type="button" role="tab" id="tab-betting" data-tab="betting" aria-selected="false">Betting</button>
     <button type="button" role="tab" id="tab-schedule" data-tab="schedule" aria-selected="false">Schedule</button>
     <button type="button" role="tab" id="tab-home" data-tab="home" aria-selected="false">Home games</button>
@@ -54,6 +47,9 @@
   </nav>
 
   <section id="p-today" role="tabpanel"></section>
+  <section id="p-team" role="tabpanel" hidden></section>
+  <section id="p-league" role="tabpanel" hidden></section>
+  <section id="p-history" role="tabpanel" hidden></section>
 
   <section id="p-betting" role="tabpanel" hidden></section>
 
