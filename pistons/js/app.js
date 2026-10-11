@@ -109,7 +109,25 @@ function showTab(t){
   if (["today","team","league","history"].includes(t) && typeof renderToday === "function" && GAMES.length) renderToday();
   if (t === "betting" && typeof renderBetting === "function" && GAMES.length) renderBetting();
 }
-document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
+/* sticky tab bar (Oct 11, 2026): measure it for the jump menu's offset, shade it while stuck,
+   and when a tab is picked while the bar is stuck, jump back to the top of the new tab */
+const TABBAR = document.querySelector(".tabs");
+const tabsTop = () => { const s = $("#tabs-sentinel"); return s ? s.getBoundingClientRect().top + window.scrollY + (parseFloat(getComputedStyle(TABBAR).marginTop) || 0) : 0; };
+if (TABBAR) {
+  const sentinel = document.createElement("div");
+  sentinel.id = "tabs-sentinel"; sentinel.setAttribute("aria-hidden", "true");
+  TABBAR.before(sentinel);
+  const setH = () => document.documentElement.style.setProperty("--tabs-h", TABBAR.offsetHeight + "px");
+  setH();
+  if ("ResizeObserver" in window) new ResizeObserver(setH).observe(TABBAR); else window.addEventListener("resize", setH);
+  const setStuck = () => TABBAR.classList.toggle("stuck", window.scrollY > tabsTop() + 1);
+  window.addEventListener("scroll", setStuck, {passive: true});
+  setStuck();
+}
+document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
+  showTab(b.dataset.tab);
+  if (TABBAR) { const top = tabsTop(); if (window.scrollY > top) window.scrollTo({top}); }
+}));
 $("#recstrip").addEventListener("click", e => { e.preventDefault(); showTab("team"); const tb = $("#tab-team"); if (tb) tb.scrollIntoView({block:"nearest", inline:"nearest"}); });
 
 /* ---------- schedule ---------- */

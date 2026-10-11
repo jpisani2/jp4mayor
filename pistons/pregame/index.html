@@ -49,6 +49,9 @@ img{max-width:100%}
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--f-body);font-variant-numeric:tabular-nums}
+/* no sideways page scroll on phones (Oct 11, 2026): wide tables scroll inside their own box */
+html,body{overflow-x:clip}
+@supports not (overflow-x:clip){html,body{overflow-x:hidden}}
 .wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:0 56px}
 h1,h2,h3{font-family:var(--f-disp);margin:0;text-wrap:balance;letter-spacing:.01em}
 button{font:inherit;color:inherit}
@@ -88,7 +91,7 @@ a{color:var(--link)}
 .head h1{font-size:clamp(28px,7vw,40px);line-height:1.02;font-weight:800}
 .head p{margin:0;color:var(--muted);font-size:17px}
 
-section.blk{padding-block:22px 4px;display:grid;gap:12px}
+section.blk{padding-block:22px 4px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
 section.blk>h2{font-size:22px;font-weight:700;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 section.blk>h2 .eyebrow{font-size:11px}
 
@@ -152,7 +155,8 @@ section.blk>h2 .eyebrow{font-size:11px}
 .seg{display:flex;gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;width:max-content;max-width:100%}
 .seg button{border:0;background:transparent;border-radius:999px;padding:7px 16px;font:700 15px/1 var(--f-disp);letter-spacing:.06em;color:var(--muted);cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
-.ptbl{overflow-x:auto}
+.ptbl{overflow-x:auto;overscroll-behavior-x:contain}
+.ptbl th:first-child,.ptbl td:first-child{position:sticky;left:0;z-index:1;background:var(--bg);box-shadow:inset -1px 0 0 var(--line)}
 .ptbl table{width:100%;border-collapse:collapse;font-size:14.5px}
 .ptbl th,.ptbl td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
 .ptbl th:first-child,.ptbl td:first-child{text-align:left}
