@@ -74,10 +74,11 @@ a{color:var(--link)}
 .band-in{padding:18px 18px 22px;display:grid;gap:16px}
 .meta{display:flex;flex-wrap:wrap;gap:6px 12px;font:600 13px/1.2 var(--f-body);color:var(--band-muted);letter-spacing:.02em;align-items:center}
 .pill{font:800 12px/1 var(--f-disp);letter-spacing:.1em;padding:5px 8px 4px;border-radius:4px;background:var(--red);color:#fff;text-transform:uppercase}
-.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.teams{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:8px}
 .side{display:grid;gap:4px;min-width:0}
 .side.r{text-align:right}
-.side .nm{font:800 clamp(30px,9vw,50px)/.95 var(--f-disp);text-transform:uppercase;letter-spacing:.01em}
+.side .nm{font:800 clamp(30px,9vw,50px)/.95 var(--f-disp);text-transform:uppercase;letter-spacing:.01em;white-space:nowrap;min-width:0;max-width:100%;overflow:hidden}
+.side .st{overflow-wrap:anywhere}
 .side .rec{font:700 15px/1 var(--f-disp);letter-spacing:.08em;color:var(--band-muted)}
 .side .st{font-size:13px;color:var(--band-muted)}
 .at{font:700 14px/1 var(--f-disp);color:var(--band-muted);letter-spacing:.1em}
@@ -376,7 +377,7 @@ section.blk>h2 .eyebrow{font-size:11px}
     var away=home?opp:det, hm=home?det:opp;
     function side(t,cls){
       var rec=t.record&&t.record.total?t.record.total:"";
-      return '<div class="side'+cls+'"><span class="nm">'+esc(t.short||t.abbr)+'</span><span class="rec">'+esc(rec)+(t.streak&&t.streak!=="-"?" · "+esc(t.streak):"")+'</span>'+(t.standing?'<span class="st">'+esc(t.standing)+'</span>':'')+'</div>';
+      return '<div class="side'+cls+'"><span class="nm" data-abbr="'+esc(t.abbr||"")+'" data-full="'+esc(t.short||t.abbr)+'">'+esc(t.short||t.abbr)+'</span><span class="rec">'+esc(rec)+(t.streak&&t.streak!=="-"?" · "+esc(t.streak):"")+'</span>'+(t.standing?'<span class="st">'+esc(t.standing)+'</span>':'')+'</div>';
     }
     var tv=(m&&m.tv&&m.tv.length?m.tv:(g.tv?[g.tv]:[])).join(", ");
     h.push('<div class="fade">');
@@ -474,13 +475,26 @@ section.blk>h2 .eyebrow{font-size:11px}
       return '<button type="button" class="arow" data-id="'+esc(g.id)+'" aria-current="'+(g===current)+'"><span class="d">'+esc(dt(g.date,{month:"short",day:"numeric"}))+'</span><span class="t">'+(home?"vs ":"at ")+esc(opp.name||"")+'</span><span class="s">'+esc(g.phase||"")+'</span></button>';
     }).join("");
     Array.prototype.forEach.call(a.querySelectorAll(".arow"),function(b){
-      b.onclick=function(){var g=find(b.getAttribute("data-id"));if(g){render(g);try{history.replaceState(null,"","#"+g.id)}catch(e){};window.scrollTo({top:0,behavior:"smooth"})}};
+      b.onclick=function(){var g=find(b.getAttribute("data-id"));if(g){render(g);fitNames();try{history.replaceState(null,"","#"+g.id)}catch(e){};window.scrollTo({top:0,behavior:"smooth"})}};
     });
   }
 
-  var rt;window.addEventListener("resize",function(){clearTimeout(rt);rt=setTimeout(function(){var el=document.getElementById("tape");if(el&&current)tape(el,MU[current.id])},150)});
+  /* shrink a long team name (e.g. TIMBERWOLVES) just enough to fit its half of the matchup band (Oct 11, 2026) */
+  /* both names share one size; if that would be under 70% of normal, show both abbreviations (DET at MIN) instead */
+  function fitNames(){
+    var ns=Array.prototype.slice.call(document.querySelectorAll(".teams .nm"));
+    if(!ns.length)return;
+    ns.forEach(function(n){if(n.dataset.full)n.textContent=n.dataset.full;n.style.fontSize=""});
+    var base=parseFloat(getComputedStyle(ns[0]).fontSize)||30, need=base;
+    ns.forEach(function(n){var fs=base;while(n.scrollWidth>n.clientWidth+1&&fs>12){fs-=1;n.style.fontSize=fs+"px"}need=Math.min(need,fs)});
+    var abbr=ns.every(function(n){return n.dataset.abbr});
+    if(need<base*0.7&&abbr)ns.forEach(function(n){n.textContent=n.dataset.abbr;n.style.fontSize=""});
+    else ns.forEach(function(n){n.style.fontSize=need<base?need+"px":""});
+  }
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitNames);
+  var rt;window.addEventListener("resize",function(){clearTimeout(rt);rt=setTimeout(function(){var el=document.getElementById("tape");if(el&&current)tape(el,MU[current.id]);fitNames()},150)});
 
-  if(games.length){var hh=(location.hash||"").slice(1);render(find(hh)||games[0])}
+  if(games.length){var hh=(location.hash||"").slice(1);render(find(hh)||games[0]);fitNames()}
   else renderArchive();
 })();
 </script>
