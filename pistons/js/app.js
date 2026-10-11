@@ -709,7 +709,7 @@ function changesStrip(){
 /* ---------- overnight briefing (Phase 5, Oct 2026) ----------
    dashboard.briefing {asOf, bullets [{text, sec}], storylines [{title, text}], storyFor}: written by the morning task.
    sec = the section a bullet links to (Today: last next news inj buzz hist; Team: record pace players; League: moves east). */
-const SEC_TAB = { record: "team", pace: "team", players: "team", rank: "team", adv: "team", hot: "team", rot: "team", mile: "team", young: "team", injh: "team", cap: "team", moves: "league", east: "league" };
+const SEC_TAB = { record: "team", pace: "team", players: "team", rank: "team", adv: "team", hot: "team", rot: "team", mile: "team", young: "team", injh: "team", cap: "team", moves: "league", east: "league", race: "league", proj: "league", awards: "league", scen: "league", former: "league", cruise: "league" };
 function briefingPanel(D){
   const b = D && D.briefing;
   if (!b || !Array.isArray(b.bullets) || !b.bullets.length) return "";
@@ -1264,13 +1264,188 @@ function wireFeeds(scope){
   scope.querySelectorAll("[data-mv-more]").forEach(b => b.addEventListener("click", () => { MV.more = !MV.more; redrawCell("moves", movesPanel()); }));
 }
 
+/* ---------- League tab features (Phase 7, Oct 2026) ----------
+   league/stats (team-stats task, Tue + Fri): {updated, asOf, winTotals {source, url, date, lines {ABBR: n}}, teams {ABBR: {name, conf}},
+     standings {ABBR: {w, l, home, road, conf, l10, strk, margin, gp}}, proj {ABBR: {proj, lo, hi, top6?, playin?, top4?, first?, seeds?[15], overLine? (DET)}},
+     h2h {ABBR: {w, l, left, games}}, remaining {ABBR: {n, home, oppRating, sosRank}}, method {text}, through, gamesPlayed,
+     former [{name, team, gp, min, pts, reb, ast, detYears, detG, early}], cruise {...}, awards [{award, player, kind, odds?, book?, rank?, date, source, url, note}]}
+   Daily standings for the East race come from the morning dashboard (dashboard.standings); the simulation is twice weekly. */
+let LEAGUE = null;
+const EAST_AB = ["ATL","BOS","BKN","CHA","CHI","CLE","DET","IND","MIA","MIL","NYK","ORL","PHI","TOR","WAS"];
+function abOfTeam(t){
+  const s = String(t || "");
+  if (/^[A-Z]{3}$/.test(s)) return s;
+  const T = (LEAGUE && LEAGUE.teams) || {};
+  const hit = Object.keys(T).find(k => s.startsWith(T[k].name) || s.includes(T[k].name));
+  if (hit) return hit;
+  const k = Object.keys(ABBR).find(x => s.startsWith(x));
+  return k ? ABBR[k] : s.slice(0, 3).toUpperCase();
+}
+const gbTxt = n => n === 0 ? "even" : (Number.isInteger(n) ? String(n) : n.toFixed(1)) + (Math.abs(n) === 1 ? " game" : " games");
+const pctW = v => num(v) === null ? "–" : (v >= 99.95 ? ">99.9" : v > 0 && v < 0.1 ? "<0.1" : v.toFixed(v >= 10 ? 0 : 1)) + "%";
+function liveEast(){
+  const st = DASH && DASH.standings;
+  if (!st || !Array.isArray(st.rows) || !st.rows.length || /2025-26/.test(st.title || "") || /takes over after opening night/i.test(st.note || "")) return null;
+  const rows = st.rows.map(r => ({ ab: abOfTeam(r.team), name: r.team, rank: Number(r.rank), w: Number(r.w), l: Number(r.l) })).filter(r => r.ab && isFinite(r.w) && isFinite(r.l)).sort((a, b) => a.rank - b.rank);
+  const det = rows.find(r => r.ab === "DET");
+  return det ? { rows, det } : null;
+}
+const gbOf = (a, b) => ((a.w - b.w) + (b.l - a.l)) / 2;   // how far a is ahead of b
+
+/* East race: where Detroit sits against the seed lines, remaining schedule, series vs the teams around them */
+function eastRacePanel(){
+  const E = liveEast();
+  if (!E) return "";
+  const { rows, det } = E, seed = det.rank, at = k => rows.find(r => r.rank === k);
+  const lines = [];
+  if (seed > 1) { const t = at(1); lines.push(`<b>${gbTxt(gbOf(t, det))}</b> behind ${esc(t.ab)} for 1st`); }
+  else { const t = at(2); if (t) lines.push(t && gbOf(det, t) > 0 ? `<b>${gbTxt(gbOf(det, t))}</b> ahead of ${esc(t.ab)} for 1st` : `Tied with ${esc(t.ab)} for 1st`); }
+  [[4, "home court in round 1 (top 4)"], [6, "a guaranteed playoff spot (top 6)"], [10, "the play-in (top 10)"]].forEach(([k, label]) => {
+    if (seed <= k) { const t = at(k + 1); if (t) { const d = gbOf(det, t); lines.push(d > 0 ? `<b>${gbTxt(d)}</b> clear of ${esc(t.ab)} (${ordinal(k + 1)}) for ${label}` : `Level with ${esc(t.ab)} (${ordinal(k + 1)}) for ${label}`); } }
+    else { const t = at(k); if (t) lines.push(`<b>${gbTxt(gbOf(t, det))}</b> behind ${esc(t.ab)} (${ordinal(k)}) for ${label}`); }
+  });
+  const gp = det.w + det.l, rem = LEAGUE && LEAGUE.remaining && LEAGUE.remaining.DET;
+  const eastRem = LEAGUE && LEAGUE.remaining ? EAST_AB.filter(t => LEAGUE.remaining[t]).sort((a, b) => LEAGUE.remaining[b].oppRating - LEAGUE.remaining[a].oppRating) : [];
+  const hardRank = eastRem.indexOf("DET") + 1;
+  const near = rows.filter(r => r.ab !== "DET" && Math.abs(r.rank - seed) <= 2);
+  const H = (LEAGUE && LEAGUE.h2h) || {};
+  return `<div class="panel race"><h3>East race<span class="tag">${esc(ordinal(seed))} in the East</span></h3>
+    <p class="race-head">${det.w}–${det.l}, ${esc(ordinal(seed))} in the East with ${Math.max(0, 82 - gp)} games left.</p>
+    <ul class="race-l">${lines.map(l => `<li>${l}</li>`).join("")}</ul>
+    ${rem ? `<p class="race-sub"><b>Schedule left:</b> ${rem.n} games, ${rem.home} at home${hardRank ? ` · the ${ordinal(hardRank)}-hardest remaining schedule of the 15 East teams` : ""} (by opponents' ratings, as of ${esc(shortD(LEAGUE.asOf))}).</p>` : ""}
+    ${near.length ? `<div class="eyebrow hk">Season series with the teams around them</div><ul class="race-h">${near.map(r => { const h = H[r.ab] || { w: 0, l: 0, left: 0 };
+      return `<li><span>${esc(ordinal(r.rank))} ${esc(r.ab)} <span class="muted">${r.w}–${r.l}</span></span><b>${h.w}–${h.l}${h.left ? ` <span class="muted">· ${h.left} left</span>` : ""}</b></li>`; }).join("")}</ul>` : ""}
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Games behind = standings style ((W diff + L diff) / 2). Standings update every morning; schedule strength and series counts update twice a week.</p>
+  </div>`;
+}
+
+/* projection + win-total watch */
+function projectionPanel(){
+  const L = LEAGUE, P = L && L.proj, d = P && P.DET;
+  if (!d || num(d.proj) === null) return "";
+  const line = L.winTotals && L.winTotals.lines ? L.winTotals.lines.DET : null;
+  const r = recordFromGames(), gp = r.n, w = r.played.filter(g => g.wl === "W").length;
+  const left = 82 - gp;
+  let watch = "";
+  if (num(line) !== null) {
+    const need = Math.floor(line) + 1;   // wins needed to go over
+    const pace = gp ? Math.round(w / gp * 82) : null;
+    const still = need - w;
+    watch = `<div class="wt"><div class="eyebrow hk">Win-total watch</div>
+      <p class="wt-l">Preseason line <b>${line}</b>${L.winTotals.source ? ` <span class="muted">(${esc(L.winTotals.source.replace(/ via .*/, ""))}, ${esc(shortD(L.winTotals.date))})</span>` : ""}.
+      ${gp ? `On pace for <b>${pace}</b> after ${w}–${gp - w}. ` : ""}${still <= 0 ? `<b>Over is locked in</b> (${w} wins).` : still > left ? `<b>Under is locked in</b>: ${need} wins is no longer reachable.` : `Needs <b>${still}–${left - still}</b> or better in the last ${left} to go over.`}
+      ${num(d.overLine) !== null ? ` The simulation has the over at <b>${pctW(d.overLine)}</b>.` : ""}</p></div>`;
+  }
+  const seeds = Array.isArray(d.seeds) ? d.seeds : [];
+  const maxS = Math.max(...seeds, 1);
+  const bars = seeds.length ? `<div class="seedbars" role="img" aria-label="Chance of each East seed: ${seeds.map((v, i) => `${ordinal(i + 1)} ${pctW(v)}`).join(", ")}">${seeds.map((v, i) => `<div class="sb${i >= 10 ? " out" : i >= 6 ? " pi" : ""}"><i style="height:${Math.max(2, v / maxS * 100).toFixed(0)}%" title="${ordinal(i + 1)}: ${pctW(v)}"></i><span>${i + 1}</span></div>`).join("")}</div>
+    <div class="legend"><span><i style="background:var(--home)"></i>Top 6</span><span><i style="background:var(--kick)"></i>Play-in (7–10)</span><span><i style="background:var(--line)"></i>Out</span></div>` : "";
+  const east = EAST_AB.filter(t => P[t]).sort((a, b) => P[b].proj - P[a].proj);
+  const S = L.standings || {};
+  const hasRec = east.some(t => S[t] && S[t].gp);
+  return `<div class="panel proj"><h3>Playoff projection<span class="tag">${esc(L.gamesPlayed ? "Through " + shortD(L.through) : "Preseason")}</span></h3>
+    <p class="race-head">Projected <b>${d.proj.toFixed(1)}</b> wins <span class="muted">(likely range ${d.lo}–${d.hi})</span></p>
+    <div class="recgrid"><div><b>${pctW(d.top6)}</b><span>Top 6 (playoffs)</span></div><div><b>${pctW(d.playin)}</b><span>Play-in (7–10)</span></div><div><b>${pctW(d.top4)}</b><span>Top 4 (home court)</span></div><div><b>${pctW(d.first)}</b><span>1st in the East</span></div></div>
+    <div class="eyebrow hk">Chance of each seed</div>${bars}
+    ${watch}
+    <details class="hmore"><summary>The whole East</summary>
+    <div class="tbl-wrap" style="border:0"><table class="mini projt"><thead><tr><th>Team</th>${hasRec ? "<th>Now</th>" : ""}<th>Proj W</th><th class="hidden-sm">Line</th><th>Top 6</th><th>Play-in</th></tr></thead><tbody>
+    ${east.map(t => { const p = P[t], s = S[t], ln = L.winTotals && L.winTotals.lines ? L.winTotals.lines[t] : null;
+      return `<tr class="${t === "DET" ? "det" : ""}"><td>${esc(t)}</td>${hasRec ? `<td>${s ? s.w + "–" + s.l : ""}</td>` : ""}<td><b>${p.proj.toFixed(1)}</b></td><td class="hidden-sm">${num(ln) !== null ? ln + (p.proj > ln + 0.5 ? ' <span class="pd up">O</span>' : p.proj < ln - 0.5 ? ' <span class="pd down">U</span>' : "") : ""}</td><td>${pctW(p.top6)}</td><td>${pctW(p.playin)}</td></tr>`; }).join("")}
+    </tbody></table></div>
+    <p class="muted" style="font-size:12.5px;margin:6px 0 0">Line = preseason win total; O/U marks where the projection sits half a win or more off it.</p></details>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">${esc((L.method && L.method.text) || "")} Likely range = middle 80% of simulations. Updated ${esc(shortD(L.asOf))}.${L.winTotals && safeUrl(L.winTotals.url) ? ` Win totals: <a href="${esc(L.winTotals.url)}" target="_blank" rel="noopener">${esc(L.winTotals.source || "source")} ↗</a>.` : ""}</p>
+  </div>`;
+}
+
+/* standings scenarios: quiet until the race tightens (half the season played and a seed line within 3 games) */
+function scenariosPanel(){
+  const E = liveEast();
+  if (!E) return "";
+  const { rows, det } = E, gp = det.w + det.l, left = 82 - gp;
+  if (gp < 41) return "";
+  const seed = det.rank, at = k => rows.find(r => r.rank === k);
+  const lineTeams = [[1, "1st"], [4, "Top 4"], [6, "Top 6"], [10, "Top 10"]];
+  const close = [];
+  lineTeams.forEach(([k, label]) => {
+    const other = seed <= k ? at(k + 1) : at(k);
+    if (!other) return;
+    const d = seed <= k ? gbOf(det, other) : -gbOf(other, det);
+    if (Math.abs(d) <= 3) close.push({ k, label, other, d, inside: seed <= k });
+  });
+  if (!close.length) return "";
+  const H = (LEAGUE && LEAGUE.h2h) || {};
+  const magic = (rival) => Math.max(0, 82 + 1 - det.w - rival.l);   // wins by DET + losses by rival to finish ahead of it
+  return `<div class="panel scen"><h3>Standings scenarios<span class="tag">${left} games left</span></h3>
+    <ul class="scen-l">${close.map(c => { const h = H[c.other.ab] || { w: 0, l: 0, left: 0 };
+      const series = h.w + h.l + h.left ? `Season series ${h.w}–${h.l}${h.left ? `, ${h.left} still to play` : ""}${h.w > h.l && h.w + h.l + h.left > 0 && h.w > (h.w + h.l + h.left) / 2 ? " (Detroit has clinched the tiebreaker)" : ""}` : "";
+      return `<li><div class="scen-h"><b>${esc(c.label)}</b><span class="pd ${c.inside ? "up" : "down"}">${c.inside ? (c.d > 0 ? "+" + gbTxt(c.d) : "tied") : "–" + gbTxt(Math.abs(c.d))}</span></div>
+        <div class="scen-t">${c.inside ? `Holding off ${esc(c.other.ab)} (${c.other.w}–${c.other.l}). Magic number to stay ahead: <b>${magic(c.other)}</b> (Detroit wins plus ${esc(c.other.ab)} losses).` : `Chasing ${esc(c.other.ab)} (${c.other.w}–${c.other.l}).`} ${series ? esc(series) + "." : ""}</div></li>`; }).join("")}</ul>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Shown from the season's halfway point when Detroit is within 3 games of a seed line. Head-to-head record is the first NBA tiebreaker; division and conference records come next.</p>
+  </div>`;
+}
+
+/* awards watch: odds and ladder ranks for Pistons players */
+function awardsPanel(){
+  const A = (LEAGUE && Array.isArray(LEAGUE.awards)) ? LEAGUE.awards.filter(x => x && x.award && x.player) : [];
+  if (!A.length) return "";
+  const by = {};
+  A.forEach(x => { const k = x.award + "|" + x.player; (by[k] = by[k] || { award: x.award, player: x.player, items: [] }).items.push(x); });
+  const order = ["MVP", "Defensive Player of the Year", "Rookie of the Year", "Most Improved Player", "Sixth Man of the Year", "Clutch Player of the Year", "Coach of the Year"];
+  const list = Object.values(by).sort((a, b) => (order.indexOf(a.award) + 1 || 99) - (order.indexOf(b.award) + 1 || 99));
+  return `<div class="panel awards"><h3>Awards watch</h3>
+    <ul class="aw">${list.map(g => `<li><div class="aw-h"><b>${esc(g.player)}</b><span class="pill">${esc(g.award)}</span></div>
+      ${g.items.map(x => `<div class="aw-i">${x.kind === "ladder" ? `<b>#${esc(x.rank)}</b> on ${esc(x.source || "")}` : `<b>${esc(x.odds || "")}</b>${x.book ? ` at ${esc(x.book)}` : ""}`}<span class="muted"> · ${esc(shortD(x.date))}${safeUrl(x.url) ? ` · <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.kind === "ladder" ? "Read" : x.source || "Source")} ↗</a>` : ""}</span>${x.note ? `<div class="aw-n">${esc(x.note)}</div>` : ""}</div>`).join("")}</li>`).join("")}</ul>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Odds and award ladders collected twice a week. For information only, not betting advice.</p>
+  </div>`;
+}
+
+/* former Pistons around the league */
+function formerPanel(){
+  const F = LEAGUE && Array.isArray(LEAGUE.former) ? LEAGUE.former : null;
+  if (!F || !F.length) return "";
+  const top = F.slice(0, 12), rest = F.slice(12);
+  const row = x => `<tr><td>${esc(x.name)}<div class="fp-y">Pistons ${x.early ? "through " + esc(String(x.detYears).split(" to ").pop()) : esc(x.detYears)} · ${esc(x.detG)} game${x.detG === 1 ? "" : "s"}</div></td><td>${esc(x.team)}</td><td>${esc(x.gp)}</td><td><b>${f1d(x.pts)}</b></td><td class="hidden-sm">${f1d(x.reb)}</td><td class="hidden-sm">${f1d(x.ast)}</td></tr>`;
+  const head = `<thead><tr><th>Player</th><th>Team</th><th>GP</th><th>PTS</th><th class="hidden-sm">REB</th><th class="hidden-sm">AST</th></tr></thead>`;
+  return `<div class="panel former"><h3>Former Pistons<span class="tag">${F.length} active</span></h3>
+    <div class="tbl-wrap" style="border:0"><table class="mini box fpt">${head}<tbody>${top.map(row).join("")}</tbody></table></div>
+    ${rest.length ? `<details class="hmore"><summary>${rest.length} more</summary><div class="tbl-wrap" style="border:0"><table class="mini box fpt">${head}<tbody>${rest.map(row).join("")}</tbody></table></div></details>` : ""}
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Everyone who has played for Detroit and has played for another team this season (box scores go back to 2014-15). Per-game numbers this season; updated twice a week.</p>
+  </div>`;
+}
+
+/* Motor City Cruise */
+function cruisePanel(){
+  const C = LEAGUE && LEAGUE.cruise;
+  if (!C) return "";
+  const games = Array.isArray(C.games) ? C.games.slice().sort((a, b) => a.d.localeCompare(b.d)) : [];
+  const up = Array.isArray(C.upcoming) ? C.upcoming.filter(g => g.d >= isoDay(new Date())).sort((a, b) => a.d.localeCompare(b.d)).slice(0, 3) : [];
+  const assign = (MOVES && Array.isArray(MOVES.items) ? MOVES.items : []).filter(m => m.team === "DET" && /g-league/i.test(m.type || "")).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 6);
+  const g1 = g => `<li><span>${esc(shortD(g.d))} ${g.home ? "vs" : "@"} ${esc(g.opp)}</span>${num(g.us) !== null ? `<b class="${g.us > g.them ? "w" : "l"}">${g.us > g.them ? "W" : "L"} ${g.us}–${g.them}</b>` : `<span class="muted">${esc(g.time || "")}</span>`}</li>`;
+  const src = (Array.isArray(C.sources) ? C.sources : []).filter(s => safeUrl(s.url));
+  return `<div class="panel cruise"><h3>Motor City Cruise<span class="tag">G League</span></h3>
+    ${C.record ? `<p class="race-head">${esc(C.record)}${C.phase ? ` <span class="muted">· ${esc(C.phase)}</span>` : ""}</p>` : `<p class="race-head">${esc(C.phase || "Season not started")}</p>`}
+    ${games.length ? `<div class="eyebrow hk">Last ${Math.min(5, games.length)}</div><ul class="cr">${games.slice(-5).reverse().map(g1).join("")}</ul>` : ""}
+    ${up.length ? `<div class="eyebrow hk">Next</div><ul class="cr">${up.map(g1).join("")}</ul>` : ""}
+    ${Array.isArray(C.twoWay) && C.twoWay.length ? `<p class="cr-p"><b>Two-way players:</b> ${esc(C.twoWay.join(", "))}</p>` : ""}
+    ${assign.length ? `<div class="eyebrow hk">Pistons assignments</div><ul class="cr">${assign.map(m => `<li><span>${esc(shortD(m.date))} ${esc(m.player)}</span><span class="muted">${esc(m.detail || "")}</span></li>`).join("")}</ul>` : ""}
+    ${C.stash ? `<p class="cr-p"><b>Draft stashes:</b> ${esc(C.stash)}</p>` : ""}
+    ${C.lastSeason ? `<p class="muted" style="font-size:13px;margin:6px 0 0">Last season: ${esc(C.lastSeason)}</p>` : ""}
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">${C.format ? esc(C.format) + " " : ""}${src.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join(" · ")}</p>
+  </div>`;
+}
+
 function renderLeague(){
   const el = $("#p-league");
   if (!el) return;
   const D = DASH || {};
-  const secs = [["moves", "Transactions", 12, movesPanel()], ["east", "East standings", 12, standingsPanel(D.standings)]].filter(x => x[3]);
-  el.innerHTML = `${jumpBar(secs.map(([id, l]) => [id, l]))}${dashNote()}<div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>
-    <p class="muted" style="font-size:12.5px;margin:14px 0 0">The East race, award watch and Motor City Cruise results are added here over the next updates.</p>`;
+  const two = (a, b, sa, sb) => a[3] && b[3] ? [[a[0], a[1], sa, a[3]], [b[0], b[1], sb, b[3]]] : [[a[0], a[1], 12, a[3]], [b[0], b[1], 12, b[3]]];
+  const secs = [...two(["race", "East race", 0, eastRacePanel()], ["east", "Standings", 0, standingsPanel(D.standings)], 7, 5),
+    ...two(["proj", "Projection", 0, projectionPanel()], ["awards", "Awards", 0, awardsPanel()], 7, 5),
+    ["scen", "Scenarios", 12, scenariosPanel()],
+    ["moves", "Transactions", 12, movesPanel()],
+    ...two(["former", "Former Pistons", 0, formerPanel()], ["cruise", "Cruise", 0, cruisePanel()], 7, 5)].filter(x => x[3]);
+  el.innerHTML = `${jumpBar(secs.map(([id, l]) => [id, l]))}${dashNote()}<div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
   wireSections(el); wireFeeds(el);
 }
 
@@ -1734,13 +1909,13 @@ function loadScript(path){
   return new Promise(res => { const s = document.createElement("script"); s.src = path + "?t=" + Date.now(); s.onload = () => res(true); s.onerror = () => res(false); document.head.appendChild(s); });
 }
 async function loadStaticDb(){
-  await Promise.all([loadScript("data/results.js"), loadScript("data/daily.js"), loadScript("data/lastseason.js"), loadScript("data/history.js"), loadScript("data/buzz.js"), loadScript("data/transactions.js"), loadScript("data/cap.js"), loadScript("data/team.js"), loadScript("data/milestones.js")]);
+  await Promise.all([loadScript("data/results.js"), loadScript("data/daily.js"), loadScript("data/lastseason.js"), loadScript("data/history.js"), loadScript("data/buzz.js"), loadScript("data/transactions.js"), loadScript("data/cap.js"), loadScript("data/team.js"), loadScript("data/milestones.js"), loadScript("data/league.js")]);
   const R = window.PISTONS_RESULTS || {}, D = window.PISTONS_DAILY || {}, H = window.PISTONS_HISTORY || {};
   const cols = { results: R.games || {}, games: D.games || {}, lines: D.lines || {}, matchups: D.matchups || {}, daily: D.days || {}, history: H.days || {} };
   const docs = { "dashboard/latest": D.latest || null, "dashboard/index": { dates: Object.keys(D.days || {}) }, "betting/futures": D.futures || null,
     "lastseason/games": window.PISTONS_LASTSEASON || null,
     "buzz/feed": window.PISTONS_BUZZ || null, "transactions/feed": window.PISTONS_MOVES || null, "cap/summary": window.PISTONS_CAP || null,
-    "team/stats": window.PISTONS_TEAM || null, "team/milestones": window.PISTONS_MILESTONES || null,
+    "team/stats": window.PISTONS_TEAM || null, "team/milestones": window.PISTONS_MILESTONES || null, "league/stats": window.PISTONS_LEAGUE || null,
     "meta/status": Object.assign({}, R.updated ? { updated: R.updated } : (D.updated ? { updated: D.updated } : {}),
       window.PISTONS_BUZZ && window.PISTONS_BUZZ.updated ? { buzz: window.PISTONS_BUZZ.updated } : {},
       window.PISTONS_MOVES && window.PISTONS_MOVES.updated ? { transactions: window.PISTONS_MOVES.updated } : {}) };
@@ -1791,6 +1966,7 @@ async function loadStaticDb(){
     db.doc("lastseason/games").get().then(snap => { LAST = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
     db.doc("team/stats").onSnapshot(snap => { TEAM = snap.exists ? (snap.data() || null) : null; renderTeam(); }, () => {});
     db.doc("team/milestones").get().then(snap => { MILE = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
+    db.doc("league/stats").onSnapshot(snap => { LEAGUE = snap.exists ? (snap.data() || null) : null; renderLeague(); }, () => {});
     db.doc("meta/status").onSnapshot(snap => {
       STATUS = snap.exists ? (snap.data() || null) : null;
       renderHealth();
