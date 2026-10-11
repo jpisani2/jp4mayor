@@ -366,4 +366,18 @@ h3.cz-head > .cz-btn{align-self:flex-start}
 .pd{display:inline-block;font-weight:700;padding:2px 6px;border-radius:5px}
 .pd.up{color:var(--win);background:color-mix(in srgb,var(--win) 14%,transparent)}
 .pd.down{color:var(--loss);background:color-mix(in srgb,var(--loss) 14%,transparent)}
+/* this day in history (Phase 3) */
+.hlist{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.hlist li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:10px;font-size:14.5px;line-height:1.4}
+.hlist .yr{font:800 17px/1.2 "Saira Condensed",Arial,sans-serif;color:var(--kick)}
+.hsrc{font-size:12.5px;white-space:nowrap}
+.hnote{font-size:13px;color:var(--muted);margin-top:2px}
+.hpo{display:inline-block;font:700 11px/1 "Saira Condensed",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:3px 6px;border-radius:999px;border:1px solid var(--kick);color:var(--kick);margin:0 4px 2px 0;vertical-align:1px}
+.hwl{font-weight:700}.hwl.w{color:var(--win)}.hwl.l{color:var(--loss)}
+.htally{margin:0 0 10px;font-size:14px;color:var(--muted)}
+.hdate{margin:-6px 0 10px;font:700 13px/1 "Saira Condensed",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hk{margin:12px 0 8px}.panel.hist .hk:first-of-type{margin-top:2px}
+.hmore{margin-top:8px}.hmore summary{cursor:pointer;font-weight:600;font-size:14px;margin-bottom:8px}
+.hpick{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hbtn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;font-size:14px}
 @media (max-width:420px){.pace-t td,.pace-t th{padding:7px 4px}.pace-t{font-size:13.5px}.pace-head{font-size:20px}.pace-t td:first-child{white-space:normal}.pace-t th{letter-spacing:.04em}}

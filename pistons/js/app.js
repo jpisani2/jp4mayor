@@ -719,8 +719,9 @@ function renderToday(){
     ["last", "Last game", 7, lastGamePanel(D.lastGame)],
     ["next", "Next game", 5, nextPanel(D.nextGame, D.upcoming)],
     ["news", "Headlines", 7, newsPanel(D.news)],
-    ["inj", "Injuries", 5, injuriesPanel(D.injuries, D.injuryNote)]
-  ];
+    ["inj", "Injuries", 5, injuriesPanel(D.injuries, D.injuryNote)],
+    ["hist", "History", 12, histCard()]
+  ].filter(x => x[3]);
   el.innerHTML = `
     ${jumpBar(secs.map(([id, l]) => [id, l]))}
     <div class="dash-top"><div><div class="eyebrow">${esc(D.phase || "Daily dashboard")}</div><h2>${D.date ? esc(fmtDate(D.date, {weekday:"long", month:"long", day:"numeric"})) : "Pistons daily"}</h2><div class="sub">${esc(sub)}</div></div>${picker}</div>
@@ -729,6 +730,7 @@ function renderToday(){
     <div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
   const sel = $("#dash-day");
   if (sel) sel.addEventListener("change", () => pickDay(sel.value));
+  el.querySelectorAll("[data-goto-hist]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); HIST_PICK = a.dataset.gotoHist; showTab("history"); window.scrollTo({top: 0}); }));
   wireSections(el);
   renderHero();
   renderTeam();
@@ -813,11 +815,123 @@ function renderLeague(){
   wireSections(el);
 }
 
+/* ---------- This day in Pistons history (Phase 3, Oct 2026) ----------
+   history/<MM-DD> {alltime [{year, date, text, kind, source, url, top?}], cade [{... kind "event"}], games [{season, date, opp, oppName, home, det, oppPts, wl, line, url, note?, noteSource?, noteUrl?}]}
+   Cade-era games through 2025-26 are seeded; this season's games are merged from results/ and games/ box scores. */
+const HIST = {}, HIST_PENDING = {};
+const HIST_START = "2026-10-20";   // the Today card starts on opening night unless the day has a non-game item
+let HIST_PICK = null;              // History tab's chosen MM-DD
+const MONTHS_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const mdOf = iso => iso.slice(5, 10);
+const mdLabel = md => MONTHS_LONG[Number(md.slice(0, 2)) - 1] + " " + Number(md.slice(3));
+function histDoc(md){
+  if (md in HIST) return HIST[md];
+  if (DB && !HIST_PENDING[md]) {
+    HIST_PENDING[md] = true;
+    DB.doc("history/" + md).get().then(snap => { HIST[md] = snap.exists ? (snap.data() || null) : null; renderToday(); })
+      .catch(() => { HIST[md] = null; });
+  }
+  return undefined;
+}
+/* this season's games on that date, up to the viewed day */
+function histSeasonGames(md, upTo){
+  return GAMES.filter(g => g.wl && g.date && mdOf(g.date) === md && g.date <= upTo).map(g => {
+    const b = BOXES.find(x => x.date === g.date), box = b && Array.isArray(b.box) ? b.box : [];
+    const top = box.slice().sort((a, c) => (Number(c.pts) || 0) - (Number(a.pts) || 0))[0];
+    let line = "";
+    if (top && top.name) { const bits = [(Number(top.pts) || 0) + " pts"]; if (Number(top.reb) >= 8) bits.push(top.reb + " reb"); if (Number(top.ast) >= 6) bits.push(top.ast + " ast"); line = top.name + " " + bits.join(", "); }
+    return { season: "2026-27", date: g.date, opp: ABBR[g.opp] || g.opp, oppName: fullName(g.opp), home: g.home, det: g.det, oppPts: g.oppPts, wl: g.wl, line, url: "" };
+  });
+}
+function histData(md, upTo){
+  const d = HIST[md] || {};
+  const games = (Array.isArray(d.games) ? d.games.filter(g => g && g.date && g.date <= upTo) : []).concat(histSeasonGames(md, upTo)).sort((a, b) => a.date.localeCompare(b.date));
+  const ok = it => it && it.text && safeUrl(it.url) && (!it.date || it.date <= upTo);
+  const alltime = (Array.isArray(d.alltime) ? d.alltime.filter(ok) : []).sort((a, b) => (b.top ? 1 : 0) - (a.top ? 1 : 0) || a.year - b.year);
+  const cade = (Array.isArray(d.cade) ? d.cade.filter(ok) : []).sort((a, b) => (b.top ? 1 : 0) - (a.top ? 1 : 0) || a.year - b.year);
+  const reg = games.filter(g => !g.po), po = games.filter(g => g.po);
+  const w = reg.filter(g => g.wl === "W").length, pw = po.filter(g => g.wl === "W").length;
+  return { alltime, cade, games, n: reg.length, w, l: reg.length - w, pn: po.length, pw, pl: po.length - pw };
+}
+const gamePts = g => { const m = /(\d+) pts/.exec(g.line || ""); return m ? Number(m[1]) : 0; };
+function topCade(h){
+  const ev = h.cade.find(x => x.top) || null;
+  if (ev) return { ev };
+  if (!h.games.length) return h.cade[0] ? { ev: h.cade[0] } : null;
+  const best = h.games.slice().sort((a, b) => ((b.note ? 30 : 0) + (b.po ? 20 : 0) + (b.wl === "W" ? 15 : 0) + gamePts(b)) - ((a.note ? 30 : 0) + (a.po ? 20 : 0) + (a.wl === "W" ? 15 : 0) + gamePts(a)))[0];
+  return { game: best };
+}
+const srcLink = (url, label) => { const u = safeUrl(url); return u ? ` <a class="hsrc" href="${esc(u)}" target="_blank" rel="noopener">${esc(label || "Source")} ↗</a>` : ""; };
+const histItem = it => `<li><span class="yr">${esc(it.year)}</span><div>${esc(it.text)}${srcLink(it.url, it.source)}</div></li>`;
+const histGame = g => `<li><span class="yr">${esc(g.date.slice(0, 4))}</span><div>${g.po ? `<span class="hpo">Playoffs · ${esc(g.po)}</span> ` : ""}<b class="hwl ${g.wl === "W" ? "w" : "l"}">${g.wl} ${esc(g.det)}–${esc(g.oppPts)}${g.ot ? " " + esc(g.ot) : ""}</b> ${g.home ? "vs" : "@"} ${esc(g.oppName || g.opp)}${g.series ? ` (${esc(g.series)})` : ""}${g.line ? ` · ${esc(g.line)}` : ""}${srcLink(g.url, "Box score")}${g.note ? `<div class="hnote">${esc(g.note)}${srcLink(g.noteUrl, g.noteSource)}</div>` : ""}</div></li>`;
+const tallyTxt = h => {
+  const po = h.pn ? `${h.pw}–${h.pl} in the playoffs` : "";
+  if (h.n) return `Pistons are ${h.w}–${h.l} on this date in the Cade era (regular season, since 2021-22)${po ? ", " + po : ""}.`;
+  return po ? `Pistons are ${po} on this date in the Cade era.` : "";
+};
+
+/* Today: a compact card near the bottom */
+function histCard(){
+  const D = DASH || {};
+  const view = D.date || isoDay(new Date()), md = mdOf(view);
+  const doc = histDoc(md);
+  if (doc === undefined || !doc) return "";
+  const h = histData(md, view);
+  if (view < HIST_START && !h.alltime.some(x => x.kind === "event") && !h.cade.length) return "";
+  if (!h.alltime.length && !h.cade.length && !h.games.length) return "";
+  const tc = topCade(h);
+  const more = h.alltime.slice(1, 4);
+  return `<div class="panel hist"><h3>This day in Pistons history</h3><p class="hdate">${esc(mdLabel(md))}</p>
+    ${h.alltime.length ? `<div class="eyebrow hk">All-time</div><ul class="hlist">${histItem(h.alltime[0])}</ul>
+      ${more.length ? `<details class="hmore"><summary>See ${more.length} more</summary><ul class="hlist">${more.map(histItem).join("")}</ul></details>` : ""}` : ""}
+    ${tc ? `<div class="eyebrow hk">Cade era</div>${h.games.length ? `<p class="htally">${esc(tallyTxt(h))}</p>` : ""}<ul class="hlist">${tc.ev ? histItem(tc.ev) : histGame(tc.game)}</ul>` : ""}
+    <p style="margin:10px 0 0;font-size:14px;font-weight:600"><a href="#" data-goto-hist="${esc(md)}">More history ›</a></p>
+  </div>`;
+}
+
+/* History tab: everything for the date, with a date picker */
 function renderHistory(){
   const el = $("#p-history");
-  if (!el || el.dataset.ready) return;
-  el.dataset.ready = "1";
-  el.innerHTML = `<div class="dgrid">${cell(12, "today-hist", `<div class="panel"><h3>This day in Pistons history</h3><p class="empty">Coming soon: what happened on this date in Pistons history, all-time and in the Cade Cunningham era, with a date picker. It starts showing around opening night (Oct 20).</p></div>`)}</div>`;
+  if (!el) return;
+  const D = DASH || {};
+  const today = D.date || isoDay(new Date());
+  const md = HIST_PICK || mdOf(today);
+  const upTo = isoDay(new Date()) > today ? isoDay(new Date()) : today;
+  const doc = histDoc(md);
+  const mo = Number(md.slice(0, 2)), dy = Number(md.slice(3));
+  const dim = [31,29,31,30,31,30,31,31,30,31,30,31][mo - 1];
+  const picker = `<div class="hpick" role="group" aria-label="Pick a date">
+    <button type="button" class="iconbtn" data-hstep="-1" aria-label="Previous day">‹</button>
+    <select id="h-mo" aria-label="Month">${MONTHS_LONG.map((m, i) => `<option value="${i + 1}"${i + 1 === mo ? " selected" : ""}>${m}</option>`).join("")}</select>
+    <select id="h-dy" aria-label="Day">${Array.from({length: dim}, (_, i) => `<option value="${i + 1}"${i + 1 === dy ? " selected" : ""}>${i + 1}</option>`).join("")}</select>
+    <button type="button" class="iconbtn" data-hstep="1" aria-label="Next day">›</button>
+    ${md !== mdOf(today) ? `<button type="button" class="hbtn" data-htoday>Today</button>` : ""}
+  </div>`;
+  let body;
+  if (doc === undefined) body = `<p class="empty">Loading…</p>`;
+  else {
+    const h = histData(md, upTo);
+    const all = `<div class="panel"><h3>All-time</h3>${h.alltime.length ? `<ul class="hlist">${h.alltime.map(histItem).join("")}</ul>` : `<p class="empty">Nothing on record for ${esc(mdLabel(md))} yet.</p>`}</div>`;
+    const cadeHas = h.cade.length || h.games.length;
+    const cade = cadeHas ? `<div class="panel"><h3>Cade era</h3>
+      ${h.games.length ? `<p class="htally">${esc(tallyTxt(h))}</p>` : ""}
+      ${h.cade.length ? `<ul class="hlist">${h.cade.map(histItem).join("")}</ul>` : ""}
+      ${h.games.length ? `<div class="eyebrow hk">Games on ${esc(mdLabel(md))}</div><ul class="hlist">${h.games.slice().reverse().map(histGame).join("")}</ul>` : ""}
+    </div>` : "";
+    body = `<div class="dgrid">${cell(cadeHas ? 7 : 12, "hist-all", all)}${cadeHas ? cell(5, "hist-cade", cade) : ""}</div>`;
+  }
+  el.innerHTML = `<div class="dash-top"><div><div class="eyebrow">This day in Pistons history</div><h2>${esc(mdLabel(md))}</h2></div>${picker}</div>${body}
+    <p class="muted" style="font-size:12.5px;margin:14px 0 0">Every item links to its source. All-time covers the Detroit era (since 1957); the Cade era starts with the 2021 draft and covers regular-season and playoff games. More dates are being added.</p>`;
+  const go = v => { HIST_PICK = v; renderHistory(); };
+  const pad = n => String(n).padStart(2, "0");
+  el.querySelectorAll("[data-hstep]").forEach(b => b.addEventListener("click", () => {
+    const d = new Date(2024, mo - 1, dy); d.setDate(d.getDate() + Number(b.dataset.hstep));
+    go(pad(d.getMonth() + 1) + "-" + pad(d.getDate()));
+  }));
+  const mSel = $("#h-mo"), dSel = $("#h-dy");
+  if (mSel) mSel.addEventListener("change", () => { const m = Number(mSel.value), cap = [31,29,31,30,31,30,31,31,30,31,30,31][m - 1]; go(pad(m) + "-" + pad(Math.min(dy, cap))); });
+  if (dSel) dSel.addEventListener("change", () => go(pad(mo) + "-" + pad(Number(dSel.value))));
+  const t = el.querySelector("[data-htoday]"); if (t) t.addEventListener("click", () => go(mdOf(today)));
   wireSections(el);
 }
 
