@@ -699,8 +699,10 @@ function changesStrip(){
   const added = [...now].filter(n => !was.has(n)), cleared = [...was].filter(n => !now.has(n));
   if (added.length) items.push(`New on injury report: ${esc(added.join(", "))}`);
   if (cleared.length) items.push(`Off injury report: ${esc(cleared.join(", "))}`);
-  if (num(D.newMoves)) items.push(`${D.newMoves} new move${D.newMoves > 1 ? "s" : ""}`);
-  if (num(D.newBuzz)) items.push(`${D.newBuzz} new buzz item${D.newBuzz > 1 ? "s" : ""}`);
+  const nm = num(D.newMoves) !== null ? D.newMoves : newSince(MOVES, P0.updated, D.updated, m => m.team === "DET" || m.notable);
+  const nb = num(D.newBuzz) !== null ? D.newBuzz : newSince(BUZZ, P0.updated, D.updated);
+  if (nm) items.push(`${nm} new move${nm > 1 ? "s" : ""}`);
+  if (nb) items.push(`${nb} new buzz item${nb > 1 ? "s" : ""}`);
   return `<div class="chg"><span class="eyebrow">Since ${esc(shortDay(pv.date))}</span>${items.length ? items.map(t => `<span class="c">${t}</span>`).join("") : `<span class="c">No change in results, seed or injuries</span>`}</div>`;
 }
 
@@ -820,7 +822,20 @@ const mvGroup = t => t === "DET" ? 0 : CENTRAL.has(t) ? 1 : EAST.has(t) ? 2 : 3;
 const MV_TYPE = { trade: "Trade", signing: "Signing", waiver: "Waived", buyout: "Buyout", extension: "Extension", option: "Option", "two-way": "Two-way", "10-day": "10-day", "g-league": "G League", other: "Move" };
 const shortD = d => /^\d{4}-\d{2}-\d{2}$/.test(d || "") ? fmtDate(d, {month: "short", day: "numeric"}) : "";
 const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return isoDay(d); };
-const feedFor = (live, key) => DASH_PICK === "latest" ? live : (DASH && DASH[key] ? DASH[key] : null);
+/* the live feed for the latest day; for an older dashboard, its snapshot if it has one, else the live feed's items up to that day */
+function feedFor(live, key){
+  if (DASH_PICK === "latest") return live;
+  if (DASH && DASH[key]) return DASH[key];
+  if (!live || !DASH || !DASH.date) return null;
+  const lo = (() => { const d = dObj(DASH.date); d.setDate(d.getDate() - 30); return isoDay(d); })();
+  return Object.assign({}, live, { items: (live.items || []).filter(x => x && x.date && x.date <= DASH.date && x.date >= lo), fanReaction: null });
+}
+/* items the refresh task added between the previous dashboard and this one (for the what-changed strip) */
+function newSince(feed, fromIso, toIso, keep){
+  if (!feed || !Array.isArray(feed.items) || !fromIso || !toIso) return 0;
+  const a = new Date(fromIso).getTime(), b = new Date(toIso).getTime();
+  return feed.items.filter(x => x && x.added && (!keep || keep(x)) && new Date(x.added).getTime() > a && new Date(x.added).getTime() <= b).length;
+}
 
 function buzzItem(b){
   const u = safeUrl(b.url);
@@ -1342,8 +1357,9 @@ function renderHealth(){
   const bits = [];
   if (DASH_LATEST && DASH_LATEST.updated && f(DASH_LATEST.updated)) bits.push("Dashboard updated " + f(DASH_LATEST.updated));
   if (STATUS && STATUS.updated && f(STATUS.updated)) bits.push("scores checked " + f(STATUS.updated));
-  if (STATUS && STATUS.buzz && f(STATUS.buzz)) bits.push("buzz updated " + f(STATUS.buzz));
-  if (STATUS && STATUS.transactions && f(STATUS.transactions)) bits.push("transactions updated " + f(STATUS.transactions));
+  const bu = (BUZZ && BUZZ.updated) || (STATUS && STATUS.buzz), tu = (MOVES && MOVES.updated) || (STATUS && STATUS.transactions);
+  if (bu && f(bu)) bits.push("buzz updated " + f(bu));
+  if (tu && f(tu)) bits.push("transactions updated " + f(tu));
   el.textContent = bits.length ? bits.join(" · ") + "." : "Scores and the Today dashboard update every morning.";
 }
 
@@ -1408,8 +1424,8 @@ async function loadStaticDb(){
       snap.docs.forEach(d => { const v = d.data(); if (v) next[d.id] = v; });
       RESULTS = next; renderAll();
     }, () => {});
-    db.doc("buzz/feed").onSnapshot(snap => { BUZZ = snap.exists ? (snap.data() || null) : null; renderToday(); }, () => {});
-    db.doc("transactions/feed").onSnapshot(snap => { MOVES = snap.exists ? (snap.data() || null) : null; renderLeague(); }, () => {});
+    db.doc("buzz/feed").onSnapshot(snap => { BUZZ = snap.exists ? (snap.data() || null) : null; renderToday(); renderHealth(); }, () => {});
+    db.doc("transactions/feed").onSnapshot(snap => { MOVES = snap.exists ? (snap.data() || null) : null; renderLeague(); renderHealth(); }, () => {});
     db.doc("lastseason/games").get().then(snap => { LAST = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
     db.doc("meta/status").onSnapshot(snap => {
       STATUS = snap.exists ? (snap.data() || null) : null;
