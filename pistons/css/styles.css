@@ -70,6 +70,19 @@ a{color:var(--link)}
 .skin button{border:0;background:transparent;border-radius:999px;padding:6px 12px 6px 8px;display:flex;align-items:center;gap:7px;cursor:pointer;font-weight:600;font-size:13px;color:var(--muted)}
 .skin button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
 .sw{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.15)}
+.top-r{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.sites{display:inline-flex;gap:6px}
+.site-pill{display:inline-flex;align-items:center;gap:4px;font:600 13px/1 "Source Sans 3",sans-serif;padding:11px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;white-space:nowrap}
+.site-pill:hover{background:var(--tint-strong)}
+.site-pill span{color:var(--kick);font-weight:700}
+@media (max-width:560px){
+  .top{gap:12px}
+  .top-r{width:100%;justify-content:space-between;gap:6px}
+  .site-pill{padding:11px 10px}
+  .skin .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .skin button{padding:8px 9px!important}
+  .skin .sw{width:16px;height:16px}
+}
 .sw.navy{background:#0B1730;box-shadow:inset -5px 0 0 #1D428A}.sw.red{background:#4A0A14;box-shadow:inset -5px 0 0 #C8102E}.sw.light{background:#fff;box-shadow:inset -5px 0 0 #C8102E}
 
 /* hero */
