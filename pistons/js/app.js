@@ -709,7 +709,7 @@ function changesStrip(){
 /* ---------- overnight briefing (Phase 5, Oct 2026) ----------
    dashboard.briefing {asOf, bullets [{text, sec}], storylines [{title, text}], storyFor}: written by the morning task.
    sec = the section a bullet links to (Today: last next news inj buzz hist; Team: record pace players; League: moves east). */
-const SEC_TAB = { record: "team", pace: "team", players: "team", moves: "league", east: "league" };
+const SEC_TAB = { record: "team", pace: "team", players: "team", rank: "team", adv: "team", hot: "team", rot: "team", mile: "team", young: "team", injh: "team", cap: "team", moves: "league", east: "league" };
 function briefingPanel(D){
   const b = D && D.briefing;
   if (!b || !Array.isArray(b.bullets) || !b.bullets.length) return "";
@@ -847,11 +847,313 @@ function capPanel(){
   </div>`;
 }
 
+/* ---------- Team tab features (Phase 6, Oct 2026) ----------
+   team/stats (weekly task): {updated, asOf, adv {now, prev, last, playerRanks, source, url, stale?},
+     rankings {weeks [{week, date, avg, sources [{outlet, author, rank, prev, url, date, blurb}]}]},
+     injuries [{name, status, detail, from, to, open}],
+     log [{d, opp, home, det, oppPts, type, p [[name, min, pts, reb, ast, stl, blk, tpm, tpa, fgm, fga, ftm, fta, starter]]}]}
+   team/milestones (static seed): {through, players [{name, debut, career{}, det{}, highs{}, last{}}], leaders {stats {pts: [[name, value]]}, source, url}}
+   The season log = team/stats log merged with the games/ box scores (box scores win), regular season from Oct 20. */
+let TEAM = null, MILE = null;
+const SEASON0 = "2026-10-20";
+const NAME_ALIAS = { "Ronald Holland II": "Ron Holland II" };
+const pName = n => NAME_ALIAS[n] || n;
+const LOGK = ["name","min","pts","reb","ast","stl","blk","tpm","tpa","fgm","fga","ftm","fta","st"];
+const f1d = v => num(v) === null ? "–" : v.toFixed(1);
+const s1 = v => num(v) === null ? "–" : (Math.round(v * 10) === 0 ? "0.0" : (v > 0 ? "+" : "–") + Math.abs(v).toFixed(1));
+const p1 = v => num(v) === null ? "–" : (v * 100).toFixed(1) + "%";
+const lastName = n => { const p = String(n).replace(/\s+(Jr\.?|Sr\.?|II|III|IV)$/, "").split(" "); return p[p.length - 1]; };
+const oppAb = o => { o = String(o || ""); if (ABBR[o]) return ABBR[o]; if (/^[A-Z]{2,4}$/.test(o)) return o; const k = Object.keys(ABBR).find(x => o.startsWith(x) || o.endsWith(x)); return k ? ABBR[k] : o; };
+const vsAt = g => (g.home ? "vs " : "@ ") + oppAb(g.opp);
+function teamCutoff(){ return DASH_PICK !== "latest" && DASH && DASH.forDate ? DASH.forDate : "9999-12-31"; }
+function seasonLog(){
+  const cut = teamCutoff(), by = {};
+  ((TEAM && Array.isArray(TEAM.log)) ? TEAM.log : []).forEach(g => { if (g && g.d >= SEASON0 && g.d <= cut && Array.isArray(g.p)) by[g.d] = g; });
+  BOXES.forEach(g => {
+    if (!g || !g.date || g.date < SEASON0 || g.date > cut || /preseason/i.test(g.type || "") || !Array.isArray(g.box) || !g.box.length) return;
+    by[g.date] = { d: g.date, opp: g.opponent || "", home: !!g.home, det: g.det, oppPts: g.opp, type: g.type || "",
+      p: g.box.filter(p => p && p.name).map(p => { const fg = splitMA(p.fg) || [0, 0], tp = splitMA(p.tp) || [0, 0], ft = splitMA(p.ft) || [0, 0];
+        return [p.name, Number(p.min) || 0, Number(p.pts) || 0, Number(p.reb) || 0, Number(p.ast) || 0, Number(p.stl) || 0, Number(p.blk) || 0, tp[0], tp[1], fg[0], fg[1], ft[0], ft[1], p.starter ? 1 : 0]; }) };
+  });
+  return Object.values(by).sort((a, b) => a.d.localeCompare(b.d)).map(g => Object.assign({}, g, {
+    rows: g.p.map(r => { const o = {}; LOGK.forEach((k, i) => { o[k] = i === 0 ? pName(String(r[0])) : Number(r[i]) || 0; }); return o; }).filter(r => r.min > 0) }));
+}
+function aggRows(games){
+  const acc = {};
+  games.forEach(g => g.rows.forEach(r => {
+    const a = acc[r.name] = acc[r.name] || { name: r.name, gp: 0, gs: 0, min: 0, pts: 0, reb: 0, ast: 0, stl: 0, blk: 0, tpm: 0, tpa: 0, fgm: 0, fga: 0, ftm: 0, fta: 0, dd: 0, td: 0, g30: 0, g40: 0, hi: {} };
+    a.gp++; if (r.st) a.gs++;
+    ["min","pts","reb","ast","stl","blk","tpm","tpa","fgm","fga","ftm","fta"].forEach(k => { a[k] += r[k]; });
+    const tens = ["pts","reb","ast","stl","blk"].filter(k => r[k] >= 10).length;
+    if (tens >= 2) a.dd++; if (tens >= 3) a.td++; if (r.pts >= 30) a.g30++; if (r.pts >= 40) a.g40++;
+    ["pts","reb","ast","stl","blk","tpm"].forEach(k => { if (!a.hi[k] || r[k] > a.hi[k].v) a.hi[k] = { v: r[k], g }; });
+  }));
+  return acc;
+}
+const pg = (a, k) => a && a.gp ? a[k] / a.gp : null;
+const ratio = (m, n) => n ? m / n : null;
+const pctTxt = v => num(v) === null ? "–" : (v * 100).toFixed(1);
+
+/* power rankings: newest week, every outlet's rank, average and change vs the week before */
+function rankingsPanel(){
+  const until = DASH_PICK === "latest" ? "9999" : (DASH && DASH.date) || "9999";
+  const weeks = ((TEAM && TEAM.rankings && Array.isArray(TEAM.rankings.weeks)) ? TEAM.rankings.weeks : [])
+    .filter(w => w && Array.isArray(w.sources) && w.sources.length && (w.date || "") <= until);
+  if (!weeks.length) return "";
+  const w = weeks[weeks.length - 1], pw = weeks.length > 1 ? weeks[weeks.length - 2] : null;
+  const srcs = w.sources.filter(s => num(s.rank) !== null).slice().sort((a, b) => a.rank - b.rank);
+  if (!srcs.length) return "";
+  const avg = num(w.avg) !== null ? w.avg : srcs.reduce((t, s) => t + s.rank, 0) / srcs.length;
+  const dv = pw && num(pw.avg) !== null ? Math.round((pw.avg - avg) * 10) / 10 : null;
+  const lo = Math.min(...srcs.map(s => s.rank)), hi = Math.max(...srcs.map(s => s.rank));
+  const mvAvg = dv ? `<span class="mv ${dv > 0 ? "up" : "down"}" aria-label="${dv > 0 ? "up" : "down"} ${Math.abs(dv)} from ${esc(pw.week || "last week")}">${dv > 0 ? "▲" : "▼"}${Math.abs(dv)}</span>` : "";
+  let spark = "";
+  if (weeks.length >= 2) {
+    const pts = weeks.map(x => num(x.avg) !== null ? x.avg : null), ok = pts.filter(v => v !== null);
+    const top = Math.max(1, Math.floor(Math.min(...ok)) - 1), bot = Math.min(30, Math.ceil(Math.max(...ok)) + 1);
+    const W = 300, H = 64, L = 6, R = 6, T = 8, B = 16, span = Math.max(1, bot - top);
+    const X = i => L + (weeks.length === 1 ? 0 : i * (W - L - R) / (weeks.length - 1)), Y = v => T + (v - top) / span * (H - T - B);
+    const path = pts.map((v, i) => v === null ? "" : `${i && pts[i - 1] !== null ? "L" : "M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join("");
+    spark = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img" aria-label="Average power ranking by week, from ${esc(weeks[0].week || "")} (${esc(f1d(pts[0]))}) to ${esc(w.week || "")} (${esc(f1d(avg))})">
+      <path d="${path}" fill="none" stroke="var(--kick)" stroke-width="2"/>${pts.map((v, i) => v === null ? "" : `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${i === pts.length - 1 ? 4 : 2.5}" fill="${i === pts.length - 1 ? "var(--kick)" : "var(--card)"}" stroke="var(--kick)" stroke-width="1.5"><title>${esc(weeks[i].week || weeks[i].date)}: ${f1d(v)}</title></circle>`).join("")}
+      <text x="${L}" y="${H - 3}" font-size="10.5">${esc(weeks[0].week || "")}</text><text x="${W - R}" y="${H - 3}" font-size="10.5" text-anchor="end">${esc(w.week || "")}</text></svg>
+      <p class="muted" style="font-size:12px;margin:0 0 8px">Average rank by week (higher on the chart = better).</p>`;
+  }
+  return `<div class="panel prk"><h3>Power rankings<span class="tag">${esc(w.week || "")}</span></h3>
+    <div class="pr-top"><div><b>${esc(f1d(avg))}</b>${mvAvg}<span>Average of ${srcs.length} ranking${srcs.length > 1 ? "s" : ""}</span></div>
+      <div><b>${lo === hi ? "#" + lo : "#" + lo + "–" + hi}</b><span>${lo === hi ? "Every outlet" : "Range"}</span></div></div>
+    ${spark}
+    <ul class="pr-list">${srcs.map(s => {
+      const d = num(s.prev) !== null ? s.prev - s.rank : null;
+      return `<li><span class="rk">#${esc(s.rank)}</span><div><b>${esc(s.outlet || "")}</b>${d ? `<span class="mv ${d > 0 ? "up" : "down"}" title="${d > 0 ? "Up" : "Down"} from #${esc(s.prev)}">${d > 0 ? "▲" : "▼"}${Math.abs(d)}</span>` : (num(s.prev) !== null ? `<span class="muted" style="font-size:12px"> · same as last time</span>` : "")}
+        <div class="pr-meta">${[s.author, shortD(s.date)].filter(Boolean).map(esc).join(" · ")}${safeUrl(s.url) ? ` · <a href="${esc(s.url)}" target="_blank" rel="noopener">Read ↗</a>` : ""}</div>
+        ${s.blurb ? `<div class="pr-blurb">${esc(s.blurb)}</div>` : ""}</div></li>`; }).join("")}</ul>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Collected weekly from outlets that rank all 30 teams. Blurbs are short summaries, not quotes.${w.date ? " Compiled " + esc(shortD(w.date)) + "." : ""}</p>
+  </div>`;
+}
+
+/* team advanced stats with league ranks and the change vs a week earlier */
+const ADV_FMT = { ortg: f1d, drtg: f1d, net: s1, pace: f1d, efg: p1, tov: v => f1d(v) + "%", orb: v => f1d(v) + "%", ftr: v => num(v) === null ? "–" : v.toFixed(3),
+  tpar: p1, tpp: p1, oefg: p1, otov: v => f1d(v) + "%", drb: v => f1d(v) + "%", oftr: v => num(v) === null ? "–" : v.toFixed(3) };
+const ADV_GROUPS = [["Offense", [["efg","Effective FG%"],["tov","Turnover %"],["orb","Off. rebound %"],["ftr","Free throws per FGA"],["tpar","3-point attempt rate"],["tpp","3-point %"]]],
+  ["Defense", [["oefg","Opp. effective FG%"],["otov","Opp. turnover %"],["drb","Def. rebound %"],["oftr","Opp. free throws per FGA"]]]];
+function advancedPanel(){
+  const A = TEAM && TEAM.adv, n = A && A.now;
+  if (!n || !n.det || !n.ranks) return "";
+  const pv = A.prev && A.prev.ranks ? A.prev : null, L = A.last && A.last.ranks ? A.last : null;
+  const chg = k => { if (!pv || num(pv.ranks[k]) === null) return ""; const d = pv.ranks[k] - n.ranks[k]; return d ? `<span class="mv ${d > 0 ? "up" : "down"}" title="${d > 0 ? "Up" : "Down"} ${Math.abs(d)} from ${esc(ordinal(pv.ranks[k]))} a week earlier">${d > 0 ? "▲" : "▼"}${Math.abs(d)}</span>` : ""; };
+  const tile = (k, label) => `<div><b>${esc(ADV_FMT[k](n.det[k]))}</b><span>${esc(label)} · <strong>${esc(ordinal(n.ranks[k]))}</strong>${chg(k)}</span></div>`;
+  const lastCell = k => L && num(L.det[k]) !== null ? `${esc(ADV_FMT[k](L.det[k]))} <span class="muted">· ${esc(ordinal(L.ranks[k]))}</span>` : "–";
+  return `<div class="panel adv"><h3>Advanced stats<span class="tag">${esc(n.gp)} games</span></h3>
+    <div class="recgrid">${tile("ortg", "Off. rating")}${tile("drtg", "Def. rating")}${tile("net", "Net rating")}${tile("pace", "Pace")}</div>
+    <div class="tbl-wrap" style="border:0"><table class="mini advt"><thead><tr><th>Four factors</th><th>2026-27</th><th>Rank</th><th class="hidden-sm">2025-26</th></tr></thead><tbody>
+    ${ADV_GROUPS.map(([g, rows]) => `<tr class="grp"><td colspan="4">${esc(g)}</td></tr>` + rows.map(([k, l]) => `<tr><td>${esc(l)}</td><td><b>${esc(ADV_FMT[k](n.det[k]))}</b></td><td>${esc(ordinal(n.ranks[k]))}${chg(k)}</td><td class="hidden-sm">${lastCell(k)}</td></tr>`).join("")).join("")}
+    </tbody></table></div>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Through ${esc(shortD(n.through))}. Ranks out of ${esc(n.teams || 30)} (1st = best; pace 1st = fastest)${pv ? `, arrows vs a week earlier (${esc(pv.gp)} games)` : ""}.${L ? ` Last season: off. ${esc(ordinal(L.ranks.ortg))}, def. ${esc(ordinal(L.ranks.drtg))}, net ${esc(ordinal(L.ranks.net))}.` : ""} ${A.stale ? "This week's box-score file wasn't available, so these are last week's numbers. " : ""}${esc(A.source || "")}</p>
+  </div>`;
+}
+
+/* hot and cold: last 5 games vs the season, points first */
+function hotColdPanel(){
+  const log = seasonLog();
+  if (log.length < 7) return "";
+  const S = aggRows(log), F = aggRows(log.slice(-5));
+  const rows = Object.values(S).filter(a => a.gp >= 4 && a.min / a.gp >= 12 && F[a.name] && F[a.name].gp >= 2).map(a => {
+    const b = F[a.name];
+    return { name: a.name, s: a, l: b, d: pg(b, "pts") - pg(a, "pts"), dm: pg(b, "min") - pg(a, "min") };
+  });
+  if (!rows.length) return "";
+  const hot = rows.filter(r => r.d >= 2.5).sort((x, y) => y.d - x.d).slice(0, 3), cold = rows.filter(r => r.d <= -2.5).sort((x, y) => x.d - y.d).slice(0, 3);
+  const line = r => `<li><div class="hc-n"><b>${esc(r.name)}</b><span class="pd ${r.d >= 0 ? "up" : "down"}">${s1(r.d)} pts</span></div>
+    <div class="hc-l">${f1d(pg(r.l, "pts"))} pts over his last ${r.l.gp} (season ${f1d(pg(r.s, "pts"))}) · ${pctTxt(ratio(r.l.fgm, r.l.fga))}% FG${r.l.tpa >= 5 ? ` · ${pctTxt(ratio(r.l.tpm, r.l.tpa))}% 3P` : ""} · ${f1d(pg(r.l, "min"))} min</div></li>`;
+  const all = rows.slice().sort((x, y) => y.d - x.d);
+  return `<div class="panel hotcold"><h3>Hot and cold<span class="tag">Last 5 vs season</span></h3>
+    <div class="hc-grid"><div><div class="eyebrow hk">Hot</div>${hot.length ? `<ul class="hc">${hot.map(line).join("")}</ul>` : `<p class="empty">Nobody is 2.5+ points above his average.</p>`}</div>
+    <div><div class="eyebrow hk">Cold</div>${cold.length ? `<ul class="hc">${cold.map(line).join("")}</ul>` : `<p class="empty">Nobody is 2.5+ points below his average.</p>`}</div></div>
+    <details class="hmore"><summary>Everyone in the rotation</summary>
+    <div class="tbl-wrap" style="border:0"><table class="mini box"><thead><tr><th>Player</th><th>Pts L5</th><th>Season</th><th>Diff</th><th class="hidden-sm">FG% L5</th><th class="hidden-sm">Min L5</th></tr></thead><tbody>
+    ${all.map(r => `<tr><td>${esc(r.name)}</td><td><b>${f1d(pg(r.l, "pts"))}</b></td><td>${f1d(pg(r.s, "pts"))}</td><td><span class="pd ${r.d > 0.05 ? "up" : r.d < -0.05 ? "down" : ""}">${s1(r.d)}</span></td><td class="hidden-sm">${pctTxt(ratio(r.l.fgm, r.l.fga))}</td><td class="hidden-sm">${f1d(pg(r.l, "min"))} <span class="muted">(${s1(r.dm)})</span></td></tr>`).join("")}
+    </tbody></table></div></details>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Players averaging 12+ minutes with 2+ of the last 5 games. Hot or cold = 2.5+ points per game off the season average. From box scores.</p>
+  </div>`;
+}
+
+/* rotation: starting fives and minutes trends */
+function rotationPanel(){
+  const log = seasonLog();
+  if (!log.length) return "";
+  const S = aggRows(log), F = aggRows(log.slice(-5));
+  const fives = {};
+  log.forEach(g => { const st = g.rows.filter(r => r.st).map(r => r.name); if (st.length !== 5) return; const k = st.slice().sort().join("|");
+    const f = fives[k] = fives[k] || { names: st.slice().sort((a, b) => (S[b] ? S[b].min : 0) - (S[a] ? S[a].min : 0)), n: 0, w: 0, last: "" };
+    f.n++; if (num(g.det) !== null && num(g.oppPts) !== null && g.det > g.oppPts) f.w++; f.last = g.d; });
+  const fl = Object.values(fives).sort((a, b) => b.n - a.n || b.last.localeCompare(a.last));
+  const latest = log[log.length - 1], latestSt = latest.rows.filter(r => r.st).map(r => r.name);
+  const players = Object.values(S).sort((a, b) => b.min / b.gp - a.min / a.gp);
+  const maxM = Math.max(...players.map(a => a.min / a.gp), 1);
+  const missed = name => { const first = log.findIndex(g => g.rows.some(r => r.name === name)); return first < 0 ? 0 : log.slice(first).filter(g => !g.rows.some(r => r.name === name)).length; };
+  const showN = 5;
+  return `<div class="panel rot"><h3>Rotation</h3>
+    ${fl.length ? `<div class="eyebrow hk">Starting fives</div><ul class="lu">${fl.slice(0, 4).map(f => `<li><span>${f.names.map(n => esc(lastName(n))).join(" · ")}</span><b>${f.n} start${f.n > 1 ? "s" : ""} · ${f.w}–${f.n - f.w}</b></li>`).join("")}</ul>
+      <p class="muted" style="font-size:12.5px;margin:6px 0 12px">${fl.length} different starting five${fl.length > 1 ? "s" : ""} in ${log.length} game${log.length > 1 ? "s" : ""}${latestSt.length === 5 ? ` · last game (${esc(shortD(latest.d))} ${esc(vsAt(latest))}): ${latestSt.map(n => esc(lastName(n))).join(", ")}` : ""}.</p>` : ""}
+    <div class="eyebrow hk">Minutes</div>
+    <div class="tbl-wrap" style="border:0"><table class="mini box rott"><thead><tr><th>Player</th><th>GP</th><th class="hidden-sm">GS</th><th>Min</th><th>Last ${Math.min(showN, log.length)}</th><th class="hidden-sm">Missed</th></tr></thead><tbody>
+    ${players.map(a => { const m = a.min / a.gp, l = F[a.name], dl = l ? pg(l, "min") - m : null;
+      return `<tr><td>${esc(a.name)}</td><td>${a.gp}</td><td class="hidden-sm">${a.gs}</td><td><span class="minbar"><i style="width:${(m / maxM * 100).toFixed(0)}%"></i></span>${f1d(m)}</td><td>${l ? f1d(pg(l, "min")) + (Math.abs(dl) >= 3 ? ` <span class="pd ${dl > 0 ? "up" : "down"}">${dl > 0 ? "▲" : "▼"}${Math.abs(dl).toFixed(0)}</span>` : "") : `<span class="muted">–</span>`}</td><td class="hidden-sm">${missed(a.name) || ""}</td></tr>`; }).join("")}
+    </tbody></table></div>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Per-game minutes. Arrows mark a change of 3+ minutes over the last ${Math.min(showN, log.length)} games. Missed = team games without minutes since his first appearance (injury, rest or coach's decision).</p>
+  </div>`;
+}
+
+/* milestones (career round numbers and Pistons top-10 passes) + Cade tracker */
+const MS_STATS = [["pts","points",1000],["reb","rebounds",500],["ast","assists",500],["stl","steals",100],["blk","blocks",100],["tpm","3-pointers",100],["g","games",100]];
+function milestoneData(log){
+  if (!MILE || !Array.isArray(MILE.players)) return null;
+  const lead = (MILE.leaders && MILE.leaders.stats) || {};
+  const coming = [], reached = [];
+  MILE.players.forEach(p => {
+    const games = log.map(g => ({ g, r: g.rows.find(r => r.name === p.name) })).filter(x => x.r);
+    const last = p.last || {}, n = games.length;
+    MS_STATS.forEach(([k, label, step]) => {
+      const val = x => k === "g" ? 1 : x.r[k];
+      const add = games.reduce((t, x) => t + val(x), 0);
+      const baseC = (p.career || {})[k] || 0, baseD = (p.det || {})[k] || 0, vC = baseC + add, vD = baseD + add;
+      const rate = n >= 5 ? add / n : (last.g ? (k === "g" ? 1 : (last[k] || 0) / last.g) : (n ? add / n : 0));
+      const cross = (base, thr) => { let c = base; for (const x of games) { c += val(x); if (c >= thr) return x.g; } return null; };
+      for (let t = Math.floor(baseC / step) * step + step; t <= vC; t += step) { const g = cross(baseC, t); if (g) reached.push({ p: p.name, g, text: `${t.toLocaleString("en-US")} career ${label}` }); }
+      if (vC >= step && rate > 0) { const nx = Math.floor(vC / step) * step + step; coming.push({ p: p.name, gap: nx - vC, away: Math.ceil((nx - vC) / rate), text: `${nx.toLocaleString("en-US")} career ${label}`, now: vC }); }
+      const list = (lead[k] || []).filter(e => e[0] !== p.name).slice().sort((a, b) => b[1] - a[1]);
+      if (!list.length || vD <= 0) return;
+      list.forEach(([who, v]) => { if (baseD <= v && vD > v) { const g = cross(baseD, v + 1); if (g) reached.push({ p: p.name, g, text: `Passed ${who} for ${ordinal(list.filter(e => e[1] > v).length + 1)} in Pistons history in ${label}` }); } });
+      const above = list.filter(e => e[1] >= vD);
+      if (rate <= 0) return;
+      if (above.length < 10 && above.length) { const nx = above[above.length - 1]; coming.push({ p: p.name, gap: nx[1] - vD + 1, away: Math.ceil((nx[1] - vD + 1) / rate), text: `Pass ${nx[0]} (${nx[1].toLocaleString("en-US")}) for ${ordinal(above.length)} in Pistons ${label}`, now: vD, fr: true }); }
+      else if (above.length >= 10) { const t = list[9]; coming.push({ p: p.name, gap: t[1] - vD + 1, away: Math.ceil((t[1] - vD + 1) / rate), text: `Enter the Pistons' all-time top 10 in ${label} (${t[0]}, ${t[1].toLocaleString("en-US")})`, now: vD, fr: true }); }
+    });
+  });
+  coming.sort((a, b) => a.away - b.away || (b.fr ? 1 : 0) - (a.fr ? 1 : 0));
+  reached.sort((a, b) => b.g.d.localeCompare(a.g.d));
+  return { coming: coming.filter(c => c.away <= 25).slice(0, 10), reached: reached.slice(0, 8), basis: log.length };
+}
+function cadeCard(log){
+  const me = "Cade Cunningham", S = aggRows(log)[me], seed = MILE && Array.isArray(MILE.players) ? MILE.players.find(p => p.name === me) : null;
+  const L = seed && seed.last && seed.last.g ? seed.last : null;
+  const fut = FUTURES && Array.isArray(FUTURES.items) ? FUTURES.items.find(i => /mvp/i.test(i.market || "") && /cade|cunningham/i.test(i.market || "")) : null;
+  const pr = TEAM && TEAM.adv && TEAM.adv.playerRanks && TEAM.adv.playerRanks.players ? TEAM.adv.playerRanks.players[me] : null;
+  const RK = { pts: "points", ast: "assists", reb: "rebounds", stl: "steals", tpm: "3-pointers" };
+  const rk = pr ? Object.keys(RK).filter(k => num(pr[k]) !== null && pr[k] <= 25).map(k => `${ordinal(pr[k])} in ${RK[k]}`) : [];
+  const ch = seed && seed.highs ? seed.highs : {};
+  let lineHtml, cmp = "";
+  if (S) {
+    lineHtml = `<p class="ct-line"><b>${f1d(pg(S, "pts"))}</b> pts · <b>${f1d(pg(S, "reb"))}</b> reb · <b>${f1d(pg(S, "ast"))}</b> ast · ${pctTxt(ratio(S.fgm, S.fga))}% FG · ${pctTxt(ratio(S.tpm, S.tpa))}% 3P <span class="muted">in ${S.gp} game${S.gp > 1 ? "s" : ""}</span></p>`;
+    if (L) cmp = `<p class="muted" style="margin:0 0 10px;font-size:13.5px">vs 2025-26: ${["pts","reb","ast"].map(k => `${s1(pg(S, k) - L[k] / L.g)} ${k}`).join(", ")}</p>`;
+  } else if (L) {
+    lineHtml = `<p class="ct-line"><span class="muted">2025-26:</span> <b>${f1d(L.pts / L.g)}</b> pts · <b>${f1d(L.reb / L.g)}</b> reb · <b>${f1d(L.ast / L.g)}</b> ast in ${L.g} games</p>`;
+  } else return "";
+  const newHigh = S && ch.pts && S.hi.pts && S.hi.pts.v > ch.pts.v ? S.hi.pts : null;
+  const tiles = S ? `<div class="recgrid ct-tiles"><div><b>${S.g30}</b><span>30-point games</span></div><div><b>${S.g40}</b><span>40-point games</span></div><div><b>${S.dd}</b><span>Double-doubles</span></div><div><b>${S.td}</b><span>Triple-doubles</span></div></div>` : "";
+  const bits = [];
+  if (rk.length) bits.push(`League rank per game: ${esc(rk.join(", "))} (qualified players).`);
+  if (S && S.hi.pts) bits.push(`Season high ${S.hi.pts.v} pts (${esc(shortD(S.hi.pts.g.d))} ${esc(vsAt(S.hi.pts.g))})${ch.pts ? `; career high ${ch.pts.v}` : ""}.`);
+  else if (ch.pts) bits.push(`Career high ${ch.pts.v} pts (${esc(shortD(ch.pts.date))} vs ${esc(ch.pts.opp)}).`);
+  if (fut) bits.push(`MVP odds ${esc(fut.odds)}${fut.book ? " (" + esc(fut.book) + ")" : ""}.`);
+  return `<div class="ct"><div class="eyebrow hk">Cade tracker</div>${newHigh ? `<p class="ct-new">New career high: ${newHigh.v} points, ${esc(shortD(newHigh.g.d))} ${esc(vsAt(newHigh.g))}</p>` : ""}${lineHtml}${cmp}${tiles}${bits.length ? `<p class="ct-bits">${bits.join(" ")}</p>` : ""}</div>`;
+}
+function milestonesPanel(){
+  if (!MILE || !Array.isArray(MILE.players)) return "";
+  const log = seasonLog(), M = milestoneData(log), cade = cadeCard(log);
+  if (!M || (!M.coming.length && !M.reached.length && !cade)) return "";
+  const away = n => n <= 1 ? "next game" : `about ${n} games`;
+  return `<div class="panel mile"><h3>Milestones and Cade tracker</h3>
+    <div class="ms-grid">${cade}
+    <div>${M.reached.length ? `<div class="eyebrow hk">Reached this season</div><ul class="ms">${M.reached.map(r => `<li class="done"><b>${esc(r.p)}</b> ${esc(r.text)}<div class="ms-m">${esc(shortD(r.g.d))} ${esc(vsAt(r.g))}</div></li>`).join("")}</ul>` : ""}
+    ${M.coming.length ? `<div class="eyebrow hk">Coming up</div><ul class="ms">${M.coming.map(c => `<li><b>${esc(c.p)}</b> ${esc(c.text)}<div class="ms-m">${c.gap.toLocaleString("en-US")} to go · ${away(c.away)}</div></li>`).join("")}</ul>` : ""}</div></div>
+    <p class="muted" style="font-size:12.5px;margin:10px 0 0">Regular season only. Career totals through ${esc(MILE.through || "2025-26")} from ESPN box scores plus this season's games; "about N games" uses this season's per-game rate (last season's until he's played 5). Pistons leaderboards: <a href="${esc(safeUrl(MILE.leaders && MILE.leaders.url) || "#")}" target="_blank" rel="noopener">Basketball Reference top 10 ↗</a>.</p>
+  </div>`;
+}
+
+/* young-player watch: anyone in his first three NBA seasons */
+function youngPanel(){
+  if (!MILE || !Array.isArray(MILE.players)) return "";
+  const log = seasonLog(), S = aggRows(log), F = aggRows(log.slice(-5));
+  const yr = p => !p.debut || p.debut >= "2026-27" ? 1 : p.debut === "2025-26" ? 2 : p.debut === "2024-25" ? 3 : 0;
+  const young = MILE.players.filter(p => yr(p) > 0);
+  if (!young.length) return "";
+  const tag = n => n === 1 ? "Rookie" : n === 2 ? "2nd season" : "3rd season";
+  const played = young.filter(p => S[p.name]), notYet = young.filter(p => !S[p.name]);
+  const card = p => {
+    const a = S[p.name], L = p.last && p.last.g ? p.last : null, l5 = F[p.name];
+    if (a) {
+      const vs = L ? `vs last season: ${s1(pg(a, "pts") - L.pts / L.g)} pts, ${s1(pg(a, "min") - L.min / L.g)} min` : "First NBA season";
+      const tr = l5 && a.gp > 5 ? `Last ${l5.gp}: ${f1d(pg(l5, "pts"))} pts in ${f1d(pg(l5, "min"))} min` : "";
+      return `<li class="yp"><div class="yp-h"><b>${esc(p.name)}</b><span class="pill">${tag(yr(p))}</span></div>
+        <div class="yp-l"><b>${f1d(pg(a, "pts"))}</b> pts · ${f1d(pg(a, "reb"))} reb · ${f1d(pg(a, "ast"))} ast · ${f1d(pg(a, "min"))} min · ${a.gp} GP${a.fga >= 10 ? ` · ${pctTxt(ratio(a.fgm, a.fga))}% FG` : ""}${a.tpa >= 10 ? ` · ${pctTxt(ratio(a.tpm, a.tpa))}% 3P` : ""}</div>
+        <div class="yp-m">${esc(vs)}${tr ? " · " + esc(tr) : ""}${a.hi.pts ? ` · season high ${a.hi.pts.v} pts` : ""}</div></li>`;
+    }
+    return "";
+  };
+  if (!played.length) {
+    const withLast = young.filter(p => p.last && p.last.g);
+    return `<div class="panel young"><h3>Young-player watch</h3>
+      <ul class="yp-list">${withLast.map(p => `<li class="yp"><div class="yp-h"><b>${esc(p.name)}</b><span class="pill">${tag(yr(p))}</span></div><div class="yp-l"><span class="muted">2025-26:</span> ${f1d(p.last.pts / p.last.g)} pts · ${f1d(p.last.reb / p.last.g)} reb · ${f1d(p.last.ast / p.last.g)} ast · ${f1d(p.last.min / p.last.g)} min in ${p.last.g} games</div></li>`).join("")}</ul>
+      ${young.length > withLast.length ? `<p class="muted" style="font-size:13px;margin:8px 0 0">No NBA games yet: ${esc(young.filter(p => !(p.last && p.last.g)).map(p => p.name).join(", "))}.</p>` : ""}
+      <p class="muted" style="font-size:12.5px;margin:8px 0 0">Players in their first three NBA seasons. This season's numbers start Oct 20.</p></div>`;
+  }
+  return `<div class="panel young"><h3>Young-player watch</h3>
+    <ul class="yp-list">${played.sort((a, b) => S[b.name].min - S[a.name].min).map(card).join("")}</ul>
+    ${notYet.length ? `<p class="muted" style="font-size:13px;margin:8px 0 0">Yet to play this season: ${esc(notYet.map(p => p.name).join(", "))}.</p>` : ""}
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Players in their first three NBA seasons (debut 2024-25 or later). Per-game numbers from box scores.</p></div>`;
+}
+
+/* injury history: each listed stint from the daily injury reports, with games missed from box scores */
+function injuryStints(){
+  const out = ((TEAM && Array.isArray(TEAM.injuries)) ? TEAM.injuries : []).map(x => Object.assign({}, x));
+  const D = DASH_PICK === "latest" ? DASH_LATEST : DASH, day = D && D.date;
+  if (day && day >= SEASON0 && (!TEAM || !TEAM.asOf || day > TEAM.asOf)) {
+    const today = {}; (Array.isArray(D.injuries) ? D.injuries : []).forEach(i => { if (i && i.name) today[pName(i.name)] = i; });
+    out.forEach(x => { if (x.open && !today[x.name]) x.open = false; });
+    Object.entries(today).forEach(([name, i]) => {
+      const cur = out.find(x => x.open && x.name === name), st = String(i.status || "").trim();
+      if (cur && cur.status === st) { cur.to = day; cur.detail = i.detail || cur.detail; }
+      else { if (cur) cur.open = false; out.push({ name, status: st, detail: i.detail || "", from: day, to: day, open: true }); }
+    });
+  }
+  const until = DASH_PICK === "latest" ? "9999" : day || "9999";
+  return out.filter(x => x && x.name && x.from && x.from <= until);
+}
+function injuryHistoryPanel(){
+  const st = injuryStints();
+  if (!st.length) return "";
+  const log = seasonLog();
+  const missedIn = (name, a, b) => log.filter(g => g.d >= a && g.d <= b && !g.rows.some(r => r.name === name)).length;
+  const by = {};
+  st.forEach(x => { (by[x.name] = by[x.name] || []).push(x); });
+  const cls = s => /out/i.test(s) ? "out" : (/question|doubt|day/i.test(s) ? "q" : "p");
+  const ppl = Object.entries(by).map(([name, list]) => {
+    const rows = list.slice().sort((a, b) => b.from.localeCompare(a.from)).map(x => Object.assign(x, { miss: missedIn(name, x.from, x.to) }));
+    const miss = log.filter(g => rows.some(x => g.d >= x.from && g.d <= x.to) && !g.rows.some(r => r.name === name)).length;
+    return { name, rows, miss, open: rows.find(x => x.open) };
+  }).sort((a, b) => (b.open ? 1 : 0) - (a.open ? 1 : 0) || b.miss - a.miss || a.name.localeCompare(b.name));
+  const span = x => x.from === x.to ? shortD(x.from) : `${shortD(x.from)}–${x.open ? "now" : shortD(x.to)}`;
+  return `<div class="panel injh"><h3>Injury history</h3>
+    <ul class="ih">${ppl.map(p => `<li><div class="ih-h"><b>${esc(p.name)}</b>${p.open ? `<span class="st ${cls(p.open.status)}">${esc(p.open.status)}</span>` : ""}<span class="muted ih-n">${p.miss ? `Missed ${p.miss} game${p.miss > 1 ? "s" : ""}` : "No games missed"}</span></div>
+      <ul class="ih-s">${p.rows.map(x => `<li><span>${esc(x.status)}${x.detail ? " · " + esc(x.detail) : ""}</span><span class="muted">${esc(span(x))}${x.miss ? ` · missed ${x.miss}` : ""}</span></li>`).join("")}</ul></li>`).join("")}</ul>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Every listing on the morning injury report this season, grouped into stints by status. Games missed = team games during a stint without minutes in the box score.</p>
+  </div>`;
+}
+
 function renderTeam(){
   const el = $("#p-team");
   if (!el) return;
   const D = DASH || {};
-  const secs = [["record", "Record", 12, recordPanel()], ["pace", "Pace", 12, pacePanel()], ["players", "Players", 12, playersPanel(D.players)], ["cap", "Cap", 12, capPanel()]].filter(x => x[3]);
+  const two = (a, b, sa, sb) => a[3] && b[3] ? [[a[0], a[1], sa, a[3]], [b[0], b[1], sb, b[3]]] : [[a[0], a[1], 12, a[3]], [b[0], b[1], 12, b[3]]];
+  const secs = [["record", "Record", 12, recordPanel()], ["pace", "Pace", 12, pacePanel()],
+    ...two(["rank", "Rankings", 0, rankingsPanel()], ["adv", "Advanced", 0, advancedPanel()], 5, 7),
+    ["players", "Players", 12, playersPanel(D.players)],
+    ...two(["hot", "Hot/cold", 0, hotColdPanel()], ["rot", "Rotation", 0, rotationPanel()], 5, 7),
+    ["mile", "Milestones", 12, milestonesPanel()],
+    ...two(["young", "Young", 0, youngPanel()], ["injh", "Injuries", 0, injuryHistoryPanel()], 7, 5),
+    ["cap", "Cap", 12, capPanel()]].filter(x => x[3]);
   el.innerHTML = `${jumpBar(secs.map(([id, l]) => [id, l]))}${dashNote()}<div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
   el.querySelectorAll("[data-pview]").forEach(b => b.addEventListener("click", () => {
     P.view = b.dataset.pview; store.set("pistons-pview", P.view); renderTeam();
@@ -1432,12 +1734,13 @@ function loadScript(path){
   return new Promise(res => { const s = document.createElement("script"); s.src = path + "?t=" + Date.now(); s.onload = () => res(true); s.onerror = () => res(false); document.head.appendChild(s); });
 }
 async function loadStaticDb(){
-  await Promise.all([loadScript("data/results.js"), loadScript("data/daily.js"), loadScript("data/lastseason.js"), loadScript("data/history.js"), loadScript("data/buzz.js"), loadScript("data/transactions.js"), loadScript("data/cap.js")]);
+  await Promise.all([loadScript("data/results.js"), loadScript("data/daily.js"), loadScript("data/lastseason.js"), loadScript("data/history.js"), loadScript("data/buzz.js"), loadScript("data/transactions.js"), loadScript("data/cap.js"), loadScript("data/team.js"), loadScript("data/milestones.js")]);
   const R = window.PISTONS_RESULTS || {}, D = window.PISTONS_DAILY || {}, H = window.PISTONS_HISTORY || {};
   const cols = { results: R.games || {}, games: D.games || {}, lines: D.lines || {}, matchups: D.matchups || {}, daily: D.days || {}, history: H.days || {} };
   const docs = { "dashboard/latest": D.latest || null, "dashboard/index": { dates: Object.keys(D.days || {}) }, "betting/futures": D.futures || null,
     "lastseason/games": window.PISTONS_LASTSEASON || null,
     "buzz/feed": window.PISTONS_BUZZ || null, "transactions/feed": window.PISTONS_MOVES || null, "cap/summary": window.PISTONS_CAP || null,
+    "team/stats": window.PISTONS_TEAM || null, "team/milestones": window.PISTONS_MILESTONES || null,
     "meta/status": Object.assign({}, R.updated ? { updated: R.updated } : (D.updated ? { updated: D.updated } : {}),
       window.PISTONS_BUZZ && window.PISTONS_BUZZ.updated ? { buzz: window.PISTONS_BUZZ.updated } : {},
       window.PISTONS_MOVES && window.PISTONS_MOVES.updated ? { transactions: window.PISTONS_MOVES.updated } : {}) };
@@ -1462,7 +1765,7 @@ async function loadStaticDb(){
       MATCHUPS = snap.docs.map(d => Object.assign({ date: d.id }, d.data() || {})).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.date));
       renderBetting();
     }, () => {});
-    db.doc("betting/futures").onSnapshot(snap => { FUTURES = snap.exists ? snap.data() : null; renderBetting(); }, () => {});
+    db.doc("betting/futures").onSnapshot(snap => { FUTURES = snap.exists ? snap.data() : null; renderBetting(); renderTeam(); }, () => {});
     db.collection("games").onSnapshot(snap => {
       BOXES = snap.docs.map(d => { const v = d.data() || {}; return Object.assign({ date: d.id }, v); });
       renderToday();
@@ -1486,6 +1789,8 @@ async function loadStaticDb(){
     db.doc("transactions/feed").onSnapshot(snap => { MOVES = snap.exists ? (snap.data() || null) : null; renderLeague(); renderHealth(); }, () => {});
     db.doc("cap/summary").get().then(snap => { CAP = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
     db.doc("lastseason/games").get().then(snap => { LAST = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
+    db.doc("team/stats").onSnapshot(snap => { TEAM = snap.exists ? (snap.data() || null) : null; renderTeam(); }, () => {});
+    db.doc("team/milestones").get().then(snap => { MILE = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
     db.doc("meta/status").onSnapshot(snap => {
       STATUS = snap.exists ? (snap.data() || null) : null;
       renderHealth();

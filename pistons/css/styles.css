@@ -423,3 +423,60 @@ a.bz-t:hover{text-decoration:underline}
 .hpick{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .hbtn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600;font-size:14px}
 @media (max-width:420px){.pace-t td,.pace-t th{padding:7px 4px}.pace-t{font-size:13.5px}.pace-head{font-size:20px}.pace-t td:first-child{white-space:normal}.pace-t th{letter-spacing:.04em}}
+/* Team tab features (Phase 6) */
+.pr-top{display:flex;gap:10px;margin:0 0 10px}
+.pr-top > div{flex:1;background:var(--surface);border-radius:10px;padding:8px 12px}
+.pr-top b{font:800 30px/1 "Saira Condensed",Arial,sans-serif;color:var(--head)}
+.pr-top span:not(.mv){display:block;font-size:12.5px;color:var(--muted);margin-top:3px}
+.pr-top .mv{vertical-align:8px}
+.pr-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.pr-list li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:10px;align-items:start;border-bottom:1px dashed var(--line);padding-bottom:9px}
+.pr-list li:last-child{border-bottom:0;padding-bottom:0}
+.rk{font:800 20px/1 "Saira Condensed",Arial,sans-serif;color:var(--kick);background:var(--tint);border-radius:8px;padding:7px 0;text-align:center}
+.pr-meta{font-size:12.5px;color:var(--muted)}
+.pr-blurb{font-size:13.5px;margin-top:2px}
+.advt td:not(:first-child),.advt th:not(:first-child){text-align:right;white-space:nowrap}
+.advt tr.grp td{font:700 11px/1 "Saira Condensed",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--kick);padding-top:12px}
+.panel.adv .recgrid span strong{color:var(--ink)}
+.hc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:4px 16px}
+.hc{list-style:none;margin:0 0 6px;padding:0;display:grid;gap:9px}
+.hc-n{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hc-l{font-size:13px;color:var(--muted);margin-top:2px}
+.lu{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.lu li{display:flex;justify-content:space-between;gap:10px;font-size:14px;border-bottom:1px dashed var(--line);padding-bottom:6px}
+.lu li:last-child{border-bottom:0}
+.lu li span{min-width:0}
+.lu li b{white-space:nowrap;font-size:13px}
+.rott td:not(:first-child),.rott th:not(:first-child){text-align:right}
+.minbar{display:inline-block;width:38px;height:6px;border-radius:3px;background:var(--surface);margin-right:6px;vertical-align:1px;overflow:hidden}
+.minbar i{display:block;height:100%;background:var(--home);border-radius:3px}
+.ms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:12px 22px;align-items:start}
+.ct{background:var(--tint);border-radius:12px;padding:12px 14px}
+.ct .hk{margin-top:0}
+.ct-line{margin:0 0 4px;font-size:15px}
+.ct-line b{font:800 22px/1 "Saira Condensed",Arial,sans-serif;color:var(--head)}
+.ct-tiles{margin:8px 0}
+.ct-tiles div{background:var(--card)}
+.ct-bits{font-size:13.5px;margin:0}
+.ct-new{margin:0 0 8px;font-weight:700;color:var(--win)}
+.ms{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:8px}
+.ms li{font-size:14.5px;line-height:1.4;padding-left:14px;position:relative}
+.ms li::before{content:"";position:absolute;left:0;top:7px;width:7px;height:7px;border-radius:50%;border:2px solid var(--kick)}
+.ms li.done::before{background:var(--win);border-color:var(--win)}
+.ms-m{font-size:12.5px;color:var(--muted)}
+.yp-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:10px}
+.yp{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.yp-h{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px}
+.yp-h .pill{margin-right:0}
+.yp-l{font-size:14px}.yp-l b{font-size:16px}
+.yp-m{font-size:12.5px;color:var(--muted);margin-top:3px}
+.ih{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ih > li{border-bottom:1px dashed var(--line);padding-bottom:9px}
+.ih > li:last-child{border-bottom:0;padding-bottom:0}
+.ih-h{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.ih-n{font-size:13px;margin-left:auto}
+.ih-s{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:3px}
+.ih-s li{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 10px;font-size:13.5px}
+.ih-s li span:first-child{min-width:0;overflow-wrap:anywhere}
+@media (max-width:420px){.advt td,.advt th,.rott td,.rott th{padding:6px 5px}.minbar{display:none}}
+.ih .st{font:700 11px/1 "Saira Condensed",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:4px 7px;border-radius:999px;white-space:nowrap}
