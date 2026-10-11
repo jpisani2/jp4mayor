@@ -514,3 +514,30 @@ a.bz-t:hover{text-decoration:underline}
 .fpt td:nth-child(n+3),.fpt th:nth-child(n+3){text-align:right}
 .fp-y{font-size:12px;color:var(--muted);white-space:normal}
 .fpt td:first-child{white-space:normal}
+/* Phase 8: theme nights, week ahead, Monday recap, archive search */
+.pill.promo{border-color:var(--kick);color:var(--kick);white-space:normal}
+.pill.give{background:var(--tint-strong);border-color:transparent;color:var(--ink)}
+.promo-l{font-size:14px;margin-top:6px;color:var(--ink)}
+.promo-note{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;background:var(--card);border:1px dashed var(--kick);border-radius:12px;padding:9px 12px;margin:0 0 16px;font-size:14px;color:var(--ink);text-decoration:none}
+.promo-note:hover{background:var(--tint)}
+.promo-note .eyebrow{color:var(--kick)}
+.pr-g{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.pr-g li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;border-bottom:1px dashed var(--line);padding-bottom:9px;font-size:14.5px}
+.pr-g li:last-child{border-bottom:0;padding-bottom:0}
+.pr-g li.past{opacity:.6}
+.pr-d b{display:block;font:800 18px/1.1 "Saira Condensed",Arial,sans-serif;color:var(--head)}
+.pr-d span{font-size:12.5px;color:var(--muted)}
+.pr-give{font-size:14px;margin-top:3px}.pr-jer{font-size:12.5px;color:var(--muted);margin-top:2px}
+.wa-l{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.wa-l li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;border-bottom:1px dashed var(--line);padding-bottom:9px;font-size:14.5px}
+.wa-l li:last-child{border-bottom:0;padding-bottom:0}
+.wa-d b{display:block;font:800 18px/1.1 "Saira Condensed",Arial,sans-serif;color:var(--kick);text-transform:uppercase}
+.wa-d span{font-size:12.5px;color:var(--muted)}
+.wa-m{font-size:13px;color:var(--muted);margin:2px 0 4px}
+.rc-p{font-size:14.5px;margin:8px 0 0}
+.ar-q{width:100%;font:inherit;font-size:16px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.ar-l{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.ar-l li{border-bottom:1px dashed var(--line);padding-bottom:10px}
+.ar-l li:last-child{border-bottom:0}
+.ar-l p{margin:3px 0 0;font-size:14px}
+mark{background:color-mix(in srgb,var(--kick) 30%,transparent);color:inherit;border-radius:3px;padding:0 1px}

@@ -207,6 +207,7 @@ function renderSchedule(){
   fm.hidden = S.view === "cal";
   $("#sched-list").hidden = S.view !== "list"; $("#sched-cal").hidden = S.view !== "cal";
   if (S.view === "list") renderList(); else renderCal();
+  renderWeekAhead();
 }
 (function initCalMonth(){
   const now = new Date(); const k = now.getFullYear() + "-" + String(now.getMonth()+1).padStart(2,"0");
@@ -248,7 +249,7 @@ function renderHome(){
   let prev = null;
   const rows = st.homes.map((g, i) => {
     const since = prev ? dayDiff(prev.date, g.date) : "—"; prev = g;
-    const pills = [inB2B.has(g.n) ? `<span class="pill b2b">Back-to-back</span>` : "", wknd(g) ? `<span class="pill">Weekend</span>` : "", early(g) ? `<span class="pill">Early start</span>` : "", g.cup ? `<span class="pill cup">NBA Cup</span>` : ""].join("");
+    const pills = [inB2B.has(g.n) ? `<span class="pill b2b">Back-to-back</span>` : "", promoPills(g), wknd(g) ? `<span class="pill">Weekend</span>` : "", early(g) ? `<span class="pill">Early start</span>` : "", g.cup ? `<span class="pill cup">NBA Cup</span>` : ""].join("");
     return `<tr><td class="muted">${i+1}</td><td class="nowrap">${esc(fmtDate(g.date))}</td><td>${esc(fullName(g.opp))}</td><td class="nowrap">${esc(fmtTime(g.time))}</td><td><span class="tv">${esc(g.tv)}</span></td><td class="muted">${since}</td><td>${resultCell(g)}</td><td>${pills}</td><td class="note hidden-sm">${esc(g.homeNote || "")}</td></tr>`;
   }).join("");
   const byMonth = MONTHS.map(([k,n]) => [n.slice(0,3), count(st.homes, g => g.date.startsWith(k))]);
@@ -256,8 +257,9 @@ function renderHome(){
   const nhPanel = nh ? `<div class="panel prev" style="margin-bottom:16px"><h3>Next home game</h3>
       <div class="opp">vs ${esc(fullName(nh.opp))}</div>
       <div class="muted" style="font-size:14px">${esc(fmtDate(nh.date, {weekday:"long", month:"short", day:"numeric"}))} · ${esc(fmtTime(nh.time))} ET${nh.tv ? " · " + esc(nh.tv) : ""} · Little Caesars Arena</div>
+      ${promoLine(nh)}
       <div class="cd" data-iso="${esc(nh.iso)}" aria-live="off"></div></div>` : "";
-  $("#p-home").innerHTML = nhPanel + `
+  $("#p-home").innerHTML = nhPanel + promoPanel() + `
     <div class="tiles">${tiles.map(([v,l]) => `<div class="tile"><b>${v}</b><span>${l}</span></div>`).join("")}</div>
     <div class="grid" style="margin-bottom:16px">
       <div class="panel"><h3>Key stretches</h3><ul class="stretch">
@@ -265,13 +267,14 @@ function renderHome(){
         <li><b>Home back-to-backs:</b> ${hb2b.map(([a,b]) => `${fmtDate(a.date,{month:"short",day:"numeric"})}–${dObj(b.date).getDate()} (${ABBR[a.opp]}, ${ABBR[b.opp]})`).join(", ")}.</li>
         <li><b>Longest waits:</b> ${st.homeGaps.slice().sort((a,b) => b.d - a.d).slice(0,3).map(x => `${fmtDate(x.from.date,{month:"short",day:"numeric"})} → ${fmtDate(x.to.date,{month:"short",day:"numeric"})} (${x.d} days)`).join(", ")}. The Dec gap is the NBA Cup window; a TBD game may land there.</li>
         <li><b>Holiday dates:</b> Nov 27 (day after Thanksgiving), Dec 27, Dec 30, New Year's Day. No Christmas game.</li>
-        <li><b>Check the opener:</b> Tue Oct 20 vs Boston is listed at 3:00 PM. Confirm before taking the afternoon off.</li>
+        <li><b>Opener:</b> Tue Oct 20 vs Boston at 3:00 PM (Opening Day, Opening Day Tee giveaway).</li>
       </ul></div>
       <div class="panel"><h3>Home games by month</h3>
         <table class="mini"><thead><tr><th>Month</th><th>Games</th></tr></thead><tbody>${byMonth.map(([m,c]) => `<tr><td>${m}</td><td>${c}</td></tr>`).join("")}</tbody></table>
         <p class="muted" style="font-size:13px;margin:8px 0 0">March is the busiest month with 10 home dates.</p></div>
     </div>
     <div class="tbl-wrap"><table><thead><tr><th>#</th><th>Date</th><th>Opponent</th><th>Tip</th><th>TV</th><th title="Days since the previous home game">Days since</th><th>Result</th><th>Flags</th><th class="hidden-sm">Notes</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  wirePromos();
 }
 
 /* ---------- summary tab ---------- */
@@ -709,7 +712,7 @@ function changesStrip(){
 /* ---------- overnight briefing (Phase 5, Oct 2026) ----------
    dashboard.briefing {asOf, bullets [{text, sec}], storylines [{title, text}], storyFor}: written by the morning task.
    sec = the section a bullet links to (Today: last next news inj buzz hist; Team: record pace players; League: moves east). */
-const SEC_TAB = { record: "team", pace: "team", players: "team", rank: "team", adv: "team", hot: "team", rot: "team", mile: "team", young: "team", injh: "team", cap: "team", moves: "league", east: "league", race: "league", proj: "league", awards: "league", scen: "league", former: "league", cruise: "league" };
+const SEC_TAB = { record: "team", pace: "team", players: "team", rank: "team", adv: "team", hot: "team", rot: "team", mile: "team", young: "team", injh: "team", cap: "team", moves: "league", east: "league", race: "league", proj: "league", awards: "league", scen: "league", former: "league", cruise: "league", recap: "history", search: "history", week: "schedule", outlook: "schedule" };
 function briefingPanel(D){
   const b = D && D.briefing;
   if (!b || !Array.isArray(b.bullets) || !b.bullets.length) return "";
@@ -756,10 +759,12 @@ function renderToday(){
     ${jumpBar(secs.map(([id, l]) => [id, l]))}
     <div class="dash-top"><div><div class="eyebrow">${esc(D.phase || "Daily dashboard")}</div><h2>${D.date ? esc(fmtDate(D.date, {weekday:"long", month:"long", day:"numeric"})) : "Pistons daily"}</h2><div class="sub">${esc(sub)}</div></div>${picker}</div>
     ${changesStrip()}
+    ${promoNote()}
     ${D.headline && !(D.briefing && Array.isArray(D.briefing.bullets) && D.briefing.bullets.length) ? `<div class="headline">${esc(D.headline)}</div>` : ""}
     <div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
   const sel = $("#dash-day");
   if (sel) sel.addEventListener("change", () => pickDay(sel.value));
+  el.querySelectorAll("[data-goto-home]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); showTab("home"); window.scrollTo({top: 0}); }));
   el.querySelectorAll("[data-goto-hist]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); HIST_PICK = a.dataset.gotoHist; showTab("history"); window.scrollTo({top: 0}); }));
   wireSections(el); wireFeeds(el); wireBriefing(el);
   renderHero();
@@ -1524,6 +1529,249 @@ function histCard(){
 }
 
 /* History tab: everything for the date, with a date picker */
+/* ---------- Phase 8 extras (Oct 2026): theme nights, week ahead + schedule outlook, Monday recap, archive search ---------- */
+/* theme nights and giveaways: DATA.promos {source, url, asOf, games {date: {theme?, giveaway?, jersey?}}} (static, from the Pistons theme-night page) */
+const PROMO = (DATA.promos && DATA.promos.games) || {};
+const PR = { f: "all", past: false };
+const promoBits = p => [p.theme, p.giveaway ? "Giveaway: " + p.giveaway : "", p.jersey ? p.jersey + " jersey" : ""].filter(Boolean);
+function promoPills(g){
+  const p = PROMO[g.date];
+  if (!p) return "";
+  return (p.theme ? `<span class="pill promo">${esc(p.theme)}</span>` : "") + (p.giveaway ? `<span class="pill give">Giveaway</span>` : "");
+}
+function promoLine(g){
+  const p = g && PROMO[g.date];
+  if (!p) return "";
+  const b = promoBits(p);
+  return b.length ? `<div class="promo-l">${b.map(esc).join(" · ")}</div>` : "";
+}
+function promoPanel(){
+  const dates = Object.keys(PROMO).sort();
+  if (!dates.length) return "";
+  const today = isoDay(new Date());
+  const homeBy = {}; GAMES.forEach(g => { if (g.home && !g.tbd) homeBy[g.date] = g; });
+  const list = dates.filter(d => PR.past || d >= today).filter(d => PR.f === "all" || (PR.f === "give" ? PROMO[d].giveaway : PROMO[d].theme));
+  const nTheme = dates.filter(d => PROMO[d].theme).length, nGive = dates.filter(d => PROMO[d].giveaway).length;
+  const chip = (k, l) => `<button type="button" class="chip" data-prf="${k}" aria-pressed="${PR.f === k}">${l}</button>`;
+  const missing = Object.keys(homeBy).filter(d => !PROMO[d]).sort();
+  return `<div class="panel promos" style="margin-bottom:16px"><h3>Theme nights &amp; giveaways<span class="tag">${nTheme} themes · ${nGive} giveaways</span></h3>
+    <div class="bz-filter">${chip("all", "All")}${chip("give", "Giveaways")}${chip("theme", "Theme nights")}
+      <label class="mv-all" style="margin-left:auto"><input type="checkbox" data-prpast${PR.past ? " checked" : ""}> Show past games</label></div>
+    ${list.length ? `<ul class="pr-g">${list.map(d => { const p = PROMO[d], g = homeBy[d];
+      return `<li class="${d < today ? "past" : ""}"><div class="pr-d"><b>${esc(fmtDate(d, {month: "short", day: "numeric"}))}</b><span>${esc(fmtDate(d, {weekday: "short"}))}${g ? " · " + esc(fmtTime(g.time)) : ""}</span></div>
+        <div><b>vs ${esc(g ? fullName(g.opp) : "")}</b>${p.theme ? ` <span class="pill promo">${esc(p.theme)}</span>` : ""}
+          ${p.giveaway ? `<div class="pr-give">Giveaway: <b>${esc(p.giveaway)}</b></div>` : ""}
+          ${p.jersey ? `<div class="pr-jer">${esc(p.jersey)} jersey</div>` : ""}</div></li>`; }).join("")}</ul>` : `<p class="empty">Nothing left in this filter.</p>`}
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">From the <a href="${esc(safeUrl(DATA.promos && DATA.promos.url) || "#")}" target="_blank" rel="noopener">Pistons theme-night page ↗</a> as of ${esc(shortD((DATA.promos && DATA.promos.asOf) || ""))}; the team can add or change promotions.${missing.length ? ` Not listed there yet: ${missing.map(d => esc(fmtDate(d, {month: "short", day: "numeric"}))).join(", ")}.` : ""}</p>
+  </div>`;
+}
+function wirePromos(){
+  const el = $("#p-home");
+  if (!el) return;
+  el.querySelectorAll("[data-prf]").forEach(b => b.addEventListener("click", () => { PR.f = b.dataset.prf; renderHome(); const a = $("#p-home").querySelector(`[data-prf="${PR.f}"]`); if (a) a.focus(); }));
+  const c = el.querySelector("[data-prpast]"); if (c) c.addEventListener("change", () => { PR.past = c.checked; renderHome(); });
+}
+/* Today: one line when the next home game has a theme night, giveaway or special jersey */
+function promoNote(){
+  if (DASH_PICK !== "latest") return "";
+  const g = nextGames().find(x => x.home);
+  const p = g && PROMO[g.date];
+  if (!p || !(p.theme || p.giveaway)) return "";
+  return `<a class="promo-note" href="#" data-goto-home><span class="eyebrow">Next home game</span> ${esc(fmtDate(g.date, {weekday: "short", month: "short", day: "numeric"}))} vs ${esc(g.opp)}${p.theme ? " · " + esc(p.theme) : ""}${p.giveaway ? " · Giveaway: " + esc(p.giveaway) : ""} <span aria-hidden="true">›</span></a>`;
+}
+
+/* week ahead + schedule outlook (Schedule tab). Opponent ratings, records and rest come from league/stats (detNext, ratingRank, standings). */
+function weekAheadHtml(){
+  const now = new Date(), today = isoDay(now);
+  const end = (() => { const d = new Date(now); d.setDate(d.getDate() + 7); return isoDay(d); })();
+  const up = GAMES.filter(g => !g.tbd && !g.wl && g.date >= today);
+  const wk = up.filter(g => g.date < end);
+  const L = LEAGUE || {}, nx = {}; (Array.isArray(L.detNext) ? L.detNext : []).forEach(x => { nx[x.d] = x; });
+  const RR = L.ratingRank || {}, ST = L.standings || {};
+  const restTxt = n => n === null || n === undefined ? "" : n === 0 ? "2nd night of a back-to-back" : n === 1 ? "1 day off" : n + " days off";
+  const prevPlayed = d => { const p = GAMES.filter(x => !x.tbd && x.date < d).pop(); return p ? dayDiff(p.date, d) - 1 : null; };
+  const card = g => {
+    const ab = ABBR[g.opp] || g.opp, x = nx[g.date] || {}, s = ST[ab];
+    const detRest = x.detRest !== undefined ? x.detRest : prevPlayed(g.date);
+    const edge = x.oppRest === 0 && detRest > 0 ? `<span class="pill b2b">Rest edge: ${esc(ab)} on a back-to-back</span>` : detRest === 0 && x.oppRest > 0 ? `<span class="pill">Detroit on a back-to-back</span>` : "";
+    return `<li><div class="wa-d"><b>${esc(fmtDate(g.date, {weekday: "short"}))}</b><span>${esc(fmtDate(g.date, {month: "short", day: "numeric"}))}</span></div>
+      <div><b>${g.home ? "vs" : "@"} ${esc(fullName(g.opp))}</b> <span class="muted">${esc(fmtTime(g.time))}${g.tv ? " · " + esc(g.tv) : ""}</span>
+        <div class="wa-m">${s && s.gp ? `${s.w}–${s.l} · ` : ""}${RR[ab] ? `${ordinal(RR[ab])} in our ratings` : ""}${detRest !== null && detRest !== undefined ? ` · Detroit: ${restTxt(detRest)}` : ""}${x.oppRest !== null && x.oppRest !== undefined ? ` · ${esc(ab)}: ${restTxt(x.oppRest)}` : ""}</div>
+        <div>${edge}${g.cup ? `<span class="pill cup">NBA Cup</span>` : ""}${promoPills(g)}</div></div></li>`;
+  };
+  /* outlook over the rest of the schedule */
+  const b2b = []; for (let i = 1; i < up.length; i++) if (dayDiff(up[i - 1].date, up[i].date) === 1) b2b.push([up[i - 1], up[i]]);
+  const trips = []; let cur = [];
+  up.forEach(g => { if (!g.home) cur.push(g); else { if (cur.length >= 3) trips.push(cur); cur = []; } }); if (cur.length >= 3) trips.push(cur);
+  const stands = []; cur = [];
+  up.forEach(g => { if (g.home) cur.push(g); else { if (cur.length >= 3) stands.push(cur); cur = []; } }); if (cur.length >= 3) stands.push(cur);
+  const rated = up.filter(g => nx[g.date] && num(nx[g.date].oppRating) !== null);
+  let tough = null;
+  for (let i = 0; i + 5 <= rated.length; i++) { const w = rated.slice(i, i + 5), avg = w.reduce((t, g) => t + nx[g.date].oppRating, 0) / 5; if (!tough || avg > tough.avg) tough = { avg, w }; }
+  const next30 = up.filter(g => dayDiff(today, g.date) <= 30);
+  const edges = next30.filter(g => nx[g.date] && nx[g.date].oppRest === 0 && nx[g.date].detRest > 0).length;
+  const against = next30.filter(g => nx[g.date] && nx[g.date].detRest === 0 && nx[g.date].oppRest > 0).length;
+  const n10 = rated.slice(0, 10), n10avg = n10.length ? n10.reduce((t, g) => t + nx[g.date].oppRating, 0) / n10.length : null;
+  const rem = L.remaining && L.remaining.DET;
+  const eastRem = L.remaining ? EAST_AB.filter(t => L.remaining[t]).sort((a, b) => L.remaining[b].oppRating - L.remaining[a].oppRating) : [];
+  const span = list => `${fmtDate(list[0].date, {month: "short", day: "numeric"})}–${fmtDate(list[list.length - 1].date, {month: "short", day: "numeric"})}`;
+  const outlook = [];
+  if (rem) outlook.push(`<li><b>Schedule strength:</b> ${eastRem.indexOf("DET") >= 0 ? `the ${ordinal(eastRem.indexOf("DET") + 1)}-hardest remaining schedule of the 15 East teams` : ""}${num(n10avg) !== null ? `; the next 10 opponents average ${n10avg >= 0 ? "+" : ""}${n10avg.toFixed(1)} points per game vs an average team` : ""}.</li>`);
+  if (tough) outlook.push(`<li><b>Toughest 5-game stretch:</b> ${esc(span(tough.w))}: ${tough.w.map(g => (g.home ? "" : "@") + esc(ABBR[g.opp] || g.opp)).join(", ")}.</li>`);
+  if (b2b.length) outlook.push(`<li><b>Back-to-backs left:</b> ${b2b.length}. Next: ${b2b.slice(0, 3).map(([a, b]) => `${esc(fmtDate(a.date, {month: "short", day: "numeric"}))}–${dObj(b.date).getDate()} (${a.home ? "" : "@"}${esc(ABBR[a.opp] || a.opp)}, ${b.home ? "" : "@"}${esc(ABBR[b.opp] || b.opp)})`).join("; ")}.</li>`);
+  if (trips.length) outlook.push(`<li><b>Next road trip:</b> ${esc(span(trips[0]))}, ${trips[0].length} games (${trips[0].map(g => esc(ABBR[g.opp] || g.opp)).join(", ")}).${trips.length > 1 ? ` ${trips.length - 1} more trip${trips.length > 2 ? "s" : ""} of 3+ after that.` : ""}</li>`);
+  if (stands.length) outlook.push(`<li><b>Next homestand:</b> ${esc(span(stands[0]))}, ${stands[0].length} games.</li>`);
+  if (Object.keys(nx).length) outlook.push(`<li><b>Rest in the next 30 days:</b> ${edges} game${edges === 1 ? "" : "s"} against a team on the second night of a back-to-back when Detroit is rested; ${against} the other way.</li>`);
+  return `<div class="dgrid" style="margin-bottom:16px">
+    ${cell(7, "week", `<div class="panel wa"><h3>Week ahead<span class="tag">${wk.length} game${wk.length === 1 ? "" : "s"}</span></h3>${wk.length ? `<ul class="wa-l">${wk.map(card).join("")}</ul>` : `<p class="empty">No games in the next 7 days.${up[0] ? ` Next: ${esc(fmtDate(up[0].date, {weekday: "short", month: "short", day: "numeric"}))} ${up[0].home ? "vs" : "@"} ${esc(fullName(up[0].opp))}.` : ""}</p>`}
+      <p class="muted" style="font-size:12.5px;margin:8px 0 0">Ratings = the hub's projection ratings (preseason win totals blended with point margin), updated twice a week.</p></div>`)}
+    ${outlook.length ? cell(5, "outlook", `<div class="panel"><h3>Schedule outlook</h3><ul class="stretch">${outlook.join("")}</ul></div>`) : ""}</div>`;
+}
+function renderWeekAhead(){
+  const host = $("#p-schedule");
+  if (!host) return;
+  let el = $("#sched-week");
+  if (!el) { el = document.createElement("div"); el.id = "sched-week"; host.prepend(el); }
+  el.innerHTML = weekAheadHtml();
+  wireSections(el);
+}
+
+/* Monday recap (History tab): Monday-to-Sunday weeks, built on the page from results, box scores, the feeds and the daily dashboards */
+const DAILY_CACHE = {}, DAILY_PENDING = {};
+function dailyDoc(date){
+  if (date in DAILY_CACHE) return DAILY_CACHE[date];
+  if (DB && !DAILY_PENDING[date]) {
+    DAILY_PENDING[date] = true;
+    DB.doc("daily/" + date).get().then(s => { DAILY_CACHE[date] = s.exists ? s.data() : null; renderHistory(); }).catch(() => { DAILY_CACHE[date] = null; });
+  }
+  return undefined;
+}
+const addDays = (d, n) => { const x = dObj(d); x.setDate(x.getDate() + n); return isoDay(x); };
+const mondayOf = d => { const x = dObj(d), k = (x.getDay() + 6) % 7; x.setDate(x.getDate() - k); return isoDay(x); };
+let RC_PICK = null;
+function recapWeeks(){
+  const today = isoDay(new Date()), out = [];
+  for (let m = "2026-10-19"; addDays(m, 6) < today; m = addDays(m, 7)) if (GAMES.some(g => g.wl && g.date >= m && g.date <= addDays(m, 6))) out.push(m);
+  return out;
+}
+function detSeed(doc){
+  const st = doc && doc.standings;
+  if (!st || !Array.isArray(st.rows) || /2025-26/.test(st.title || "") || /takes over after opening night/i.test(st.note || "")) return null;
+  const r = st.rows.find(x => isDet(x.team)); return r ? Number(r.rank) : null;
+}
+function recapPanel(){
+  const weeks = recapWeeks();
+  if (!weeks.length) return `<div class="panel recap"><h3>Monday recap</h3><p class="empty">The first recap arrives Monday, Oct 26, covering opening week (Oct 20–25).</p></div>`;
+  const mon = RC_PICK && weeks.includes(RC_PICK) ? RC_PICK : weeks[weeks.length - 1], sun = addDays(mon, 6);
+  const inW = d => d >= mon && d <= sun;
+  const gs = GAMES.filter(g => g.wl && inW(g.date)), w = gs.filter(g => g.wl === "W").length;
+  const after = gs.length ? gs[gs.length - 1].rec : "";
+  const log = seasonLog().filter(g => inW(g.d)), A = aggRows(log);
+  const need = Math.max(1, Math.ceil(gs.length / 2));
+  const pow = Object.values(A).filter(a => a.gp >= need).sort((a, b) => (b.pts + b.reb + b.ast) / b.gp - (a.pts + a.reb + a.ast) / a.gp)[0];
+  let best = null; log.forEach(g => g.rows.forEach(r => { const v = r.pts + r.reb + r.ast; if (!best || v > best.v) best = { v, r, g }; }));
+  const pf = gs.reduce((t, g) => t + g.det, 0), pa = gs.reduce((t, g) => t + g.oppPts, 0);
+  const s0 = detSeed(dailyDoc(mon)), s1v = detSeed(dailyDoc(addDays(sun, 1)));
+  const weeksR = (TEAM && TEAM.rankings && TEAM.rankings.weeks) || [];
+  const rk = weeksR.filter(x => x.date > sun && x.date <= addDays(sun, 4)).pop(), rkPrev = rk ? weeksR[weeksR.indexOf(rk) - 1] : null;
+  const mv = (MOVES && Array.isArray(MOVES.items) ? MOVES.items : []).filter(m => inW(m.date || ""));
+  const detMv = mv.filter(m => m.team === "DET"), otherN = mv.filter(m => m.team !== "DET" && m.notable).length;
+  const bz = (BUZZ && Array.isArray(BUZZ.items) ? BUZZ.items : []).filter(b => inW(b.date || ""));
+  const inj = injuryStints().filter(x => inW(x.from));
+  const nextG = GAMES.filter(g => !g.tbd && g.date > sun && g.date <= addDays(sun, 7));
+  const pick = `<select id="rc-week" aria-label="Pick a week">${weeks.slice().reverse().map(m => `<option value="${m}"${m === mon ? " selected" : ""}>${esc(fmtDate(m, {month: "short", day: "numeric"}))}–${esc(fmtDate(addDays(m, 6), {month: "short", day: "numeric"}))}</option>`).join("")}</select>`;
+  const seedTxt = s0 && s1v ? (s1v === s0 ? `Stayed ${ordinal(s1v)} in the East` : `${s1v < s0 ? "Up" : "Down"} from ${ordinal(s0)} to ${ordinal(s1v)} in the East`) : s1v ? `${ordinal(s1v)} in the East` : "";
+  return `<div class="panel recap"><div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 12px;margin-bottom:10px"><h3 style="margin:0">Monday recap</h3>${pick}</div>
+    <p class="race-head"><b>${w}–${gs.length - w}</b> for the week${after ? ` · ${esc(after)} overall` : ""}${seedTxt ? ` · ${esc(seedTxt)}` : ""}</p>
+    <ul class="cr">${gs.map(g => `<li><span>${esc(fmtDate(g.date, {weekday: "short", month: "short", day: "numeric"}))} ${g.home ? "vs" : "@"} ${esc(g.opp)}</span><b class="${g.wl === "W" ? "w" : "l"}">${g.wl} ${g.det}–${g.oppPts}</b></li>`).join("")}</ul>
+    <div class="recgrid" style="margin-top:10px"><div><b>${gs.length ? f1d(pf / gs.length) : "–"}</b><span>Points / game</span></div><div><b>${gs.length ? f1d(pa / gs.length) : "–"}</b><span>Allowed / game</span></div>
+      ${rk ? `<div><b>${f1d(rk.avg)}</b><span>Avg power rank${rkPrev && num(rkPrev.avg) !== null ? ` (${rkPrev.avg > rk.avg ? "▲" : rkPrev.avg < rk.avg ? "▼" : "="}${Math.abs(rkPrev.avg - rk.avg).toFixed(1)})` : ""}</span></div>` : ""}
+      <div><b>${detMv.length}</b><span>Pistons moves</span></div></div>
+    ${pow ? `<p class="rc-p"><b>Player of the week:</b> ${esc(pow.name)}, ${f1d(pg(pow, "pts"))} pts, ${f1d(pg(pow, "reb"))} reb, ${f1d(pg(pow, "ast"))} ast in ${pow.gp} game${pow.gp > 1 ? "s" : ""}.</p>` : ""}
+    ${best ? `<p class="rc-p"><b>Best game:</b> ${esc(best.r.name)}, ${best.r.pts} pts, ${best.r.reb} reb, ${best.r.ast} ast ${esc(vsAt(best.g))} (${esc(shortD(best.g.d))}).</p>` : ""}
+    ${inj.length ? `<p class="rc-p"><b>New on the injury report:</b> ${inj.map(x => `${esc(x.name)} (${esc(x.status)}${x.detail ? ", " + esc(x.detail) : ""})`).join("; ")}.</p>` : ""}
+    ${detMv.length ? `<p class="rc-p"><b>Pistons moves:</b> ${detMv.map(m => `${esc(m.player)}: ${esc(m.detail || m.type || "")}`).join("; ")}.</p>` : ""}
+    ${bz.length ? `<p class="rc-p"><b>Buzz:</b> ${bz.length} item${bz.length > 1 ? "s" : ""}, including ${bz.slice(0, 3).map(b => safeUrl(b.url) ? `<a href="${esc(b.url)}" target="_blank" rel="noopener">${esc(b.title)}</a>` : esc(b.title)).join("; ")}.${otherN ? ` ${otherN} notable move${otherN > 1 ? "s" : ""} around the league.` : ""}</p>` : (otherN ? `<p class="rc-p">${otherN} notable move${otherN > 1 ? "s" : ""} around the league.</p>` : "")}
+    ${nextG.length ? `<div class="eyebrow hk">Next week</div><ul class="cr">${nextG.map(g => `<li><span>${esc(fmtDate(g.date, {weekday: "short", month: "short", day: "numeric"}))} ${g.home ? "vs" : "@"} ${esc(g.opp)}</span><span class="muted">${g.wl ? `${g.wl} ${g.det}–${g.oppPts}` : esc(fmtTime(g.time))}${PROMO[g.date] && PROMO[g.date].giveaway ? " · giveaway" : ""}</span></li>`).join("")}</ul>` : ""}
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Monday to Sunday, regular season. Built from the hub's results, box scores, injury reports and feeds (buzz and moves older than a few weeks are in the archive search below).</p>
+  </div>`;
+}
+
+/* archive search: the season index (data/archive.js on the public site, archive/<YYYY-MM> in the database) plus today's live items */
+const ARCH = { items: null, loading: false, q: "", k: "all", n: 40 };
+const ARCH_K = { game: "Game", news: "Headline", brief: "Briefing", buzz: "Buzz", move: "Move", inj: "Injury" };
+function loadArchive(){
+  if (ARCH.items || ARCH.loading) return;
+  ARCH.loading = true;
+  const done = list => { ARCH.items = list; ARCH.loading = false; drawSearch(); };
+  try {
+    if (typeof loadScript === "function") { loadScript("data/archive.js").then(() => { const A = window.PISTONS_ARCHIVE; done(A && A.months ? Object.values(A.months).flat() : []); }); return; }
+    if (DB) { DB.collection("archive").onSnapshot(snap => done(snap.docs.flatMap(d => ((d.data() || {}).items) || [])), () => done([])); return; }
+  } catch (e) {}
+  done([]);
+}
+function liveArchiveItems(){
+  const out = [], D = DASH_LATEST || {};
+  (D.news || []).forEach(n => out.push({ d: /^\d{4}-\d{2}-\d{2}/.test(n.date || "") ? n.date.slice(0, 10) : D.date, k: "news", t: n.title, x: n.blurb, u: n.url, s: n.source }));
+  if (D.briefing && Array.isArray(D.briefing.bullets) && D.briefing.bullets.length) out.push({ d: D.date, k: "brief", t: "Overnight in 60 seconds", x: D.briefing.bullets.map(b => b.text).join(" · ") });
+  (BUZZ && BUZZ.items || []).forEach(b => out.push({ d: b.date, k: "buzz", t: b.title, x: b.summary, u: b.url, s: b.source }));
+  (MOVES && MOVES.items || []).filter(m => m.team === "DET" || m.notable).forEach(m => out.push({ d: m.date, k: "move", t: `${m.team} ${m.player}: ${m.type}`, x: m.detail, u: m.url, s: m.source }));
+  GAMES.filter(g => g.wl).forEach(g => out.push({ d: g.date, k: "game", t: `${g.wl} ${g.det}-${g.oppPts} ${g.home ? "vs" : "@"} ${g.opp}` }));
+  return out;
+}
+function searchResults(){
+  const words = ARCH.q.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!words.length) return null;
+  const seen = new Set(), out = [];
+  [...liveArchiveItems(), ...(ARCH.items || [])].forEach(it => {
+    if (!it || !it.t || !it.d) return;
+    const key = (it.u || "") + "|" + it.k + "|" + String(it.t).toLowerCase() + (it.k === "game" || it.k === "brief" ? "|" + it.d : "");
+    if (seen.has(key)) return; seen.add(key);
+    if (ARCH.k !== "all" && it.k !== ARCH.k) return;
+    const hay = (it.t + " " + (it.x || "") + " " + (it.s || "")).toLowerCase();
+    if (words.every(w => hay.includes(w))) out.push(it);
+  });
+  return out.sort((a, b) => b.d.localeCompare(a.d));
+}
+function markup(s){
+  let h = esc(s || "");
+  ARCH.q.split(/\s+/).filter(w => w.length > 1).forEach(w => { const re = new RegExp("(" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/[&<>"']/g, "") + ")", "ig"); h = h.replace(re, "<mark>$1</mark>"); });
+  return h;
+}
+function drawSearch(){
+  const box = $("#arch-res");
+  if (!box) return;
+  const res = searchResults();
+  if (!res) { box.innerHTML = `<p class="muted" style="font-size:13.5px;margin:0">Search every headline, buzz item, move, overnight briefing and result this season, e.g. "Duren", "extension", "Boston".</p>`; return; }
+  if (!ARCH.items && ARCH.loading) { box.innerHTML = `<p class="empty">Loading the season archive…</p>`; return; }
+  box.innerHTML = res.length ? `<p class="muted" style="font-size:13px;margin:0 0 8px">${res.length} result${res.length > 1 ? "s" : ""}</p><ul class="ar-l">${res.slice(0, ARCH.n).map(it => `<li><div class="bz-meta"><span class="bz-type">${esc(ARCH_K[it.k] || it.k)}</span><span>${esc(fmtDate(it.d, {month: "short", day: "numeric", year: "numeric"}))}</span>${it.s ? `<span>${esc(it.s)}</span>` : ""}</div>
+      ${safeUrl(it.u) ? `<a class="bz-t" href="${esc(it.u)}" target="_blank" rel="noopener">${markup(it.t)}</a>` : `<span class="bz-t">${markup(it.t)}</span>`}${it.x ? `<p>${markup(it.x)}</p>` : ""}</li>`).join("")}</ul>
+    ${res.length > ARCH.n ? `<button type="button" class="hbtn" id="arch-more" style="margin-top:10px">Show more</button>` : ""}` : `<p class="empty">Nothing matches.</p>`;
+  const more = $("#arch-more"); if (more) more.addEventListener("click", () => { ARCH.n += 40; drawSearch(); });
+}
+function searchPanel(){
+  const chip = (k, l) => `<button type="button" class="chip" data-ark="${k}" aria-pressed="${ARCH.k === k}">${l}</button>`;
+  return `<div class="panel arch"><h3>Search the archive</h3>
+    <input type="search" id="arch-q" class="ar-q" placeholder="Search this season" value="${esc(ARCH.q)}" aria-label="Search this season's archive" autocomplete="off">
+    <div class="bz-filter" style="margin-top:10px">${chip("all", "All")}${chip("game", "Games")}${chip("news", "Headlines")}${chip("buzz", "Buzz")}${chip("move", "Moves")}${chip("brief", "Briefings")}${chip("inj", "Injuries")}</div>
+    <div id="arch-res"></div></div>`;
+}
+function phase8History(){
+  return `<div class="dgrid" style="margin-top:16px">${cell(12, "recap", recapPanel())}${cell(12, "search", searchPanel())}</div>`;
+}
+function wireP8History(el){
+  const sel = el.querySelector("#rc-week"); if (sel) sel.addEventListener("change", () => { RC_PICK = sel.value; renderHistory(); const s = $("#rc-week"); if (s) s.focus(); });
+  const q = el.querySelector("#arch-q");
+  if (q) {
+    let t = null;
+    q.addEventListener("focus", loadArchive);
+    q.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { ARCH.q = q.value.trim(); ARCH.n = 40; loadArchive(); drawSearch(); }, 150); });
+  }
+  el.querySelectorAll("[data-ark]").forEach(b => b.addEventListener("click", () => { ARCH.k = b.dataset.ark; el.querySelectorAll("[data-ark]").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.ark === ARCH.k))); drawSearch(); }));
+  if (ARCH.q) loadArchive();
+  drawSearch();
+}
+
 function renderHistory(){
   const el = $("#p-history");
   if (!el) return;
@@ -1566,7 +1814,8 @@ function renderHistory(){
   if (mSel) mSel.addEventListener("change", () => { const m = Number(mSel.value), cap = [31,29,31,30,31,30,31,31,30,31,30,31][m - 1]; go(pad(m) + "-" + pad(Math.min(dy, cap))); });
   if (dSel) dSel.addEventListener("change", () => go(pad(mo) + "-" + pad(Number(dSel.value))));
   const t = el.querySelector("[data-htoday]"); if (t) t.addEventListener("click", () => go(mdOf(today)));
-  wireSections(el);
+  el.insertAdjacentHTML("beforeend", phase8History());
+  wireSections(el); wireP8History(el);
 }
 
 let rzT = null, lastW = window.innerWidth;
@@ -1966,7 +2215,7 @@ async function loadStaticDb(){
     db.doc("lastseason/games").get().then(snap => { LAST = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
     db.doc("team/stats").onSnapshot(snap => { TEAM = snap.exists ? (snap.data() || null) : null; renderTeam(); }, () => {});
     db.doc("team/milestones").get().then(snap => { MILE = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
-    db.doc("league/stats").onSnapshot(snap => { LEAGUE = snap.exists ? (snap.data() || null) : null; renderLeague(); }, () => {});
+    db.doc("league/stats").onSnapshot(snap => { LEAGUE = snap.exists ? (snap.data() || null) : null; renderLeague(); renderWeekAhead(); }, () => {});
     db.doc("meta/status").onSnapshot(snap => {
       STATUS = snap.exists ? (snap.data() || null) : null;
       renderHealth();
