@@ -407,8 +407,12 @@ function lastGamePanel(g){
     ${box.length ? `<details><summary style="cursor:pointer;font-weight:600">Pistons box score</summary><div class="tbl-wrap" style="margin-top:8px"><table class="mini box"><thead><tr><th>Player</th><th>Min</th><th>Pts</th><th>Reb</th><th>Ast</th><th class="hidden-sm">Stl</th><th class="hidden-sm">Blk</th><th>FG</th><th class="hidden-sm">3PT</th><th class="hidden-sm">+/-</th></tr></thead><tbody>${boxRows}</tbody></table></div></details>` : ""}
     ${link ? `<p style="margin:10px 0 0;font-size:13.5px"><a href="${esc(link)}" target="_blank" rel="noopener">Full box score ↗</a></p>` : ""}
     ${presserBlock(g)}
+    ${SITE.recap ? `<p style="margin:12px 0 0;font-size:14px;font-weight:600"><a href="${SITE.recap}" target="_blank" rel="noopener">Full recap: Pistons Postgame ↗</a></p>` : ""}
   </div>`;
 }
+
+/* companion sites (Phase 2, Oct 10, 2026). Set a link to "" to hide it. */
+const SITE = { preview: "https://jp4mayor.com/pistons/pregame/", recap: "https://jp4mayor.com/pistons/recaps/" };
 
 /* postgame press conferences: links found by the morning task, else a YouTube search */
 function presserBlock(g){
@@ -571,6 +575,7 @@ function nextPanel(n, up){
     ${n.oppRecord ? `<div class="kv" style="margin-top:8px"><span class="nowrap" style="flex:none">Opponent record</span><b class="long">${esc(n.oppRecord)}</b></div>` : ""}
     ${n.preview ? `<p>${esc(n.preview)}</p>` : ""}
     ${n.watch ? `<p><b>Watch for:</b> ${esc(n.watch)}</p>` : ""}
+    ${SITE.preview ? `<p style="margin:10px 0 0;font-size:14px;font-weight:600"><a href="${SITE.preview}" target="_blank" rel="noopener">Full preview: Pistons Pregame ↗</a></p>` : ""}
     ${Array.isArray(up) && up.length ? `<div class="upnext"><div class="eyebrow" style="margin-bottom:4px">After that</div>${up.map(u => `<div class="kv"><span>${esc(u.date ? fmtDate(u.date) : "")}${u.type && u.type !== "Regular season" ? " · " + esc(u.type) : ""}</span><b>${u.home ? "vs" : "@"} ${esc(u.opponent)}${u.time ? " · " + esc(fmtTime(u.time)) : ""}</b></div>`).join("")}</div>` : ""}
   </div>`;
 }
