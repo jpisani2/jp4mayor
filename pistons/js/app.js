@@ -720,6 +720,7 @@ function renderToday(){
     ["next", "Next game", 5, nextPanel(D.nextGame, D.upcoming)],
     ["news", "Headlines", 7, newsPanel(D.news)],
     ["inj", "Injuries", 5, injuriesPanel(D.injuries, D.injuryNote)],
+    ["buzz", "Buzz", 12, buzzPanel()],
     ["hist", "History", 12, histCard()]
   ].filter(x => x[3]);
   el.innerHTML = `
@@ -731,7 +732,7 @@ function renderToday(){
   const sel = $("#dash-day");
   if (sel) sel.addEventListener("change", () => pickDay(sel.value));
   el.querySelectorAll("[data-goto-hist]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); HIST_PICK = a.dataset.gotoHist; showTab("history"); window.scrollTo({top: 0}); }));
-  wireSections(el);
+  wireSections(el); wireFeeds(el);
   renderHero();
   renderTeam();
   renderLeague();
@@ -805,14 +806,97 @@ function renderTeam(){
   wireSections(el);
 }
 
+/* ---------- team buzz + league transactions (Phase 4, Oct 2026) ----------
+   buzz/feed {updated, fanReaction {text, asOf, basis}, items [{id, date, type, title, summary, source, tier, url, sources [{name,url}], via?, unconfirmed, added}]}
+   transactions/feed {updated, note, items [{id, date, team, player, type, detail, source, url, notable, why?, added}]}
+   Older dashboards carry snapshots (dashboard.buzz / dashboard.moves); the blocks hide when there is nothing for the picked day. */
+let BUZZ = null, MOVES = null;
+const BZ = { all: false, type: "" };
+const MV = { scope: store.get("pistons-mv-scope") === "league" ? "league" : "east", all: store.get("pistons-mv-all") === "1", more: false };
+const CENTRAL = new Set(["CHI","CLE","DET","IND","MIL"]);
+const EAST = new Set(["ATL","BOS","BKN","CHA","CHI","CLE","DET","IND","MIA","MIL","NYK","ORL","PHI","TOR","WAS"]);
+const MV_GROUPS = ["Pistons", "Central Division", "Rest of the East", "Rest of the league"];
+const mvGroup = t => t === "DET" ? 0 : CENTRAL.has(t) ? 1 : EAST.has(t) ? 2 : 3;
+const MV_TYPE = { trade: "Trade", signing: "Signing", waiver: "Waived", buyout: "Buyout", extension: "Extension", option: "Option", "two-way": "Two-way", "10-day": "10-day", "g-league": "G League", other: "Move" };
+const shortD = d => /^\d{4}-\d{2}-\d{2}$/.test(d || "") ? fmtDate(d, {month: "short", day: "numeric"}) : "";
+const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return isoDay(d); };
+const feedFor = (live, key) => DASH_PICK === "latest" ? live : (DASH && DASH[key] ? DASH[key] : null);
+
+function buzzItem(b){
+  const u = safeUrl(b.url);
+  const more = (Array.isArray(b.sources) ? b.sources : []).map(x => ({ name: x && x.name, url: safeUrl(x && x.url) })).filter(x => x.url && x.name);
+  return `<li class="bz"><div class="bz-meta"><span class="bz-type">${esc(b.type || "News")}</span>${b.unconfirmed ? `<span class="bz-unc" title="Single source so far; the flag drops when a second outlet confirms it">Unconfirmed</span>` : ""}<span>${esc(shortD(b.date))}</span></div>
+    ${u ? `<a class="bz-t" href="${esc(u)}" target="_blank" rel="noopener">${esc(b.title)}</a>` : `<b class="bz-t">${esc(b.title)}</b>`}
+    ${b.summary ? `<p>${esc(b.summary)}</p>` : ""}
+    <div class="bz-src">${esc(b.source || "")}${b.via ? ` · via ${esc(b.via)}` : ""}${more.map(x => ` · <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)} ↗</a>`).join("")}</div></li>`;
+}
+function buzzPanel(){
+  const src = feedFor(BUZZ, "buzz");
+  if (!src) return "";
+  const cut = daysAgo(30);
+  const items = (Array.isArray(src.items) ? src.items : []).filter(b => b && b.title && (!b.date || b.date >= cut || DASH_PICK !== "latest"))
+    .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")) || String(b.added || "").localeCompare(String(a.added || "")));
+  const fan = src.fanReaction && src.fanReaction.text ? src.fanReaction : null;
+  if (!items.length && !fan) return "";
+  const types = [...new Set(items.map(b => b.type).filter(Boolean))];
+  const list = BZ.all ? items.filter(b => !BZ.type || b.type === BZ.type) : items.slice(0, 5);
+  return `<div class="panel buzz"><h3>Team buzz</h3>
+    ${fan ? `<div class="fanpulse"><span class="eyebrow">Fan pulse</span><p>${esc(fan.text)}</p><small>${esc(fan.basis || "Summary of beat and blog coverage, not a measurement.")}${fan.asOf ? " · " + esc(shortD(fan.asOf)) : ""}</small></div>` : ""}
+    ${BZ.all && types.length > 1 ? `<div class="bz-filter" role="group" aria-label="Filter by type"><button type="button" class="chip" data-bz-type="" aria-pressed="${!BZ.type}">All</button>${types.map(t => `<button type="button" class="chip" data-bz-type="${esc(t)}" aria-pressed="${BZ.type === t}">${esc(t)}</button>`).join("")}</div>` : ""}
+    ${list.length ? `<ul class="bz-list">${list.map(buzzItem).join("")}</ul>` : `<p class="empty">Nothing new from beat writers, team pages or blogs.</p>`}
+    ${items.length > 5 ? `<button type="button" class="hbtn bz-more" data-bz-all>${BZ.all ? "Show fewer" : `See all ${items.length}`}</button>` : ""}
+    <p class="muted" style="font-size:12.5px;margin:10px 0 0">Beat writers, team sites, blogs and posts they pick up from X and Instagram. Refreshed about noon and 9 p.m.</p>
+  </div>`;
+}
+function moveItem(m){
+  const u = safeUrl(m.url);
+  return `<li class="mvi"><span class="mvi-d">${esc(shortD(m.date))}</span><span class="mvi-tm">${esc(m.team)}</span><div><b>${esc(m.player || "")}</b> <span class="mvi-ty">${esc(MV_TYPE[m.type] || m.type || "Move")}</span> ${esc(m.detail || "")}${m.why ? `<div class="mvi-why"><b>Why it matters:</b> ${esc(m.why)}</div>` : ""}${u ? ` <a class="hsrc" href="${esc(u)}" target="_blank" rel="noopener">${esc(m.source || "Source")} ↗</a>` : ""}</div></li>`;
+}
+function movesPanel(){
+  const src = feedFor(MOVES, "moves");
+  if (!src || !Array.isArray(src.items)) return "";
+  const cut = daysAgo(30);
+  let items = src.items.filter(m => m && m.team && m.player && !(m.team !== "DET" && (m.type === "two-way" || m.type === "g-league")) && (DASH_PICK !== "latest" || !m.date || m.date >= cut));
+  const total = items.length;
+  if (!MV.all) items = items.filter(m => m.team === "DET" || m.notable);
+  if (MV.scope === "east") items = items.filter(m => mvGroup(m.team) <= 2);
+  items.sort((a, b) => mvGroup(a.team) - mvGroup(b.team) || String(b.date || "").localeCompare(String(a.date || "")));
+  const shown = MV.more ? items : items.slice(0, 10);
+  let html = "", g = -1;
+  shown.forEach(m => { const k = mvGroup(m.team); if (k !== g) { if (g >= 0) html += "</ul>"; html += `<div class="eyebrow hk">${MV_GROUPS[k]}</div><ul class="mv-list">`; g = k; } html += moveItem(m); });
+  if (g >= 0) html += "</ul>";
+  return `<div class="panel moves"><h3>Transactions</h3>
+    <div class="bar" style="margin:0 0 6px">
+      <div class="seg" role="group" aria-label="Teams"><button type="button" data-mv-scope="east" aria-pressed="${MV.scope === "east"}">Pistons + East</button><button type="button" data-mv-scope="league" aria-pressed="${MV.scope === "league"}">League</button></div>
+      <label class="mv-all"><input type="checkbox" data-mv-all${MV.all ? " checked" : ""}> Show all moves</label>
+    </div>
+    ${shown.length ? html : `<p class="empty">No ${MV.all ? "" : "notable "}moves in the last 30 days${MV.scope === "east" ? " for the Pistons or the East" : ""}.</p>`}
+    ${items.length > 10 ? `<button type="button" class="hbtn" data-mv-more style="margin-top:10px">${MV.more ? "Show fewer" : `See ${items.length - 10} more`}</button>` : ""}
+    <p class="muted" style="font-size:12.5px;margin:10px 0 0">${MV.all ? `All ${total} moves` : "Notable moves only: Pistons moves always show; others show when the player has NBA games or the move is a trade, extension or buyout"}. Two-way, 10-day and G League moves are tracked for the Pistons and Motor City Cruise only. ${src.note ? esc(src.note) : ""}</p>
+  </div>`;
+}
+/* redraw one section in place (keeps the rest of the tab and the scroll position) */
+function redrawCell(id, html){
+  const c = document.getElementById("s-" + id);
+  if (!c) return;
+  c.innerHTML = html; wireSections(c.parentElement); wireFeeds(c);
+}
+function wireFeeds(scope){
+  scope.querySelectorAll("[data-bz-all]").forEach(b => b.addEventListener("click", () => { BZ.all = !BZ.all; if (!BZ.all) BZ.type = ""; redrawCell("buzz", buzzPanel()); }));
+  scope.querySelectorAll("[data-bz-type]").forEach(b => b.addEventListener("click", () => { BZ.type = b.dataset.bzType; redrawCell("buzz", buzzPanel()); }));
+  scope.querySelectorAll("[data-mv-scope]").forEach(b => b.addEventListener("click", () => { MV.scope = b.dataset.mvScope; store.set("pistons-mv-scope", MV.scope); redrawCell("moves", movesPanel()); }));
+  scope.querySelectorAll("[data-mv-all]").forEach(b => b.addEventListener("change", () => { MV.all = b.checked; store.set("pistons-mv-all", MV.all ? "1" : "0"); redrawCell("moves", movesPanel()); }));
+  scope.querySelectorAll("[data-mv-more]").forEach(b => b.addEventListener("click", () => { MV.more = !MV.more; redrawCell("moves", movesPanel()); }));
+}
+
 function renderLeague(){
   const el = $("#p-league");
   if (!el) return;
   const D = DASH || {};
-  const secs = [["east", "East standings", 12, standingsPanel(D.standings)]];
+  const secs = [["moves", "Transactions", 12, movesPanel()], ["east", "East standings", 12, standingsPanel(D.standings)]].filter(x => x[3]);
   el.innerHTML = `${jumpBar(secs.map(([id, l]) => [id, l]))}${dashNote()}<div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>
-    <p class="muted" style="font-size:12.5px;margin:14px 0 0">League-wide transactions, the East race, award watch and Motor City Cruise results are added here over the next updates.</p>`;
-  wireSections(el);
+    <p class="muted" style="font-size:12.5px;margin:14px 0 0">The East race, award watch and Motor City Cruise results are added here over the next updates.</p>`;
+  wireSections(el); wireFeeds(el);
 }
 
 /* ---------- This day in Pistons history (Phase 3, Oct 2026) ----------
@@ -1274,12 +1358,15 @@ function loadScript(path){
   return new Promise(res => { const s = document.createElement("script"); s.src = path + "?t=" + Date.now(); s.onload = () => res(true); s.onerror = () => res(false); document.head.appendChild(s); });
 }
 async function loadStaticDb(){
-  await Promise.all([loadScript("data/results.js"), loadScript("data/daily.js"), loadScript("data/lastseason.js"), loadScript("data/history.js")]);
+  await Promise.all([loadScript("data/results.js"), loadScript("data/daily.js"), loadScript("data/lastseason.js"), loadScript("data/history.js"), loadScript("data/buzz.js"), loadScript("data/transactions.js")]);
   const R = window.PISTONS_RESULTS || {}, D = window.PISTONS_DAILY || {}, H = window.PISTONS_HISTORY || {};
   const cols = { results: R.games || {}, games: D.games || {}, lines: D.lines || {}, matchups: D.matchups || {}, daily: D.days || {}, history: H.days || {} };
   const docs = { "dashboard/latest": D.latest || null, "dashboard/index": { dates: Object.keys(D.days || {}) }, "betting/futures": D.futures || null,
     "lastseason/games": window.PISTONS_LASTSEASON || null,
-    "meta/status": R.updated ? { updated: R.updated } : (D.updated ? { updated: D.updated } : null) };
+    "buzz/feed": window.PISTONS_BUZZ || null, "transactions/feed": window.PISTONS_MOVES || null,
+    "meta/status": Object.assign({}, R.updated ? { updated: R.updated } : (D.updated ? { updated: D.updated } : {}),
+      window.PISTONS_BUZZ && window.PISTONS_BUZZ.updated ? { buzz: window.PISTONS_BUZZ.updated } : {},
+      window.PISTONS_MOVES && window.PISTONS_MOVES.updated ? { transactions: window.PISTONS_MOVES.updated } : {}) };
   const snap = v => ({ exists: !!v, data: () => v || undefined });
   const docAt = path => { if (path in docs) return docs[path]; const [c, id] = path.split("/"); return (cols[c] || {})[id] || null; };
   return {
@@ -1321,6 +1408,8 @@ async function loadStaticDb(){
       snap.docs.forEach(d => { const v = d.data(); if (v) next[d.id] = v; });
       RESULTS = next; renderAll();
     }, () => {});
+    db.doc("buzz/feed").onSnapshot(snap => { BUZZ = snap.exists ? (snap.data() || null) : null; renderToday(); }, () => {});
+    db.doc("transactions/feed").onSnapshot(snap => { MOVES = snap.exists ? (snap.data() || null) : null; renderLeague(); }, () => {});
     db.doc("lastseason/games").get().then(snap => { LAST = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
     db.doc("meta/status").onSnapshot(snap => {
       STATUS = snap.exists ? (snap.data() || null) : null;
