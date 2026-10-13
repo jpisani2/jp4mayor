@@ -2364,8 +2364,115 @@ function renderHealth(){
   const bu = (BUZZ && BUZZ.updated) || (STATUS && STATUS.buzz), tu = (MOVES && MOVES.updated) || (STATUS && STATUS.transactions);
   if (bu && f(bu)) bits.push("buzz updated " + f(bu));
   if (tu && f(tu)) bits.push("transactions updated " + f(tu));
-  el.textContent = bits.length ? bits.join(" · ") + "." : "Scores and the Today dashboard update every morning.";
+  el.innerHTML = healthDot() + `<span>${esc(bits.length ? bits.join(" · ") + "." : "Scores and the Today dashboard update every morning.")}</span>`;
+  const lst = el.querySelector("#hl-list"); if (lst) el.appendChild(lst);
+  wireHealth(el);
 }
+
+/* ---------- Oct 13, 2026: health light ----------
+   A green / amber / red dot next to "Data updated …" in the footer, worked out from timestamps the page already has.
+   No new task, no push, no email. Tap it for the list of what is late.
+   Checks (starting thresholds; tune after a week):
+     morning dashboard updated today by 7:30 a.m. ET          (critical)
+     buzz and transactions feeds updated within 16 h          (they run 11:52 a.m. and 8:52 p.m.; the longest gap is 15 h)
+     team and league stats updated within 4.5 days            (Tuesdays and Fridays 6:12 a.m.)
+     static data files loaded and parsed                      (jp4mayor.com only)
+     game days: today's pregame preview by 6:30 a.m.          (critical)
+     after a final: the recap within 90 min                   (critical)
+   green = all current · amber = something late · red = morning dashboard or a game-day item missing. */
+const HL = { open: false, pre: undefined, rec: undefined };
+const HL_SEASON = m => m >= 10 || m <= 6;   // tasks run Oct-Jun
+function etParts(d){
+  const p = {}; new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23"})
+    .formatToParts(d).forEach(x => { p[x.type] = x.value; });
+  return { day: `${p.year}-${p.month}-${p.day}`, mins: Number(p.hour) * 60 + Number(p.minute), month: Number(p.month) };
+}
+/* companion-site data for the pregame / recap checks: relative on jp4mayor.com, absolute elsewhere (may be blocked there) */
+function hlLoad(){
+  if (HL.pre !== undefined) return;
+  HL.pre = HL.rec = null;
+  const base = /jp4mayor\.com$|localhost|127\.0\.0\.1/.test(location.hostname) ? "" : "https://jp4mayor.com/pistons/";
+  const one = (path, key, slot) => new Promise(res => {
+    const s = document.createElement("script"); s.src = base + path + "?t=" + Date.now();
+    s.onload = () => { HL[slot] = window[key] && Array.isArray(window[key].games) ? window[key] : false; res(); };
+    s.onerror = () => { HL[slot] = false; res(); };
+    document.head.appendChild(s);
+  });
+  Promise.all([one("pregame/data/pregame.js", "PISTONS_PREGAME", "pre"), one("recaps/data/recaps.js", "PISTONS_RECAPS", "rec")]).then(renderHealth);
+}
+function healthChecks(now){
+  now = now || new Date();
+  const et = etParts(now), inSeason = HL_SEASON(et.month), out = [];
+  const age = iso => { const t = new Date(iso); return isNaN(t) ? null : (now - t) / 36e5; };
+  const when = iso => { const t = new Date(iso); return isNaN(t) ? "never" : t.toLocaleString("en-US", {weekday: "short", hour: "numeric", minute: "2-digit"}); };
+  const add = (name, st, detail, critical) => out.push({ name, st, detail, critical: !!critical });
+  /* morning dashboard */
+  const L = (typeof DASH_LATEST !== "undefined" && DASH_LATEST) || null;
+  if (!inSeason) add("Morning dashboard", "nd", "Off season");
+  else if (!L || !L.updated) add("Morning dashboard", "late", "Not loaded", true);
+  else {
+    const day = etParts(new Date(L.updated)).day, due = et.mins >= 7 * 60 + 30;
+    add("Morning dashboard", due && day < et.day ? "late" : "ok", "Updated " + when(L.updated) + (due && day < et.day ? " · today's run is missing (due 7:30 a.m.)" : ""), true);
+  }
+  /* buzz + transactions: twice a day */
+  [["Buzz feed", (typeof BUZZ !== "undefined" && BUZZ && BUZZ.updated) || (STATUS && STATUS.buzz)], ["Transactions feed", (typeof MOVES !== "undefined" && MOVES && MOVES.updated) || (STATUS && STATUS.transactions)]].forEach(([n, u]) => {
+    if (!inSeason) return add(n, "nd", "Off season");
+    const a = u ? age(u) : null;
+    add(n, a === null ? "late" : a > 16 ? "late" : "ok", u ? "Updated " + when(u) + (a > 16 ? ` · ${Math.round(a)} h ago (runs 11:52 a.m. and 8:52 p.m.)` : "") : "Not loaded");
+  });
+  /* team + league stats: Tue/Fri */
+  [["Team stats", typeof TEAM !== "undefined" && TEAM && TEAM.updated], ["League stats", typeof LEAGUE !== "undefined" && LEAGUE && LEAGUE.updated]].forEach(([n, u]) => {
+    if (!inSeason) return add(n, "nd", "Off season");
+    const a = u ? age(u) : null;
+    add(n, a === null ? "late" : a > 4.5 * 24 ? "late" : "ok", u ? "Updated " + when(u) + (a > 108 ? " · runs Tuesdays and Fridays" : "") : "Not loaded");
+  });
+  /* static data files (jp4mayor.com only; the claude.ai page reads the database directly) */
+  if (typeof loadStaticDb === "function") {
+    const okD = window.PISTONS_DAILY && window.PISTONS_DAILY.latest, okR = window.PISTONS_RESULTS && window.PISTONS_RESULTS.games;
+    add("Site data files", okD && okR ? "ok" : "late", okD && okR ? "daily.js and results.js loaded" : `${okD ? "" : "daily.js "}${okR ? "" : "results.js "}missing or unreadable`, !okD);
+  }
+  /* game days: pregame preview and recap */
+  const tips = typeof knownTips === "function" ? knownTips() : [];
+  const today = tips.find(x => x.date === et.day);
+  const yest = tips.filter(x => x.date < et.day).pop();
+  const has = (src, d) => src && src.games.some(g => g && (g.id === "g" + d.replace(/-/g, "") || g.date === d));
+  if (today) {
+    const due = et.mins >= 6 * 60 + 30;
+    if (HL.pre === undefined || HL.pre === null) add("Today's preview", "na", "Checking…");
+    else if (HL.pre === false) add("Today's preview", "na", "Can't read the Pregame site from here");
+    else add("Today's preview", has(HL.pre, today.date) ? "ok" : due ? "late" : "nd", has(HL.pre, today.date) ? "Posted" : due ? "Not posted (due 6:30 a.m.)" : "Due 6:30 a.m.", true);
+  } else add("Today's preview", "nd", "No game today");
+  /* recap: due 90 min after the final (ESPN's final when the page saw it, else tip + 2.5 h); checked until the end of the next day */
+  const g = [today, yest].filter(Boolean).filter(x => x.date >= isoDay(new Date(now - 864e5 * 1.5))).find(x => now - x.tip > 0);
+  if (g) {
+    const fin = typeof GD !== "undefined" && GD.final && GD.final.date === g.date ? GD.final.at : g.tip.getTime() + FINAL_AFTER;
+    const dueAt = fin + 90 * 60e3;
+    if (now < fin) add("Game recap", "nd", "After the final");
+    else if (HL.rec === undefined || HL.rec === null) add("Game recap", "na", "Checking…");
+    else if (HL.rec === false) add("Game recap", "na", "Can't read the Postgame site from here");
+    else add("Game recap", has(HL.rec, g.date) ? "ok" : now >= dueAt ? "late" : "nd", has(HL.rec, g.date) ? `Posted (${fmtDate(g.date, {month: "short", day: "numeric"})})` : now >= dueAt ? "Not posted (due 90 min after the final)" : "Due 90 min after the final", true);
+  }
+  return out;
+}
+function healthLevel(list){
+  const late = list.filter(x => x.st === "late");
+  if (late.some(x => x.critical)) return "red";
+  return late.length ? "amber" : "green";
+}
+function healthDot(){
+  hlLoad();
+  const list = healthChecks(), lvl = healthLevel(list), late = list.filter(x => x.st === "late");
+  const label = lvl === "green" ? "All data current" : `${late.length} item${late.length > 1 ? "s" : ""} late`;
+  const ST = { ok: "Current", late: "Late", nd: "Not due", na: "Not checked" };
+  return `<button type="button" class="hl hl-${lvl}" id="hl-btn" aria-expanded="${HL.open}" aria-controls="hl-list" title="${esc(label)}"><i aria-hidden="true"></i><span class="hl-l">${esc(label)}</span></button>
+    <div class="hl-list" id="hl-list"${HL.open ? "" : " hidden"}><ul>${list.map(x => `<li class="hl-${x.st}"><b>${esc(x.name)}</b><span class="hl-s">${ST[x.st]}</span><small>${esc(x.detail || "")}</small></li>`).join("")}</ul>
+    <p>Worked out on this page from each feed's own timestamp. Thresholds: dashboard by 7:30 a.m., buzz and transactions within 16 h, team and league stats within 4½ days, preview by 6:30 a.m. on game days, recap within 90 min of the final.</p></div>`;
+}
+function wireHealth(el){
+  const b = el.querySelector("#hl-btn");
+  if (b) b.addEventListener("click", () => { HL.open = !HL.open; renderHealth(); });
+}
+setInterval(() => { try { renderHealth(); } catch(e) {} }, 60e3);
 
 /* ---------- boot ---------- */
 function renderAll(){ mergeGames(); renderHero(); renderToday(); renderBetting(); renderSchedule(); renderHome(); renderSummary(); renderTrips(); }
@@ -2433,9 +2540,9 @@ async function loadStaticDb(){
     db.doc("transactions/feed").onSnapshot(snap => { MOVES = snap.exists ? (snap.data() || null) : null; renderLeague(); renderHealth(); }, () => {});
     db.doc("cap/summary").get().then(snap => { CAP = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
     db.doc("lastseason/games").get().then(snap => { LAST = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
-    db.doc("team/stats").onSnapshot(snap => { TEAM = snap.exists ? (snap.data() || null) : null; renderTeam(); }, () => {});
+    db.doc("team/stats").onSnapshot(snap => { TEAM = snap.exists ? (snap.data() || null) : null; renderTeam(); renderHealth(); }, () => {});
     db.doc("team/milestones").get().then(snap => { MILE = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
-    db.doc("league/stats").onSnapshot(snap => { LEAGUE = snap.exists ? (snap.data() || null) : null; renderLeague(); renderWeekAhead(); }, () => {});
+    db.doc("league/stats").onSnapshot(snap => { LEAGUE = snap.exists ? (snap.data() || null) : null; renderLeague(); renderWeekAhead(); renderHealth(); }, () => {});
     db.doc("meta/status").onSnapshot(snap => {
       STATUS = snap.exists ? (snap.data() || null) : null;
       renderHealth();

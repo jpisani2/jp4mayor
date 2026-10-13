@@ -588,3 +588,17 @@ mark{background:color-mix(in srgb,var(--kick) 30%,transparent);color:inherit;bor
 @media (max-width:560px){.lv-score b{font-size:42px}.gd-opp{font-size:26px}}
 .gd-top{margin:0 0 16px}
 .gd-top[data-sec]{scroll-margin-top:calc(var(--tabs-h) + 64px)}
+
+/* ---------- Oct 13, 2026: health light ---------- */
+#status{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.hl{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 10px 5px 8px;font-size:12.5px;font-weight:600;color:var(--ink);cursor:pointer}
+.hl i{width:10px;height:10px;border-radius:50%;flex:none;background:var(--hl,#1D7A46);box-shadow:0 0 0 3px color-mix(in srgb,var(--hl,#1D7A46) 22%,transparent)}
+.hl-green{--hl:#1D9A55}.hl-amber{--hl:#E0A100}.hl-red{--hl:#D62F45}
+.hl:hover{background:var(--tint)}
+.hl-list{flex-basis:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:4px}
+.hl-list ul{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.hl-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 10px;font-size:13px;color:var(--ink)}
+.hl-list li small{grid-column:1 / -1;color:var(--muted);font-size:12px}
+.hl-s{font:700 11px/1.6 "Saira Condensed",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hl-list li.hl-ok .hl-s{color:var(--win)}.hl-list li.hl-late .hl-s{color:var(--loss)}
+.hl-list p{margin:8px 0 0;font-size:12px;color:var(--muted)}
