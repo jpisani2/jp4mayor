@@ -1469,7 +1469,6 @@ function renderLeague(){
    history/<MM-DD> {alltime [{year, date, text, kind, source, url, top?}], cade [{... kind "event"}], games [{season, date, opp, oppName, home, det, oppPts, wl, line, url, note?, noteSource?, noteUrl?}]}
    Cade-era games through 2025-26 are seeded; this season's games are merged from results/ and games/ box scores. */
 const HIST = {}, HIST_PENDING = {};
-const HIST_START = "2026-10-20";   // the Today card starts on opening night unless the day has a non-game item
 let HIST_PICK = null;              // History tab's chosen MM-DD
 const MONTHS_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const mdOf = iso => iso.slice(5, 10);
@@ -1527,7 +1526,6 @@ function histCard(){
   const doc = histDoc(md);
   if (doc === undefined || !doc) return "";
   const h = histData(md, view);
-  if (view < HIST_START && !h.alltime.some(x => x.kind === "event") && !h.cade.length) return "";
   if (!h.alltime.length && !h.cade.length && !h.games.length) return "";
   const tc = topCade(h);
   const more = h.alltime.slice(1, 4);
