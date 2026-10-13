@@ -547,3 +547,44 @@ mark{background:color-mix(in srgb,var(--kick) 30%,transparent);color:inherit;bor
 .tabs button{margin-bottom:0}
 .jump{overflow-y:hidden;overscroll-behavior-x:contain}
 [role=tabpanel]{min-height:100vh}
+
+/* ---------- Oct 13, 2026: game-day mode + live score ---------- */
+.panel.gd{border-left:4px solid var(--red)}
+.gd-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:4px}
+.gd-std{border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:7px 11px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap}
+.gd-std:hover{background:var(--tint);color:var(--ink)}
+.gd-opp{font:800 30px/1.05 "Saira Condensed",Arial,sans-serif;color:var(--head);margin:0}
+.gd-when{margin:4px 0 0;font-size:14px;color:var(--muted)}
+.gd-line{margin-top:12px}
+.gd-inj{margin:10px 0 0;font-size:14px;line-height:1.45}
+.gd-inj .eyebrow{color:var(--muted);margin-right:6px}
+.gd-links{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:12px;font-size:14px;font-weight:600}
+.gd-go{color:var(--link)}
+.gd-pre{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.gd-pre summary{cursor:pointer;font-weight:600;font-size:14px}
+.gd-back{margin-left:auto}
+.lv{max-width:600px;margin-top:12px;background:var(--tint);border-radius:12px;padding:12px 14px}
+.lv-off,.lv-wait{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:14px}
+.lv-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lv-top .wl{margin-left:auto}
+.lv-pill{display:inline-flex;align-items:center;gap:6px;font:800 12px/1 "Saira Condensed",Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:5px 9px;border-radius:999px;background:var(--red);color:#fff}
+.lv-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:lvp 1.6s ease-in-out infinite}
+.lv-pill.fin{background:var(--ink);color:var(--bg)}
+.lv-pill.fin::before{display:none}
+:root[data-skin="red"] .lv-pill:not(.fin){background:#1D428A}
+@keyframes lvp{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.lv-pill::before{animation:none}}
+.lv-st{font-weight:700;font-size:14.5px}
+.lv-score{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;margin:8px 0 4px}
+.lv-score > div{display:flex;align-items:baseline;gap:10px;min-width:0}
+.lv-score > div:last-child{justify-content:flex-end}
+.lv-score span{font:700 16px/1 "Saira Condensed",Arial,sans-serif;letter-spacing:.06em;color:var(--muted)}
+.lv-score b{font:800 52px/1 "Saira Condensed",Arial,sans-serif;color:var(--muted)}
+.lv-score b.lead{color:var(--head)}
+.lv-score i{font-style:normal;color:var(--muted);font-size:13px}
+.lv-q{margin:6px 0 4px}
+.lv-q th,.lv-q td{background:none}
+.lv-foot{font-size:12.5px;color:var(--muted)}
+@media (max-width:560px){.lv-score b{font-size:42px}.gd-opp{font-size:26px}}
+.gd-top{margin:0 0 16px}
+.gd-top[data-sec]{scroll-margin-top:calc(var(--tabs-h) + 64px)}

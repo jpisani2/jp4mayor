@@ -746,6 +746,215 @@ function wireBriefing(scope){
   }));
 }
 
+/* ---------- Oct 13, 2026: game-day mode + live score ----------
+   Game-day mode reorders Today around today's game (latest dashboard only; older days keep the standard layout):
+     pre  (until tip): countdown, TV, line, model win chance, injuries, Pregame link
+     live (tip to final, or tip + 2.5 h): live score strip from ESPN, with the pregame block under it
+     post (after the final until the next morning's dashboard): final score, box score, Postgame link, pressers search
+   "Standard layout" turns it off on this device (localStorage pistons-gd-std).
+   Live score: the page itself asks ESPN's public scoreboard every 40 s, only from 15 min before tip to 3.5 h after,
+   only while the tab is visible, and stops at the final. No tasks, no pushes. If ESPN can't be reached (blocked or
+   down) the strip hides and an ESPN link shows instead. */
+const GD = { std: store.get("pistons-gd-std") === "1", live: null, err: false, busy: false, final: null, lastK: null };
+const ESPN_SB = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard";
+const LIVE_PRE = 15 * 60e3, LIVE_POST = 3.5 * 3600e3, LIVE_EVERY = 40e3;
+const ymd = d => String(d || "").replace(/-/g, "");
+const espnDay = d => "https://www.espn.com/nba/scoreboard/_/date/" + ymd(d);
+const espnGame = id => /^\d+$/.test(String(id || "")) ? "https://www.espn.com/nba/game/_/gameId/" + id : "";
+const espnBox = id => /^\d+$/.test(String(id || "")) ? "https://www.espn.com/nba/boxscore/_/gameId/" + id : "";
+/* today's game (or yesterday's, until the next morning's dashboard is out) */
+function gdGame(now){
+  now = now || new Date();
+  const today = isoDay(now), y = new Date(now); y.setDate(y.getDate() - 1);
+  const L = (typeof DASH_LATEST !== "undefined" && DASH_LATEST) || {};
+  const tips = knownTips();
+  const pick = d => {
+    const t = tips.find(x => x.date === d);
+    if (!t) return null;
+    const s = GAMES.find(g => g.date === d && !g.tbd) || null;
+    const n = [L.nextGame].concat(Array.isArray(L.upcoming) ? L.upcoming : []).find(x => x && x.date === d) || null;
+    const lg = L.lastGame && L.lastGame.date === d ? L.lastGame : null;
+    const opp = (n && n.opponent) || (s && fullName(s.opp)) || (lg && lg.opponent) || "";
+    const home = n ? !!n.home : s ? !!s.home : !!(lg && lg.home);
+    return { date: d, tip: t.tip, opp, home, tv: (n && n.tv) || (s && s.tv) || "", type: (n && n.type) || (s ? "Regular season" : ""), venue: (n && n.venue) || (home ? "Little Caesars Arena" : ""), n };
+  };
+  const g = pick(today);
+  if (g) return g;
+  const yd = isoDay(y), gy = pick(yd);
+  /* yesterday's game stays in post mode only until the morning dashboard for today is out */
+  if (gy && now - gy.tip >= 0 && (!L.date || L.date <= yd)) return gy;
+  return null;
+}
+function gdState(now){
+  now = now || new Date();
+  if (typeof DASH_PICK !== "undefined" && DASH_PICK !== "latest") return null;
+  const g = gdGame(now);
+  if (!g) return null;
+  const fin = GD.final && GD.final.date === g.date;
+  if (now < g.tip) return { k: "pre", g };
+  if (!fin && now - g.tip < FINAL_AFTER) return { k: "live", g };
+  return { k: "post", g };
+}
+const gdOn = st => !!st && !GD.std;
+
+/* ---- the live score: ESPN scoreboard for the game's date ---- */
+function liveWanted(now){
+  const g = gdGame(now);
+  if (!g) return null;
+  const dt = now - g.tip;
+  if (dt < -LIVE_PRE || dt > LIVE_POST) return null;
+  if (GD.final && GD.final.date === g.date) return null;
+  return g;
+}
+function parseLive(j, date){
+  const ev = (j && Array.isArray(j.events) ? j.events : []).find(e => e && e.competitions && e.competitions[0] && (e.competitions[0].competitors || []).some(c => c.team && c.team.abbreviation === "DET"));
+  if (!ev) return null;
+  const c = ev.competitions[0], det = c.competitors.find(x => x.team.abbreviation === "DET"), opp = c.competitors.find(x => x !== det) || {};
+  const st = (ev.status && ev.status.type) || {};
+  const qs = x => (Array.isArray(x.linescores) ? x.linescores : []).map(q => Number(q.value)).filter(v => !isNaN(v));
+  return { id: String(ev.id || ""), date, det: Number(det.score) || 0, opp: Number(opp.score) || 0,
+    oppAbbr: (opp.team && opp.team.abbreviation) || "", oppName: (opp.team && opp.team.shortDisplayName) || "", home: det.homeAway === "home",
+    state: st.state || "", detail: st.shortDetail || st.detail || "", period: ev.status && ev.status.period, clock: ev.status && ev.status.displayClock,
+    detQ: qs(det), oppQ: qs(opp), at: Date.now() };
+}
+async function livePoll(force){
+  const now = new Date(), g = liveWanted(now);
+  if (!g || GD.busy) return;
+  if (!force && typeof document !== "undefined" && document.visibilityState === "hidden") return;
+  GD.busy = true;
+  try {
+    const r = await fetch(ESPN_SB + "?dates=" + ymd(g.date), { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const v = parseLive(await r.json(), g.date);
+    if (!v) throw new Error("no Pistons game on the scoreboard");
+    GD.live = v; GD.err = false;
+    if (v.state === "post") GD.final = v;
+  } catch(e) { GD.err = true; }
+  finally { GD.busy = false; }
+  paintLive(); gdCheck();
+}
+function liveHtml(g){
+  const v = GD.live && GD.live.date === g.date ? GD.live : null;
+  const link = (v && espnGame(v.id)) || espnDay(g.date);
+  if (!v) {
+    if (GD.err) return `<div class="lv lv-off"><span>Live score isn't available here.</span> <a href="${esc(link)}" target="_blank" rel="noopener">Follow on ESPN ↗</a></div>`;
+    return `<div class="lv lv-wait"><span class="lv-pill">Live</span><span>Checking the score…</span></div>`;
+  }
+  const lead = v.det - v.opp, ab = v.oppAbbr || "OPP";
+  const pre = v.state === "pre", fin = v.state === "post";
+  const t = new Date(v.at).toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit"});
+  const qn = Math.max(v.detQ.length, v.oppQ.length);
+  const ql = i => i < 4 ? "Q" + (i + 1) : (i === 4 ? "OT" : (i - 3) + "OT");
+  const qrow = qn ? `<table class="qtr lv-q"><thead><tr><th></th>${Array.from({length: qn}, (_, i) => `<th>${ql(i)}</th>`).join("")}<th>T</th></tr></thead><tbody>
+      <tr><td>DET</td>${Array.from({length: qn}, (_, i) => `<td>${v.detQ[i] ?? ""}</td>`).join("")}<td>${v.det}</td></tr>
+      <tr><td>${esc(ab)}</td>${Array.from({length: qn}, (_, i) => `<td>${v.oppQ[i] ?? ""}</td>`).join("")}<td>${v.opp}</td></tr></tbody></table>` : "";
+  return `<div class="lv${fin ? " lv-fin" : ""}" aria-live="polite">
+    <div class="lv-top"><span class="lv-pill${fin ? " fin" : ""}">${fin ? "Final" : pre ? "Soon" : "Live"}</span>${fin && /^final$/i.test(v.detail) ? "" : `<span class="lv-st">${esc(pre ? "Tip-off " + g.tip.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit"}) : v.detail)}</span>`}</div>
+    <div class="lv-score"><div><span>DET</span><b class="${lead > 0 ? "lead" : ""}">${v.det}</b></div><i>${v.home ? "vs" : "@"}</i><div><b class="${lead < 0 ? "lead" : ""}">${v.opp}</b><span>${esc(ab)}</span></div></div>
+    ${qrow}
+    <div class="lv-foot">${fin ? "" : `Updated ${esc(t)} · refreshes every 40 seconds · `}<a href="${esc(link)}" target="_blank" rel="noopener">ESPN Gamecast ↗</a></div>
+  </div>`;
+}
+function paintLive(){
+  const st = gdState();
+  const el = document.getElementById("gd-live");
+  if (el && st && st.k === "live") el.innerHTML = liveHtml(st.g);
+}
+
+/* ---- the game-day panel ---- */
+function gdLines(g){
+  const l = LINES.find(x => x.date === g.date);
+  const m = MATCHUPS.find(x => x.date === g.date);
+  const pj = m ? project(m, MW) : null;
+  const p = l ? implied(l.mlDet) : null;
+  const bits = [];
+  if (l && num(l.spread) !== null) bits.push(`<div><span>Spread</span><b>${lineTxt(l)}</b></div>`);
+  if (l && num(l.total) !== null) bits.push(`<div><span>Total</span><b>${l.total}</b></div>`);
+  if (l && num(l.mlDet) !== null) bits.push(`<div><span>Moneyline</span><b>${mlTxt(l.mlDet)}</b>${p !== null ? `<small>Implies ${Math.round(p * 100)}%</small>` : ""}</div>`);
+  if (pj) bits.push(`<div><span>Model win chance</span><b>${Math.round(pj.win * 100)}%</b><small>Betting tab model</small></div>`);
+  return bits.length ? `<div class="bet-line gd-line">${bits.join("")}</div>` : "";
+}
+function gdInjuries(g){
+  const L = (typeof DASH_LATEST !== "undefined" && DASH_LATEST) || {};
+  const groups = {};
+  (Array.isArray(L.injuries) ? L.injuries : []).forEach(i => { if (i && i.name) { const s = /out/i.test(i.status) ? "Out" : /doubt/i.test(i.status) ? "Doubtful" : /question|day/i.test(i.status) ? "Questionable" : "Probable"; (groups[s] = groups[s] || []).push(i.name); } });
+  const m = MATCHUPS.find(x => x.date === g.date), oi = m && m.opp && Array.isArray(m.opp.injuries) ? m.opp.injuries.filter(i => i && i.name && /out|doubt|question/i.test(i.status || "")) : [];
+  const det = ["Out", "Doubtful", "Questionable", "Probable"].filter(k => groups[k]).map(k => `<b>${k}:</b> ${esc(groups[k].join(", "))}`).join(" · ");
+  const opp = oi.length ? oi.slice(0, 6).map(i => `${esc(i.name)} (${esc(i.status)})`).join(", ") : "";
+  if (!det && !opp) return `<p class="gd-inj"><b>Injuries:</b> none listed for Detroit this morning.</p>`;
+  return `${det ? `<p class="gd-inj"><span class="eyebrow">DET injuries</span> ${det}</p>` : `<p class="gd-inj"><span class="eyebrow">DET injuries</span> none listed</p>`}${opp ? `<p class="gd-inj"><span class="eyebrow">${esc((m && m.oppAbbr) || "Opponent")}</span> ${opp}</p>` : ""}`;
+}
+function gdPanel(st){
+  const g = st.g;
+  const when = `${esc(fmtDate(g.date, {weekday: "short", month: "short", day: "numeric"}))} · ${esc(g.tip.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit"}))} ET${g.tv ? " · " + esc(g.tv) : ""}${g.venue ? " · " + esc(g.venue) : ""}`;
+  const head = `<div class="gd-head"><div class="eyebrow">${st.k === "pre" ? "Game day" : st.k === "live" ? "Game on" : "Final"}${g.type && !/regular/i.test(g.type) ? " · " + esc(g.type) : ""}</div>
+      <button type="button" class="gd-std" data-gd-std="1">Standard layout</button></div>
+    <div class="gd-opp" role="heading" aria-level="3">${g.home ? "vs" : "@"} ${esc(g.opp)}</div><p class="gd-when">${when}</p>`;
+  const preview = SITE.preview ? `<a class="gd-go" href="${SITE.preview}" target="_blank" rel="noopener">Full preview: Pistons Pregame ↗</a>` : "";
+  if (st.k === "pre") {
+    return `<div class="panel gd">${head}
+      <div class="cd" data-iso="${esc(g.tip.toISOString())}" aria-live="off"></div>
+      ${gdLines(g)}${gdInjuries(g)}
+      <div class="gd-links">${preview}</div></div>`;
+  }
+  if (st.k === "live") {
+    return `<div class="panel gd">${head}
+      <div id="gd-live">${liveHtml(g)}</div>
+      <details class="gd-pre"><summary>Pregame: line, injuries, preview</summary>${gdLines(g)}${gdInjuries(g)}<div class="gd-links">${preview}</div></details></div>`;
+  }
+  /* post */
+  const f = GD.final && GD.final.date === g.date ? GD.final : null, r = RESULTS[g.date];
+  const det = f ? f.det : r ? num(r.det) : null, opp = f ? f.opp : r ? num(r.opp) : null;
+  const ab = (f && f.oppAbbr) || ABBR[g.opp] || g.opp;
+  const score = det !== null && opp !== null
+    ? `<div class="lv lv-fin"><div class="lv-top"><span class="lv-pill fin">Final</span>${f && f.detail && !/^final$/i.test(f.detail) ? `<span class="lv-st">${esc(f.detail)}</span>` : ""}<span class="wl ${det > opp ? "W" : "L"}">${det > opp ? "W" : "L"}</span></div>
+        <div class="lv-score"><div><span>DET</span><b class="${det > opp ? "lead" : ""}">${det}</b></div><i>${g.home ? "vs" : "@"}</i><div><b class="${opp > det ? "lead" : ""}">${opp}</b><span>${esc(ab)}</span></div></div></div>`
+    : `<p class="empty">Final score not in yet. <a href="${esc(espnDay(g.date))}" target="_blank" rel="noopener">Check ESPN ↗</a></p>`;
+  const q = encodeURIComponent(`Detroit Pistons postgame press conference ${g.opp} ${fmtDate(g.date, {month: "long", day: "numeric", year: "numeric"})}`);
+  const box = (f && espnBox(f.id)) || espnDay(g.date);
+  return `<div class="panel gd">${head}${score}
+    <div class="gd-links">
+      ${SITE.recap ? `<a class="gd-go" href="${SITE.recap}" target="_blank" rel="noopener">Recap: Pistons Postgame ↗</a>` : ""}
+      <a href="${esc(box)}" target="_blank" rel="noopener">Box score ↗</a>
+      <a href="https://www.youtube.com/results?search_query=${q}" target="_blank" rel="noopener">Postgame pressers on YouTube ↗</a>
+    </div>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">The full last-game card, with leaders and pressers, arrives with tomorrow morning's dashboard.</p></div>`;
+}
+/* reorder Today's sections for game-day mode */
+function gdSections(secs, D){
+  const st = gdState();
+  GD.lastK = st ? st.k : null;
+  if (!gdOn(st)) return secs;
+  const by = Object.fromEntries(secs.map(s => [s[0], s]));
+  const order = st.k === "post" ? ["brief", "last", "next", "news", "inj", "buzz", "hist"] : ["next", "inj", "brief", "last", "news", "buzz", "hist"];
+  return [["gd", "Game", 12, gdPanel(st)]].concat(order.map(k => by[k]).filter(Boolean));
+}
+/* the game-day card leads Today: rendered above the dashboard header, outside the section grid */
+function gdTop(secs){
+  const x = secs.find(s => s[0] === "gd");
+  return x ? `<div class="gd-top" id="s-gd" data-sec="gd">${x[3]}</div>` : "";
+}
+function gdToggle(){
+  const st = gdState();
+  if (!st || !GD.std) return "";
+  return `<button type="button" class="chip gd-back" data-gd-std="0">Game-day layout</button>`;
+}
+function wireGd(scope){
+  scope.querySelectorAll("[data-gd-std]").forEach(b => b.addEventListener("click", () => {
+    GD.std = b.dataset.gdStd === "1"; store.set("pistons-gd-std", GD.std ? "1" : "0"); renderToday();
+  }));
+  tick();
+}
+/* re-render Today when the game-day state changes (tip, final, midnight, morning refresh) and run the poller */
+function gdCheck(){
+  const st = gdState(), k = st ? st.k : null;
+  if (k !== GD.lastK) renderToday();
+}
+function gdRefresh(){ const st = gdState(); if (st) renderToday(); }
+setInterval(() => { gdCheck(); livePoll(); }, LIVE_EVERY);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { gdCheck(); livePoll(); } });
+setTimeout(() => livePoll(), 1500);
+
 /* Today, Team and League all render from the picked day's dashboard */
 function renderToday(){
   const el = $("#p-today");
@@ -757,7 +966,7 @@ function renderToday(){
     sub = (D.forDate ? "Covers everything through " + fmtDate(D.forDate, {weekday:"short", month:"short", day:"numeric"}) + " · " : "") + "refreshed " + u.toLocaleString("en-US", {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
     if (DASH_PICK === "latest" && Date.now() - u.getTime() > 36 * 3600e3) sub += " · the next refresh is due tomorrow morning";
   }
-  const secs = [
+  let secs = [
     ["brief", "Briefing", 12, briefingPanel(D)],
     ["last", "Last game", 7, lastGamePanel(D.lastGame)],
     ["next", "Next game", 5, nextPanel(D.nextGame, D.upcoming)],
@@ -766,15 +975,17 @@ function renderToday(){
     ["buzz", "Buzz", 12, buzzPanel()],
     ["hist", "History", 12, histCard()]
   ].filter(x => x[3]);
+  secs = gdSections(secs, D);
   el.innerHTML = `
     ${jumpBar(secs.map(([id, l]) => [id, l]))}
-    <div class="dash-top"><div><div class="eyebrow">${esc(D.phase || "Daily dashboard")}</div><h2>${D.date ? esc(fmtDate(D.date, {weekday:"long", month:"long", day:"numeric"})) : "Pistons daily"}</h2><div class="sub">${esc(sub)}</div></div>${picker}</div>
+    ${gdTop(secs)}<div class="dash-top"><div><div class="eyebrow">${esc(D.phase || "Daily dashboard")}</div><h2>${D.date ? esc(fmtDate(D.date, {weekday:"long", month:"long", day:"numeric"})) : "Pistons daily"}</h2><div class="sub">${esc(sub)}</div></div>${picker}${gdToggle()}</div>
     ${changesStrip()}
     ${promoNote()}
     ${D.headline && !(D.briefing && Array.isArray(D.briefing.bullets) && D.briefing.bullets.length) ? `<div class="headline">${esc(D.headline)}</div>` : ""}
-    <div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
+    <div class="dgrid">${secs.filter(x => x[0] !== "gd").map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
   const sel = $("#dash-day");
   if (sel) sel.addEventListener("change", () => pickDay(sel.value));
+  wireGd(el);
   el.querySelectorAll("[data-goto-home]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); showTab("home"); window.scrollTo({top: 0}); }));
   el.querySelectorAll("[data-goto-hist]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); HIST_PICK = a.dataset.gotoHist; showTab("history"); window.scrollTo({top: 0}); }));
   wireSections(el); wireFeeds(el); wireBriefing(el);
@@ -2192,11 +2403,11 @@ async function loadStaticDb(){
   try {
     db.collection("lines").onSnapshot(snap => {
       LINES = snap.docs.map(d => Object.assign({ date: d.id }, d.data() || {})).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.date));
-      renderBetting();
+      renderBetting(); gdRefresh();
     }, () => {});
     db.collection("matchups").onSnapshot(snap => {
       MATCHUPS = snap.docs.map(d => Object.assign({ date: d.id }, d.data() || {})).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.date));
-      renderBetting();
+      renderBetting(); gdRefresh();
     }, () => {});
     db.doc("betting/futures").onSnapshot(snap => { FUTURES = snap.exists ? snap.data() : null; renderBetting(); renderTeam(); }, () => {});
     db.collection("games").onSnapshot(snap => {
