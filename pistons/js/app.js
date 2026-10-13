@@ -106,6 +106,7 @@ function showTab(t){
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === t)));
   ["today","team","league","history","betting","schedule","home","summary","trips"].forEach(k => $("#p-" + k).hidden = k !== t);
   store.set("pistons-tab", t);
+  revealTab(t);
   if (["today","team","league","history"].includes(t) && typeof renderToday === "function" && GAMES.length) renderToday();
   if (t === "betting" && typeof renderBetting === "function" && GAMES.length) renderBetting();
 }
@@ -124,9 +125,19 @@ if (TABBAR) {
   window.addEventListener("scroll", setStuck, {passive: true});
   setStuck();
 }
+/* keep the picked tab fully visible inside the sideways-scrolling bar (moves the bar sideways only, never the page) */
+function revealTab(t){
+  const bar = document.querySelector(".tabs"), b = document.getElementById("tab-" + t);
+  if (!bar || !b || bar.scrollWidth <= bar.clientWidth) return;
+  const r = b.getBoundingClientRect(), q = bar.getBoundingClientRect();
+  if (r.left < q.left) bar.scrollLeft -= (q.left - r.left) + 12;
+  else if (r.right > q.right) bar.scrollLeft += (r.right - q.right) + 12;
+}
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
+  /* decide before switching: hiding a long tab can clamp the page scroll before we get to look at it */
+  const pinned = TABBAR ? window.scrollY > tabsTop() + 1 : false;
   showTab(b.dataset.tab);
-  if (TABBAR) { const top = tabsTop(); if (window.scrollY > top) window.scrollTo({top}); }
+  if (TABBAR && pinned) window.scrollTo({top: tabsTop()});
 }));
 $("#recstrip").addEventListener("click", e => { e.preventDefault(); showTab("team"); const tb = $("#tab-team"); if (tb) tb.scrollIntoView({block:"nearest", inline:"nearest"}); });
 

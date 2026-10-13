@@ -541,3 +541,9 @@ a.bz-t:hover{text-decoration:underline}
 .ar-l li:last-child{border-bottom:0}
 .ar-l p{margin:3px 0 0;font-size:14px}
 mark{background:color-mix(in srgb,var(--kick) 30%,transparent);color:inherit;border-radius:3px;padding:0 1px}
+
+/* ---------- Oct 13, 2026: firm tab bar ---------- */
+.tabs{border-bottom:0;overflow-y:hidden;overscroll-behavior-x:contain;background:linear-gradient(var(--line),var(--line)) left bottom/100% 1px no-repeat,var(--bg)}
+.tabs button{margin-bottom:0}
+.jump{overflow-y:hidden;overscroll-behavior-x:contain}
+[role=tabpanel]{min-height:100vh}
