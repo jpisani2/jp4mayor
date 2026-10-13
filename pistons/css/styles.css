@@ -602,3 +602,26 @@ mark{background:color-mix(in srgb,var(--kick) 30%,transparent);color:inherit;bor
 .hl-s{font:700 11px/1.6 "Saira Condensed",Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .hl-list li.hl-ok .hl-s{color:var(--win)}.hl-list li.hl-late .hl-s{color:var(--loss)}
 .hl-list p{margin:8px 0 0;font-size:12px;color:var(--muted)}
+
+/* ---------- Oct 13, 2026: $10 on every game ---------- */
+:root{--ten-a:#2F5DB8;--ten-b:#C77A12}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ten-a:#5B8DEF;--ten-b:#C0812A}}
+:root[data-theme="dark"],:root[data-skin="navy"],:root[data-skin="red"]{--ten-a:#5B8DEF;--ten-b:#C0812A}
+:root[data-skin="light"]{--ten-a:#2F5DB8;--ten-b:#C77A12}
+.ten-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin-bottom:12px}
+.ten-stake{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.ten-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:12px 20px;margin-bottom:12px}
+.ten-k{display:flex;align-items:center;gap:7px;font:700 12px/1 "Saira Condensed",Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:8px}
+.ten-sw{display:inline-block;width:12px;height:4px;border-radius:2px;flex:none;vertical-align:3px;margin-right:4px}
+.ten-sw.a{background:var(--ten-a)}.ten-sw.b{background:var(--ten-b)}
+.ten-tiles{grid-template-columns:repeat(5,minmax(0,1fr))}
+.ten-tiles span{font-size:11.5px}
+.ten-tiles b.pos,.ten-t td.pos{color:var(--win)}.ten-tiles b.neg,.ten-t td.neg{color:var(--loss)}
+@media (max-width:560px){.ten-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.ten-tiles div:first-child{grid-column:1 / -1}}
+.ten-chart{position:relative;margin-top:4px}
+.ten-hit{cursor:crosshair;touch-action:pan-y}
+.ten-tip{position:absolute;top:0;z-index:2;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12.5px;line-height:1.5;box-shadow:var(--shadow);pointer-events:none;white-space:nowrap;color:var(--ink)}
+.ten-t td,.ten-t th{white-space:nowrap}
+.ten-more{margin-top:10px}
+.ten-note{font-size:12.5px;margin:10px 0 0}
+.ten-t td:nth-child(2),.ten-t th:nth-child(2){text-align:left}

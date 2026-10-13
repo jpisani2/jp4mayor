@@ -2335,6 +2335,123 @@ function wireModel(){
   const dt = el.querySelector("details.weights"); if (dt) dt.addEventListener("toggle", () => store.set("pistons-model-open", dt.open ? "1" : "0"));
 }
 
+/* ---------- Oct 13, 2026: "$10 on every game" tracker (Betting tab) ----------
+   Two hypothetical running tallies, graded from the lines docs the page already has (same game set as the ATS tiles:
+   regular season, NBA Cup and playoffs; no preseason):
+     spread: $10 on the Pistons spread at an assumed -110 (win +$9.09, push $0, loss -$10; lines docs carry no juice)
+     moneyline: $10 on mlDet (the closing number once the morning task grades the game)
+   Games with a final but no saved line are skipped and counted. Stake is per device (localStorage pistons-stake). */
+const TEN = { stake: (() => { const v = Number(store.get("pistons-stake")); return [5, 10, 20, 25, 50, 100].includes(v) ? v : 10; })(), all: false };
+const tenMoney = v => (v < 0 ? "−$" : v > 0 ? "+$" : "$") + Math.abs(v).toFixed(2);
+const tenMlWin = (odds, stake) => odds > 0 ? stake * odds / 100 : stake * 100 / Math.abs(odds);
+function tenRows(){
+  const stake = TEN.stake;
+  const graded = LINES.filter(l => counts(l) && hasFinal(l)).sort((a, b) => a.date.localeCompare(b.date));
+  let cs = 0, cm = 0;
+  const rows = graded.map(l => {
+    const a = atsOf(l), won = l.det > l.opp;
+    const sp = a ? (a.r === "W" ? stake * 100 / 110 : a.r === "L" ? -stake : 0) : null;
+    const ml = num(l.mlDet) !== null && l.mlDet !== 0 ? (won ? tenMlWin(l.mlDet, stake) : -stake) : null;
+    if (sp !== null) cs += sp; if (ml !== null) cm += ml;
+    return { l, a, won, sp, ml, cs, cm };
+  });
+  /* finals with no saved line (regular season, NBA Cup, playoffs: the results collection has no preseason) */
+  const haveLine = new Set(graded.map(l => l.date));
+  const noLine = Object.keys(RESULTS).filter(d => !haveLine.has(d) && num(RESULTS[d].det) !== null && num(RESULTS[d].opp) !== null).length;
+  return { rows, noLine };
+}
+function tenStats(rows, key){
+  const r = rows.filter(x => x[key] !== null);
+  const w = r.filter(x => x[key] > 0).length, l = r.filter(x => x[key] < 0).length, p = r.length - w - l;
+  const net = r.reduce((t, x) => t + x[key], 0), staked = r.length * TEN.stake;
+  let best = null, worst = null;
+  const n = Math.min(5, r.length);
+  if (r.length >= 5) for (let i = 0; i + n <= r.length; i++) {
+    const s = r.slice(i, i + n).reduce((t, x) => t + x[key], 0);
+    if (!best || s > best.v) best = { v: s, a: r[i].l.date, b: r[i + n - 1].l.date };
+    if (!worst || s < worst.v) worst = { v: s, a: r[i].l.date, b: r[i + n - 1].l.date };
+  }
+  return { n: r.length, w, l, p, net, roi: staked ? net / staked : null, best, worst };
+}
+function tenTiles(label, s, cls){
+  const span = x => x ? `${esc(shortDay(x.a))}–${esc(shortDay(x.b))}` : "";
+  return `<div class="ten-col"><div class="ten-k"><i class="ten-sw ${cls}" aria-hidden="true"></i>${esc(label)}</div>
+    <div class="bet-tiles ten-tiles">
+      <div><b class="${s.net > 0 ? "pos" : s.net < 0 ? "neg" : ""}">${tenMoney(s.net)}</b><span>Net</span></div>
+      <div><b>${s.w}–${s.l}${s.p ? "–" + s.p : ""}</b><span>Record</span></div>
+      <div><b>${s.roi === null ? "–" : (s.roi > 0 ? "+" : "") + (s.roi * 100).toFixed(1) + "%"}</b><span>Return</span></div>
+      <div><b>${s.best ? tenMoney(s.best.v) : "–"}</b><span>${s.best ? "Best 5 · " + span(s.best) : "Best 5 games"}</span></div>
+      <div><b>${s.worst ? tenMoney(s.worst.v) : "–"}</b><span>${s.worst ? "Worst 5 · " + span(s.worst) : "Worst 5 games"}</span></div>
+    </div></div>`;
+}
+/* cumulative P/L, both bets on one dollar axis, end labels + legend, hover crosshair */
+function tenChart(rows){
+  if (rows.length < 2) return "";
+  const box = $("#p-betting").clientWidth || 0;
+  const W = box ? Math.round(Math.min(1000, Math.max(280, box - 40))) : 640, H = 220, L = 46, R = 70, T = 14, B = 24;
+  const vals = rows.flatMap(x => [x.cs, x.cm]).concat([0]);
+  const step = v => { const m = Math.max(10, v); const p = Math.pow(10, Math.floor(Math.log10(m))); return [1, 2, 2.5, 5, 10].map(k => k * p).find(k => k >= m / 3) || p * 10; };
+  const st = step(Math.max(...vals.map(Math.abs)));
+  const lo = Math.floor(Math.min(...vals) / st) * st, hi = Math.ceil(Math.max(...vals) / st) * st || st;
+  const x = i => L + (rows.length === 1 ? 0 : i * (W - L - R) / (rows.length - 1)), y = v => T + (hi - v) * (H - T - B) / ((hi - lo) || 1);
+  let s = `<svg class="ten-svg" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Cumulative profit or loss of a ${esc("$" + TEN.stake)} bet on every game, spread and moneyline">`;
+  for (let v = lo; v <= hi + 1e-9; v += st) s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"${v === 0 ? "" : ' stroke-dasharray="3 3"'}/><text x="${L - 6}" y="${y(v) + 4}" font-size="11" text-anchor="end">${v < 0 ? "−" : v > 0 ? "+" : ""}$${Math.abs(v)}</text>`;
+  const path = k => rows.map((r, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(r[k]).toFixed(1)).join(" ");
+  s += `<path d="${path("cs")}" fill="none" stroke="var(--ten-a)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  s += `<path d="${path("cm")}" fill="none" stroke="var(--ten-b)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  const last = rows[rows.length - 1], ya = y(last.cs), yb = y(last.cm), gap = Math.abs(ya - yb) < 14 ? (14 - Math.abs(ya - yb)) / 2 : 0;
+  s += `<circle cx="${x(rows.length - 1)}" cy="${ya}" r="4" fill="var(--ten-a)" stroke="var(--card)" stroke-width="2"/><circle cx="${x(rows.length - 1)}" cy="${yb}" r="4" fill="var(--ten-b)" stroke="var(--card)" stroke-width="2"/>`;
+  s += `<text x="${x(rows.length - 1) + 8}" y="${(ya <= yb ? ya - gap : ya + gap) + 4}" font-size="11.5" style="fill:var(--ink)">Spread</text><text x="${x(rows.length - 1) + 8}" y="${(yb < ya ? yb - gap : yb + gap) + 4}" font-size="11.5" style="fill:var(--ink)">ML</text>`;
+  s += `<text x="${L}" y="${H - 6}" font-size="11">Game 1</text><text x="${W - R}" y="${H - 6}" font-size="11" text-anchor="end">Game ${rows.length}</text>`;
+  s += `<line class="ten-x" x1="0" x2="0" y1="${T}" y2="${H - B}" stroke="var(--muted)" stroke-width="1" visibility="hidden"/><rect class="ten-hit" x="${L}" y="${T}" width="${W - L - R}" height="${H - T - B}" fill="transparent"/></svg>`;
+  return `<div class="ten-chart" data-w="${W}" data-l="${L}" data-r="${R}">${s}<div class="ten-tip" hidden></div></div>
+    <div class="legend"><span><i style="background:var(--ten-a)"></i>Spread bet</span><span><i style="background:var(--ten-b)"></i>Moneyline bet</span><span>Running total, ${esc("$" + TEN.stake)} a game</span></div>`;
+}
+function wireTenChart(scope, rows){
+  const c = scope.querySelector(".ten-chart");
+  if (!c) return;
+  const svg = c.querySelector("svg"), hit = c.querySelector(".ten-hit"), xl = c.querySelector(".ten-x"), tip = c.querySelector(".ten-tip");
+  const W = +c.dataset.w, L = +c.dataset.l, R = +c.dataset.r;
+  const show = ev => {
+    const b = svg.getBoundingClientRect(), px = (ev.clientX - b.left) * W / b.width;
+    const i = Math.max(0, Math.min(rows.length - 1, Math.round((px - L) / ((W - L - R) / Math.max(1, rows.length - 1)))));
+    const r = rows[i], gx = L + i * (W - L - R) / Math.max(1, rows.length - 1);
+    xl.setAttribute("x1", gx); xl.setAttribute("x2", gx); xl.setAttribute("visibility", "visible");
+    tip.innerHTML = `<b>${esc(shortDay(r.l.date))} ${r.l.home ? "vs" : "@"} ${esc(r.l.oppAbbr || r.l.opponent || "")}</b> · ${r.won ? "W" : "L"} ${r.l.det}–${r.l.opp}<br>
+      <i class="ten-sw a"></i>Spread ${esc(lineTxt(r.l))}: ${r.sp === null ? "no line" : tenMoney(r.sp)} · total ${tenMoney(r.cs)}<br>
+      <i class="ten-sw b"></i>ML ${esc(mlTxt(r.l.mlDet))}: ${r.ml === null ? "no line" : tenMoney(r.ml)} · total ${tenMoney(r.cm)}`;
+    tip.hidden = false;
+    const left = gx * b.width / W;
+    tip.style.left = Math.max(0, Math.min(b.width - tip.offsetWidth, left - tip.offsetWidth / 2)) + "px";
+  };
+  const hide = () => { xl.setAttribute("visibility", "hidden"); tip.hidden = true; };
+  hit.addEventListener("pointermove", show); hit.addEventListener("pointerdown", show); hit.addEventListener("pointerleave", hide);
+}
+function tenPanel(){
+  const { rows, noLine } = tenRows();
+  const opts = [5, 10, 20, 25, 50, 100].map(v => `<option value="${v}"${v === TEN.stake ? " selected" : ""}>$${v}</option>`).join("");
+  const head = `<div class="ten-head"><h3 style="margin:0">$${TEN.stake} on every game</h3><label class="ten-stake">Stake <select id="ten-stake" aria-label="Stake per game">${opts}</select></label></div>`;
+  const note = `<p class="muted ten-note">Hypothetical: $${TEN.stake} on the Pistons in every regular-season, NBA Cup and playoff game, two ways. Spread bets assume the standard −110 price (a win pays $${(TEN.stake * 100 / 110).toFixed(2)}, a push returns the stake); moneyline bets use the closing Pistons moneyline.${noLine ? ` ${noLine} game${noLine > 1 ? "s" : ""} with no saved line ${noLine > 1 ? "are" : "is"} skipped.` : ""} Not a recommendation.</p>`;
+  if (!rows.length) return `<div class="panel ten">${head}<p class="empty">Starts with the opener on Oct 20. After each game the morning refresh grades the closing line and this adds the result to both tallies. Preseason doesn't count.</p>${note}</div>`;
+  const S = tenStats(rows, "sp"), M = tenStats(rows, "ml");
+  const list = rows.slice().reverse(), shown = TEN.all ? list : list.slice(0, 10);
+  const cell = v => v === null ? `<td class="muted">no line</td>` : `<td class="${v > 0 ? "pos" : v < 0 ? "neg" : ""}">${tenMoney(v)}</td>`;
+  const table = `<div class="tbl-wrap" style="border:0"><table class="mini ten-t"><thead><tr><th>Date</th><th>Game</th><th>Final</th><th>Spread</th><th>P/L</th><th class="hidden-sm">Total</th><th>ML</th><th>P/L</th><th class="hidden-sm">Total</th></tr></thead><tbody>
+    ${shown.map(r => `<tr><td>${esc(shortDay(r.l.date))}</td><td class="nowrap">${r.l.home ? "vs" : "@"} ${esc(r.l.oppAbbr || r.l.opponent || "")}</td><td class="nowrap">${r.won ? "W" : "L"} ${r.l.det}–${r.l.opp}</td><td class="nowrap">${esc(lineTxt(r.l))}</td>${cell(r.sp)}<td class="hidden-sm">${tenMoney(r.cs)}</td><td>${esc(mlTxt(r.l.mlDet))}</td>${cell(r.ml)}<td class="hidden-sm">${tenMoney(r.cm)}</td></tr>`).join("")}
+    </tbody></table></div>${list.length > 10 ? `<button type="button" class="chip ten-more" data-ten-all>${TEN.all ? "Show the last 10" : `Show all ${list.length} games`}</button>` : ""}`;
+  return `<div class="panel ten">${head}
+    <div class="ten-cols">${tenTiles("Spread at −110", S, "a")}${tenTiles("Moneyline", M, "b")}</div>
+    ${tenChart(rows)}
+    <div class="eyebrow hk">Game by game, newest first</div>${table}${note}</div>`;
+}
+function wireTen(scope){
+  const sel = scope.querySelector("#ten-stake");
+  if (sel) sel.addEventListener("change", () => { TEN.stake = Number(sel.value) || 10; store.set("pistons-stake", String(TEN.stake)); renderBetting(); });
+  const more = scope.querySelector("[data-ten-all]");
+  if (more) more.addEventListener("click", () => { TEN.all = !TEN.all; renderBetting(); });
+  wireTenChart(scope, tenRows().rows);
+}
+
 function renderBetting(){
   const el = $("#p-betting");
   if (!el) return;
@@ -2345,11 +2462,13 @@ function renderBetting(){
       <div class="span-12">${matchupPanel()}</div>
       <div class="span-5">${betRecordsPanel()}</div>
       <div class="span-7"><div class="panel"><h3>Cover margin by game</h3>${coverChart(LINES.filter(l => counts(l) && hasFinal(l)).sort((a, b) => a.date.localeCompare(b.date)))}</div></div>
+      <div class="span-12">${tenPanel()}</div>
       <div class="span-8">${betLogPanel()}</div>
       <div class="span-4">${futuresPanel()}</div>
     </div>
     <p class="muted" style="font-size:12.5px;margin:14px 0 0">Lines are DraftKings numbers from ESPN, checked each morning. Graded games use the closing line. For information only, not betting advice. 21+. If you or someone you know has a gambling problem, call 1-800-GAMBLER.</p>`;
   wireModel();
+  wireTen(el);
 }
 
 /* ---------- site health footer: when each feed last updated ---------- */
