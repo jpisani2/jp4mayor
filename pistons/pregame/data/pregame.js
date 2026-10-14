@@ -1,13 +1,13 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-14T12:58:00-04:00",
+  "updated": "2026-10-14T17:58:00-04:00",
   "games": [
     {
       "id": "g20261014",
       "date": "2026-10-14",
       "phase": "Preseason",
       "headline": "Detroit looks for its first road win in Minnesota",
-      "dek": "The Pistons (1-1) visit the Timberwolves (2-1) Wednesday night; Cunningham and Duren are listed day-to-day for rest, while Minnesota's listing no longer includes Edwards or Gobert.",
+      "dek": "The Pistons (1-1) visit the Timberwolves (3-1) Wednesday night; Cunningham and Duren are listed day-to-day for rest, while Minnesota's listing doesn't include Edwards or Gobert.",
       "keys": [
         {
           "title": "Who plays the stars",
@@ -19,7 +19,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "title": "Shake off the road loss",
-          "text": "Detroit fell 114-108 at Washington on Saturday. Minnesota is 2-0 on the road this preseason and won 125-124 at Miami on Saturday."
+          "text": "Detroit fell 114-108 at Washington on Saturday. Minnesota is 3-0 on the road this preseason, including a 125-124 win at Miami on Saturday and a 122-104 win at New York on Monday."
         }
       ],
       "watch": [
@@ -65,10 +65,10 @@ window.PISTONS_PREGAME = {
         "John Collins": "New: last season's rates came with the Clippers",
         "Elijah Harkless": "New: last season's rates came with Utah"
       },
-      "injuryNote": "ESPN morning list (Oct. 14): DET Cunningham and Duren day-to-day (rest). MIN Kuminga (rest), Shannon, Zikarsky, Freeman day-to-day; DiVincenzo out. No newer team report found.",
+      "injuryNote": "ESPN list, rechecked 5:50 p.m. (Oct. 14): DET Cunningham and Duren day-to-day (rest). MIN Kuminga (rest), Shannon, Zikarsky, Freeman day-to-day; DiVincenzo out. No newer team report or starting lineups found.",
       "talkingPoints": [
         "Detroit is 1-1: a comeback win over Phoenix, then a 114-108 loss at Washington.",
-        "Minnesota is 2-1 and just beat Miami 125-124 on the road.",
+        "Minnesota is 3-1 and has won two straight on the road: 125-124 at Miami, then 122-104 at New York.",
         "Last season Detroit scored 117.8 a game and Minnesota 118.0. Both were 82-game averages.",
         "Minnesota's morning injury list is short, so the Wolves may play more of their regulars than Detroit.",
         "Okorie hit a game-winner in his first NBA game. Does he get a long look again?",
@@ -86,9 +86,9 @@ window.PISTONS_PREGAME = {
       ],
       "pick": {
         "call": "Wolves, narrowly",
-        "text": "Minnesota is at home and has won two straight, but with both teams likely resting people, this one is just for fun."
+        "text": "Minnesota is at home and has won two straight (DraftKings has the Wolves -4.5), but with both teams likely resting people, this one is just for fun."
       },
-      "share": "Pistons (1-1) at Wolves (2-1), Wed 8 ET. Both teams list their stars day-to-day; Okorie and the bench look for another big night.",
+      "share": "Pistons (1-1) at Wolves (3-1), Wed 8 ET. Both teams list their stars day-to-day; Okorie and the bench look for another big night.",
       "sources": [
         {
           "title": "ESPN game page",
