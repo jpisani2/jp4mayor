@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-14T17:58:00-04:00",
+  "updated": "2026-10-14T18:55:00-04:00",
   "games": [
     {
       "id": "g20261014",
@@ -65,7 +65,7 @@ window.PISTONS_PREGAME = {
         "John Collins": "New: last season's rates came with the Clippers",
         "Elijah Harkless": "New: last season's rates came with Utah"
       },
-      "injuryNote": "ESPN list, rechecked 5:50 p.m. (Oct. 14): DET Cunningham and Duren day-to-day (rest). MIN Kuminga (rest), Shannon, Zikarsky, Freeman day-to-day; DiVincenzo out. No newer team report or starting lineups found.",
+      "injuryNote": "ESPN list, rechecked 6:50 p.m. (Oct. 14): DET Cunningham and Duren day-to-day (rest). MIN Kuminga (rest), Shannon, Zikarsky, Freeman day-to-day; DiVincenzo out. No newer team report or starting lineups found an hour before the 8 p.m. tip.",
       "talkingPoints": [
         "Detroit is 1-1: a comeback win over Phoenix, then a 114-108 loss at Washington.",
         "Minnesota is 3-1 and has won two straight on the road: 125-124 at Miami, then 122-104 at New York.",
