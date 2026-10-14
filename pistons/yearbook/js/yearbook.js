@@ -590,11 +590,11 @@ function rateRows(p) {
 function liveAdv(p, act) {
   const t = act.tot; if (!t.gp) return null;
   const k = nkey(p.name);
-  let tShots = 0, tMin = 0, pmSum = 0, pmMin = 0;
+  let tShots = 0, tMin = 0, pmSum = 0, pmMin = 0, pmN = 0;
   for (const g of TEAM.games) {
     const me = g.rows.find(x => x.key === k); if (!me || !(me.min > 0)) continue;
     g.rows.forEach(x => { tShots += (x.fga || 0) + 0.44 * (x.fta || 0); tMin += x.min || 0; });
-    if (isNum(me.pm)) { pmSum += me.pm; pmMin += me.min; }
+    if (isNum(me.pm)) { pmSum += me.pm; pmMin += me.min; pmN++; }
   }
   const myShots = t.fga + 0.44 * t.fta;
   const shotShare = tShots > 0 && t.min > 0 ? 100 * myShots * (tMin / 5) / (t.min * tShots) : null;
@@ -602,7 +602,7 @@ function liveAdv(p, act) {
   const q = f => pts.length ? pts[Math.min(pts.length - 1, Math.max(0, Math.round(f * (pts.length - 1))))] : null;
   const mean = pts.reduce((a, b) => a + b, 0) / (pts.length || 1);
   const sd = pts.length > 1 ? Math.sqrt(pts.reduce((a, b) => a + (b - mean) ** 2, 0) / (pts.length - 1)) : null;
-  return { ts: tsOf(t), efg: efgOf(t), tpar: t.fga ? t.tpa / t.fga : null, ftr: t.fga ? t.fta / t.fga : null, shotShare, pm36: pmMin > 0 ? pmSum * 36 / pmMin : null, pmGames: pmMin > 0,
+  return { ts: tsOf(t), efg: efgOf(t), tpar: t.fga ? t.tpa / t.fga : null, ftr: t.fga ? t.fta / t.fga : null, shotShare, pm36: pmMin > 0 ? pmSum * 36 / pmMin : null, pmGames: pmMin > 0, pmN,
     p36: t.min > 0 ? { pts: t.pts * 36 / t.min, reb: t.reb * 36 / t.min, ast: t.ast * 36 / t.min, stocks: (t.stl + t.blk) * 36 / t.min } : null,
     floor: q(0.1), median: q(0.5), ceil: q(0.9), sd, dbl: pts.filter(v => v >= 10).length / (pts.length || 1), gp: t.gp };
 }
@@ -620,7 +620,7 @@ function advancedSec(p, act) {
     html += `<p class="eyebrow" style="margin-top:4px">2026-27 so far · ${live.gp} game${live.gp === 1 ? "" : "s"}</p><div class="mini">
       ${tile("True shooting", pcs(live.ts) + "%", "Lg avg " + pcs(LG.ts) + "%", cmp(live.ts, LG.ts))}${tile("Effective FG", pcs(live.efg) + "%", "Lg avg " + pcs(LG.efg) + "%", cmp(live.efg, LG.efg))}
       ${tile("Shot share", isNum(live.shotShare) ? live.shotShare.toFixed(1) + "%" : "–", "of team shots while on court")}${tile("3-point rate", d3(live.tpar), "Lg avg " + d3(LG.tpar))}
-      ${tile("Free-throw rate", d3(live.ftr), "Lg avg " + d3(LG.ftr))}${live.pmGames ? tile("Plus-minus per 36", sgn(live.pm36), "team margin with him on", isNum(live.pm36) ? (live.pm36 >= 0 ? "pos" : "neg") : "") : ""}
+      ${tile("Free-throw rate", d3(live.ftr), "Lg avg " + d3(LG.ftr))}${live.pmGames ? tile("Plus-minus per 36", sgn(live.pm36), "team margin with him on" + (live.pmN < live.gp ? ` · last ${live.pmN} games` : ""), isNum(live.pm36) ? (live.pm36 >= 0 ? "pos" : "neg") : "") : ""}
       ${live.p36 ? tile("Per 36 minutes", f1(live.p36.pts) + " pts", f1(live.p36.reb) + " reb · " + f1(live.p36.ast) + " ast · " + f1(live.p36.stocks) + " stl+blk") : ""}
       ${tile("Scoring range", isNum(live.floor) ? live.floor + "–" + live.ceil : "–", "10th to 90th percentile game · median " + (live.median ?? "–"))}
       ${tile("Double figures", Math.round(live.dbl * 100) + "%", "of his games" + (isNum(live.sd) ? " · game-to-game SD " + live.sd.toFixed(1) : ""))}</div>
