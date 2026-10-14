@@ -3,6 +3,10 @@ const DATA = window.PISTONS_DATA;
 const SCHED = DATA.sched, AWAY = DATA.away;
 const NAMES = {"Boston":"Celtics","Miami":"Heat","Philadelphia":"76ers","New York":"Knicks","Charlotte":"Hornets","Brooklyn":"Nets","Washington":"Wizards","LA Lakers":"Lakers","San Antonio":"Spurs","New Orleans":"Pelicans","Toronto":"Raptors","Atlanta":"Hawks","Orlando":"Magic","Milwaukee":"Bucks","Denver":"Nuggets","Memphis":"Grizzlies","Indiana":"Pacers","Phoenix":"Suns","Cleveland":"Cavaliers","Oklahoma City":"Thunder","Chicago":"Bulls","Portland":"Trail Blazers","Sacramento":"Kings","Golden State":"Warriors","Utah":"Jazz","Dallas":"Mavericks","Houston":"Rockets","Minnesota":"Timberwolves","LA Clippers":"Clippers"};
 const ABBR = {"Boston":"BOS","Miami":"MIA","Philadelphia":"PHI","New York":"NYK","Charlotte":"CHA","Brooklyn":"BKN","Washington":"WAS","LA Lakers":"LAL","San Antonio":"SAS","New Orleans":"NOP","Toronto":"TOR","Atlanta":"ATL","Orlando":"ORL","Milwaukee":"MIL","Denver":"DEN","Memphis":"MEM","Indiana":"IND","Phoenix":"PHX","Cleveland":"CLE","Oklahoma City":"OKC","Chicago":"CHI","Portland":"POR","Sacramento":"SAC","Golden State":"GSW","Utah":"UTA","Dallas":"DAL","Houston":"HOU","Minnesota":"MIN","LA Clippers":"LAC"};
+/* ESPN's short codes where they differ from the hub's: daily.js, the lines and matchups and the live scoreboard come from ESPN */
+const ESPN_AB = {"WSH":"WAS","GS":"GSW","NY":"NYK","SA":"SAS","NO":"NOP","UTAH":"UTA"};
+const hubAb = a => ESPN_AB[a] || a;
+const normAb = x => (x && x.oppAbbr ? Object.assign({}, x, { oppAbbr: hubAb(x.oppAbbr) }) : x);
 const MONTHS = [["2026-10","October"],["2026-11","November"],["2026-12","December"],["2027-01","January"],["2027-02","February"],["2027-03","March"],["2027-04","April"]];
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -101,7 +105,6 @@ function renderHero(){
 
 /* ---------- tabs ---------- */
 function showTab(t){
-  document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === t)));
   if (!$("#p-" + t)) t = "today";
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === t)));
   ["today","team","league","history","betting","schedule","home","summary","trips"].forEach(k => $("#p-" + k).hidden = k !== t);
@@ -164,16 +167,17 @@ function resultCell(g){
   if (t && t < new Date()) return `<span class="muted nowrap">Final pending</span>`;
   return "";
 }
-function filterGame(g){
+/* the month picker belongs to the list view; the calendar pages through months on its own */
+function filterGame(g, anyMonth){
   if (S.f === "home" && !(g.home && !g.tbd)) return false;
   if (S.f === "away" && (g.home || g.tbd)) return false;
-  if (S.month !== "all") { const k = g.tbd ? "2026-12" : g.date.slice(0,7); if (k !== S.month) return false; }
+  if (!anyMonth && S.month !== "all") { const k = g.tbd ? "2026-12" : g.date.slice(0,7); if (k !== S.month) return false; }
   return true;
 }
 function renderList(){
   const nxt = nextGames()[0];
   let rows = "", cur = "";
-  GAMES.filter(filterGame).forEach(g => {
+  GAMES.filter(g => filterGame(g)).forEach(g => {
     const mk = g.tbd ? "2026-12" : g.date.slice(0,7);
     if (mk !== cur) { cur = mk; rows += `<tr class="monthrow"><td colspan="8">${MONTHS.find(m => m[0] === mk)[1]}</td></tr>`; }
     if (g.tbd) { rows += `<tr><td class="muted">${g.n}</td><td class="nowrap">Dec 3–11</td><td><span class="muted">TBD: NBA Cup knockout, or a game added by the league</span></td><td>TBD</td><td></td><td></td><td class="hidden-sm"></td><td class="hidden-sm"></td></tr>`; return; }
@@ -194,15 +198,15 @@ function renderCal(){
   const [y, m] = key.split("-").map(Number);
   const first = new Date(y, m-1, 1), days = new Date(y, m, 0).getDate();
   const byDate = {};
-  GAMES.forEach(g => { if (!g.tbd && filterGame(Object.assign({}, g, {}))) (byDate[g.date] = byDate[g.date] || []).push(g); });
+  GAMES.forEach(g => { if (!g.tbd && filterGame(g, true)) (byDate[g.date] = byDate[g.date] || []).push(g); });
   const today = new Date(); const tkey = today.getFullYear() + "-" + String(today.getMonth()+1).padStart(2,"0") + "-" + String(today.getDate()).padStart(2,"0");
   let cells = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(d => `<div class="dow">${d}</div>`).join("");
   for (let i = 0; i < first.getDay(); i++) cells += `<div class="day out"></div>`;
   for (let d = 1; d <= days; d++) {
     const k = key + "-" + String(d).padStart(2,"0");
-    const gs = (S.f === "all" || true) ? (byDate[k] || []) : [];
+    const gs = byDate[k] || [];
     let inner = gs.map(g => `<div class="g ${g.home ? "h" : "a"}" title="${esc((g.home ? "vs " : "@ ") + fullName(g.opp) + " · " + fmtTime(g.time) + " ET" + (g.tv ? " · " + g.tv : ""))}"><b>${g.home ? "vs" : "@"} ${esc(ABBR[g.opp] || g.opp)}</b><span class="t">${g.wl ? g.wl + " " + g.det + "–" + g.oppPts : esc(fmtTime(g.time))}</span></div>`).join("");
-    if (key === "2026-12" && d >= 3 && d <= 11 && S.f !== "away" && S.f !== "home" && d === 3 && GAMES.some(g => g.tbd)) inner += `<div class="g tbd">2 TBD games Dec 3–11</div>`;
+    if (key === "2026-12" && d === 3 && S.f === "all" && GAMES.some(g => g.tbd)) inner += `<div class="g tbd">2 TBD games Dec 3–11</div>`;
     cells += `<div class="day${k === tkey ? " today" : ""}"><span class="num">${d}</span>${inner}</div>`;
   }
   const trail = (7 - (first.getDay() + days) % 7) % 7;
@@ -433,7 +437,7 @@ function lastGamePanel(g){
     </div>
     ${q ? `<table class="mini qtr"><thead><tr><th></th>${qLabels.map(l => `<th>${esc(l)}</th>`).join("")}<th>T</th></tr></thead><tbody>
       <tr><td>DET</td>${q.det.map(v => `<td>${esc(v)}</td>`).join("")}<td>${esc(g.det)}</td></tr>
-      <tr><td>${esc(g.oppAbbr || "OPP")}</td>${q.opp.map(v => `<td>${esc(v)}</td>`).join("")}<td>${esc(g.opp)}</td></tr></tbody></table>` : ""}
+      <tr><td>${esc(hubAb(g.oppAbbr) || "OPP")}</td>${q.opp.map(v => `<td>${esc(v)}</td>`).join("")}<td>${esc(g.opp)}</td></tr></tbody></table>` : ""}
     ${g.summary ? `<p style="margin:0 0 4px;font-size:15px">${esc(g.summary)}</p>` : ""}
     ${Array.isArray(g.leaders) && g.leaders.length ? `<div class="leaders">${g.leaders.map(l => `<div class="leader"><div class="k">${esc(l.k)}</div><b>${esc(l.name)}</b><span>${esc(l.line)}</span></div>`).join("")}</div>` : ""}
     ${box.length ? `<details><summary style="cursor:pointer;font-weight:600">Pistons box score</summary><div class="tbl-wrap" style="margin-top:8px"><table class="mini box"><thead><tr><th>Player</th><th>Min</th><th>Pts</th><th>Reb</th><th>Ast</th><th class="hidden-sm">Stl</th><th class="hidden-sm">Blk</th><th>FG</th><th class="hidden-sm">3PT</th><th class="hidden-sm">+/-</th></tr></thead><tbody>${boxRows}</tbody></table></div></details>` : ""}
@@ -460,6 +464,14 @@ function renderSitePills(){
    Postgame lights up from then until the end of the next day. Tips come from the schedule and the
    latest dashboard's next/upcoming games (which include preseason). */
 const FINAL_AFTER = 2.5 * 3600e3;
+/* overtime and slow games run past FINAL_AFTER: while the last live poll (under 5 min old) still has the game
+   in progress, keep the live view. GD is declared further down, so this can run before it exists. */
+function liveInProgress(date, now){
+  try {
+    const v = GD.live;
+    return !!v && v.date === date && v.state !== "post" && !(GD.final && GD.final.date === date) && (now || new Date()) - v.at < 5 * 60e3;
+  } catch(e) { return false; }
+}
 function knownTips(){
   const out = {};
   GAMES.forEach(g => { if (!g.tbd && g.iso) out[g.date] = new Date(g.iso); });
@@ -476,7 +488,7 @@ function siteState(now){
   now = now || new Date();
   const tips = knownTips(), today = isoDay(now);
   const g = tips.find(x => isoDay(x.tip) === today);
-  if (g && now - g.tip < FINAL_AFTER) return { k: "pre", live: now >= g.tip };
+  if (g && (now - g.tip < FINAL_AFTER || liveInProgress(g.date, now))) return { k: "pre", live: now >= g.tip };
   const past = tips.filter(x => now - x.tip >= FINAL_AFTER).pop();
   if (past) { const end = dObj(isoDay(past.tip)); end.setDate(end.getDate() + 2); if (now < end) return { k: "post" }; }
   return { k: "" };
@@ -580,7 +592,7 @@ const splitMA = v => { const m = /^(\d+)\s*-\s*(\d+)$/.exec(String(v ?? "").trim
 function lastNRows(n){
   const D = DASH || {};
   const cutoff = D.forDate || isoDay(new Date());
-  const games = BOXES.filter(g => g && g.date && g.date <= cutoff && Array.isArray(g.box) && g.box.length && !/preseason/i.test(g.type || ""))
+  const games = BOXES.filter(g => g && g.date && g.date <= cutoff && Array.isArray(g.box) && g.box.length && isRegSeason(g.date, g.type))
     .sort((a, b) => b.date.localeCompare(a.date)).slice(0, n);
   const acc = {};
   games.forEach(g => g.box.forEach(p => {
@@ -705,7 +717,7 @@ function changesStrip(){
   const P0 = pv.doc || {}, items = [];
   const lg = D.lastGame, plg = P0.lastGame;
   if (lg && lg.date && (!plg || plg.date !== lg.date) && num(lg.det) !== null && num(lg.opp) !== null)
-    items.push(`${lg.det > lg.opp ? "W" : "L"} ${lg.det}–${lg.opp} ${lg.home ? "vs" : "@"} ${esc(lg.oppAbbr || lg.opponent || "")}`);
+    items.push(`${lg.det > lg.opp ? "W" : "L"} ${lg.det}–${lg.opp} ${lg.home ? "vs" : "@"} ${esc(hubAb(lg.oppAbbr) || lg.opponent || "")}`);
   const st = D.standings, detRow = st && Array.isArray(st.rows) ? st.rows.find(x => isDet(x.team)) : null;
   if (detRow) { const m = rankMoves(st), dl = m.moves[teamKey(detRow.team)]; if (dl) items.push(`East seed ${dl > 0 ? "▲" : "▼"}${Math.abs(dl)} to ${ordinal(Number(detRow.rank))}`); }
   const names = l => new Set((Array.isArray(l) ? l : []).map(i => i && i.name).filter(Boolean));
@@ -792,7 +804,7 @@ function gdState(now){
   if (!g) return null;
   const fin = GD.final && GD.final.date === g.date;
   if (now < g.tip) return { k: "pre", g };
-  if (!fin && now - g.tip < FINAL_AFTER) return { k: "live", g };
+  if (!fin && (now - g.tip < FINAL_AFTER || liveInProgress(g.date, now))) return { k: "live", g };
   return { k: "post", g };
 }
 const gdOn = st => !!st && !GD.std;
@@ -813,7 +825,7 @@ function parseLive(j, date){
   const st = (ev.status && ev.status.type) || {};
   const qs = x => (Array.isArray(x.linescores) ? x.linescores : []).map(q => Number(q.value)).filter(v => !isNaN(v));
   return { id: String(ev.id || ""), date, det: Number(det.score) || 0, opp: Number(opp.score) || 0,
-    oppAbbr: (opp.team && opp.team.abbreviation) || "", oppName: (opp.team && opp.team.shortDisplayName) || "", home: det.homeAway === "home",
+    oppAbbr: hubAb((opp.team && opp.team.abbreviation) || ""), oppName: (opp.team && opp.team.shortDisplayName) || "", home: det.homeAway === "home",
     state: st.state || "", detail: st.shortDetail || st.detail || "", period: ev.status && ev.status.period, clock: ev.status && ev.status.displayClock,
     detQ: qs(det), oppQ: qs(opp), at: Date.now() };
 }
@@ -849,7 +861,7 @@ function liveHtml(g){
       <tr><td>DET</td>${Array.from({length: qn}, (_, i) => `<td>${v.detQ[i] ?? ""}</td>`).join("")}<td>${v.det}</td></tr>
       <tr><td>${esc(ab)}</td>${Array.from({length: qn}, (_, i) => `<td>${v.oppQ[i] ?? ""}</td>`).join("")}<td>${v.opp}</td></tr></tbody></table>` : "";
   return `<div class="lv${fin ? " lv-fin" : ""}" aria-live="polite">
-    <div class="lv-top"><span class="lv-pill${fin ? " fin" : ""}">${fin ? "Final" : pre ? "Soon" : "Live"}</span>${fin && /^final$/i.test(v.detail) ? "" : `<span class="lv-st">${esc(pre ? "Tip-off " + g.tip.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit"}) : v.detail)}</span>`}</div>
+    <div class="lv-top"><span class="lv-pill${fin ? " fin" : ""}">${fin ? "Final" : pre ? "Soon" : "Live"}</span>${fin && /^final$/i.test(v.detail) ? "" : `<span class="lv-st">${esc(pre ? "Tip-off " + g.tip.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit", timeZone: "America/New_York"}) + " ET" : v.detail)}</span>`}</div>
     <div class="lv-score"><div><span>DET</span><b class="${lead > 0 ? "lead" : ""}">${v.det}</b></div><i>${v.home ? "vs" : "@"}</i><div><b class="${lead < 0 ? "lead" : ""}">${v.opp}</b><span>${esc(ab)}</span></div></div>
     ${qrow}
     <div class="lv-foot">${fin ? "" : `Updated ${esc(t)} · refreshes every 40 seconds · `}<a href="${esc(link)}" target="_blank" rel="noopener">ESPN Gamecast ↗</a></div>
@@ -886,7 +898,7 @@ function gdInjuries(g){
 }
 function gdPanel(st){
   const g = st.g;
-  const when = `${esc(fmtDate(g.date, {weekday: "short", month: "short", day: "numeric"}))} · ${esc(g.tip.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit"}))} ET${g.tv ? " · " + esc(g.tv) : ""}${g.venue ? " · " + esc(g.venue) : ""}`;
+  const when = `${esc(fmtDate(g.date, {weekday: "short", month: "short", day: "numeric"}))} · ${esc(g.tip.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit", timeZone: "America/New_York"}))} ET${g.tv ? " · " + esc(g.tv) : ""}${g.venue ? " · " + esc(g.venue) : ""}`;
   const head = `<div class="gd-head"><div class="eyebrow">${st.k === "pre" ? "Game day" : st.k === "live" ? "Game on" : "Final"}${g.type && !/regular/i.test(g.type) ? " · " + esc(g.type) : ""}</div>
       <button type="button" class="gd-std" data-gd-std="1">Standard layout</button></div>
     <div class="gd-opp" role="heading" aria-level="3">${g.home ? "vs" : "@"} ${esc(g.opp)}</div><p class="gd-when">${when}</p>`;
@@ -948,16 +960,39 @@ function wireGd(scope){
 /* re-render Today when the game-day state changes (tip, final, midnight, morning refresh) and run the poller */
 function gdCheck(){
   const st = gdState(), k = st ? st.k : null;
-  if (k !== GD.lastK) renderToday();
+  if (k !== GD.lastK) { GD.lastK = k; renderToday(); }
 }
 function gdRefresh(){ const st = gdState(); if (st) renderToday(); }
 setInterval(() => { gdCheck(); livePoll(); }, LIVE_EVERY);
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { gdCheck(); livePoll(); } });
 setTimeout(() => livePoll(), 1500);
 
-/* Today, Team and League all render from the picked day's dashboard */
+/* Today, Team, League and History all render from the picked day's dashboard. Only the tab on screen is drawn
+   (showTab draws a tab as it opens), and a redraw keeps open <details> and the focused field as they were. */
+const shownTab = () => { const b = document.querySelector('.tabs button[aria-selected="true"]'); return b ? b.dataset.tab : "today"; };
+function snapUi(el){
+  const open = new Set([...el.querySelectorAll("details[open] > summary")].map(s => s.textContent.trim()));
+  const a = document.activeElement;
+  const f = a && a.id && el.contains(a) ? { id: a.id, v: a.tagName === "INPUT" ? a.value : null, s: a.selectionStart, e: a.selectionEnd } : null;
+  return { open, f };
+}
+function restoreUi(el, ui){
+  el.querySelectorAll("details > summary").forEach(s => { if (ui.open.has(s.textContent.trim())) s.parentElement.open = true; });
+  const n = ui.f && document.getElementById(ui.f.id);
+  if (!n || n === document.activeElement) return;
+  if (ui.f.v !== null && n.tagName === "INPUT") n.value = ui.f.v;
+  n.focus({preventScroll: true});
+  try { if (typeof ui.f.s === "number") n.setSelectionRange(ui.f.s, ui.f.e); } catch(e) {}
+}
 function renderToday(){
+  renderHero();
+  const t = shownTab();
+  if (t === "team") renderTeam(); else if (t === "league") renderLeague(); else if (t === "history") renderHistory(); else drawToday();
+}
+function drawToday(){
   const el = $("#p-today");
+  if (!el || el.hidden) return;
+  const ui = snapUi(el);
   const D = DASH || {};
   const picker = DASH_DATES.length ? `<div><label for="dash-day">Dashboard for</label><select id="dash-day"><option value="latest"${DASH_PICK === "latest" ? " selected" : ""}>Latest</option>${DASH_DATES.map(d => `<option value="${esc(d)}"${DASH_PICK === d ? " selected" : ""}>${esc(fmtDate(d, {weekday:"short", month:"short", day:"numeric"}))}</option>`).join("")}</select></div>` : "";
   let sub = "Waiting for the first morning refresh.";
@@ -989,10 +1024,7 @@ function renderToday(){
   el.querySelectorAll("[data-goto-home]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); showTab("home"); window.scrollTo({top: 0}); }));
   el.querySelectorAll("[data-goto-hist]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); HIST_PICK = a.dataset.gotoHist; showTab("history"); window.scrollTo({top: 0}); }));
   wireSections(el); wireFeeds(el); wireBriefing(el);
-  renderHero();
-  renderTeam();
-  renderLeague();
-  renderHistory();
+  restoreUi(el, ui);
 }
 
 /* ---------- pace vs last season (Phase 3, Oct 2026): game N this year vs game N last year, regular season only ---------- */
@@ -1083,6 +1115,9 @@ function capPanel(){
    The season log = team/stats log merged with the games/ box scores (box scores win), regular season from Oct 20. */
 let TEAM = null, MILE = null;
 const SEASON0 = "2026-10-20";
+const SEASON_END = SCHED.filter(g => g.date).map(g => g.date).sort().pop();
+/* regular season only: preseason, the NBA Cup championship and the playoffs don't count toward season stats */
+const isRegSeason = (d, type) => !!d && d >= SEASON0 && d <= SEASON_END && !/preseason|playoff|play-in|postseason|championship|cup final/i.test(type || "");
 const NAME_ALIAS = { "Ronald Holland II": "Ron Holland II" };
 const pName = n => NAME_ALIAS[n] || n;
 const LOGK = ["name","min","pts","reb","ast","stl","blk","tpm","tpa","fgm","fga","ftm","fta","st"];
@@ -1090,14 +1125,14 @@ const f1d = v => num(v) === null ? "–" : v.toFixed(1);
 const s1 = v => num(v) === null ? "–" : (Math.round(v * 10) === 0 ? "0.0" : (v > 0 ? "+" : "–") + Math.abs(v).toFixed(1));
 const p1 = v => num(v) === null ? "–" : (v * 100).toFixed(1) + "%";
 const lastName = n => { const p = String(n).replace(/\s+(Jr\.?|Sr\.?|II|III|IV)$/, "").split(" "); return p[p.length - 1]; };
-const oppAb = o => { o = String(o || ""); if (ABBR[o]) return ABBR[o]; if (/^[A-Z]{2,4}$/.test(o)) return o; const k = Object.keys(ABBR).find(x => o.startsWith(x) || o.endsWith(x)); return k ? ABBR[k] : o; };
+const oppAb = o => { o = String(o || ""); if (ABBR[o]) return ABBR[o]; if (/^[A-Z]{2,4}$/.test(o)) return hubAb(o); const k = Object.keys(ABBR).find(x => o.startsWith(x) || o.endsWith(x)); return k ? ABBR[k] : o; };
 const vsAt = g => (g.home ? "vs " : "@ ") + oppAb(g.opp);
 function teamCutoff(){ return DASH_PICK !== "latest" && DASH && DASH.forDate ? DASH.forDate : "9999-12-31"; }
 function seasonLog(){
   const cut = teamCutoff(), by = {};
-  ((TEAM && Array.isArray(TEAM.log)) ? TEAM.log : []).forEach(g => { if (g && g.d >= SEASON0 && g.d <= cut && Array.isArray(g.p)) by[g.d] = g; });
+  ((TEAM && Array.isArray(TEAM.log)) ? TEAM.log : []).forEach(g => { if (g && isRegSeason(g.d, g.type) && g.d <= cut && Array.isArray(g.p)) by[g.d] = g; });
   BOXES.forEach(g => {
-    if (!g || !g.date || g.date < SEASON0 || g.date > cut || /preseason/i.test(g.type || "") || !Array.isArray(g.box) || !g.box.length) return;
+    if (!g || !isRegSeason(g.date, g.type) || g.date > cut || !Array.isArray(g.box) || !g.box.length) return;
     by[g.date] = { d: g.date, opp: g.opponent || "", home: !!g.home, det: g.det, oppPts: g.opp, type: g.type || "",
       p: g.box.filter(p => p && p.name).map(p => { const fg = splitMA(p.fg) || [0, 0], tp = splitMA(p.tp) || [0, 0], ft = splitMA(p.ft) || [0, 0];
         return [p.name, Number(p.min) || 0, Number(p.pts) || 0, Number(p.reb) || 0, Number(p.ast) || 0, Number(p.stl) || 0, Number(p.blk) || 0, tp[0], tp[1], fg[0], fg[1], ft[0], ft[1], p.starter ? 1 : 0]; }) };
@@ -1303,7 +1338,8 @@ function milestonesPanel(){
 function youngPanel(){
   if (!MILE || !Array.isArray(MILE.players)) return "";
   const log = seasonLog(), S = aggRows(log), F = aggRows(log.slice(-5));
-  const yr = p => !p.debut || p.debut >= "2026-27" ? 1 : p.debut === "2025-26" ? 2 : p.debut === "2024-25" ? 3 : 0;
+  /* no debut on file: a rookie only if he has no NBA games either */
+  const yr = p => !p.debut ? ((p.last && p.last.g) || (p.career && p.career.g) ? 0 : 1) : p.debut >= "2026-27" ? 1 : p.debut === "2025-26" ? 2 : p.debut === "2024-25" ? 3 : 0;
   const young = MILE.players.filter(p => yr(p) > 0);
   if (!young.length) return "";
   const tag = n => n === 1 ? "Rookie" : n === 2 ? "2nd season" : "3rd season";
@@ -1371,7 +1407,8 @@ function injuryHistoryPanel(){
 
 function renderTeam(){
   const el = $("#p-team");
-  if (!el) return;
+  if (!el || el.hidden) return;
+  const ui = snapUi(el);
   const D = DASH || {};
   const two = (a, b, sa, sb) => a[3] && b[3] ? [[a[0], a[1], sa, a[3]], [b[0], b[1], sb, b[3]]] : [[a[0], a[1], 12, a[3]], [b[0], b[1], 12, b[3]]];
   const secs = [["record", "Record", 12, recordPanel()], ["pace", "Pace", 12, pacePanel()],
@@ -1393,6 +1430,7 @@ function renderTeam(){
     const again = el.querySelector(`[data-psort="${k}"]`); if (again) again.focus();
   }));
   wireSections(el);
+  restoreUi(el, ui);
 }
 
 /* ---------- team buzz + league transactions (Phase 4, Oct 2026) ----------
@@ -1501,7 +1539,7 @@ let LEAGUE = null;
 const EAST_AB = ["ATL","BOS","BKN","CHA","CHI","CLE","DET","IND","MIA","MIL","NYK","ORL","PHI","TOR","WAS"];
 function abOfTeam(t){
   const s = String(t || "");
-  if (/^[A-Z]{3}$/.test(s)) return s;
+  if (/^[A-Z]{2,4}$/.test(s)) return hubAb(s);
   const T = (LEAGUE && LEAGUE.teams) || {};
   const hit = Object.keys(T).find(k => s.startsWith(T[k].name) || s.includes(T[k].name));
   if (hit) return hit;
@@ -1664,7 +1702,8 @@ function cruisePanel(){
 
 function renderLeague(){
   const el = $("#p-league");
-  if (!el) return;
+  if (!el || el.hidden) return;
+  const ui = snapUi(el);
   const D = DASH || {};
   const two = (a, b, sa, sb) => a[3] && b[3] ? [[a[0], a[1], sa, a[3]], [b[0], b[1], sb, b[3]]] : [[a[0], a[1], 12, a[3]], [b[0], b[1], 12, b[3]]];
   const secs = [...two(["race", "East race", 0, eastRacePanel()], ["east", "Standings", 0, standingsPanel(D.standings)], 7, 5),
@@ -1674,6 +1713,7 @@ function renderLeague(){
     ...two(["former", "Former Pistons", 0, formerPanel()], ["cruise", "Cruise", 0, cruisePanel()], 7, 5)].filter(x => x[3]);
   el.innerHTML = `${jumpBar(secs.map(([id, l]) => [id, l]))}${dashNote()}<div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
   wireSections(el); wireFeeds(el);
+  restoreUi(el, ui);
 }
 
 /* ---------- This day in Pistons history (Phase 3, Oct 2026) ----------
@@ -1953,10 +1993,13 @@ function searchResults(){
   });
   return out.sort((a, b) => b.d.localeCompare(a.d));
 }
+/* one pass over the raw text, escaping each piece, so a later word can't match inside an earlier <mark> or an &amp; */
 function markup(s){
-  let h = esc(s || "");
-  ARCH.q.split(/\s+/).filter(w => w.length > 1).forEach(w => { const re = new RegExp("(" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/[&<>"']/g, "") + ")", "ig"); h = h.replace(re, "<mark>$1</mark>"); });
-  return h;
+  const text = String(s || "");
+  const words = [...new Set(ARCH.q.split(/\s+/).filter(w => w.length > 1).map(w => w.toLowerCase()))].sort((a, b) => b.length - a.length);
+  if (!words.length) return esc(text);
+  const re = new RegExp("(" + words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") + ")", "ig");
+  return text.split(re).map((part, i) => i % 2 ? `<mark>${esc(part)}</mark>` : esc(part)).join("");
 }
 function drawSearch(){
   const box = $("#arch-res");
@@ -1994,7 +2037,8 @@ function wireP8History(el){
 
 function renderHistory(){
   const el = $("#p-history");
-  if (!el) return;
+  if (!el || el.hidden) return;
+  const ui = snapUi(el);
   const D = DASH || {};
   const today = D.date || isoDay(new Date());
   const md = HIST_PICK || mdOf(today);
@@ -2036,6 +2080,7 @@ function renderHistory(){
   const t = el.querySelector("[data-htoday]"); if (t) t.addEventListener("click", () => go(mdOf(today)));
   el.insertAdjacentHTML("beforeend", phase8History());
   wireSections(el); wireP8History(el);
+  restoreUi(el, ui);
 }
 
 let rzT = null, lastW = window.innerWidth;
@@ -2566,7 +2611,7 @@ function healthChecks(now){
   if (g) {
     const fin = typeof GD !== "undefined" && GD.final && GD.final.date === g.date ? GD.final.at : g.tip.getTime() + FINAL_AFTER;
     const dueAt = fin + 90 * 60e3;
-    if (now < fin) add("Game recap", "nd", "After the final");
+    if (now < fin || liveInProgress(g.date, now)) add("Game recap", "nd", "After the final");
     else if (HL.rec === undefined || HL.rec === null) add("Game recap", "na", "Checking…");
     else if (HL.rec === false) add("Game recap", "na", "Can't read the Postgame site from here");
     else add("Game recap", has(HL.rec, g.date) ? "ok" : now >= dueAt ? "late" : "nd", has(HL.rec, g.date) ? `Posted (${fmtDate(g.date, {month: "short", day: "numeric"})})` : now >= dueAt ? "Not posted (due 90 min after the final)" : "Due 90 min after the final", true);
@@ -2628,11 +2673,11 @@ async function loadStaticDb(){
   DB = db;
   try {
     db.collection("lines").onSnapshot(snap => {
-      LINES = snap.docs.map(d => Object.assign({ date: d.id }, d.data() || {})).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.date));
+      LINES = snap.docs.map(d => normAb(Object.assign({ date: d.id }, d.data() || {}))).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.date));
       renderBetting(); gdRefresh();
     }, () => {});
     db.collection("matchups").onSnapshot(snap => {
-      MATCHUPS = snap.docs.map(d => Object.assign({ date: d.id }, d.data() || {})).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.date));
+      MATCHUPS = snap.docs.map(d => normAb(Object.assign({ date: d.id }, d.data() || {}))).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.date));
       renderBetting(); gdRefresh();
     }, () => {});
     db.doc("betting/futures").onSnapshot(snap => { FUTURES = snap.exists ? snap.data() : null; renderBetting(); renderTeam(); }, () => {});
