@@ -106,6 +106,7 @@ function showTab(t){
   document.querySelectorAll(".tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === t)));
   ["today","team","league","history","betting","schedule","home","summary","trips"].forEach(k => $("#p-" + k).hidden = k !== t);
   store.set("pistons-tab", t);
+  revealTab(t);
   if (["today","team","league","history"].includes(t) && typeof renderToday === "function" && GAMES.length) renderToday();
   if (t === "betting" && typeof renderBetting === "function" && GAMES.length) renderBetting();
 }
@@ -124,9 +125,19 @@ if (TABBAR) {
   window.addEventListener("scroll", setStuck, {passive: true});
   setStuck();
 }
+/* keep the picked tab fully visible inside the sideways-scrolling bar (moves the bar sideways only, never the page) */
+function revealTab(t){
+  const bar = document.querySelector(".tabs"), b = document.getElementById("tab-" + t);
+  if (!bar || !b || bar.scrollWidth <= bar.clientWidth) return;
+  const r = b.getBoundingClientRect(), q = bar.getBoundingClientRect();
+  if (r.left < q.left) bar.scrollLeft -= (q.left - r.left) + 12;
+  else if (r.right > q.right) bar.scrollLeft += (r.right - q.right) + 12;
+}
 document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
+  /* decide before switching: hiding a long tab can clamp the page scroll before we get to look at it */
+  const pinned = TABBAR ? window.scrollY > tabsTop() + 1 : false;
   showTab(b.dataset.tab);
-  if (TABBAR) { const top = tabsTop(); if (window.scrollY > top) window.scrollTo({top}); }
+  if (TABBAR && pinned) window.scrollTo({top: tabsTop()});
 }));
 $("#recstrip").addEventListener("click", e => { e.preventDefault(); showTab("team"); const tb = $("#tab-team"); if (tb) tb.scrollIntoView({block:"nearest", inline:"nearest"}); });
 
@@ -735,6 +746,215 @@ function wireBriefing(scope){
   }));
 }
 
+/* ---------- Oct 13, 2026: game-day mode + live score ----------
+   Game-day mode reorders Today around today's game (latest dashboard only; older days keep the standard layout):
+     pre  (until tip): countdown, TV, line, model win chance, injuries, Pregame link
+     live (tip to final, or tip + 2.5 h): live score strip from ESPN, with the pregame block under it
+     post (after the final until the next morning's dashboard): final score, box score, Postgame link, pressers search
+   "Standard layout" turns it off on this device (localStorage pistons-gd-std).
+   Live score: the page itself asks ESPN's public scoreboard every 40 s, only from 15 min before tip to 3.5 h after,
+   only while the tab is visible, and stops at the final. No tasks, no pushes. If ESPN can't be reached (blocked or
+   down) the strip hides and an ESPN link shows instead. */
+const GD = { std: store.get("pistons-gd-std") === "1", live: null, err: false, busy: false, final: null, lastK: null };
+const ESPN_SB = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard";
+const LIVE_PRE = 15 * 60e3, LIVE_POST = 3.5 * 3600e3, LIVE_EVERY = 40e3;
+const ymd = d => String(d || "").replace(/-/g, "");
+const espnDay = d => "https://www.espn.com/nba/scoreboard/_/date/" + ymd(d);
+const espnGame = id => /^\d+$/.test(String(id || "")) ? "https://www.espn.com/nba/game/_/gameId/" + id : "";
+const espnBox = id => /^\d+$/.test(String(id || "")) ? "https://www.espn.com/nba/boxscore/_/gameId/" + id : "";
+/* today's game (or yesterday's, until the next morning's dashboard is out) */
+function gdGame(now){
+  now = now || new Date();
+  const today = isoDay(now), y = new Date(now); y.setDate(y.getDate() - 1);
+  const L = (typeof DASH_LATEST !== "undefined" && DASH_LATEST) || {};
+  const tips = knownTips();
+  const pick = d => {
+    const t = tips.find(x => x.date === d);
+    if (!t) return null;
+    const s = GAMES.find(g => g.date === d && !g.tbd) || null;
+    const n = [L.nextGame].concat(Array.isArray(L.upcoming) ? L.upcoming : []).find(x => x && x.date === d) || null;
+    const lg = L.lastGame && L.lastGame.date === d ? L.lastGame : null;
+    const opp = (n && n.opponent) || (s && fullName(s.opp)) || (lg && lg.opponent) || "";
+    const home = n ? !!n.home : s ? !!s.home : !!(lg && lg.home);
+    return { date: d, tip: t.tip, opp, home, tv: (n && n.tv) || (s && s.tv) || "", type: (n && n.type) || (s ? "Regular season" : ""), venue: (n && n.venue) || (home ? "Little Caesars Arena" : ""), n };
+  };
+  const g = pick(today);
+  if (g) return g;
+  const yd = isoDay(y), gy = pick(yd);
+  /* yesterday's game stays in post mode only until the morning dashboard for today is out */
+  if (gy && now - gy.tip >= 0 && (!L.date || L.date <= yd)) return gy;
+  return null;
+}
+function gdState(now){
+  now = now || new Date();
+  if (typeof DASH_PICK !== "undefined" && DASH_PICK !== "latest") return null;
+  const g = gdGame(now);
+  if (!g) return null;
+  const fin = GD.final && GD.final.date === g.date;
+  if (now < g.tip) return { k: "pre", g };
+  if (!fin && now - g.tip < FINAL_AFTER) return { k: "live", g };
+  return { k: "post", g };
+}
+const gdOn = st => !!st && !GD.std;
+
+/* ---- the live score: ESPN scoreboard for the game's date ---- */
+function liveWanted(now){
+  const g = gdGame(now);
+  if (!g) return null;
+  const dt = now - g.tip;
+  if (dt < -LIVE_PRE || dt > LIVE_POST) return null;
+  if (GD.final && GD.final.date === g.date) return null;
+  return g;
+}
+function parseLive(j, date){
+  const ev = (j && Array.isArray(j.events) ? j.events : []).find(e => e && e.competitions && e.competitions[0] && (e.competitions[0].competitors || []).some(c => c.team && c.team.abbreviation === "DET"));
+  if (!ev) return null;
+  const c = ev.competitions[0], det = c.competitors.find(x => x.team.abbreviation === "DET"), opp = c.competitors.find(x => x !== det) || {};
+  const st = (ev.status && ev.status.type) || {};
+  const qs = x => (Array.isArray(x.linescores) ? x.linescores : []).map(q => Number(q.value)).filter(v => !isNaN(v));
+  return { id: String(ev.id || ""), date, det: Number(det.score) || 0, opp: Number(opp.score) || 0,
+    oppAbbr: (opp.team && opp.team.abbreviation) || "", oppName: (opp.team && opp.team.shortDisplayName) || "", home: det.homeAway === "home",
+    state: st.state || "", detail: st.shortDetail || st.detail || "", period: ev.status && ev.status.period, clock: ev.status && ev.status.displayClock,
+    detQ: qs(det), oppQ: qs(opp), at: Date.now() };
+}
+async function livePoll(force){
+  const now = new Date(), g = liveWanted(now);
+  if (!g || GD.busy) return;
+  if (!force && typeof document !== "undefined" && document.visibilityState === "hidden") return;
+  GD.busy = true;
+  try {
+    const r = await fetch(ESPN_SB + "?dates=" + ymd(g.date), { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const v = parseLive(await r.json(), g.date);
+    if (!v) throw new Error("no Pistons game on the scoreboard");
+    GD.live = v; GD.err = false;
+    if (v.state === "post") GD.final = v;
+  } catch(e) { GD.err = true; }
+  finally { GD.busy = false; }
+  paintLive(); gdCheck();
+}
+function liveHtml(g){
+  const v = GD.live && GD.live.date === g.date ? GD.live : null;
+  const link = (v && espnGame(v.id)) || espnDay(g.date);
+  if (!v) {
+    if (GD.err) return `<div class="lv lv-off"><span>Live score isn't available here.</span> <a href="${esc(link)}" target="_blank" rel="noopener">Follow on ESPN ↗</a></div>`;
+    return `<div class="lv lv-wait"><span class="lv-pill">Live</span><span>Checking the score…</span></div>`;
+  }
+  const lead = v.det - v.opp, ab = v.oppAbbr || "OPP";
+  const pre = v.state === "pre", fin = v.state === "post";
+  const t = new Date(v.at).toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit"});
+  const qn = Math.max(v.detQ.length, v.oppQ.length);
+  const ql = i => i < 4 ? "Q" + (i + 1) : (i === 4 ? "OT" : (i - 3) + "OT");
+  const qrow = qn ? `<table class="qtr lv-q"><thead><tr><th></th>${Array.from({length: qn}, (_, i) => `<th>${ql(i)}</th>`).join("")}<th>T</th></tr></thead><tbody>
+      <tr><td>DET</td>${Array.from({length: qn}, (_, i) => `<td>${v.detQ[i] ?? ""}</td>`).join("")}<td>${v.det}</td></tr>
+      <tr><td>${esc(ab)}</td>${Array.from({length: qn}, (_, i) => `<td>${v.oppQ[i] ?? ""}</td>`).join("")}<td>${v.opp}</td></tr></tbody></table>` : "";
+  return `<div class="lv${fin ? " lv-fin" : ""}" aria-live="polite">
+    <div class="lv-top"><span class="lv-pill${fin ? " fin" : ""}">${fin ? "Final" : pre ? "Soon" : "Live"}</span>${fin && /^final$/i.test(v.detail) ? "" : `<span class="lv-st">${esc(pre ? "Tip-off " + g.tip.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit"}) : v.detail)}</span>`}</div>
+    <div class="lv-score"><div><span>DET</span><b class="${lead > 0 ? "lead" : ""}">${v.det}</b></div><i>${v.home ? "vs" : "@"}</i><div><b class="${lead < 0 ? "lead" : ""}">${v.opp}</b><span>${esc(ab)}</span></div></div>
+    ${qrow}
+    <div class="lv-foot">${fin ? "" : `Updated ${esc(t)} · refreshes every 40 seconds · `}<a href="${esc(link)}" target="_blank" rel="noopener">ESPN Gamecast ↗</a></div>
+  </div>`;
+}
+function paintLive(){
+  const st = gdState();
+  const el = document.getElementById("gd-live");
+  if (el && st && st.k === "live") el.innerHTML = liveHtml(st.g);
+}
+
+/* ---- the game-day panel ---- */
+function gdLines(g){
+  const l = LINES.find(x => x.date === g.date);
+  const m = MATCHUPS.find(x => x.date === g.date);
+  const pj = m ? project(m, MW) : null;
+  const p = l ? implied(l.mlDet) : null;
+  const bits = [];
+  if (l && num(l.spread) !== null) bits.push(`<div><span>Spread</span><b>${lineTxt(l)}</b></div>`);
+  if (l && num(l.total) !== null) bits.push(`<div><span>Total</span><b>${l.total}</b></div>`);
+  if (l && num(l.mlDet) !== null) bits.push(`<div><span>Moneyline</span><b>${mlTxt(l.mlDet)}</b>${p !== null ? `<small>Implies ${Math.round(p * 100)}%</small>` : ""}</div>`);
+  if (pj) bits.push(`<div><span>Model win chance</span><b>${Math.round(pj.win * 100)}%</b><small>Betting tab model</small></div>`);
+  return bits.length ? `<div class="bet-line gd-line">${bits.join("")}</div>` : "";
+}
+function gdInjuries(g){
+  const L = (typeof DASH_LATEST !== "undefined" && DASH_LATEST) || {};
+  const groups = {};
+  (Array.isArray(L.injuries) ? L.injuries : []).forEach(i => { if (i && i.name) { const s = /out/i.test(i.status) ? "Out" : /doubt/i.test(i.status) ? "Doubtful" : /question|day/i.test(i.status) ? "Questionable" : "Probable"; (groups[s] = groups[s] || []).push(i.name); } });
+  const m = MATCHUPS.find(x => x.date === g.date), oi = m && m.opp && Array.isArray(m.opp.injuries) ? m.opp.injuries.filter(i => i && i.name && /out|doubt|question/i.test(i.status || "")) : [];
+  const det = ["Out", "Doubtful", "Questionable", "Probable"].filter(k => groups[k]).map(k => `<b>${k}:</b> ${esc(groups[k].join(", "))}`).join(" · ");
+  const opp = oi.length ? oi.slice(0, 6).map(i => `${esc(i.name)} (${esc(i.status)})`).join(", ") : "";
+  if (!det && !opp) return `<p class="gd-inj"><b>Injuries:</b> none listed for Detroit this morning.</p>`;
+  return `${det ? `<p class="gd-inj"><span class="eyebrow">DET injuries</span> ${det}</p>` : `<p class="gd-inj"><span class="eyebrow">DET injuries</span> none listed</p>`}${opp ? `<p class="gd-inj"><span class="eyebrow">${esc((m && m.oppAbbr) || "Opponent")}</span> ${opp}</p>` : ""}`;
+}
+function gdPanel(st){
+  const g = st.g;
+  const when = `${esc(fmtDate(g.date, {weekday: "short", month: "short", day: "numeric"}))} · ${esc(g.tip.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit"}))} ET${g.tv ? " · " + esc(g.tv) : ""}${g.venue ? " · " + esc(g.venue) : ""}`;
+  const head = `<div class="gd-head"><div class="eyebrow">${st.k === "pre" ? "Game day" : st.k === "live" ? "Game on" : "Final"}${g.type && !/regular/i.test(g.type) ? " · " + esc(g.type) : ""}</div>
+      <button type="button" class="gd-std" data-gd-std="1">Standard layout</button></div>
+    <div class="gd-opp" role="heading" aria-level="3">${g.home ? "vs" : "@"} ${esc(g.opp)}</div><p class="gd-when">${when}</p>`;
+  const preview = SITE.preview ? `<a class="gd-go" href="${SITE.preview}" target="_blank" rel="noopener">Full preview: Pistons Pregame ↗</a>` : "";
+  if (st.k === "pre") {
+    return `<div class="panel gd">${head}
+      <div class="cd" data-iso="${esc(g.tip.toISOString())}" aria-live="off"></div>
+      ${gdLines(g)}${gdInjuries(g)}
+      <div class="gd-links">${preview}</div></div>`;
+  }
+  if (st.k === "live") {
+    return `<div class="panel gd">${head}
+      <div id="gd-live">${liveHtml(g)}</div>
+      <details class="gd-pre"><summary>Pregame: line, injuries, preview</summary>${gdLines(g)}${gdInjuries(g)}<div class="gd-links">${preview}</div></details></div>`;
+  }
+  /* post */
+  const f = GD.final && GD.final.date === g.date ? GD.final : null, r = RESULTS[g.date];
+  const det = f ? f.det : r ? num(r.det) : null, opp = f ? f.opp : r ? num(r.opp) : null;
+  const ab = (f && f.oppAbbr) || ABBR[g.opp] || g.opp;
+  const score = det !== null && opp !== null
+    ? `<div class="lv lv-fin"><div class="lv-top"><span class="lv-pill fin">Final</span>${f && f.detail && !/^final$/i.test(f.detail) ? `<span class="lv-st">${esc(f.detail)}</span>` : ""}<span class="wl ${det > opp ? "W" : "L"}">${det > opp ? "W" : "L"}</span></div>
+        <div class="lv-score"><div><span>DET</span><b class="${det > opp ? "lead" : ""}">${det}</b></div><i>${g.home ? "vs" : "@"}</i><div><b class="${opp > det ? "lead" : ""}">${opp}</b><span>${esc(ab)}</span></div></div></div>`
+    : `<p class="empty">Final score not in yet. <a href="${esc(espnDay(g.date))}" target="_blank" rel="noopener">Check ESPN ↗</a></p>`;
+  const q = encodeURIComponent(`Detroit Pistons postgame press conference ${g.opp} ${fmtDate(g.date, {month: "long", day: "numeric", year: "numeric"})}`);
+  const box = (f && espnBox(f.id)) || espnDay(g.date);
+  return `<div class="panel gd">${head}${score}
+    <div class="gd-links">
+      ${SITE.recap ? `<a class="gd-go" href="${SITE.recap}" target="_blank" rel="noopener">Recap: Pistons Postgame ↗</a>` : ""}
+      <a href="${esc(box)}" target="_blank" rel="noopener">Box score ↗</a>
+      <a href="https://www.youtube.com/results?search_query=${q}" target="_blank" rel="noopener">Postgame pressers on YouTube ↗</a>
+    </div>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">The full last-game card, with leaders and pressers, arrives with tomorrow morning's dashboard.</p></div>`;
+}
+/* reorder Today's sections for game-day mode */
+function gdSections(secs, D){
+  const st = gdState();
+  GD.lastK = st ? st.k : null;
+  if (!gdOn(st)) return secs;
+  const by = Object.fromEntries(secs.map(s => [s[0], s]));
+  const order = st.k === "post" ? ["brief", "last", "next", "news", "inj", "buzz", "hist"] : ["next", "inj", "brief", "last", "news", "buzz", "hist"];
+  return [["gd", "Game", 12, gdPanel(st)]].concat(order.map(k => by[k]).filter(Boolean));
+}
+/* the game-day card leads Today: rendered above the dashboard header, outside the section grid */
+function gdTop(secs){
+  const x = secs.find(s => s[0] === "gd");
+  return x ? `<div class="gd-top" id="s-gd" data-sec="gd">${x[3]}</div>` : "";
+}
+function gdToggle(){
+  const st = gdState();
+  if (!st || !GD.std) return "";
+  return `<button type="button" class="chip gd-back" data-gd-std="0">Game-day layout</button>`;
+}
+function wireGd(scope){
+  scope.querySelectorAll("[data-gd-std]").forEach(b => b.addEventListener("click", () => {
+    GD.std = b.dataset.gdStd === "1"; store.set("pistons-gd-std", GD.std ? "1" : "0"); renderToday();
+  }));
+  tick();
+}
+/* re-render Today when the game-day state changes (tip, final, midnight, morning refresh) and run the poller */
+function gdCheck(){
+  const st = gdState(), k = st ? st.k : null;
+  if (k !== GD.lastK) renderToday();
+}
+function gdRefresh(){ const st = gdState(); if (st) renderToday(); }
+setInterval(() => { gdCheck(); livePoll(); }, LIVE_EVERY);
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") { gdCheck(); livePoll(); } });
+setTimeout(() => livePoll(), 1500);
+
 /* Today, Team and League all render from the picked day's dashboard */
 function renderToday(){
   const el = $("#p-today");
@@ -746,7 +966,7 @@ function renderToday(){
     sub = (D.forDate ? "Covers everything through " + fmtDate(D.forDate, {weekday:"short", month:"short", day:"numeric"}) + " · " : "") + "refreshed " + u.toLocaleString("en-US", {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
     if (DASH_PICK === "latest" && Date.now() - u.getTime() > 36 * 3600e3) sub += " · the next refresh is due tomorrow morning";
   }
-  const secs = [
+  let secs = [
     ["brief", "Briefing", 12, briefingPanel(D)],
     ["last", "Last game", 7, lastGamePanel(D.lastGame)],
     ["next", "Next game", 5, nextPanel(D.nextGame, D.upcoming)],
@@ -755,15 +975,17 @@ function renderToday(){
     ["buzz", "Buzz", 12, buzzPanel()],
     ["hist", "History", 12, histCard()]
   ].filter(x => x[3]);
+  secs = gdSections(secs, D);
   el.innerHTML = `
     ${jumpBar(secs.map(([id, l]) => [id, l]))}
-    <div class="dash-top"><div><div class="eyebrow">${esc(D.phase || "Daily dashboard")}</div><h2>${D.date ? esc(fmtDate(D.date, {weekday:"long", month:"long", day:"numeric"})) : "Pistons daily"}</h2><div class="sub">${esc(sub)}</div></div>${picker}</div>
+    ${gdTop(secs)}<div class="dash-top"><div><div class="eyebrow">${esc(D.phase || "Daily dashboard")}</div><h2>${D.date ? esc(fmtDate(D.date, {weekday:"long", month:"long", day:"numeric"})) : "Pistons daily"}</h2><div class="sub">${esc(sub)}</div></div>${picker}${gdToggle()}</div>
     ${changesStrip()}
     ${promoNote()}
     ${D.headline && !(D.briefing && Array.isArray(D.briefing.bullets) && D.briefing.bullets.length) ? `<div class="headline">${esc(D.headline)}</div>` : ""}
-    <div class="dgrid">${secs.map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
+    <div class="dgrid">${secs.filter(x => x[0] !== "gd").map(([id, , sp, html]) => cell(sp, id, html)).join("")}</div>`;
   const sel = $("#dash-day");
   if (sel) sel.addEventListener("change", () => pickDay(sel.value));
+  wireGd(el);
   el.querySelectorAll("[data-goto-home]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); showTab("home"); window.scrollTo({top: 0}); }));
   el.querySelectorAll("[data-goto-hist]").forEach(a => a.addEventListener("click", e => { e.preventDefault(); HIST_PICK = a.dataset.gotoHist; showTab("history"); window.scrollTo({top: 0}); }));
   wireSections(el); wireFeeds(el); wireBriefing(el);
@@ -1458,7 +1680,6 @@ function renderLeague(){
    history/<MM-DD> {alltime [{year, date, text, kind, source, url, top?}], cade [{... kind "event"}], games [{season, date, opp, oppName, home, det, oppPts, wl, line, url, note?, noteSource?, noteUrl?}]}
    Cade-era games through 2025-26 are seeded; this season's games are merged from results/ and games/ box scores. */
 const HIST = {}, HIST_PENDING = {};
-const HIST_START = "2026-10-20";   // the Today card starts on opening night unless the day has a non-game item
 let HIST_PICK = null;              // History tab's chosen MM-DD
 const MONTHS_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const mdOf = iso => iso.slice(5, 10);
@@ -1516,7 +1737,6 @@ function histCard(){
   const doc = histDoc(md);
   if (doc === undefined || !doc) return "";
   const h = histData(md, view);
-  if (view < HIST_START && !h.alltime.some(x => x.kind === "event") && !h.cade.length) return "";
   if (!h.alltime.length && !h.cade.length && !h.games.length) return "";
   const tc = topCade(h);
   const more = h.alltime.slice(1, 4);
@@ -2115,6 +2335,123 @@ function wireModel(){
   const dt = el.querySelector("details.weights"); if (dt) dt.addEventListener("toggle", () => store.set("pistons-model-open", dt.open ? "1" : "0"));
 }
 
+/* ---------- Oct 13, 2026: "$10 on every game" tracker (Betting tab) ----------
+   Two hypothetical running tallies, graded from the lines docs the page already has (same game set as the ATS tiles:
+   regular season, NBA Cup and playoffs; no preseason):
+     spread: $10 on the Pistons spread at an assumed -110 (win +$9.09, push $0, loss -$10; lines docs carry no juice)
+     moneyline: $10 on mlDet (the closing number once the morning task grades the game)
+   Games with a final but no saved line are skipped and counted. Stake is per device (localStorage pistons-stake). */
+const TEN = { stake: (() => { const v = Number(store.get("pistons-stake")); return [5, 10, 20, 25, 50, 100].includes(v) ? v : 10; })(), all: false };
+const tenMoney = v => (v < 0 ? "−$" : v > 0 ? "+$" : "$") + Math.abs(v).toFixed(2);
+const tenMlWin = (odds, stake) => odds > 0 ? stake * odds / 100 : stake * 100 / Math.abs(odds);
+function tenRows(){
+  const stake = TEN.stake;
+  const graded = LINES.filter(l => counts(l) && hasFinal(l)).sort((a, b) => a.date.localeCompare(b.date));
+  let cs = 0, cm = 0;
+  const rows = graded.map(l => {
+    const a = atsOf(l), won = l.det > l.opp;
+    const sp = a ? (a.r === "W" ? stake * 100 / 110 : a.r === "L" ? -stake : 0) : null;
+    const ml = num(l.mlDet) !== null && l.mlDet !== 0 ? (won ? tenMlWin(l.mlDet, stake) : -stake) : null;
+    if (sp !== null) cs += sp; if (ml !== null) cm += ml;
+    return { l, a, won, sp, ml, cs, cm };
+  });
+  /* finals with no saved line (regular season, NBA Cup, playoffs: the results collection has no preseason) */
+  const haveLine = new Set(graded.map(l => l.date));
+  const noLine = Object.keys(RESULTS).filter(d => !haveLine.has(d) && num(RESULTS[d].det) !== null && num(RESULTS[d].opp) !== null).length;
+  return { rows, noLine };
+}
+function tenStats(rows, key){
+  const r = rows.filter(x => x[key] !== null);
+  const w = r.filter(x => x[key] > 0).length, l = r.filter(x => x[key] < 0).length, p = r.length - w - l;
+  const net = r.reduce((t, x) => t + x[key], 0), staked = r.length * TEN.stake;
+  let best = null, worst = null;
+  const n = Math.min(5, r.length);
+  if (r.length >= 5) for (let i = 0; i + n <= r.length; i++) {
+    const s = r.slice(i, i + n).reduce((t, x) => t + x[key], 0);
+    if (!best || s > best.v) best = { v: s, a: r[i].l.date, b: r[i + n - 1].l.date };
+    if (!worst || s < worst.v) worst = { v: s, a: r[i].l.date, b: r[i + n - 1].l.date };
+  }
+  return { n: r.length, w, l, p, net, roi: staked ? net / staked : null, best, worst };
+}
+function tenTiles(label, s, cls){
+  const span = x => x ? `${esc(shortDay(x.a))}–${esc(shortDay(x.b))}` : "";
+  return `<div class="ten-col"><div class="ten-k"><i class="ten-sw ${cls}" aria-hidden="true"></i>${esc(label)}</div>
+    <div class="bet-tiles ten-tiles">
+      <div><b class="${s.net > 0 ? "pos" : s.net < 0 ? "neg" : ""}">${tenMoney(s.net)}</b><span>Net</span></div>
+      <div><b>${s.w}–${s.l}${s.p ? "–" + s.p : ""}</b><span>Record</span></div>
+      <div><b>${s.roi === null ? "–" : (s.roi > 0 ? "+" : "") + (s.roi * 100).toFixed(1) + "%"}</b><span>Return</span></div>
+      <div><b>${s.best ? tenMoney(s.best.v) : "–"}</b><span>${s.best ? "Best 5 · " + span(s.best) : "Best 5 games"}</span></div>
+      <div><b>${s.worst ? tenMoney(s.worst.v) : "–"}</b><span>${s.worst ? "Worst 5 · " + span(s.worst) : "Worst 5 games"}</span></div>
+    </div></div>`;
+}
+/* cumulative P/L, both bets on one dollar axis, end labels + legend, hover crosshair */
+function tenChart(rows){
+  if (rows.length < 2) return "";
+  const box = $("#p-betting").clientWidth || 0;
+  const W = box ? Math.round(Math.min(1000, Math.max(280, box - 40))) : 640, H = 220, L = 46, R = 70, T = 14, B = 24;
+  const vals = rows.flatMap(x => [x.cs, x.cm]).concat([0]);
+  const step = v => { const m = Math.max(10, v); const p = Math.pow(10, Math.floor(Math.log10(m))); return [1, 2, 2.5, 5, 10].map(k => k * p).find(k => k >= m / 3) || p * 10; };
+  const st = step(Math.max(...vals.map(Math.abs)));
+  const lo = Math.floor(Math.min(...vals) / st) * st, hi = Math.ceil(Math.max(...vals) / st) * st || st;
+  const x = i => L + (rows.length === 1 ? 0 : i * (W - L - R) / (rows.length - 1)), y = v => T + (hi - v) * (H - T - B) / ((hi - lo) || 1);
+  let s = `<svg class="ten-svg" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Cumulative profit or loss of a ${esc("$" + TEN.stake)} bet on every game, spread and moneyline">`;
+  for (let v = lo; v <= hi + 1e-9; v += st) s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"${v === 0 ? "" : ' stroke-dasharray="3 3"'}/><text x="${L - 6}" y="${y(v) + 4}" font-size="11" text-anchor="end">${v < 0 ? "−" : v > 0 ? "+" : ""}$${Math.abs(v)}</text>`;
+  const path = k => rows.map((r, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(r[k]).toFixed(1)).join(" ");
+  s += `<path d="${path("cs")}" fill="none" stroke="var(--ten-a)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  s += `<path d="${path("cm")}" fill="none" stroke="var(--ten-b)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  const last = rows[rows.length - 1], ya = y(last.cs), yb = y(last.cm), gap = Math.abs(ya - yb) < 14 ? (14 - Math.abs(ya - yb)) / 2 : 0;
+  s += `<circle cx="${x(rows.length - 1)}" cy="${ya}" r="4" fill="var(--ten-a)" stroke="var(--card)" stroke-width="2"/><circle cx="${x(rows.length - 1)}" cy="${yb}" r="4" fill="var(--ten-b)" stroke="var(--card)" stroke-width="2"/>`;
+  s += `<text x="${x(rows.length - 1) + 8}" y="${(ya <= yb ? ya - gap : ya + gap) + 4}" font-size="11.5" style="fill:var(--ink)">Spread</text><text x="${x(rows.length - 1) + 8}" y="${(yb < ya ? yb - gap : yb + gap) + 4}" font-size="11.5" style="fill:var(--ink)">ML</text>`;
+  s += `<text x="${L}" y="${H - 6}" font-size="11">Game 1</text><text x="${W - R}" y="${H - 6}" font-size="11" text-anchor="end">Game ${rows.length}</text>`;
+  s += `<line class="ten-x" x1="0" x2="0" y1="${T}" y2="${H - B}" stroke="var(--muted)" stroke-width="1" visibility="hidden"/><rect class="ten-hit" x="${L}" y="${T}" width="${W - L - R}" height="${H - T - B}" fill="transparent"/></svg>`;
+  return `<div class="ten-chart" data-w="${W}" data-l="${L}" data-r="${R}">${s}<div class="ten-tip" hidden></div></div>
+    <div class="legend"><span><i style="background:var(--ten-a)"></i>Spread bet</span><span><i style="background:var(--ten-b)"></i>Moneyline bet</span><span>Running total, ${esc("$" + TEN.stake)} a game</span></div>`;
+}
+function wireTenChart(scope, rows){
+  const c = scope.querySelector(".ten-chart");
+  if (!c) return;
+  const svg = c.querySelector("svg"), hit = c.querySelector(".ten-hit"), xl = c.querySelector(".ten-x"), tip = c.querySelector(".ten-tip");
+  const W = +c.dataset.w, L = +c.dataset.l, R = +c.dataset.r;
+  const show = ev => {
+    const b = svg.getBoundingClientRect(), px = (ev.clientX - b.left) * W / b.width;
+    const i = Math.max(0, Math.min(rows.length - 1, Math.round((px - L) / ((W - L - R) / Math.max(1, rows.length - 1)))));
+    const r = rows[i], gx = L + i * (W - L - R) / Math.max(1, rows.length - 1);
+    xl.setAttribute("x1", gx); xl.setAttribute("x2", gx); xl.setAttribute("visibility", "visible");
+    tip.innerHTML = `<b>${esc(shortDay(r.l.date))} ${r.l.home ? "vs" : "@"} ${esc(r.l.oppAbbr || r.l.opponent || "")}</b> · ${r.won ? "W" : "L"} ${r.l.det}–${r.l.opp}<br>
+      <i class="ten-sw a"></i>Spread ${esc(lineTxt(r.l))}: ${r.sp === null ? "no line" : tenMoney(r.sp)} · total ${tenMoney(r.cs)}<br>
+      <i class="ten-sw b"></i>ML ${esc(mlTxt(r.l.mlDet))}: ${r.ml === null ? "no line" : tenMoney(r.ml)} · total ${tenMoney(r.cm)}`;
+    tip.hidden = false;
+    const left = gx * b.width / W;
+    tip.style.left = Math.max(0, Math.min(b.width - tip.offsetWidth, left - tip.offsetWidth / 2)) + "px";
+  };
+  const hide = () => { xl.setAttribute("visibility", "hidden"); tip.hidden = true; };
+  hit.addEventListener("pointermove", show); hit.addEventListener("pointerdown", show); hit.addEventListener("pointerleave", hide);
+}
+function tenPanel(){
+  const { rows, noLine } = tenRows();
+  const opts = [5, 10, 20, 25, 50, 100].map(v => `<option value="${v}"${v === TEN.stake ? " selected" : ""}>$${v}</option>`).join("");
+  const head = `<div class="ten-head"><h3 style="margin:0">$${TEN.stake} on every game</h3><label class="ten-stake">Stake <select id="ten-stake" aria-label="Stake per game">${opts}</select></label></div>`;
+  const note = `<p class="muted ten-note">Hypothetical: $${TEN.stake} on the Pistons in every regular-season, NBA Cup and playoff game, two ways. Spread bets assume the standard −110 price (a win pays $${(TEN.stake * 100 / 110).toFixed(2)}, a push returns the stake); moneyline bets use the closing Pistons moneyline.${noLine ? ` ${noLine} game${noLine > 1 ? "s" : ""} with no saved line ${noLine > 1 ? "are" : "is"} skipped.` : ""} Not a recommendation.</p>`;
+  if (!rows.length) return `<div class="panel ten">${head}<p class="empty">Starts with the opener on Oct 20. After each game the morning refresh grades the closing line and this adds the result to both tallies. Preseason doesn't count.</p>${note}</div>`;
+  const S = tenStats(rows, "sp"), M = tenStats(rows, "ml");
+  const list = rows.slice().reverse(), shown = TEN.all ? list : list.slice(0, 10);
+  const cell = v => v === null ? `<td class="muted">no line</td>` : `<td class="${v > 0 ? "pos" : v < 0 ? "neg" : ""}">${tenMoney(v)}</td>`;
+  const table = `<div class="tbl-wrap" style="border:0"><table class="mini ten-t"><thead><tr><th>Date</th><th>Game</th><th>Final</th><th>Spread</th><th>P/L</th><th class="hidden-sm">Total</th><th>ML</th><th>P/L</th><th class="hidden-sm">Total</th></tr></thead><tbody>
+    ${shown.map(r => `<tr><td>${esc(shortDay(r.l.date))}</td><td class="nowrap">${r.l.home ? "vs" : "@"} ${esc(r.l.oppAbbr || r.l.opponent || "")}</td><td class="nowrap">${r.won ? "W" : "L"} ${r.l.det}–${r.l.opp}</td><td class="nowrap">${esc(lineTxt(r.l))}</td>${cell(r.sp)}<td class="hidden-sm">${tenMoney(r.cs)}</td><td>${esc(mlTxt(r.l.mlDet))}</td>${cell(r.ml)}<td class="hidden-sm">${tenMoney(r.cm)}</td></tr>`).join("")}
+    </tbody></table></div>${list.length > 10 ? `<button type="button" class="chip ten-more" data-ten-all>${TEN.all ? "Show the last 10" : `Show all ${list.length} games`}</button>` : ""}`;
+  return `<div class="panel ten">${head}
+    <div class="ten-cols">${tenTiles("Spread at −110", S, "a")}${tenTiles("Moneyline", M, "b")}</div>
+    ${tenChart(rows)}
+    <div class="eyebrow hk">Game by game, newest first</div>${table}${note}</div>`;
+}
+function wireTen(scope){
+  const sel = scope.querySelector("#ten-stake");
+  if (sel) sel.addEventListener("change", () => { TEN.stake = Number(sel.value) || 10; store.set("pistons-stake", String(TEN.stake)); renderBetting(); });
+  const more = scope.querySelector("[data-ten-all]");
+  if (more) more.addEventListener("click", () => { TEN.all = !TEN.all; renderBetting(); });
+  wireTenChart(scope, tenRows().rows);
+}
+
 function renderBetting(){
   const el = $("#p-betting");
   if (!el) return;
@@ -2125,11 +2462,13 @@ function renderBetting(){
       <div class="span-12">${matchupPanel()}</div>
       <div class="span-5">${betRecordsPanel()}</div>
       <div class="span-7"><div class="panel"><h3>Cover margin by game</h3>${coverChart(LINES.filter(l => counts(l) && hasFinal(l)).sort((a, b) => a.date.localeCompare(b.date)))}</div></div>
+      <div class="span-12">${tenPanel()}</div>
       <div class="span-8">${betLogPanel()}</div>
       <div class="span-4">${futuresPanel()}</div>
     </div>
     <p class="muted" style="font-size:12.5px;margin:14px 0 0">Lines are DraftKings numbers from ESPN, checked each morning. Graded games use the closing line. For information only, not betting advice. 21+. If you or someone you know has a gambling problem, call 1-800-GAMBLER.</p>`;
   wireModel();
+  wireTen(el);
 }
 
 /* ---------- site health footer: when each feed last updated ---------- */
@@ -2144,8 +2483,115 @@ function renderHealth(){
   const bu = (BUZZ && BUZZ.updated) || (STATUS && STATUS.buzz), tu = (MOVES && MOVES.updated) || (STATUS && STATUS.transactions);
   if (bu && f(bu)) bits.push("buzz updated " + f(bu));
   if (tu && f(tu)) bits.push("transactions updated " + f(tu));
-  el.textContent = bits.length ? bits.join(" · ") + "." : "Scores and the Today dashboard update every morning.";
+  el.innerHTML = healthDot() + `<span>${esc(bits.length ? bits.join(" · ") + "." : "Scores and the Today dashboard update every morning.")}</span>`;
+  const lst = el.querySelector("#hl-list"); if (lst) el.appendChild(lst);
+  wireHealth(el);
 }
+
+/* ---------- Oct 13, 2026: health light ----------
+   A green / amber / red dot next to "Data updated …" in the footer, worked out from timestamps the page already has.
+   No new task, no push, no email. Tap it for the list of what is late.
+   Checks (starting thresholds; tune after a week):
+     morning dashboard updated today by 7:30 a.m. ET          (critical)
+     buzz and transactions feeds updated within 16 h          (they run 11:52 a.m. and 8:52 p.m.; the longest gap is 15 h)
+     team and league stats updated within 4.5 days            (Tuesdays and Fridays 6:12 a.m.)
+     static data files loaded and parsed                      (jp4mayor.com only)
+     game days: today's pregame preview by 6:30 a.m.          (critical)
+     after a final: the recap within 90 min                   (critical)
+   green = all current · amber = something late · red = morning dashboard or a game-day item missing. */
+const HL = { open: false, pre: undefined, rec: undefined };
+const HL_SEASON = m => m >= 10 || m <= 6;   // tasks run Oct-Jun
+function etParts(d){
+  const p = {}; new Intl.DateTimeFormat("en-US", {timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23"})
+    .formatToParts(d).forEach(x => { p[x.type] = x.value; });
+  return { day: `${p.year}-${p.month}-${p.day}`, mins: Number(p.hour) * 60 + Number(p.minute), month: Number(p.month) };
+}
+/* companion-site data for the pregame / recap checks: relative on jp4mayor.com, absolute elsewhere (may be blocked there) */
+function hlLoad(){
+  if (HL.pre !== undefined) return;
+  HL.pre = HL.rec = null;
+  const base = /jp4mayor\.com$|localhost|127\.0\.0\.1/.test(location.hostname) ? "" : "https://jp4mayor.com/pistons/";
+  const one = (path, key, slot) => new Promise(res => {
+    const s = document.createElement("script"); s.src = base + path + "?t=" + Date.now();
+    s.onload = () => { HL[slot] = window[key] && Array.isArray(window[key].games) ? window[key] : false; res(); };
+    s.onerror = () => { HL[slot] = false; res(); };
+    document.head.appendChild(s);
+  });
+  Promise.all([one("pregame/data/pregame.js", "PISTONS_PREGAME", "pre"), one("recaps/data/recaps.js", "PISTONS_RECAPS", "rec")]).then(renderHealth);
+}
+function healthChecks(now){
+  now = now || new Date();
+  const et = etParts(now), inSeason = HL_SEASON(et.month), out = [];
+  const age = iso => { const t = new Date(iso); return isNaN(t) ? null : (now - t) / 36e5; };
+  const when = iso => { const t = new Date(iso); return isNaN(t) ? "never" : t.toLocaleString("en-US", {weekday: "short", hour: "numeric", minute: "2-digit"}); };
+  const add = (name, st, detail, critical) => out.push({ name, st, detail, critical: !!critical });
+  /* morning dashboard */
+  const L = (typeof DASH_LATEST !== "undefined" && DASH_LATEST) || null;
+  if (!inSeason) add("Morning dashboard", "nd", "Off season");
+  else if (!L || !L.updated) add("Morning dashboard", "late", "Not loaded", true);
+  else {
+    const day = etParts(new Date(L.updated)).day, due = et.mins >= 7 * 60 + 30;
+    add("Morning dashboard", due && day < et.day ? "late" : "ok", "Updated " + when(L.updated) + (due && day < et.day ? " · today's run is missing (due 7:30 a.m.)" : ""), true);
+  }
+  /* buzz + transactions: twice a day */
+  [["Buzz feed", (typeof BUZZ !== "undefined" && BUZZ && BUZZ.updated) || (STATUS && STATUS.buzz)], ["Transactions feed", (typeof MOVES !== "undefined" && MOVES && MOVES.updated) || (STATUS && STATUS.transactions)]].forEach(([n, u]) => {
+    if (!inSeason) return add(n, "nd", "Off season");
+    const a = u ? age(u) : null;
+    add(n, a === null ? "late" : a > 16 ? "late" : "ok", u ? "Updated " + when(u) + (a > 16 ? ` · ${Math.round(a)} h ago (runs 11:52 a.m. and 8:52 p.m.)` : "") : "Not loaded");
+  });
+  /* team + league stats: Tue/Fri */
+  [["Team stats", typeof TEAM !== "undefined" && TEAM && TEAM.updated], ["League stats", typeof LEAGUE !== "undefined" && LEAGUE && LEAGUE.updated]].forEach(([n, u]) => {
+    if (!inSeason) return add(n, "nd", "Off season");
+    const a = u ? age(u) : null;
+    add(n, a === null ? "late" : a > 4.5 * 24 ? "late" : "ok", u ? "Updated " + when(u) + (a > 108 ? " · runs Tuesdays and Fridays" : "") : "Not loaded");
+  });
+  /* static data files (jp4mayor.com only; the claude.ai page reads the database directly) */
+  if (typeof loadStaticDb === "function") {
+    const okD = window.PISTONS_DAILY && window.PISTONS_DAILY.latest, okR = window.PISTONS_RESULTS && window.PISTONS_RESULTS.games;
+    add("Site data files", okD && okR ? "ok" : "late", okD && okR ? "daily.js and results.js loaded" : `${okD ? "" : "daily.js "}${okR ? "" : "results.js "}missing or unreadable`, !okD);
+  }
+  /* game days: pregame preview and recap */
+  const tips = typeof knownTips === "function" ? knownTips() : [];
+  const today = tips.find(x => x.date === et.day);
+  const yest = tips.filter(x => x.date < et.day).pop();
+  const has = (src, d) => src && src.games.some(g => g && (g.id === "g" + d.replace(/-/g, "") || g.date === d));
+  if (today) {
+    const due = et.mins >= 6 * 60 + 30;
+    if (HL.pre === undefined || HL.pre === null) add("Today's preview", "na", "Checking…");
+    else if (HL.pre === false) add("Today's preview", "na", "Can't read the Pregame site from here");
+    else add("Today's preview", has(HL.pre, today.date) ? "ok" : due ? "late" : "nd", has(HL.pre, today.date) ? "Posted" : due ? "Not posted (due 6:30 a.m.)" : "Due 6:30 a.m.", true);
+  } else add("Today's preview", "nd", "No game today");
+  /* recap: due 90 min after the final (ESPN's final when the page saw it, else tip + 2.5 h); checked until the end of the next day */
+  const g = [today, yest].filter(Boolean).filter(x => x.date >= isoDay(new Date(now - 864e5 * 1.5))).find(x => now - x.tip > 0);
+  if (g) {
+    const fin = typeof GD !== "undefined" && GD.final && GD.final.date === g.date ? GD.final.at : g.tip.getTime() + FINAL_AFTER;
+    const dueAt = fin + 90 * 60e3;
+    if (now < fin) add("Game recap", "nd", "After the final");
+    else if (HL.rec === undefined || HL.rec === null) add("Game recap", "na", "Checking…");
+    else if (HL.rec === false) add("Game recap", "na", "Can't read the Postgame site from here");
+    else add("Game recap", has(HL.rec, g.date) ? "ok" : now >= dueAt ? "late" : "nd", has(HL.rec, g.date) ? `Posted (${fmtDate(g.date, {month: "short", day: "numeric"})})` : now >= dueAt ? "Not posted (due 90 min after the final)" : "Due 90 min after the final", true);
+  }
+  return out;
+}
+function healthLevel(list){
+  const late = list.filter(x => x.st === "late");
+  if (late.some(x => x.critical)) return "red";
+  return late.length ? "amber" : "green";
+}
+function healthDot(){
+  hlLoad();
+  const list = healthChecks(), lvl = healthLevel(list), late = list.filter(x => x.st === "late");
+  const label = lvl === "green" ? "All data current" : `${late.length} item${late.length > 1 ? "s" : ""} late`;
+  const ST = { ok: "Current", late: "Late", nd: "Not due", na: "Not checked" };
+  return `<button type="button" class="hl hl-${lvl}" id="hl-btn" aria-expanded="${HL.open}" aria-controls="hl-list" title="${esc(label)}"><i aria-hidden="true"></i><span class="hl-l">${esc(label)}</span></button>
+    <div class="hl-list" id="hl-list"${HL.open ? "" : " hidden"}><ul>${list.map(x => `<li class="hl-${x.st}"><b>${esc(x.name)}</b><span class="hl-s">${ST[x.st]}</span><small>${esc(x.detail || "")}</small></li>`).join("")}</ul>
+    <p>Worked out on this page from each feed's own timestamp. Thresholds: dashboard by 7:30 a.m., buzz and transactions within 16 h, team and league stats within 4½ days, preview by 6:30 a.m. on game days, recap within 90 min of the final.</p></div>`;
+}
+function wireHealth(el){
+  const b = el.querySelector("#hl-btn");
+  if (b) b.addEventListener("click", () => { HL.open = !HL.open; renderHealth(); });
+}
+setInterval(() => { try { renderHealth(); } catch(e) {} }, 60e3);
 
 /* ---------- boot ---------- */
 function renderAll(){ mergeGames(); renderHero(); renderToday(); renderBetting(); renderSchedule(); renderHome(); renderSummary(); renderTrips(); }
@@ -2183,11 +2629,11 @@ async function loadStaticDb(){
   try {
     db.collection("lines").onSnapshot(snap => {
       LINES = snap.docs.map(d => Object.assign({ date: d.id }, d.data() || {})).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.date));
-      renderBetting();
+      renderBetting(); gdRefresh();
     }, () => {});
     db.collection("matchups").onSnapshot(snap => {
       MATCHUPS = snap.docs.map(d => Object.assign({ date: d.id }, d.data() || {})).filter(x => /^\d{4}-\d{2}-\d{2}$/.test(x.date));
-      renderBetting();
+      renderBetting(); gdRefresh();
     }, () => {});
     db.doc("betting/futures").onSnapshot(snap => { FUTURES = snap.exists ? snap.data() : null; renderBetting(); renderTeam(); }, () => {});
     db.collection("games").onSnapshot(snap => {
@@ -2213,9 +2659,9 @@ async function loadStaticDb(){
     db.doc("transactions/feed").onSnapshot(snap => { MOVES = snap.exists ? (snap.data() || null) : null; renderLeague(); renderHealth(); }, () => {});
     db.doc("cap/summary").get().then(snap => { CAP = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
     db.doc("lastseason/games").get().then(snap => { LAST = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
-    db.doc("team/stats").onSnapshot(snap => { TEAM = snap.exists ? (snap.data() || null) : null; renderTeam(); }, () => {});
+    db.doc("team/stats").onSnapshot(snap => { TEAM = snap.exists ? (snap.data() || null) : null; renderTeam(); renderHealth(); }, () => {});
     db.doc("team/milestones").get().then(snap => { MILE = snap.exists ? (snap.data() || null) : null; renderTeam(); }).catch(() => {});
-    db.doc("league/stats").onSnapshot(snap => { LEAGUE = snap.exists ? (snap.data() || null) : null; renderLeague(); renderWeekAhead(); }, () => {});
+    db.doc("league/stats").onSnapshot(snap => { LEAGUE = snap.exists ? (snap.data() || null) : null; renderLeague(); renderWeekAhead(); renderHealth(); }, () => {});
     db.doc("meta/status").onSnapshot(snap => {
       STATUS = snap.exists ? (snap.data() || null) : null;
       renderHealth();
