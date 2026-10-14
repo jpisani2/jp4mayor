@@ -445,7 +445,7 @@ section.blk>h2 .eyebrow{font-size:11px}
 
     if((g.sources||[]).length){
       h.push('<div class="sources"><span>Sources:</span>');
-      g.sources.forEach(function(s){h.push('<a href="'+esc(s.url)+'" target="_blank" rel="noopener">'+esc(s.title)+'</a>')});
+      g.sources.forEach(function(s){if(/^https?:\/\//i.test(s.url||""))h.push('<a href="'+esc(s.url)+'" target="_blank" rel="noopener">'+esc(s.title)+'</a>')});
       h.push('</div>');
     }
     h.push('</div>');

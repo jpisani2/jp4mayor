@@ -304,7 +304,7 @@ section.blk>h2 .eyebrow{font-size:11px}
 
     if((g.sources||[]).length){
       h.push('<div class="sources"><span>Sources:</span>');
-      g.sources.forEach(function(s){h.push('<a href="'+esc(s.url)+'" target="_blank" rel="noopener">'+esc(s.title)+'</a>')});
+      g.sources.forEach(function(s){if(/^https?:\/\//i.test(s.url||""))h.push('<a href="'+esc(s.url)+'" target="_blank" rel="noopener">'+esc(s.title)+'</a>')});
       h.push('</div>');
     }
     h.push('</div>');
@@ -450,7 +450,8 @@ section.blk>h2 .eyebrow{font-size:11px}
       var r=svgEl.getBoundingClientRect(),sx=(e.clientX-r.left)*(svgEl.viewBox.baseVal.width/r.width);
       sx=Math.max(x0,Math.min(x1,sx));var ts=(sx-x0)/(x1-x0)*T,f=at(flow,ts),m=f[1]-f[2];
       cross.setAttribute("x1",sx);cross.setAttribute("x2",sx);cross.setAttribute("y1",top);cross.setAttribute("y2",bot);cross.style.display="";
-      tip.innerHTML=tipHTML(clock(ts),[[DET,"DET "+f[1]],[OPP,abbr+" "+f[2]],[null,m===0?"Tied":(m>0?"DET by "+m:abbr+" by "+(-m))]]);
+      /* the label stops a hair short of the end, so the right edge of a regulation game reads Q4 0:00, not OT 5:00 */
+      tip.innerHTML=tipHTML(clock(Math.min(ts,T-0.5)),[[DET,"DET "+f[1]],[OPP,abbr+" "+f[2]],[null,m===0?"Tied":(m>0?"DET by "+m:abbr+" by "+(-m))]]);
       tip.hidden=false;pos(e);
     }
     ov.addEventListener("pointermove",move);ov.addEventListener("pointerdown",move);
@@ -616,9 +617,10 @@ section.blk>h2 .eyebrow{font-size:11px}
       h.push(card("ch-src","Where the points came from","",both));
       h.push('</div>');
     }
-    var withData=games.filter(function(x){return x.det&&x.opp}).slice().sort(function(a,b){return a.date<b.date?-1:1});
-    h.push('<div class="cgame" style="padding-top:18px"><h2>Season so far</h2><span>'+withData.length+' game'+(withData.length===1?'':'s')+'</span></div>');
-    if(withData.length<2) h.push('<div class="cnote">Season charts (margin by game, points scored and allowed, scoring averages) start after the second recap.</div>');
+    /* regular season only: preseason, the NBA Cup championship and playoff games stay out of the season charts */
+    var withData=games.filter(function(x){return x.det&&x.opp&&!/preseason|playoff|play-in|postseason|championship|cup final/i.test(x.phase||"")}).slice().sort(function(a,b){return a.date<b.date?-1:1});
+    h.push('<div class="cgame" style="padding-top:18px"><h2>Season so far</h2><span>'+withData.length+' regular-season game'+(withData.length===1?'':'s')+'</span></div>');
+    if(withData.length<2) h.push('<div class="cnote">Season charts (margin by game, points scored and allowed, scoring averages) start after the second regular-season recap. Preseason games aren\'t included.</div>');
     else{
       h.push('<div class="cgrid">');
       h.push(card("cs-m","Margin by game","",legend([[DET,"Win"],[NEG,"Loss"]]),true));
