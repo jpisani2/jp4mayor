@@ -45,6 +45,9 @@ sql/
                     Run once in Supabase's SQL editor: all-or-nothing
                     locking, kickoff, posting and set-up; guarded deletes;
                     no picks on closed bets; views matching scoring.js.
+  2026-10-closeout.sql
+                    Run once too: closing out the night in one step, which
+                    refuses while a locked bet still needs a result.
 js/
   vendor/
     supabase.js     Our own copy of supabase-js v2, so it never changes under
@@ -96,7 +99,16 @@ being dragged, redraws wait until it's let go.
 `payments` triggers a full reload rather than applying a diff. Reconciling
 state by hand is how two phones end up disagreeing. Refetching cannot drift.
 Reloads run one at a time; a change that arrives mid-reload queues exactly one
-more, so nothing is dropped. A phone waking up reloads straight away.
+more, so nothing is dropped, and anything waiting on a reload waits for that
+queued one. A phone waking up reloads straight away.
+
+History (every game, bet and payment, for balances and stats) is the one big
+read, so it isn't repeated on every pick. Tonight's bets are already fresh and
+are folded into it; the full read happens when a history screen opens, when a
+payment or game changes, when a bet outside tonight's game changes (a past
+result fixed, a merge), when a phone wakes up, and on the 20-second backstop
+while realtime is down. It's read in pages, because Supabase silently stops
+at its "Max rows" setting (1000 by default).
 
 ## Where the constraints come from
 

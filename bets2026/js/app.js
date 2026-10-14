@@ -50,17 +50,19 @@ function capture() {
     (el.tagName === "TEXTAREA" || (el.tagName === "INPUT" && TYPED.has(el.type)))
     ? { id: el.id, value: el.value, start: el.selectionStart, end: el.selectionEnd }
     : null;
+  // Both directions: the propose sheet scrolls down, its category chips across.
   const scrolls = {};
   root.querySelectorAll("[data-keep-scroll]").forEach(p => {
-    scrolls[p.dataset.keepScroll] = p.scrollTop;
+    scrolls[p.dataset.keepScroll] = { top: p.scrollTop, left: p.scrollLeft };
   });
   return { field, scrolls };
 }
 
 function putBack({ field, scrolls }) {
   root.querySelectorAll("[data-keep-scroll]").forEach(p => {
-    const top = scrolls[p.dataset.keepScroll];
-    if (top) p.scrollTop = top;
+    const was = scrolls[p.dataset.keepScroll];
+    if (was?.top) p.scrollTop = was.top;
+    if (was?.left) p.scrollLeft = was.left;
   });
   if (!field) return;
   const el = document.getElementById(field.id);

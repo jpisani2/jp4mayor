@@ -1,7 +1,7 @@
 /* Claim a seat. The roster is the only way in: tapping an existing name is
    what prevents duplicates, since typing is what creates them. */
 
-import { state, takeSeat, addPlayer, enterBigScreen, openRules } from "../store.js";
+import { state, takeSeat, addPlayer, enterBigScreen, openRules, isBusy } from "../store.js";
 import { esc } from "../format.js";
 
 export function view() {
@@ -18,7 +18,8 @@ export function view() {
       <label class="flabel">Not on the list?</label>
       <input class="field" id="newname" placeholder="First name is plenty" autocomplete="off">
       <div class="warn" id="similar"></div>
-      <button class="btn wide" id="add">Add and start</button>
+      <button class="btn wide" id="add" ${isBusy("addplayer") ? "disabled" : ""}>${
+        isBusy("addplayer") ? "Adding…" : "Add and start"}</button>
     </div>
     <div class="bigentry">
       <button class="btn sm" id="bigscreen">Big screen</button>

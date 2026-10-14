@@ -139,11 +139,18 @@ export function rollUp(bets, players, stake) {
 
 /* Silent on the last N decided bets in a row. Only player-made picks count:
    an auto-out is the system's doing, so a quiet player is never revived by
-   the mechanism that noticed they were quiet. */
+   the mechanism that noticed they were quiet. Voids never happened, so
+   they don't count either. The whole pregame board shares one created_at,
+   so ties break on id — the same five bets count on every reload, rather
+   than whichever order the database happened to return. */
+const newestFirst = (x, y) =>
+  (Date.parse(y.created_at) || 0) - (Date.parse(x.created_at) || 0)
+  || (x.id < y.id ? 1 : x.id > y.id ? -1 : 0);
+
 export function isDormant(playerId, bets, after) {
   const decided = bets
-    .filter(b => b.status !== "open")
-    .sort((x, y) => new Date(y.created_at) - new Date(x.created_at))
+    .filter(b => b.status === "locked" || counts(b))
+    .sort(newestFirst)
     .slice(0, after);
   if (decided.length < after) return false;
   return decided.every(b =>

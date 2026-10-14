@@ -4,8 +4,8 @@
    function in this file.
 
    The multi-step jobs (posting a bet, setting up a game, kickoff, locking,
-   the guarded deletes) run inside the database as one all-or-nothing step
-   when the functions from sql/2026-09-safeguards.sql are installed. Until
+   close-out, the guarded deletes) run inside the database as one
+   all-or-nothing step when the functions from sql/ are installed. Until
    they are, each falls back to doing the same thing from here, re-reading
    first so it acts on the freshest data it can.
    =========================================================================== */
@@ -40,6 +40,28 @@ const bothSides = bet =>
   bet.picks.some(p => p.side === "A") && bet.picks.some(p => p.side === "B");
 
 const shapeBet = b => ({ ...b, p: Number(b.p), picks: b.picks ?? [] });
+
+/* Supabase hands back at most "Max rows" per request (1000 unless changed
+   in Settings → API) and says nothing when it stops short. History grows
+   every week, so it's read in pages — keyed on id, so a bet added or
+   deleted mid-read can't shift a row into or out of the gap between pages.
+   PAGE must stay at or under that setting. Sorted newest first afterwards. */
+const PAGE = 500;
+const newest = key => (a, b) => (Date.parse(b[key]) || 0) - (Date.parse(a[key]) || 0);
+
+async function fetchEvery(query, sortKey) {
+  const rows = [];
+  let after = null;
+  for (;;) {
+    let q = query().order("id").limit(PAGE);
+    if (after !== null) q = q.gt("id", after);
+    const { data, error } = await q;
+    if (error) throw error;
+    rows.push(...(data ?? []));
+    if (!data || data.length < PAGE) return rows.sort(newest(sortKey));
+    after = data[data.length - 1].id;
+  }
+}
 
 /* --- reads --------------------------------------------------------------- */
 
@@ -200,7 +222,6 @@ export async function lockBetChecked(betId, presentIds) {
   return "locked";
 }
 
-/* Grading, and re-grading a bet from a past game: same write either way. */
 export async function gradeBet(betId, result) {
   const { error } = await client.from("bets")
     .update({ status: "graded", result, graded_at: new Date().toISOString() })
@@ -208,19 +229,37 @@ export async function gradeBet(betId, result) {
   if (error) throw error;
 }
 
-export async function ungradeBet(betId) {
+/* Changing a past game's result. Only the result moves: graded_at keeps
+   when it was first settled, so streaks and the game's order stay put. */
+export async function regradeBet(betId, result) {
   const { error } = await client.from("bets")
-    .update({ status: "locked", result: null, graded_at: null })
-    .eq("id", betId);
+    .update({ result }).eq("id", betId).eq("status", "graded");
   if (error) throw error;
 }
 
-export async function voidBets(ids) {
-  if (!ids.length) return;
-  const { error } = await client.from("bets")
-    .update({ status: "graded", result: "VOID", graded_at: new Date().toISOString() })
-    .in("id", ids);
+/* Only a bet that actually locked can go back to locked. One voided before
+   it ever locked — pulled, or one-sided at kickoff — stays voided. */
+export async function ungradeBet(betId) {
+  const { data, error } = await client.from("bets")
+    .update({ status: "locked", result: null, graded_at: null })
+    .eq("id", betId).eq("status", "graded").not("locked_at", "is", null)
+    .select("id");
   if (error) throw error;
+  if (!data?.length) {
+    throw new Error("That bet was voided before it ever locked, so there's nothing to undo.");
+  }
+}
+
+/* Voids bets that are still taking picks; one that has locked or settled
+   since this screen last looked is left alone. Returns how many voided. */
+export async function voidBets(ids) {
+  if (!ids.length) return 0;
+  const { data, error } = await client.from("bets")
+    .update({ status: "graded", result: "VOID", graded_at: new Date().toISOString() })
+    .in("id", ids).eq("status", "open")
+    .select("id");
+  if (error) throw error;
+  return data?.length ?? 0;
 }
 
 /* Delete an open bet, but only if nobody other than `keep` has picked it
@@ -293,6 +332,23 @@ export async function kickOff(gameId, presentIds) {
   return { locked: lockable.length, voided: dead.length };
 }
 
+/* Close-out: every bet still taking picks voids and the game closes — but
+   only if no bet is locked and waiting on a result. Works on the database's
+   board, not this screen's, so a bet posted or locked a moment ago is
+   counted. Returns "closed", or "locked" if a result is still owed. */
+export async function closeOutGame(gameId) {
+  const r = await rpc("close_game", { g: gameId });
+  if (r !== MISSING) return r;
+
+  if ((await fetchBets(gameId)).some(b => b.status === "locked")) return "locked";
+  const { error } = await client.from("bets")
+    .update({ status: "graded", result: "VOID", graded_at: new Date().toISOString() })
+    .eq("game_id", gameId).eq("status", "open");
+  if (error) throw error;
+  await setGamePhase(gameId, "closed", "closed_at");
+  return "closed";
+}
+
 /* Deletes a game and everything in it — but only while no bet has a real
    grade. True if it went, false if a grade got there first. */
 export async function deleteGameIfUngraded(gameId) {
@@ -308,29 +364,19 @@ export async function deleteGameIfUngraded(gameId) {
 
 /* --- history and money --------------------------------------------------- */
 
-export async function fetchGames() {
-  const { data, error } = await client.from("games").select("*")
-    .order("kickoff_date", { ascending: false });
-  if (error) throw error;
-  return data ?? [];
-}
+export const fetchGames = () =>
+  fetchEvery(() => client.from("games").select("*"), "kickoff_date");
 
-/* Every bet ever, for the stats and balance screens. A season is a few
-   hundred rows, so one fetch beats paging. */
+/* Every bet ever, for the stats and balance screens. Balances run across
+   every season, so all of it is read, a page at a time. */
 export async function fetchAllBets() {
-  const { data, error } = await client.from("bets")
-    .select("*, picks(player_id, side, auto)")
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return (data ?? []).map(shapeBet);
+  const bets = await fetchEvery(() => client.from("bets")
+    .select("*, picks(player_id, side, auto)"), "created_at");
+  return bets.map(shapeBet);
 }
 
-export async function fetchPayments() {
-  const { data, error } = await client.from("payments").select("*")
-    .order("paid_at", { ascending: false });
-  if (error) throw error;
-  return data ?? [];
-}
+export const fetchPayments = () =>
+  fetchEvery(() => client.from("payments").select("*"), "paid_at");
 
 export async function createPayment(row) {
   const { error } = await client.from("payments").insert(row);
@@ -406,7 +452,8 @@ export async function reassignPick(betId, fromId, toId) {
 
 /* Any change to bets, picks, games or payments just refetches. At six
    players and ten bets that costs less than reconciling state by hand, and
-   cannot drift. */
+   cannot drift. onChange gets Supabase's change record ({ table, new, old })
+   so the store can tell whether anything outside tonight's game moved. */
 export function watchRoom(onChange, onStatus) {
   const ch = client.channel("room");
   ["bets", "picks", "games", "payments"].forEach(table =>

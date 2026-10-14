@@ -138,13 +138,45 @@ const SITE = {
 
     {
       id: "pistons",
+      page: true,
       title: "Pistons Season Hub",
       year: "2026",
       status: "In progress",
-      summary: "The Pistons' 2026–27 season on one page: full schedule, home games, record, a road-trip planner, and scores updated after every game.",
+      summary: "The Pistons' 2026–27 season on one page that keeps itself up to date: a morning dashboard, betting lines, team and league stats, the schedule and road trips, plus a preview before every game and a recap within minutes of the final.",
       tags: ["code", "sports"],
+      image: "",
+      about: [
+        "It started as the schedule: every game, home games by month, a season summary, and a road-trip planner for picking an away game to drive to. Then it kept growing. It's now nine tabs and two companion sites, and almost all of it updates without me touching it.",
+        "Today is the morning dashboard: a short overnight briefing, the last game with its box score and postgame press conferences, the next game, the record, East standings with arrows for who moved, player stats for the season or the last 10 games, injuries, headlines, and team buzz from the beat writers. A picker goes back through the last 14 days.",
+        "Team has power rankings, advanced stats with league ranks, the game log, injury history, contracts and the cap, the rotation, and a milestone tracker for Cade. League has the standings scenarios, a playoff projection from 10,000 simulations of the rest of the season, award odds, every transaction in the league, what former Pistons are doing, and the Motor City Cruise. History has this day in Pistons history and a search across the whole season.",
+        "Betting has the next and last line and whether it covered, a matchup comparison, a projection with weights you can adjust and a running record of how it's done, against-the-spread records, and futures. It's there for fun, not advice.",
+        "Pregame is a preview for every game: tale of the tape, injuries, who to watch, a projected line for each player with an over or under call, keys to the game, talking points, and a call. It's written that morning and updated a couple of times before tip. Postgame is the recap: how the game went, the top nights, team stats, talking points, and the season so far. It goes up within about ten minutes of the final buzzer.",
+        "Behind it are a handful of scheduled Claude jobs. One writes the morning dashboard, one does the preview and recap on game days, one pulls in news and transactions twice a day, and one rebuilds the team and league stats twice a week. Each one writes its own data file and pushes it straight to this site, so the page itself stays plain JavaScript with no server. The numbers come from ESPN, Basketball Reference and the like, and every news item has to come with its source."
+      ],
+      facts: [
+        { label: "Started", value: "September 2026" },
+        { label: "Tabs", value: "9, plus Pregame and Postgame" },
+        { label: "Updates", value: "Every morning, and around every game" },
+        { label: "Built with", value: "JavaScript, no server" }
+      ],
       links: [
-        { label: "Open the hub", url: "pistons/" }
+        { label: "Open the hub", url: "pistons/" },
+        { label: "Pregame", url: "pistons/pregame/" },
+        { label: "Postgame", url: "pistons/recaps/" }
+      ],
+      log: [
+        { date: "2026-10-11", title: "Team, League and History",
+          note: "Three more tabs, plus team buzz and league transactions that refresh twice a day.",
+          photos: [] },
+        { date: "2026-10-10", title: "Pregame and Postgame",
+          note: "Two companion sites: a preview before every game and a recap right after. The data now goes straight to the site instead of through my laptop.",
+          photos: [] },
+        { date: "2026-10-03", title: "Today and Betting",
+          note: "A dashboard that rewrites itself every morning, and a Betting tab with lines, a projection and its track record.",
+          photos: [] },
+        { date: "2026-09-21", title: "First version",
+          note: "The full 2026–27 schedule, home games, a season summary, a road-trip planner, and scores filled in after every game.",
+          photos: [] }
       ]
     },
 
@@ -246,6 +278,76 @@ const SITE = {
       log: [
         { date: "2026-09-23", title: "First version",
           note: "Four progressions, single- and double-zero wheels, five bet sizes from $0.30/$0.20 up to $30/$20, and an optional quit-when-ahead amount.",
+          photos: [] }
+      ]
+    },
+
+    {
+      id: "takeout",
+      page: true,
+      title: "Dinner Decider",
+      year: "2026",
+      status: "In progress",
+      summary: "A phone app for “what's for dinner?” that picks from the 276 places around home, based on what I've liked, what's open, and how long it's been since I went.",
+      tags: ["code", "food"],
+      image: "",
+      about: [
+        "Most nights the question isn't where's good. It's where haven't we been in a while that's open right now. Dinner Decider covers every restaurant inside 9 Mile, Lahser, Plymouth Rd and Newburgh, counting places on both sides of each road. That's 276 so far, each with hours, cuisine, price, dine-in or carry-out, and the drive time from the house.",
+        "Decide for me picks one place from what's open now. It weighs my own ratings (or the online ones for places I haven't tried), how long it's been since the last visit, favorites, a small bonus for anywhere I've never been, any special running today, and how far the drive is. Mood narrows it down first with four taps: sit down or grab and go, light or hearty, a favorite or something new, and budget. Spin the wheel spins my favorites or the top picks that are open now. Browse is the plain list with filters and a surprise-me button.",
+        "History is what makes it better over time. Every visit gets a date, dine-in or carry-out, a rating, the dishes (each rated, with an order-again flag) and notes. Each restaurant's page shows my usual, so I don't have to remember what I got last time.",
+        "The restaurant list keeps itself current. Once a week a scheduled Claude job rechecks the 30 or so stalest places, so every place gets looked at about once a month. It adds new places it finds, marks closures without ever deleting anything, and rewrites a short local food news section. Every place carries a confidence level and the date its facts were last checked. The home screen says when the data was last updated, and the date turns red if two weeks go by without one.",
+        "It's plain JavaScript with no build step. My history is stored in Supabase, so it syncs between my phone and computer. It goes on the home screen like an app."
+      ],
+      facts: [
+        { label: "Started", value: "October 2026" },
+        { label: "Area", value: "9 Mile to Plymouth, Newburgh to Lahser" },
+        { label: "Places", value: "276" },
+        { label: "Built with", value: "JavaScript, Supabase" }
+      ],
+      links: [
+        { label: "Open the app", url: "takeout/" }
+      ],
+      log: [
+        { date: "2026-10-10", title: "First version",
+          note: "276 places, 157 of them added in one sweep from Restaurantji, OpenStreetMap and a couple I reported missing. Every place has real coordinates and a drive time, 207 have a short summary of their reviews, and 23 more are waiting to be confirmed.",
+          photos: [] }
+      ]
+    },
+
+    {
+      id: "happyhour",
+      page: true,
+      title: "Clock Out",
+      year: "2026",
+      status: "In progress",
+      summary: "Metro Detroit happy hours, right now. Pick a day and time and see what's running across the west side and Downriver, with the deals and how recently each one was confirmed.",
+      tags: ["code", "food"],
+      image: "",
+      about: [
+        "Happy hour listings online are mostly old or copied from each other, and a lot of bars don't post theirs at all. Clock Out covers 275 bars, pubs, restaurants, breweries and lounges across the west side (Livonia, Redford, Dearborn, Westland, Farmington and around) and Downriver (Melvindale and River Rouge south to Woodhaven and Brownstown, plus Romulus). Pick a day and time, or just tap Now, and it shows what's running, what starts later, and that day's specials like taco nights.",
+        "To build it I pulled every bar, pub, restaurant with a bar, chain, brewery and lounge Google Maps shows in those areas, about 1,450 results, and trimmed them down to the real candidates. For each one I checked Google's happy-hour tags and business hours, searched its reviews for “happy hour” and noted how recent they were, then went through official sites, Facebook and Instagram posts, and happy hour guides.",
+        "Every place is tagged by how sure I am. Confirmed (90 places) means the times come from the place itself, its Google listing, or a post or review from the last year or so. Likely (108) means a chain's standard schedule, a third-party guide, or older evidence. Unverified (77) means old or thin evidence, and those stay hidden unless you turn them on. A colored dot shows how fresh the evidence is. Happy hours are cut off at the bar's closing time and hidden on days it's closed.",
+        "Plan my night picks two or three stops in a row and draws the route on a hand-drawn map. There's also a tonight timeline, sorting by ending soonest, nearest, top rated or cheapest drinks, a surprise-me button, share links, and ten color themes named after Detroit things like Coney, Belle Isle and Eastern Market. Every card has a “Something changed?” button that opens an email to me with the bar's details filled in.",
+        "Bars change their specials all the time, so it won't stay right on its own. Every Monday a scheduled job rechecks a batch of places, and once a month two more look for new places on the west side and Downriver. They only research and flag. Nothing changes on the site until I approve it. It's plain HTML, CSS and JavaScript with no server, works offline once it's loaded, and goes on the home screen like an app."
+      ],
+      facts: [
+        { label: "Started", value: "September 2026" },
+        { label: "Places", value: "275" },
+        { label: "Areas", value: "West side and Downriver" },
+        { label: "Rechecked", value: "A batch every week" }
+      ],
+      links: [
+        { label: "Open the site", url: "happyhour/" }
+      ],
+      log: [
+        { date: "2026-10-03", title: "Seven more places",
+          note: "Seven west side places added.",
+          photos: [] },
+        { date: "2026-09-25", title: "Downriver added",
+          note: "Melvindale and River Rouge south to Woodhaven and Brownstown, plus Romulus. About 870 more map results, trimmed to about 180 real candidates.",
+          photos: [] },
+        { date: "2026-09-24", title: "First version",
+          note: "The west side: about 550 map results trimmed to about 190 real candidates, each checked for happy-hour times, deals and business hours.",
           photos: [] }
       ]
     }

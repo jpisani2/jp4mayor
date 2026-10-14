@@ -270,8 +270,8 @@ function feed() {
           .sort((a, b) => b[1] - a[1])
           .map(([id, n]) => `<span class="${tone(n)}">${esc(nameOf(id))} ${plus(n)}</span>`)
           .join(" · ")}</div>`}
-        <button class="linkish" data-ungrade="${bet.id}"
-          ${isBusy(`grade:${bet.id}`) ? "disabled" : ""}>graded wrong — undo</button>
+        ${bet.locked_at ? `<button class="linkish" data-ungrade="${bet.id}"
+          ${isBusy(`grade:${bet.id}`) ? "disabled" : ""}>graded wrong — undo</button>` : ""}
       </div>`;
     }).join("") : `<div class="empty">Nothing settled yet tonight.</div>`}
   </section>`;

@@ -3,7 +3,7 @@
    Merging reassigns rows and never touches a stored total, because there
    aren't any — so every stat recalculates on its own, and so does the undo. */
 
-import { state, goto, home, unlockAdmin, loadRoster,
+import { state, goto, home, unlockAdmin, loadRoster, loadHistory,
          renamePlayer, mergePlayers, removePlayer, undoRosterChange,
          clearFlag, reassignPick } from "../store.js";
 import { esc, money } from "../format.js";
@@ -60,7 +60,12 @@ function lastSeen() {
 export function view() {
   if (!state.admin) return pinView();
   if (!state.history.loaded || !state.roster.loaded) {
-    return `<div class="center"><p>Loading the roster…</p></div>`;
+    return `<div class="center">
+      <p>Loading the roster…</p>
+      ${state.error ? `<div class="err">${esc(state.error)}</div>
+        <button class="btn primary wide" id="retryroster">Try again</button>` : ""}
+      <button class="linkish" id="back" style="margin-top:14px">Back</button>
+    </div>`;
   }
 
   const totals = lifetime();
@@ -228,8 +233,15 @@ export function wire(root) {
     return;
   }
 
-  if (!state.history.loaded) return;   // on its way — opening the screen fetched it
-  if (!state.roster.loaded) { loadRoster(); return; }
+  // Opening the screen fetched both; until they land there's only Back, and
+  // Try again if a fetch failed.
+  if (!state.history.loaded || !state.roster.loaded) {
+    if ($("#retryroster")) $("#retryroster").onclick = () => {
+      if (!state.roster.loaded) loadRoster();
+      if (!state.history.loaded) loadHistory();
+    };
+    return;
+  }
 
   root.querySelectorAll("[data-select]").forEach(el => {
     el.onclick = () => {

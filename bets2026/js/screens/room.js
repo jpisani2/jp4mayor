@@ -270,9 +270,9 @@ function gradedCard(bet) {
     <div class="splits">${Object.entries(nets).map(([id, net]) =>
       `<div class="split"><span>${esc(nameOf(id))}</span>
         <span class="num ${tone(net)}">${money(net)}</span></div>`).join("")}</div>
-    <div class="rowbtns">
+    ${bet.locked_at ? `<div class="rowbtns">
       <button class="btn sm" data-ungrade="${bet.id}" ${busy ? "disabled" : ""}>Graded wrong — undo</button>
-    </div>
+    </div>` : ""}
   </article>`;
 }
 

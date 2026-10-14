@@ -73,6 +73,22 @@ export function setError(message) {
   render();
 }
 
+/* Errors from background loading are kept apart from errors a tap caused:
+   a load that later succeeds clears only its own message, never someone's
+   "That PIN doesn't match" or "needs someone on Under". */
+const loadErrors = {};
+
+function loadFailed(source, e) {
+  loadErrors[source] = e.message || String(e);
+  setError(loadErrors[source]);
+}
+
+function loadOk(source) {
+  const message = loadErrors[source];
+  delete loadErrors[source];
+  if (message && state.error === message) state.error = "";
+}
+
 export function notify(message, ms = 4000) {
   state.notice = message;
   render();
@@ -88,6 +104,7 @@ export const isBusy = key => Boolean(state.busy[key]);
 async function run(key, fn) {
   if (state.busy[key]) return;
   state.busy[key] = true;
+  state.error = "";   // a fresh attempt replaces whatever the last one said
   render();
   try { await fn(); }
   catch (e) { state.error = e.message || String(e); }
@@ -174,6 +191,32 @@ async function refreshHistory() {
 
 const historyWanted = () => state.bigScreen || HISTORY_SCREENS.has(state.screen);
 
+/* Tonight's game is already fresh in state.bets, so history screens take it
+   from there instead of refetching every bet ever on each pick. Only a
+   change outside tonight's game (see touchesHistory) needs the full read. */
+function mergeTonight() {
+  const h = state.history, g = state.game;
+  if (!h.loaded || !g) return;
+  h.bets = [...state.bets, ...h.bets.filter(b => b.game_id !== g.id)];
+  h.games = h.games.some(x => x.id === g.id)
+    ? h.games.map(x => x.id === g.id ? g : x)
+    : [g, ...h.games];
+}
+
+/* Whether a realtime change could have moved something history shows that
+   tonight's bets don't cover: a payment, a game opening or closing, or a
+   bet or pick in some other game (a past result fixed, a merge). When in
+   doubt, yes. */
+function touchesHistory(change) {
+  const { table, new: row, old } = change ?? {};
+  const tonightBet = id => Boolean(id) && state.bets.some(b => b.id === id);
+  if (table === "bets") {
+    return !(row?.game_id && row.game_id === state.game?.id) && !tonightBet(old?.id);
+  }
+  if (table === "picks") return !tonightBet(row?.bet_id ?? old?.bet_id);
+  return true;
+}
+
 /* Fresh history for a screen that shows it. The last numbers stay up with an
    "updating…" note while it loads, rather than a blank page. */
 let historyBusy = false, historyAgain = false;
@@ -183,8 +226,8 @@ export async function loadHistory() {
   historyBusy = true;
   state.history.refreshing = true;
   render();
-  try { await refreshHistory(); }
-  catch (e) { state.history.refreshing = false; state.error = e.message || String(e); }
+  try { await refreshHistory(); loadOk("history"); }
+  catch (e) { state.history.refreshing = false; loadFailed("history", e); }
   finally {
     historyBusy = false;
     render();
@@ -194,15 +237,31 @@ export async function loadHistory() {
 
 /* One refresh at a time. A change that arrives mid-refresh isn't dropped:
    it queues exactly one more, so a burst of picks at the snap costs at most
-   one extra round trip and the screen always ends on the latest. */
-let loading = false, queued = null;
+   one extra round trip and the screen always ends on the latest. Whoever
+   asks during a refresh gets the queued pass's promise, so `await reload()`
+   always means the data on screen is current. */
+let current = null, next = null;
 
-export async function reload({ announce = false } = {}) {
-  if (loading) {
-    queued = { announce: announce || Boolean(queued?.announce) };
-    return;
+export function reload({ announce = false, history = false } = {}) {
+  if (!current) {
+    current = reloadPass(announce, history).finally(() => { current = null; });
+    return current;
   }
-  loading = true;
+  if (next) {
+    next.announce = next.announce || announce;
+    next.history = next.history || history;
+  } else {
+    const wanted = { announce, history };
+    wanted.promise = current.then(() => {
+      next = null;
+      return reload(wanted);
+    });
+    next = wanted;
+  }
+  return next.promise;
+}
+
+async function reloadPass(announce, history) {
   try {
     const openBefore = betsBy("open").length;
     const known = new Set(state.bets.map(b => b.id));
@@ -219,16 +278,23 @@ export async function reload({ announce = false } = {}) {
     [state.bets, state.attendance] = await Promise.all([
       db.fetchBets(game?.id), db.fetchAttendance(game?.id)]);
     checkIn();
-    if (historyWanted()) await refreshHistory();
     if (state.bigScreen) markFresh(betsBy("open").filter(b => !known.has(b.id)));
     else if (announce && betsBy("open").length > openBefore) beep();
-    state.error = "";
+
+    // The board draws first; the full history read, when one is needed,
+    // follows rather than holding the board up.
+    const wanted = historyWanted();
+    const fullHistory = wanted && (history || !state.history.loaded);
+    if (wanted && !fullHistory) mergeTonight();
+    loadOk("reload");
     render();
+    if (fullHistory) {
+      await refreshHistory();
+      loadOk("history");
+      render();
+    }
   } catch (e) {
-    setError(e.message || e);
-  } finally {
-    loading = false;
-    if (queued) { const next = queued; queued = null; reload(next); }
+    loadFailed("reload", e);
   }
 }
 
@@ -316,6 +382,10 @@ const HOUSE_SQL = "alter table bets alter column proposer_id drop not null;";
 export async function throwRandomBet({ scheduled = false } = {}) {
   if (throwing || autoPaused()) return;
   throwing = true;
+  // Each timed attempt counts as this interval's go, whether it throws a bet,
+  // finds the board full or fails — otherwise a skipped throw is retried by
+  // the one-second ticker every second until something changes.
+  if (scheduled) state.autoBet.since = Date.now();
   try {
     const game = state.game;
     const every = state.autoBet.every * 60000;
@@ -424,12 +494,14 @@ export async function boot() {
 
   if (!started) {
     started = true;
-    db.watchRoom(() => reload({ announce: true }), up => { state.live = up; render(); });
-    // Backstop for a phone that suspended its socket.
-    setInterval(() => reload({ announce: true }), 20000);
+    db.watchRoom(change => reload({ announce: true, history: touchesHistory(change) }),
+                 up => { state.live = up; render(); });
+    // Backstop for a phone that suspended its socket. With realtime down,
+    // nothing reports changes outside tonight's game, so history comes too.
+    setInterval(() => reload({ announce: true, history: !state.live }), 20000);
     // A phone waking up, or the tab coming back, catches up straight away.
     document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "visible") reload();
+      if (document.visibilityState === "visible") reload({ history: true });
     });
   }
 }
@@ -452,6 +524,7 @@ export function goto(screen) {
     state.confirmGrade = null;
     state.sheet = null;
     if (HISTORY_SCREENS.has(screen)) loadHistory();
+    if (screen === "roster") loadRoster();   // flags raised on other phones since
   }
   render();
 }
@@ -498,20 +571,23 @@ export async function submitPassword(pw) {
   } catch (e) { setError(e.message || e); }
 }
 
-export async function takeSeat(playerId) {
-  try {
-    state.me = playerId;
-    localStorage.setItem("betroom.player", playerId);
+async function seat(playerId) {
+  state.me = playerId;
+  localStorage.setItem("betroom.player", playerId);
 
-    let token = localStorage.getItem("betroom.device");
-    if (!token) {
-      token = crypto.randomUUID();
-      localStorage.setItem("betroom.device", token);
-    }
-    await db.rememberDevice(token, playerId);
-    checkIn();
-    goto(state.game ? "room" : "idle");
-  } catch (e) { setError(e.message || e); }
+  let token = localStorage.getItem("betroom.device");
+  if (!token) {
+    token = crypto.randomUUID();
+    localStorage.setItem("betroom.device", token);
+  }
+  await db.rememberDevice(token, playerId);
+  checkIn();
+  goto(state.game ? "room" : "idle");
+}
+
+export async function takeSeat(playerId) {
+  try { await seat(playerId); }
+  catch (e) { setError(e.message || e); }
 }
 
 /* The big screen is reached from the seat picker and remembered on this
@@ -545,13 +621,27 @@ export function switchPlayer() {
   goto("seat");
 }
 
-export async function addPlayer(name) {
-  try {
-    const player = await db.createPlayer(name);
-    await flagIfSimilar(player.id, name);
+/* A new name is created once. A double tap is ignored while the first is
+   saving, and if a later step fails, trying again seats the player that
+   was already made rather than making a second one with the same name. */
+let added = null;   // { key, id } — made by an add that didn't finish
+
+export function addPlayer(name) {
+  const clean = String(name).trim();
+  if (!clean) return;
+  return run("addplayer", async () => {
+    const key = clean.toLowerCase();
+    let id = added?.key === key ? added.id : null;
+    if (!id) {
+      id = (await db.createPlayer(clean)).id;
+      added = { key, id };
+      // A missed flag costs a merge later; it shouldn't stop anyone sitting down.
+      try { await flagIfSimilar(id, clean); } catch (e) { /* best effort */ }
+    }
     state.players = await db.fetchPlayers();
-    await takeSeat(player.id);
-  } catch (e) { setError(e.message || e); }
+    await seat(id);
+    added = null;
+  });
 }
 
 /* --- bets ---------------------------------------------------------------- */
@@ -568,6 +658,7 @@ export function proposeBet(draft, side) {
 export async function pick(betId, side) {
   const bet = findBet(betId);
   if (!bet || bet.status !== "open") return;
+  state.error = "";
   try {
     await db.savePick(betId, state.me, side);
     await reload();
@@ -620,7 +711,7 @@ export function ungrade(betId) {
 export function regrade(betId, result) {
   if (!state.admin) return setError("Changing a past result needs the admin PIN.");
   return run(`regrade:${betId}`, async () => {
-    await db.gradeBet(betId, result);
+    await db.regradeBet(betId, result);
     await refreshHistory();
     notify("Result changed — balances updated");
   });
@@ -637,8 +728,8 @@ export function pull(betId) {
       if (!gone) notify("Someone just picked it — pulling it now voids it and needs the admin PIN", 6000);
     } else {
       if (!state.admin) throw new Error("Pulling a bet other people have picked needs the admin PIN.");
-      await db.voidBets([betId]);
-      notify("Bet pulled — voided for everyone");
+      if (await db.voidBets([betId])) notify("Bet pulled — voided for everyone");
+      else notify("It locked before it could be pulled — nothing changed", 6000);
     }
     state.sheet = null;
     await reload();
@@ -697,14 +788,16 @@ export function kickOff() {
 }
 
 /* Closing out the night. Bets still taking picks are voided without asking —
-   nobody committed to them. Locked bets each need an answer first, which the
-   close-out screen enforces before it calls this. */
+   nobody committed to them. Locked bets each need an answer first: the
+   close-out screen asks for them, and the database checks again, so a bet
+   locked on another phone a moment ago isn't voided unanswered. */
 export function closeOutNight() {
   return run("closeout", async () => {
-    const stillOpen = state.bets.filter(b => b.status === "open");
-    await db.voidBets(stillOpen.map(b => b.id));
-    await db.setGamePhase(state.game.id, "closed", "closed_at");
+    const result = await db.closeOutGame(state.game.id);
     await reload();
+    if (result === "locked") {
+      throw new Error("A bet just locked on another phone — it needs a result before the night can close.");
+    }
     goto(home());
   });
 }
@@ -741,12 +834,25 @@ export function undoPayment(id) {
 
 /* --- roster -------------------------------------------------------------- */
 
+/* Name flags and recent changes. Fetched each time the roster opens (and
+   after each roster action), one fetch at a time; a failure is reported
+   once and waits for Try again rather than retrying on every redraw. */
+let rosterBusy = false, rosterAgain = false;
+
 export async function loadRoster() {
+  if (rosterBusy) { rosterAgain = true; return; }
+  rosterBusy = true;
   try {
     const [flags, changes] = await Promise.all([db.fetchFlags(), db.fetchRosterChanges()]);
     state.roster = { flags, changes, loaded: true };
+    loadOk("roster");
+  } catch (e) {
+    loadFailed("roster", e);
+  } finally {
+    rosterBusy = false;
     render();
-  } catch (e) { setError(e.message || e); }
+    if (rosterAgain) { rosterAgain = false; loadRoster(); }
+  }
 }
 
 /* Deliberately trigger-happy: a false flag costs the admin one tap, a missed
