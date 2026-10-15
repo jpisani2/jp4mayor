@@ -448,16 +448,16 @@ function lastGamePanel(g){
 }
 
 /* companion sites (Phase 2, Oct 10, 2026). Set a link to "" to hide it. */
-const SITE = { preview: "https://jp4mayor.com/pistons/pregame/", recap: "https://jp4mayor.com/pistons/recaps/" };
+const SITE = { preview: "https://jp4mayor.com/pistons/pregame/", recap: "https://jp4mayor.com/pistons/recaps/", yearbook: "https://jp4mayor.com/pistons/yearbook/" };
 /* header pills (Oct 11, 2026): same SITE targets; an empty value hides that pill */
 function renderSitePills(){
-  [["site-pre", SITE.preview], ["site-post", SITE.recap]].forEach(([id, url]) => {
+  [["site-pre", SITE.preview], ["site-post", SITE.recap], ["site-yb", SITE.yearbook]].forEach(([id, url]) => {
     const a = document.getElementById(id);
     if (!a) return;
     if (url) { a.href = url; a.hidden = false; } else a.hidden = true;
   });
   const nav = document.getElementById("sites");
-  if (nav) nav.hidden = !SITE.preview && !SITE.recap;
+  if (nav) nav.hidden = !SITE.preview && !SITE.recap && !SITE.yearbook;
   paintSitePills();
 }
 /* state-aware pills (Oct 11, 2026): Pregame lights up on a game day until about 2.5 h after tip;

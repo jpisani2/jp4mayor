@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pistons Yearbook 2026-27</title>
+<meta name="description" content="A page for every Detroit Pistons player in 2026-27: live stats, season projections, milestones, career numbers and splits.">
+<meta name="apple-mobile-web-app-title" content="Yearbook">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="css/yearbook.css">
+<script>try{var s=localStorage.getItem("pistons-skin");if(s)document.documentElement.setAttribute("data-skin",s);}catch(e){}</script>
+</head>
+<body>
+<!--YB-BODY-->
+<header class="bar" id="bar">
+  <a class="brand" href="#cover" aria-label="Pistons Yearbook cover"><span class="b1">Pistons</span><span class="b2">Yearbook</span><span class="b3">2026-27</span></a>
+  <nav class="turn" aria-label="Turn pages">
+    <button type="button" id="prev" class="arrow" aria-label="Previous page">&#8249;</button>
+    <button type="button" id="tocbtn" class="tocbtn" aria-haspopup="true" aria-expanded="false">Contents</button>
+    <span class="pageno" id="pageno" aria-live="polite"></span>
+    <button type="button" id="next" class="arrow" aria-label="Next page">&#8250;</button>
+  </nav>
+  <div class="tools">
+    <div class="skin" role="group" aria-label="Color theme">
+      <button type="button" id="skin-navy" data-skin="navy" aria-pressed="false"><i class="sw navy"></i><span class="lbl">Blue</span></button>
+      <button type="button" id="skin-red" data-skin="red" aria-pressed="false"><i class="sw red"></i><span class="lbl">Red</span></button>
+      <button type="button" id="skin-light" data-skin="light" aria-pressed="false"><i class="sw light"></i><span class="lbl">Light</span></button>
+    </div>
+    <a class="hublink" id="hublink" href="../">Hub &#8599;</a>
+  </div>
+</header>
+<div class="tocpop" id="tocpop" hidden></div>
+<main class="desk" id="desk">
+  <div class="spread" id="spread" aria-live="polite"></div>
+</main>
+<footer class="foot">
+  <div class="dots" id="dots" role="tablist" aria-label="Pages"></div>
+  <p class="hint">Swipe, or use the &#8592; &#8594; keys, to turn the page.</p>
+</footer>
+<div class="tip" id="tip" role="status" hidden></div>
+<!--/YB-BODY-->
+<script src="../data/schedule.js"></script>
+<script src="js/model.js"></script>
+<script src="js/yearbook.js"></script>
+</body>
+</html>

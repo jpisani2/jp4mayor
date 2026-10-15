@@ -80,14 +80,28 @@ a{color:var(--link)}
 .site-pill.lit span{color:#fff}
 .site-pill.lit::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;margin-right:2px;flex:none}
 .site-pill.lit:hover{background:var(--lit-bg,#C8102E);filter:brightness(1.08)}
+/* pill labels (Oct 15, 2026): full names on wider screens, Pre / Post / Book on phones so all three fit beside the theme switcher */
+.site-pill .pl,.site-pill .ps{color:inherit;font-weight:inherit}
+.site-pill .ps{display:none}
 :root[data-skin="red"]{--lit-bg:#1D428A}
 @media (max-width:560px){
   .top{gap:12px}
   .top-r{width:100%;justify-content:space-between;gap:6px}
   .site-pill{padding:11px 10px}
+  .site-pill .pl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .site-pill .ps{display:inline}
+  .sites{gap:5px}
   .skin .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .skin button{padding:8px 9px!important}
   .skin .sw{width:16px;height:16px}
+}
+@media (max-width:380px){
+  .top-r{gap:4px}
+  .sites{gap:4px}
+  .site-pill{padding:11px 7px;gap:3px}
+  .site-pill.lit::before{margin-right:0}
+  .skin{padding:2px;gap:1px}
+  .skin button{padding:8px 6px!important}
 }
 .sw.navy{background:#0B1730;box-shadow:inset -5px 0 0 #1D428A}.sw.red{background:#4A0A14;box-shadow:inset -5px 0 0 #C8102E}.sw.light{background:#fff;box-shadow:inset -5px 0 0 #C8102E}
 
