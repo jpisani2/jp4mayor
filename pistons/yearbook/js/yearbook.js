@@ -17,6 +17,9 @@ const sgn = v => isNum(v) ? (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toF
 const seasonLabel = y => (y - 1) + "-" + String(y).slice(2);
 const ord = n => n + (["th", "st", "nd", "rd"][((n % 100) - 20) % 10] || ["th", "st", "nd", "rd"][n % 100] || "th");
 const SEASON_START = "2026-10-20";
+// regular season only: preseason, the NBA Cup championship and the playoffs don't count (the schedule loads later, so read it each time)
+const seasonEnd = () => (((window.PISTONS_DATA || {}).sched) || []).map(g => g.date).filter(Boolean).sort().pop() || "2027-04-11";
+const isReg = (d, type) => !!d && d >= SEASON_START && d <= seasonEnd() && !/preseason|playoff|play-in|postseason|championship|cup final/i.test(type || "");
 const CONFIG = window.YB_CONFIG || {};
 const BASE = CONFIG.base || "../";          // where the hub's data files live (jp4mayor.com/pistons/)
 const SELF = CONFIG.self || "";             // where this yearbook's data lives
@@ -71,15 +74,15 @@ function buildSeason() {
   const log = ((window.PISTONS_TEAM || {}).log) || [];
   const games = {};
   for (const g of log) {
-    if (!g || !g.d || g.d < SEASON_START) continue;
+    if (!g || !isReg(g.d, g.type)) continue;
     games[g.d] = { d: g.d, opp: g.opp, home: !!g.home, det: g.det, oppPts: g.oppPts, rows: (g.p || []).map(r => ({ key: nkey(r[0]), name: r[0], min: +r[1] || 0, pts: r[2], reb: r[3], ast: r[4], stl: r[5], blk: r[6], tpm: r[7], tpa: r[8], fgm: r[9], fga: r[10], ftm: r[11], fta: r[12], gs: r[13] ? 1 : 0 })) };
   }
   for (const [d, g] of Object.entries(daily.games || {})) {
-    if (d < SEASON_START || /preseason/i.test(g.type || "") || !g.box) continue;
+    if (!isReg(d, g.type) || !g.box) continue;
     games[d] = { d, opp: g.opponent, home: !!g.home, det: g.det, oppPts: g.opp, rows: g.box.map(p => { const fg = ma(p.fg), tp = ma(p.tp), ft = ma(p.ft); return { key: nkey(p.name), name: p.name, min: +p.min || 0, pts: +p.pts || 0, reb: +p.reb || 0, ast: +p.ast || 0, stl: +p.stl || 0, blk: +p.blk || 0, tpm: tp[0], tpa: tp[1], fgm: fg[0], fga: fg[1], ftm: ft[0], fta: ft[1], gs: p.starter ? 1 : 0, pm: p.pm }; }) };
   }
   const list = Object.values(games).sort((a, b) => a.d < b.d ? -1 : 1);
-  const finals = Object.keys(res).filter(d => d >= SEASON_START).length;
+  const finals = Object.entries(res).filter(([d, r]) => isReg(d, r && (r.type || r.note))).length;
   TEAM = { games: list, gp: Math.max(finals, list.length) };
   TEAM.left = Math.max(0, 82 - TEAM.gp);
   // preseason box scores, for a note before the opener
@@ -290,7 +293,7 @@ function projectionSec(p, act) {
   const br36 = pj ? `<p class="note">Second opinion: Basketball Reference's own projection works out to <b>${f1(pj[13])}</b> points, <b>${f1(pj[7])}</b> rebounds and <b>${f1(pj[8])}</b> assists per 36 minutes. This model: <b>${f1(pr.rate.pts * 36)}</b>, <b>${f1(pr.rate.reb * 36)}</b> and <b>${f1(pr.rate.ast * 36)}</b>.</p>` : "";
   const csel = ["pts", "reb", "ast"].map(k => `<button type="button" data-cstat="${k}" aria-pressed="${(ui.cstat || "pts") === k}">${k.toUpperCase()}</button>`).join("");
   const noHist = pr.noNBA ? `<p class="note">No NBA box scores yet, so this is a placeholder: league-average ${({ G: "guard", W: "wing", B: "big" })[p.grp]} rates, trimmed for a rookie, in about ${f1(pr.g.min)} minutes a game. The range is wide on purpose.</p>` : "";
-  const vsRows = rows.filter(([k]) => k !== "min" || true).map(([k, lab]) => rangeRow(lab.replace("3-pointers", "3PM").replace("Minutes", "MIN").replace("Points", "PTS").replace("Rebounds", "REB").replace("Assists", "AST").replace("Steals", "STL").replace("Blocks", "BLK"), pr.range[k][0], pr.g[k], pr.range[k][1], t.gp ? per(t, k) : null, f1)).join("")
+  const vsRows = rows.map(([k, lab]) => rangeRow(lab.replace("3-pointers", "3PM").replace("Minutes", "MIN").replace("Points", "PTS").replace("Rebounds", "REB").replace("Assists", "AST").replace("Steals", "STL").replace("Blocks", "BLK"), pr.range[k][0], pr.g[k], pr.range[k][1], t.gp ? per(t, k) : null, f1)).join("")
     + pcts.map(([k, lab]) => { const m = { fg: ["fgm", "fga"], tp: ["tpm", "tpa"], ft: ["ftm", "fta"] }[k]; const a = t[m[1]] ? t[m[0]] / t[m[1]] : null; return rangeRow(lab, pr.pctRange[k][0], pr.pct[k], pr.pctRange[k][1], t.gp ? a : null, v => pcs(v), 1); }).join("");
   return `<section class="sec"><p class="eyebrow">Projection</p><h2>2026-27 projection</h2>
     <p class="sub">Preseason numbers were frozen on Oct. 13${now ? "; the Now column blends them with his games so far and updates after every game" : " and start blending with real games after his first one"}. Ranges cover the middle 80% of outcomes.</p>
@@ -340,8 +343,10 @@ function milestones(p, act, now) {
     const e = M.eta(need, pg, avail); if (!e) return null;
     const n = TEAM.gp + e.teamGames;
     if (n > 82) return { label: "2027-28", n, games: e.games, next: true };
-    const g = sched[n - 1];
-    return { label: g ? fmtDate(g.date, { month: "short", day: "numeric" }) : "This season", n, games: e.games, date: g && g.date, opp: g && g.opp, home: g && g.home };
+    // games 22 and 23 have no date yet (the NBA Cup window), so there is no day or opponent to show
+    const g = sched.find(x => x.n === n);
+    if (!g || !g.date) return { label: g ? "Dec. (date TBD)" : "This season", n, games: e.games };
+    return { label: fmtDate(g.date, { month: "short", day: "numeric" }), n, games: e.games, date: g.date, opp: g.opp, home: g.home };
   };
   const remGames = Math.max(0, (pr ? pr.rem : p.proj.gp));
   for (const [k, name, step, small] of stats) {
@@ -388,7 +393,6 @@ function careerSec(p, act) {
   const tabBtns = tabs.map(([k, l]) => `<button type="button" data-ctab="${k}" aria-pressed="${ui.careerTab === k}">${l}</button>`).join("");
   const C = M.COL;
   const team = r => r[1] === "TOT" ? "2 teams" : r[1];
-  const rowsOf = rows => rows.filter((r, i, a) => !(r[1] !== "TOT" && a.some(x => x[0] === r[0] && x[1] === "TOT") && false));
   const pgRow = (lab, tm, r) => { const g = r[C.gp] || 0, d = v => g && isNum(v) ? (v / g).toFixed(1) : "–"; const ts = (r[C.fga] + 0.44 * r[C.fta]) > 0 ? r[C.pts] / (2 * (r[C.fga] + 0.44 * r[C.fta])) : null;
     return `<td>${lab}</td><td class="l">${tm}</td><td>${g}</td><td>${r[C.gs]}</td><td>${f1(r[C.mpg])}</td><td>${d(r[C.pts])}</td><td>${d(r[C.reb])}</td><td>${d(r[C.ast])}</td><td>${d(r[C.stl])}</td><td>${d(r[C.blk])}</td><td>${d(r[C.tov])}</td><td>${d(r[C.tpm])}</td><td>${pcs(r[C.fga] ? r[C.fgm] / r[C.fga] : null)}</td><td>${pcs(r[C.tpa] ? r[C.tpm] / r[C.tpa] : null)}</td><td>${pcs(r[C.fta] ? r[C.ftm] / r[C.fta] : null)}</td><td>${pcs(ts)}</td>`; };
   const toRow = c => [0, "", c.gp, c.gs || 0, c.gp ? c.min / c.gp : 0, c.fgm, c.fga, c.tpm, c.tpa, c.ftm, c.fta, c.oreb || 0, 0, c.reb, c.ast, c.blk, c.stl, 0, isNum(c.tov) ? c.tov : NaN, c.pts, 0, 0];
@@ -662,7 +666,7 @@ function playerSpread(p) {
 /* ---------- cover, contents, leaders ---------- */
 function teamRecord() {
   const res = (window.PISTONS_RESULTS || {}).games || {};
-  let w = 0, l = 0; Object.entries(res).forEach(([d, g]) => { if (d >= SEASON_START && isNum(g.det)) g.det > g.opp ? w++ : l++; });
+  let w = 0, l = 0; Object.entries(res).forEach(([d, g]) => { if (isReg(d, g.type || g.note) && isNum(g.det)) g.det > g.opp ? w++ : l++; });
   return { w, l };
 }
 function leadersBy(k, n, mode) {
@@ -697,7 +701,7 @@ function coverSpread() {
       <div class="tile"><div class="k">New faces</div><div class="v">${newCount}</div><div class="s">${rookies} rookies</div></div>
       <div class="tile"><div class="k">Last season</div><div class="v">60-22</div><div class="s">1st in the East</div></div></div>
     ${nxt ? `<p class="role">Next game: <b>${esc(fmtDate(nxt.date, { weekday: "long", month: "long", day: "numeric" }))}</b> ${nxt.home ? "vs." : "at"} ${esc(nxt.opp)}${nxt.tv ? " on " + esc(nxt.tv) : ""}.</p>` : ""}
-    <section class="sec"><p class="eyebrow">How to use it</p><p class="role" style="font-weight:400">Every player gets a spread: who he is and what the model expects on the left, what he has done on the right. The numbers for this season fill in from Detroit's box scores every morning, and each projection shifts toward what he is actually doing as the games pile up.</p></section>
+    <section class="sec"><p class="eyebrow">How to use it</p><p class="role" style="font-weight:400">Every player gets a spread: who he is and what the model expects on the left, what he has done on the right. ${CONFIG.inline ? `This copy is a snapshot of the data as of ${esc(fmtDate(YB.asOf, { month: "short", day: "numeric", year: "numeric" }))}, so it doesn't update on its own. The live yearbook fills in this season's numbers from Detroit's box scores every morning` : "The numbers for this season fill in from Detroit's box scores every morning"}, and each projection shifts toward what he is actually doing as the games pile up.</p></section>
     <p><a href="#contents">Open the contents &#8250;</a></p>`;
   const card = (k, lab, fmt) => `<div class="card"><p class="eyebrow" style="margin:0">${lab}</p><ol>${leadersBy(k, 3).map(x => `<li><a href="#${x.p.slug}">${esc(x.p.name)}</a><b>${fmt(x.v)}</b></li>`).join("")}</ol></div>`;
   const right = `<section class="sec"><p class="eyebrow">Projected leaders</p><h2>Who the model likes</h2><p class="sub">Per game, from the preseason projections frozen Oct. 13.</p>
@@ -763,12 +767,20 @@ function pageIndexFromHash() {
 function render(dir) {
   const pg = PAGES[cur];
   let s;
-  if (pg.id === "cover") s = coverSpread(); else if (pg.id === "contents") s = contentsSpread(); else if (pg.id === "leaders") s = leadersSpread(); else s = playerSpread(pg.p);
+  try {
+    if (pg.id === "cover") s = coverSpread(); else if (pg.id === "contents") s = contentsSpread(); else if (pg.id === "leaders") s = leadersSpread(); else s = playerSpread(pg.p);
+  } catch (e) {
+    // one bad section shouldn't leave the previous page on screen under the new page's address
+    console.error(e);
+    s = { left: `<div class="empty">This page couldn't be drawn. Try reloading, or turn to another page.</div>`, right: "" };
+  }
   const n = cur + 1, folioL = `<span class="folio">${pg.p ? esc(pg.p.name) + " · " : ""}Pistons Yearbook 2026-27</span>`, folioR = `<span class="folio">Page ${n} of ${PAGES.length}</span>`;
   const sp = $("#spread");
   sp.classList.remove("in-next", "in-prev"); void sp.offsetWidth;
   sp.innerHTML = `<article class="leaf left" aria-label="${esc(pg.title)}, left page">${s.left}${folioL}</article><article class="leaf right" aria-label="${esc(pg.title)}, right page">${s.right}${folioR}</article>`;
   if (dir) sp.classList.add(dir > 0 ? "in-next" : "in-prev");
+  // wide tables scroll sideways: make those focusable so the arrow keys can scroll them
+  sp.querySelectorAll(".scroll").forEach(el => { if (el.scrollWidth > el.clientWidth) el.tabIndex = 0; });
   $("#pageno").textContent = `Page ${n} of ${PAGES.length}`;
   $("#prev").disabled = cur === 0; $("#next").disabled = cur === PAGES.length - 1;
   document.title = (pg.p ? pg.p.name + " · " : "") + "Pistons Yearbook 2026-27";
@@ -810,6 +822,7 @@ function wire() {
   });
   document.addEventListener("keydown", e => {
     if (e.target.closest("input,textarea,select")) return;
+    if ((e.key === "ArrowRight" || e.key === "ArrowLeft") && (e.altKey || e.ctrlKey || e.metaKey || e.target.closest(".scroll"))) return;
     if (e.key === "ArrowRight") go(cur + 1); else if (e.key === "ArrowLeft") go(cur - 1); else if (e.key === "Escape") closeToc();
     else if ((e.key === "Enter" || e.key === " ") && e.target.matches("th[data-sort]")) { e.preventDefault(); e.target.click(); }
   });
