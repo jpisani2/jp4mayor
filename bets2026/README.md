@@ -59,7 +59,10 @@ js/
   scoring.js        Settlement math. Mirrors the SQL views.
   pregame.js        The eleven pregame bets and how they derive from the line.
   ledger.js         Balances, rounding, and who hands what to whom.
-  theme.js          The six themes and which one this device chose.
+  theme.js          The eight themes and which one this device chose.
+  halloween.js      The Halloween dressing: sky, moon, fog, bats, spider,
+                    ghosts, webs, embers or leaves, a cat, jack-o'-lanterns.
+                    Drawn outside #app, so redraws never restart it.
   db.js             Every Supabase call.
   store.js          State, derived values, actions, realtime wiring.
   app.js            Picks a screen, renders it, wires it. Nothing else.
@@ -130,7 +133,34 @@ must not be reused for decoration. A theme recolors the environment through
 color sits too close to one of them, the semantic color is nudged along its
 own hue rather than swapped: side B shifts toward teal under Lions, side A
 toward orange under Michigan, money green brightens under Michigan State.
-Amber is still amber everywhere.
+Under Halloween, pumpkin orange is the brand, so side A moves to candle-yellow
+and money lost to blood red. Amber is still amber everywhere.
+
+## The Halloween themes
+
+`halloween.js` adds one layer at the back of the page, outside `#app`, and
+`styles.css` (the Halloween section at the end) decides what shows in each
+mode. It takes no taps and is hidden from screen readers. On a phone set to
+reduce motion, the bats, ghosts, spider, embers and leaves stay home. The
+new-bet chime turns into a theremin while either theme is on (`sound.js`), and
+on the big screen a new bet brings lightning and a swarm of bats.
+
+The title font is Creepster from Google Fonts, loaded only when a Halloween
+theme is picked. Windows falls back to Chiller.
+
+The photos are free under the [Unsplash License](https://unsplash.com/license)
+and load straight from Unsplash's CDN, only while a Halloween theme is on. If
+Unsplash can't be reached, the painted sky and all the drawn pieces still
+show. Credits:
+
+- Haunted house in fog: [m wrona](https://unsplash.com/photos/gray-wooden-house-covered-by-fog-pCgxm-HDMNs) (dark sky)
+- Moon behind trees: [Aron Visuals](https://unsplash.com/photos/full-moon-behind-a-tree-silhouettes-4zxSWESyZio)
+- Field of jack-o'-lanterns: [Taylor Rooney](https://unsplash.com/photos/brown-pumpkin-lot-L86gqddPTQs) (dark, bottom edge)
+- Misty forest: [Rythik](https://unsplash.com/photos/silhouette-photography-of-house-surrounded-by-withered-trees-bxkyazW_6KY) (light sky)
+- Pumpkins at golden hour: [Elijah Pilchard](https://unsplash.com/photos/pumpkins-in-a-field-during-golden-hour-0ZQG2WeU8KM) (light, bottom edge)
+
+To retire the theme after the season, delete the two Halloween entries in
+`theme.js`; anyone still on one falls back to Dark.
 
 ## Adding or updating `js/vendor/supabase.js`
 

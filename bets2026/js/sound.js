@@ -35,11 +35,36 @@ export function unlockAudio() {
   if (c && c.state === "suspended") c.resume().catch(() => {});
 }
 
+/* Under a Halloween theme the chime is a theremin's "ooo-OOO-ooo" instead:
+   a sine that swoops up then sinks a minor sixth, with a slow wobble. */
+const haunted = () => (document.documentElement.dataset.theme || "").startsWith("halloween");
+
+function ghostly(c) {
+  const t = c.currentTime;
+  const osc = c.createOscillator(), wobble = c.createOscillator();
+  const depth = c.createGain(), gain = c.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(440, t);
+  osc.frequency.exponentialRampToValueAtTime(880, t + 0.28);
+  osc.frequency.exponentialRampToValueAtTime(554, t + 1.0);
+  wobble.frequency.value = 6.5;
+  depth.gain.value = 14;
+  wobble.connect(depth).connect(osc.frequency);
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(0.11, t + 0.12);
+  gain.gain.setValueAtTime(0.11, t + 0.7);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 1.1);
+  osc.connect(gain).connect(c.destination);
+  osc.start(t); wobble.start(t);
+  osc.stop(t + 1.12); wobble.stop(t + 1.12);
+}
+
 export function beep() {
   if (!soundOn()) return;
   try {
     const c = context();
     if (!c || c.state !== "running") return;
+    if (haunted()) { ghostly(c); return; }
     const osc = c.createOscillator(), gain = c.createGain();
     const t = c.currentTime;
     osc.type = "sine";
