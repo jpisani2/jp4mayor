@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-10-11T09:05:00-04:00",
+  "updated": "2026-10-14T22:50:00-04:00",
   "games": [
+    {
+      "id": "g20261014",
+      "date": "2026-10-14",
+      "phase": "Preseason",
+      "home": false,
+      "venue": "Target Center, Minneapolis",
+      "attendance": 10262,
+      "opp": {
+            "abbr": "MIN",
+            "name": "Minnesota Timberwolves",
+            "short": "Timberwolves",
+            "score": 106,
+            "quarters": [
+                  38,
+                  20,
+                  24,
+                  24
+            ]
+      },
+      "det": {
+            "score": 128,
+            "quarters": [
+                  29,
+                  36,
+                  32,
+                  31
+            ]
+      },
+      "result": "W",
+      "record": "2-1",
+      "headline": "Duren's 24 on 8-9 shooting powers a 22-point rout",
+      "dek": "Detroit trailed 38-29 after one, then outscored Minnesota 36-20 in the second and cruised to a 128-106 preseason win in Minneapolis.",
+      "leaders": [
+            {
+                  "team": "DET",
+                  "name": "Jalen Duren",
+                  "line": "24 PTS · 8-9 FG · 8-8 FT",
+                  "sub": "Did it in 15 minutes and finished with 3 REB, 2 STL. Second-most points in the league Wednesday",
+                  "badge": "Top night"
+            },
+            {
+                  "team": "DET",
+                  "name": "Cade Cunningham",
+                  "line": "14 PTS · 9 AST · 5 TO",
+                  "sub": "25 minutes and a +11. His 9 assists tied for 2nd among Wednesday's team leaders"
+            },
+            {
+                  "team": "DET",
+                  "name": "Duncan Robinson",
+                  "line": "15 PTS · 4-5 3PT · 6 REB",
+                  "sub": "Hit four threes in 24 minutes; Detroit was +20 with him on the floor"
+            },
+            {
+                  "team": "DET",
+                  "name": "Isaiah Joe",
+                  "line": "14 PTS · 5-7 FT · 2 AST",
+                  "sub": "Scored 14 off the bench in 20 minutes"
+            },
+            {
+                  "team": "MIN",
+                  "name": "Anthony Edwards",
+                  "line": "20 PTS · 9-9 FT · 5-15 FG",
+                  "sub": "Minnesota's top scorer, but 4 turnovers and 0 rebounds"
+            },
+            {
+                  "team": "MIN",
+                  "name": "Jonathan Kuminga",
+                  "line": "16 PTS · 5-6 FG · 2-3 3PT",
+                  "sub": "Efficient in 22 minutes as a Wolves starter"
+            }
+      ],
+      "context": [
+            {
+                  "label": "Wednesday's slate",
+                  "text": "Duren's 24 points ranked 2nd among team leaders, behind only Michael Porter Jr.'s 27 (BKN). Cunningham's 9 assists tied Giannis Antetokounmpo for 2nd, behind Payton Pritchard's 11 (BOS)."
+            },
+            {
+                  "label": "This week",
+                  "text": "Duren's 24 points trail only Austin Reaves' 28 and Michael Porter Jr.'s 27 among this week's top lines."
+            },
+            {
+                  "label": "Season series",
+                  "text": "Preseason only. The regular-season series with Minnesota starts Jan. 24."
+            }
+      ],
+      "talkingPoints": [
+            "Duren went 8-for-9 from the floor and 8-for-8 at the line for 24 points in just 15 minutes.",
+            "Minnesota led 38-29 after one. Detroit won the second quarter 36-20 and led 65-58 at the half.",
+            "Two Detroit runs, 9-0 and 10-0, turned the second quarter around.",
+            "The lead hit 26 in the fourth. The Pistons shot 57% and scored 64 points in the paint.",
+            "Both teams turned it over 20 times, but Detroit scored 22 points off Minnesota's giveaways.",
+            "Edwards shot 5-for-15 with 4 turnovers, and Minnesota never got the stops to get back in it."
+      ],
+      "notable": [
+            {
+                  "stat": "8-9",
+                  "label": "Duren from the field",
+                  "note": "Plus 8-8 at the line, 24 points in 15 min"
+            },
+            {
+                  "stat": "36-20",
+                  "label": "Second-quarter score",
+                  "note": "DET turned a 9-point deficit into a 65-58 halftime lead"
+            },
+            {
+                  "stat": "64-30",
+                  "label": "Points in the paint",
+                  "note": "DET 64, MIN 30"
+            },
+            {
+                  "stat": "26",
+                  "label": "Largest Detroit lead",
+                  "note": "At 6:37 of the fourth, MIN's biggest was 10"
+            },
+            {
+                  "stat": "57%",
+                  "label": "Pistons field-goal pct",
+                  "note": "45-79, vs 38% for Minnesota (29-76)"
+            },
+            {
+                  "stat": "20-15",
+                  "label": "Fast-break points",
+                  "note": "DET 20, MIN 15"
+            }
+      ],
+      "story": [
+            "Minnesota started faster, closing the first quarter on a 38-29 lead behind a late Rudy Gobert alley-oop. Detroit then blew the game open in the second: Jalen Duren dunked his way through a 9-0 run, a 10-0 burst late in the half followed, and the Pistons won the quarter 36-20 to lead 65-58 at the break.",
+            "The third widened it. Cade Cunningham, Duren and John Collins kept finishing at the rim, and the lead stretched to 97-82 after three. Duren finished 8-9 from the floor and 8-8 at the line for 24 points in 15 minutes, the second-highest total in the league on Wednesday.",
+            "The fourth was garbage time. Detroit's lead peaked at 26 and the teams picked up a double technical at 5:08. Isaac Jones blocked Cody Williams' dunk try as time expired. Detroit shot 57% to Minnesota's 38% and outscored the Wolves 64-30 in the paint."
+      ],
+      "teamStats": [
+            {
+                  "label": "FG",
+                  "det": "45-79 (57%)",
+                  "opp": "29-76 (38%)"
+            },
+            {
+                  "label": "3PT",
+                  "det": "11-25 (44%)",
+                  "opp": "11-34 (32%)"
+            },
+            {
+                  "label": "FT",
+                  "det": "27-33 (82%)",
+                  "opp": "37-44 (84%)"
+            },
+            {
+                  "label": "Rebounds",
+                  "det": "45",
+                  "opp": "34"
+            },
+            {
+                  "label": "Assists",
+                  "det": "32",
+                  "opp": "23"
+            },
+            {
+                  "label": "Steals",
+                  "det": "12",
+                  "opp": "11"
+            },
+            {
+                  "label": "Blocks",
+                  "det": "6",
+                  "opp": "4"
+            },
+            {
+                  "label": "Turnovers",
+                  "det": "20",
+                  "opp": "20"
+            },
+            {
+                  "label": "Paint pts",
+                  "det": "64",
+                  "opp": "30"
+            }
+      ],
+      "share": "Pistons 128, Timberwolves 106. Duren 24 pts on 8-9 FG in 15 min; DET won Q2 36-20 and led by 26.",
+      "sources": [
+            {
+                  "title": "ESPN box score",
+                  "url": "https://www.espn.com/nba/game/_/gameId/401914125"
+            }
+      ]
+},
     {
       "id": "g20261010",
       "date": "2026-10-10",
