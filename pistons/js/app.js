@@ -441,9 +441,9 @@ function lastGamePanel(g){
     ${g.summary ? `<p style="margin:0 0 4px;font-size:15px">${esc(g.summary)}</p>` : ""}
     ${Array.isArray(g.leaders) && g.leaders.length ? `<div class="leaders">${g.leaders.map(l => `<div class="leader"><div class="k">${esc(l.k)}</div><b>${esc(l.name)}</b><span>${esc(l.line)}</span></div>`).join("")}</div>` : ""}
     ${box.length ? `<details><summary style="cursor:pointer;font-weight:600">Pistons box score</summary><div class="tbl-wrap" style="margin-top:8px"><table class="mini box"><thead><tr><th>Player</th><th>Min</th><th>Pts</th><th>Reb</th><th>Ast</th><th class="hidden-sm">Stl</th><th class="hidden-sm">Blk</th><th>FG</th><th class="hidden-sm">3PT</th><th class="hidden-sm">+/-</th></tr></thead><tbody>${boxRows}</tbody></table></div></details>` : ""}
-    ${link ? `<p style="margin:10px 0 0;font-size:13.5px"><a href="${esc(link)}" target="_blank" rel="noopener">Full box score ↗</a></p>` : ""}
+    ${link ? `<p style="margin:10px 0 0;font-size:13.5px"><a href="${esc(link)}" target="_blank" rel="noopener">Full box score<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>` : ""}
     ${presserBlock(g)}
-    ${SITE.recap ? `<p style="margin:12px 0 0;font-size:14px;font-weight:600"><a href="${SITE.recap}" target="_blank" rel="noopener">Full recap: Pistons Postgame ↗</a></p>` : ""}
+    ${SITE.recap ? `<p style="margin:12px 0 0;font-size:14px;font-weight:600"><a href="${SITE.recap}" target="_blank" rel="noopener">Full recap: Pistons Postgame<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>` : ""}
   </div>`;
 }
 
@@ -508,10 +508,10 @@ function presserBlock(g){
   const list = (Array.isArray(g.pressers) ? g.pressers : []).map(p => ({ ...p, url: safeUrl(p && p.url) })).filter(p => p.url);
   const q = encodeURIComponent(`Detroit Pistons postgame press conference ${g.opponent || ""} ${g.date ? fmtDate(g.date, {month:"long", day:"numeric", year:"numeric"}) : ""}`.replace(/\s+/g, " ").trim());
   const search = `https://www.youtube.com/results?search_query=${q}`;
-  const items = list.map(p => `<li><a href="${esc(p.url)}" target="_blank" rel="noopener"><span class="pr-play" aria-hidden="true">▶</span><span><b>${esc(p.who || p.title || "Press conference")}</b>${p.title && p.who ? `<small>${esc(p.title)}</small>` : ""}</span><em>${esc(p.source || (/youtu/i.test(p.url) ? "YouTube" : "Video"))}</em></a></li>`).join("");
+  const items = list.map(p => `<li><a href="${esc(p.url)}" target="_blank" rel="noopener"><span class="pr-play" aria-hidden="true"><svg viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M3 1.8v6.4L8.4 5z" fill="currentColor"/></svg></span><span><b>${esc(p.who || p.title || "Press conference")}</b>${p.title && p.who ? `<small>${esc(p.title)}</small>` : ""}</span><em>${esc(p.source || (/youtu/i.test(p.url) ? "YouTube" : "Video"))}</em></a></li>`).join("");
   return `<div class="pressers"><div class="k">Postgame pressers</div>
     ${items ? `<ul>${items}</ul>` : `<p class="empty" style="font-size:13.5px">Not posted yet when the dashboard was built.</p>`}
-    <a class="pr-more" href="${esc(search)}" target="_blank" rel="noopener">${items ? "More on YouTube" : "Search YouTube for this game's pressers"} ↗</a>
+    <a class="pr-more" href="${esc(search)}" target="_blank" rel="noopener">${items ? "More on YouTube" : "Search YouTube for this game's pressers"}<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
   </div>`;
 }
 
@@ -664,7 +664,7 @@ function nextPanel(n, up){
     ${n.oppRecord ? `<div class="kv" style="margin-top:8px"><span class="nowrap" style="flex:none">Opponent record</span><b class="long">${esc(n.oppRecord)}</b></div>` : ""}
     ${n.preview ? `<p>${esc(n.preview)}</p>` : ""}
     ${n.watch ? `<p><b>Watch for:</b> ${esc(n.watch)}</p>` : ""}
-    ${SITE.preview ? `<p style="margin:10px 0 0;font-size:14px;font-weight:600"><a href="${SITE.preview}" target="_blank" rel="noopener">Full preview: Pistons Pregame ↗</a></p>` : ""}
+    ${SITE.preview ? `<p style="margin:10px 0 0;font-size:14px;font-weight:600"><a href="${SITE.preview}" target="_blank" rel="noopener">Full preview: Pistons Pregame<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>` : ""}
     ${Array.isArray(up) && up.length ? `<div class="upnext"><div class="eyebrow" style="margin-bottom:4px">After that</div>${up.map(u => `<div class="kv"><span>${esc(u.date ? fmtDate(u.date) : "")}${u.type && u.type !== "Regular season" ? " · " + esc(u.type) : ""}</span><b>${u.home ? "vs" : "@"} ${esc(u.opponent)}${u.time ? " · " + esc(fmtTime(u.time)) : ""}</b></div>`).join("")}</div>` : ""}
   </div>`;
 }
@@ -849,7 +849,7 @@ function liveHtml(g){
   const v = GD.live && GD.live.date === g.date ? GD.live : null;
   const link = (v && espnGame(v.id)) || espnDay(g.date);
   if (!v) {
-    if (GD.err) return `<div class="lv lv-off"><span>Live score isn't available here.</span> <a href="${esc(link)}" target="_blank" rel="noopener">Follow on ESPN ↗</a></div>`;
+    if (GD.err) return `<div class="lv lv-off"><span>Live score isn't available here.</span> <a href="${esc(link)}" target="_blank" rel="noopener">Follow on ESPN<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>`;
     return `<div class="lv lv-wait"><span class="lv-pill">Live</span><span>Checking the score…</span></div>`;
   }
   const lead = v.det - v.opp, ab = v.oppAbbr || "OPP";
@@ -864,7 +864,7 @@ function liveHtml(g){
     <div class="lv-top"><span class="lv-pill${fin ? " fin" : ""}">${fin ? "Final" : pre ? "Soon" : "Live"}</span>${fin && /^final$/i.test(v.detail) ? "" : `<span class="lv-st">${esc(pre ? "Tip-off " + g.tip.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit", timeZone: "America/New_York"}) + " ET" : v.detail)}</span>`}</div>
     <div class="lv-score"><div><span>DET</span><b class="${lead > 0 ? "lead" : ""}">${v.det}</b></div><i>${v.home ? "vs" : "@"}</i><div><b class="${lead < 0 ? "lead" : ""}">${v.opp}</b><span>${esc(ab)}</span></div></div>
     ${qrow}
-    <div class="lv-foot">${fin ? "" : `Updated ${esc(t)} · refreshes every 40 seconds · `}<a href="${esc(link)}" target="_blank" rel="noopener">ESPN Gamecast ↗</a></div>
+    <div class="lv-foot">${fin ? "" : `Updated ${esc(t)} · refreshes every 40 seconds · `}<a href="${esc(link)}" target="_blank" rel="noopener">ESPN Gamecast<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
   </div>`;
 }
 function paintLive(){
@@ -902,7 +902,7 @@ function gdPanel(st){
   const head = `<div class="gd-head"><div class="eyebrow">${st.k === "pre" ? "Game day" : st.k === "live" ? "Game on" : "Final"}${g.type && !/regular/i.test(g.type) ? " · " + esc(g.type) : ""}</div>
       <button type="button" class="gd-std" data-gd-std="1">Standard layout</button></div>
     <div class="gd-opp" role="heading" aria-level="3">${g.home ? "vs" : "@"} ${esc(g.opp)}</div><p class="gd-when">${when}</p>`;
-  const preview = SITE.preview ? `<a class="gd-go" href="${SITE.preview}" target="_blank" rel="noopener">Full preview: Pistons Pregame ↗</a>` : "";
+  const preview = SITE.preview ? `<a class="gd-go" href="${SITE.preview}" target="_blank" rel="noopener">Full preview: Pistons Pregame<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : "";
   if (st.k === "pre") {
     return `<div class="panel gd">${head}
       <div class="cd" data-iso="${esc(g.tip.toISOString())}" aria-live="off"></div>
@@ -921,14 +921,14 @@ function gdPanel(st){
   const score = det !== null && opp !== null
     ? `<div class="lv lv-fin"><div class="lv-top"><span class="lv-pill fin">Final</span>${f && f.detail && !/^final$/i.test(f.detail) ? `<span class="lv-st">${esc(f.detail)}</span>` : ""}<span class="wl ${det > opp ? "W" : "L"}">${det > opp ? "W" : "L"}</span></div>
         <div class="lv-score"><div><span>DET</span><b class="${det > opp ? "lead" : ""}">${det}</b></div><i>${g.home ? "vs" : "@"}</i><div><b class="${opp > det ? "lead" : ""}">${opp}</b><span>${esc(ab)}</span></div></div></div>`
-    : `<p class="empty">Final score not in yet. <a href="${esc(espnDay(g.date))}" target="_blank" rel="noopener">Check ESPN ↗</a></p>`;
+    : `<p class="empty">Final score not in yet. <a href="${esc(espnDay(g.date))}" target="_blank" rel="noopener">Check ESPN<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>`;
   const q = encodeURIComponent(`Detroit Pistons postgame press conference ${g.opp} ${fmtDate(g.date, {month: "long", day: "numeric", year: "numeric"})}`);
   const box = (f && espnBox(f.id)) || espnDay(g.date);
   return `<div class="panel gd">${head}${score}
     <div class="gd-links">
-      ${SITE.recap ? `<a class="gd-go" href="${SITE.recap}" target="_blank" rel="noopener">Recap: Pistons Postgame ↗</a>` : ""}
-      <a href="${esc(box)}" target="_blank" rel="noopener">Box score ↗</a>
-      <a href="https://www.youtube.com/results?search_query=${q}" target="_blank" rel="noopener">Postgame pressers on YouTube ↗</a>
+      ${SITE.recap ? `<a class="gd-go" href="${SITE.recap}" target="_blank" rel="noopener">Recap: Pistons Postgame<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ""}
+      <a href="${esc(box)}" target="_blank" rel="noopener">Box score<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      <a href="https://www.youtube.com/results?search_query=${q}" target="_blank" rel="noopener">Postgame pressers on YouTube<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
     <p class="muted" style="font-size:12.5px;margin:8px 0 0">The full last-game card, with leaders and pressers, arrives with tomorrow morning's dashboard.</p></div>`;
 }
@@ -1093,16 +1093,16 @@ function capPanel(){
   return `<div class="panel cap"><h3>Contracts and cap<span class="tag">${esc(c.season || "")}</span></h3>
     <p style="margin:0 0 10px;font-size:15px">Payroll <b>${mUSD(T)}</b> in listed salaries. "Thru" is the last season under contract.</p>
     <div class="recgrid">${rel(L.cap, "the cap")}${rel(L.tax, "the tax")}${rel(L.apron1, "1st apron")}${rel(L.apron2, "2nd apron")}</div>
-    <p class="muted" style="font-size:12.5px;margin:0 0 12px">Cap ${mUSD(L.cap)} · tax ${mUSD(L.tax)} · 1st apron ${mUSD(L.apron1)} · 2nd apron ${mUSD(L.apron2)} · floor ${mUSD(L.floor)}${safeUrl(L.url) ? ` · <a href="${esc(L.url)}" target="_blank" rel="noopener">${esc(L.source || "Source")} ↗</a>` : ""}</p>
+    <p class="muted" style="font-size:12.5px;margin:0 0 12px">Cap ${mUSD(L.cap)} · tax ${mUSD(L.tax)} · 1st apron ${mUSD(L.apron1)} · 2nd apron ${mUSD(L.apron2)} · floor ${mUSD(L.floor)}${safeUrl(L.url) ? ` · <a href="${esc(L.url)}" target="_blank" rel="noopener">${esc(L.source || "Source")}<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ""}</p>
     <div class="tbl-wrap" style="border:0"><table class="mini box captbl"><thead><tr><th>Player</th><th>${esc(yrs[0] || "")}</th><th>${esc(yrs[1] || "")}</th><th class="hidden-sm">${esc(yrs[2] || "")}</th><th title="Last season under contract">Thru</th></tr></thead><tbody>
       ${rows.map(p => `<tr><td>${esc(p.name)}</td><td><b>${cellS(p, 0)}</b></td><td>${cellS(p, 1)}</td><td class="hidden-sm">${cellS(p, 2)}</td><td>${esc(thru(p))}</td></tr>`).join("")}
     </tbody></table></div>
-    <p class="muted" style="font-size:12.5px;margin:8px 0 0">* not fully guaranteed. ${esc(c.det.notes || "")} ${safeUrl(c.det.url) ? `<a href="${esc(c.det.url)}" target="_blank" rel="noopener">${esc(c.det.source || "Source")} ↗</a>` : ""}</p>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">* not fully guaranteed. ${esc(c.det.notes || "")} ${safeUrl(c.det.url) ? `<a href="${esc(c.det.url)}" target="_blank" rel="noopener">${esc(c.det.source || "Source")}<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ""}</p>
     ${lg.length ? `<details class="caplg"><summary>League payrolls, ${esc(c.season || "")}</summary>
       <div class="tbl-wrap" style="border:0;margin-top:8px"><table class="mini captbl"><thead><tr><th>#</th><th>Team</th><th>Payroll</th><th>Status</th></tr></thead><tbody>
       ${lg.map((t, i) => { const [lab, k] = capStatus(t.total, L); return `<tr class="${t.abbr === "DET" ? "det" : ""}"><td>${i + 1}</td><td><span class="lg-full">${esc(t.team)}</span><span class="lg-ab">${esc(t.abbr)}</span></td><td>${mUSD(t.total)}</td><td><span class="capst ${k}">${esc(lab)}</span></td></tr>`; }).join("")}
       </tbody></table></div>
-      <p class="muted" style="font-size:12.5px;margin:8px 0 0">Status compares each payroll with the tax line and the aprons. ${esc(c.note || "")} As of ${esc(shortD(c.asOf))}. ${safeUrl(c.leagueUrl) ? `<a href="${esc(c.leagueUrl)}" target="_blank" rel="noopener">${esc(c.leagueSource || "Source")} ↗</a>` : ""}</p></details>` : ""}
+      <p class="muted" style="font-size:12.5px;margin:8px 0 0">Status compares each payroll with the tax line and the aprons. ${esc(c.note || "")} As of ${esc(shortD(c.asOf))}. ${safeUrl(c.leagueUrl) ? `<a href="${esc(c.leagueUrl)}" target="_blank" rel="noopener">${esc(c.leagueSource || "Source")}<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ""}</p></details>` : ""}
   </div>`;
 }
 
@@ -1188,7 +1188,7 @@ function rankingsPanel(){
     <ul class="pr-list">${srcs.map(s => {
       const d = num(s.prev) !== null ? s.prev - s.rank : null;
       return `<li><span class="rk">#${esc(s.rank)}</span><div><b>${esc(s.outlet || "")}</b>${d ? `<span class="mv ${d > 0 ? "up" : "down"}" title="${d > 0 ? "Up" : "Down"} from #${esc(s.prev)}">${d > 0 ? "▲" : "▼"}${Math.abs(d)}</span>` : (num(s.prev) !== null ? `<span class="muted" style="font-size:12px"> · same as last time</span>` : "")}
-        <div class="pr-meta">${[s.author, shortD(s.date)].filter(Boolean).map(esc).join(" · ")}${safeUrl(s.url) ? ` · <a href="${esc(s.url)}" target="_blank" rel="noopener">Read ↗</a>` : ""}</div>
+        <div class="pr-meta">${[s.author, shortD(s.date)].filter(Boolean).map(esc).join(" · ")}${safeUrl(s.url) ? ` · <a href="${esc(s.url)}" target="_blank" rel="noopener">Read<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ""}</div>
         ${s.blurb ? `<div class="pr-blurb">${esc(s.blurb)}</div>` : ""}</div></li>`; }).join("")}</ul>
     <p class="muted" style="font-size:12.5px;margin:8px 0 0">Collected weekly from outlets that rank all 30 teams. Blurbs are short summaries, not quotes.${w.date ? " Compiled " + esc(shortD(w.date)) + "." : ""}</p>
   </div>`;
@@ -1330,7 +1330,7 @@ function milestonesPanel(){
     <div class="ms-grid">${cade}
     <div>${M.reached.length ? `<div class="eyebrow hk">Reached this season</div><ul class="ms">${M.reached.map(r => `<li class="done"><b>${esc(r.p)}</b> ${esc(r.text)}<div class="ms-m">${esc(shortD(r.g.d))} ${esc(vsAt(r.g))}</div></li>`).join("")}</ul>` : ""}
     ${M.coming.length ? `<div class="eyebrow hk">Coming up</div><ul class="ms">${M.coming.map(c => `<li><b>${esc(c.p)}</b> ${esc(c.text)}<div class="ms-m">${c.gap.toLocaleString("en-US")} to go · ${away(c.away)}</div></li>`).join("")}</ul>` : ""}</div></div>
-    <p class="muted" style="font-size:12.5px;margin:10px 0 0">Regular season only. Career totals through ${esc(MILE.through || "2025-26")} from ESPN box scores plus this season's games; "about N games" uses this season's per-game rate (last season's until he's played 5). Pistons leaderboards: <a href="${esc(safeUrl(MILE.leaders && MILE.leaders.url) || "#")}" target="_blank" rel="noopener">Basketball Reference top 10 ↗</a>.</p>
+    <p class="muted" style="font-size:12.5px;margin:10px 0 0">Regular season only. Career totals through ${esc(MILE.through || "2025-26")} from ESPN box scores plus this season's games; "about N games" uses this season's per-game rate (last season's until he's played 5). Pistons leaderboards: <a href="${esc(safeUrl(MILE.leaders && MILE.leaders.url) || "#")}" target="_blank" rel="noopener">Basketball Reference top 10<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>.</p>
   </div>`;
 }
 
@@ -1468,7 +1468,7 @@ function buzzItem(b){
   return `<li class="bz"><div class="bz-meta"><span class="bz-type">${esc(b.type || "News")}</span>${b.unconfirmed ? `<span class="bz-unc" title="Single source so far; the flag drops when a second outlet confirms it">Unconfirmed</span>` : ""}<span>${esc(shortD(b.date))}</span></div>
     ${u ? `<a class="bz-t" href="${esc(u)}" target="_blank" rel="noopener">${esc(b.title)}</a>` : `<b class="bz-t">${esc(b.title)}</b>`}
     ${b.summary ? `<p>${esc(b.summary)}</p>` : ""}
-    <div class="bz-src">${esc(b.source || "")}${b.via ? ` · via ${esc(b.via)}` : ""}${more.map(x => ` · <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)} ↗</a>`).join("")}</div></li>`;
+    <div class="bz-src">${esc(b.source || "")}${b.via ? ` · via ${esc(b.via)}` : ""}${more.map(x => ` · <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)}<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`).join("")}</div></li>`;
 }
 function buzzPanel(){
   const src = feedFor(BUZZ, "buzz");
@@ -1490,7 +1490,7 @@ function buzzPanel(){
 }
 function moveItem(m){
   const u = safeUrl(m.url);
-  return `<li class="mvi"><span class="mvi-d">${esc(shortD(m.date))}</span><span class="mvi-tm">${esc(m.team)}</span><div><b>${esc(m.player || "")}</b> <span class="mvi-ty">${esc(MV_TYPE[m.type] || m.type || "Move")}</span> ${esc(m.detail || "")}${m.why ? `<div class="mvi-why"><b>Why it matters:</b> ${esc(m.why)}</div>` : ""}${u ? ` <a class="hsrc" href="${esc(u)}" target="_blank" rel="noopener">${esc(m.source || "Source")} ↗</a>` : ""}</div></li>`;
+  return `<li class="mvi"><span class="mvi-d">${esc(shortD(m.date))}</span><span class="mvi-tm">${esc(m.team)}</span><div><b>${esc(m.player || "")}</b> <span class="mvi-ty">${esc(MV_TYPE[m.type] || m.type || "Move")}</span> ${esc(m.detail || "")}${m.why ? `<div class="mvi-why"><b>Why it matters:</b> ${esc(m.why)}</div>` : ""}${u ? ` <a class="hsrc" href="${esc(u)}" target="_blank" rel="noopener">${esc(m.source || "Source")}<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ""}</div></li>`;
 }
 function movesPanel(){
   const src = feedFor(MOVES, "moves");
@@ -1619,7 +1619,7 @@ function projectionPanel(){
       return `<tr class="${t === "DET" ? "det" : ""}"><td>${esc(t)}</td>${hasRec ? `<td>${s ? s.w + "–" + s.l : ""}</td>` : ""}<td><b>${p.proj.toFixed(1)}</b></td><td class="hidden-sm">${num(ln) !== null ? ln + (p.proj > ln + 0.5 ? ' <span class="pd up">O</span>' : p.proj < ln - 0.5 ? ' <span class="pd down">U</span>' : "") : ""}</td><td>${pctW(p.top6)}</td><td>${pctW(p.playin)}</td></tr>`; }).join("")}
     </tbody></table></div>
     <p class="muted" style="font-size:12.5px;margin:6px 0 0">Line = preseason win total; O/U marks where the projection sits half a win or more off it.</p></details>
-    <p class="muted" style="font-size:12.5px;margin:8px 0 0">${esc((L.method && L.method.text) || "")} Likely range = middle 80% of simulations. Updated ${esc(shortD(L.asOf))}.${L.winTotals && safeUrl(L.winTotals.url) ? ` Win totals: <a href="${esc(L.winTotals.url)}" target="_blank" rel="noopener">${esc(L.winTotals.source || "source")} ↗</a>.` : ""}</p>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">${esc((L.method && L.method.text) || "")} Likely range = middle 80% of simulations. Updated ${esc(shortD(L.asOf))}.${L.winTotals && safeUrl(L.winTotals.url) ? ` Win totals: <a href="${esc(L.winTotals.url)}" target="_blank" rel="noopener">${esc(L.winTotals.source || "source")}<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>.` : ""}</p>
   </div>`;
 }
 
@@ -1660,7 +1660,7 @@ function awardsPanel(){
   const list = Object.values(by).sort((a, b) => (order.indexOf(a.award) + 1 || 99) - (order.indexOf(b.award) + 1 || 99));
   return `<div class="panel awards"><h3>Awards watch</h3>
     <ul class="aw">${list.map(g => `<li><div class="aw-h"><b>${esc(g.player)}</b><span class="pill">${esc(g.award)}</span></div>
-      ${g.items.map(x => `<div class="aw-i">${x.kind === "ladder" ? `<b>#${esc(x.rank)}</b> on ${esc(x.source || "")}` : `<b>${esc(x.odds || "")}</b>${x.book ? ` at ${esc(x.book)}` : ""}`}<span class="muted"> · ${esc(shortD(x.date))}${safeUrl(x.url) ? ` · <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.kind === "ladder" ? "Read" : x.source || "Source")} ↗</a>` : ""}</span>${x.note ? `<div class="aw-n">${esc(x.note)}</div>` : ""}</div>`).join("")}</li>`).join("")}</ul>
+      ${g.items.map(x => `<div class="aw-i">${x.kind === "ladder" ? `<b>#${esc(x.rank)}</b> on ${esc(x.source || "")}` : `<b>${esc(x.odds || "")}</b>${x.book ? ` at ${esc(x.book)}` : ""}`}<span class="muted"> · ${esc(shortD(x.date))}${safeUrl(x.url) ? ` · <a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.kind === "ladder" ? "Read" : x.source || "Source")}<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ""}</span>${x.note ? `<div class="aw-n">${esc(x.note)}</div>` : ""}</div>`).join("")}</li>`).join("")}</ul>
     <p class="muted" style="font-size:12.5px;margin:8px 0 0">Odds and award ladders collected twice a week. For information only, not betting advice.</p>
   </div>`;
 }
@@ -1696,7 +1696,7 @@ function cruisePanel(){
     ${assign.length ? `<div class="eyebrow hk">Pistons assignments</div><ul class="cr">${assign.map(m => `<li><span>${esc(shortD(m.date))} ${esc(m.player)}</span><span class="muted">${esc(m.detail || "")}</span></li>`).join("")}</ul>` : ""}
     ${C.stash ? `<p class="cr-p"><b>Draft stashes:</b> ${esc(C.stash)}</p>` : ""}
     ${C.lastSeason ? `<p class="muted" style="font-size:13px;margin:6px 0 0">Last season: ${esc(C.lastSeason)}</p>` : ""}
-    <p class="muted" style="font-size:12.5px;margin:8px 0 0">${C.format ? esc(C.format) + " " : ""}${src.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)} ↗</a>`).join(" · ")}</p>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">${C.format ? esc(C.format) + " " : ""}${src.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>`).join(" · ")}</p>
   </div>`;
 }
 
@@ -1761,7 +1761,7 @@ function topCade(h){
   const best = h.games.slice().sort((a, b) => ((b.note ? 30 : 0) + (b.po ? 20 : 0) + (b.wl === "W" ? 15 : 0) + gamePts(b)) - ((a.note ? 30 : 0) + (a.po ? 20 : 0) + (a.wl === "W" ? 15 : 0) + gamePts(a)))[0];
   return { game: best };
 }
-const srcLink = (url, label) => { const u = safeUrl(url); return u ? ` <a class="hsrc" href="${esc(u)}" target="_blank" rel="noopener">${esc(label || "Source")} ↗</a>` : ""; };
+const srcLink = (url, label) => { const u = safeUrl(url); return u ? ` <a class="hsrc" href="${esc(u)}" target="_blank" rel="noopener">${esc(label || "Source")}<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ""; };
 const histItem = it => `<li><span class="yr">${esc(it.year)}</span><div>${esc(it.text)}${srcLink(it.url, it.source)}</div></li>`;
 const histGame = g => `<li><span class="yr">${esc(g.date.slice(0, 4))}</span><div>${g.po ? `<span class="hpo">Playoffs · ${esc(g.po)}</span> ` : ""}<b class="hwl ${g.wl === "W" ? "w" : "l"}">${g.wl} ${esc(g.det)}–${esc(g.oppPts)}${g.ot ? " " + esc(g.ot) : ""}</b> ${g.home ? "vs" : "@"} ${esc(g.oppName || g.opp)}${g.series ? ` (${esc(g.series)})` : ""}${g.line ? ` · ${esc(g.line)}` : ""}${srcLink(g.url, "Box score")}${g.note ? `<div class="hnote">${esc(g.note)}${srcLink(g.noteUrl, g.noteSource)}</div>` : ""}</div></li>`;
 const tallyTxt = h => {
@@ -1822,7 +1822,7 @@ function promoPanel(){
         <div><b>vs ${esc(g ? fullName(g.opp) : "")}</b>${p.theme ? ` <span class="pill promo">${esc(p.theme)}</span>` : ""}
           ${p.giveaway ? `<div class="pr-give">Giveaway: <b>${esc(p.giveaway)}</b></div>` : ""}
           ${p.jersey ? `<div class="pr-jer">${esc(p.jersey)} jersey</div>` : ""}</div></li>`; }).join("")}</ul>` : `<p class="empty">Nothing left in this filter.</p>`}
-    <p class="muted" style="font-size:12.5px;margin:8px 0 0">From the <a href="${esc(safeUrl(DATA.promos && DATA.promos.url) || "#")}" target="_blank" rel="noopener">Pistons theme-night page ↗</a> as of ${esc(shortD((DATA.promos && DATA.promos.asOf) || ""))}; the team can add or change promotions.${missing.length ? ` Not listed there yet: ${missing.map(d => esc(fmtDate(d, {month: "short", day: "numeric"}))).join(", ")}.` : ""}</p>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">From the <a href="${esc(safeUrl(DATA.promos && DATA.promos.url) || "#")}" target="_blank" rel="noopener">Pistons theme-night page<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a> as of ${esc(shortD((DATA.promos && DATA.promos.asOf) || ""))}; the team can add or change promotions.${missing.length ? ` Not listed there yet: ${missing.map(d => esc(fmtDate(d, {month: "short", day: "numeric"}))).join(", ")}.` : ""}</p>
   </div>`;
 }
 function wirePromos(){
