@@ -268,3 +268,5 @@ ul.ms .bar2 i{display:block;height:100%;background:var(--actual);border-radius:3
 /* phone: "Above/Below" drops under the numbers; the leaders toggle wraps */
 @media (max-width:560px){.rr .vals{white-space:normal;display:flex;flex-direction:column;align-items:flex-end;gap:2px}.rr .vals .verdict{margin-left:0}}
 .seg{flex-wrap:wrap;max-width:100%}
+/* Site-drawn icon (replaces the emoji arrow iOS draws on "Hub") */
+svg.ext{display:inline-block;width:.68em;height:.68em;margin-left:.28em;vertical-align:.02em;overflow:visible}
