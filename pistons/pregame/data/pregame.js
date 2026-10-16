@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-16T05:55:00-04:00",
+  "updated": "2026-10-16T12:55:00-04:00",
   "games": [
     {
       "id": "g20261016",
@@ -56,7 +56,7 @@ window.PISTONS_PREGAME = {
           "sub": "Last season's averages with the Clippers (65 games). Not on ESPN's injury list"
         }
       ],
-      "injuryNote": "ESPN list this morning (Oct. 16): DET none listed. TOR Hepburn (hamstring) and Bittle (foot) day-to-day. No newer team report or starting lineups found yet.",
+      "injuryNote": "ESPN list at 12:50 p.m. (Oct. 16): DET none listed. TOR Hepburn (hamstring) and Bittle (foot) day-to-day. No newer team report or starting lineups found yet.",
       "projNote": "Not projected: Isaac Jones and Taurean Prince (10 minutes each this preseason), Ugonna Onyenso and Brice Williams (no NBA box scores).",
       "projNotes": {
         "Cade Cunningham": "Short preseason minutes; 20.5 min projected, not his 34",
