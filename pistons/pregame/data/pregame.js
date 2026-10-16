@@ -1,7 +1,101 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-14T18:55:00-04:00",
+  "updated": "2026-10-16T05:55:00-04:00",
   "games": [
+    {
+      "id": "g20261016",
+      "date": "2026-10-16",
+      "phase": "Preseason",
+      "headline": "Home opener of sorts: Raptors on a back-to-back",
+      "dek": "Detroit (2-1) hosts Toronto (2-2) Friday at 7 p.m. at Little Caesars Arena, off a 128-106 win in Minnesota while the Raptors played at New York on Thursday.",
+      "keys": [
+        {
+          "title": "Fresh legs vs. a back-to-back",
+          "text": "Toronto lost 122-120 at New York on Thursday night, so Detroit has the rest edge (one day off vs. none). DraftKings has the Pistons -9.5 with a 218.5 total."
+        },
+        {
+          "title": "Keep the Minnesota formula",
+          "text": "Detroit shot its way to a 22-point win on Wednesday: Jalen Duren had 24 points on 8-9 shooting and Duncan Robinson hit 4 of 5 threes. Repeating that with a similar rotation is the question."
+        },
+        {
+          "title": "Toronto's depth is thin at guard",
+          "text": "ESPN lists Chucky Hepburn (hamstring) and Nate Bittle (foot) day-to-day. The Raptors have swung between a 148-98 win over New York and a loss to Miami, 129-105."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "23.9 PTS · 9.9 AST · 5.5 REB",
+          "sub": "Last season's averages (64 games). Had 14 points and 9 assists at Minnesota",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Jalen Duren",
+          "line": "19.5 PTS · 10.5 REB",
+          "sub": "Last season's averages (70 games). Had 24 on 8-9 FG, 8-8 FT on Wednesday"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "12.2 PTS · 2.9 3PM",
+          "sub": "Last season's averages. Went 4-5 from three on Wednesday"
+        },
+        {
+          "team": "TOR",
+          "name": "Scottie Barnes",
+          "line": "18.1 PTS · 7.5 REB · 5.9 AST",
+          "sub": "Last season's averages (80 games)",
+          "badge": "Star"
+        },
+        {
+          "team": "TOR",
+          "name": "Kawhi Leonard",
+          "line": "27.9 PTS · 6.4 REB",
+          "sub": "Last season's averages with the Clippers (65 games). Not on ESPN's injury list"
+        }
+      ],
+      "injuryNote": "ESPN list this morning (Oct. 16): DET none listed. TOR Hepburn (hamstring) and Bittle (foot) day-to-day. No newer team report or starting lineups found yet.",
+      "projNote": "Not projected: Isaac Jones and Taurean Prince (10 minutes each this preseason), Ugonna Onyenso and Brice Williams (no NBA box scores).",
+      "projNotes": {
+        "Cade Cunningham": "Short preseason minutes; 20.5 min projected, not his 34",
+        "Jalen Duren": "Only 15 min projected from this preseason's usage",
+        "Isaiah Joe": "New: last season's rates came with OKC",
+        "John Collins": "New: last season's rates came with the Clippers",
+        "Ebuka Okorie": "Rookie with no NBA history, so league-average guard rates",
+        "Paul Reed": "19 min projected from this preseason's minutes"
+      },
+      "talkingPoints": [
+        "Detroit is 2-1 and has won its last one, 128-106 at Minnesota.",
+        "Toronto is 2-2 and played Thursday: a 122-120 loss at New York.",
+        "The Raptors beat New York 148-98 on Monday, so they can score in bunches.",
+        "Duren was 8-9 from the field and 8-8 at the line on Wednesday. Does he play that much again?",
+        "DraftKings has Detroit -9.5, with the total at 218.5.",
+        "The regular-season series starts Nov. 20 in Detroit."
+      ],
+      "facts": [
+        {
+          "label": "Broadcast",
+          "text": "No TV listing yet. Check local listings."
+        },
+        {
+          "label": "Up next",
+          "text": "Check the schedule: the regular season series with Toronto starts Nov. 20."
+        }
+      ],
+      "pick": {
+        "call": "Pistons, comfortably",
+        "text": "Rest edge and home court make Detroit the favorite (DraftKings -9.5), but it's preseason, so rotations decide everything. Just for fun."
+      },
+      "share": "Pistons (2-1) host Raptors (2-2), Fri 7 ET. Detroit is rested, Toronto played at New York Thursday; Duren and Robinson were hot Wednesday.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401908946"
+        }
+      ]
+    },
     {
       "id": "g20261014",
       "date": "2026-10-14",
