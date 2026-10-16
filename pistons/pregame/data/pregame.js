@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-16T12:55:00-04:00",
+  "updated": "2026-10-16T16:55:00-04:00",
   "games": [
     {
       "id": "g20261016",
@@ -11,7 +11,7 @@ window.PISTONS_PREGAME = {
       "keys": [
         {
           "title": "Fresh legs vs. a back-to-back",
-          "text": "Toronto lost 122-120 at New York on Thursday night, so Detroit has the rest edge (one day off vs. none). DraftKings has the Pistons -9.5 with a 218.5 total."
+          "text": "Toronto lost 122-120 at New York on Thursday night, so Detroit has the rest edge (one day off vs. none). DraftKings has the Pistons -10.5 with a 219.5 total (the line has moved a point since midday)."
         },
         {
           "title": "Keep the Minnesota formula",
@@ -56,7 +56,7 @@ window.PISTONS_PREGAME = {
           "sub": "Last season's averages with the Clippers (65 games). Not on ESPN's injury list"
         }
       ],
-      "injuryNote": "ESPN list at 12:50 p.m. (Oct. 16): DET none listed. TOR Hepburn (hamstring) and Bittle (foot) day-to-day. No newer team report or starting lineups found yet.",
+      "injuryNote": "ESPN list at 4:50 p.m. (Oct. 16): DET none listed. TOR Hepburn (hamstring) and Bittle (foot) day-to-day. No starting lineups or newer team report found yet.",
       "projNote": "Not projected: Isaac Jones and Taurean Prince (10 minutes each this preseason), Ugonna Onyenso and Brice Williams (no NBA box scores).",
       "projNotes": {
         "Cade Cunningham": "Short preseason minutes; 20.5 min projected, not his 34",
@@ -71,7 +71,7 @@ window.PISTONS_PREGAME = {
         "Toronto is 2-2 and played Thursday: a 122-120 loss at New York.",
         "The Raptors beat New York 148-98 on Monday, so they can score in bunches.",
         "Duren was 8-9 from the field and 8-8 at the line on Wednesday. Does he play that much again?",
-        "DraftKings has Detroit -9.5, with the total at 218.5.",
+        "DraftKings has Detroit -10.5, with the total at 219.5.",
         "The regular-season series starts Nov. 20 in Detroit."
       ],
       "facts": [
@@ -86,7 +86,7 @@ window.PISTONS_PREGAME = {
       ],
       "pick": {
         "call": "Pistons, comfortably",
-        "text": "Rest edge and home court make Detroit the favorite (DraftKings -9.5), but it's preseason, so rotations decide everything. Just for fun."
+        "text": "Rest edge and home court make Detroit the favorite (DraftKings -10.5), but it's preseason, so rotations decide everything. Just for fun."
       },
       "share": "Pistons (2-1) host Raptors (2-2), Fri 7 ET. Detroit is rested, Toronto played at New York Thursday; Duren and Robinson were hot Wednesday.",
       "sources": [
