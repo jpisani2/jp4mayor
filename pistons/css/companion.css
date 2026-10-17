@@ -1,0 +1,86 @@
+/* Pistons Pregame + Postgame: shared look with the Season Hub (Oct 17, 2026).
+   Loaded after each page's own <style>, so these rules win.
+   1) The hub's Blue / Red / Light skins (localStorage "pistons-skin"), mapped onto the pages' own tokens.
+   2) The hub's header: DET mark, title + subtitle, Hub / Pre / Post / Book pills, theme switcher.
+      The header is as wide as the hub's; the content below stays a reading column. */
+
+/* ---------- skins (an explicit choice wins over the device setting) ---------- */
+:root[data-skin="light"]{
+  --bg:#FFFFFF; --surface:#F3F6FB; --card:#FFFFFF; --ink:#0F1F3D; --muted:#5A6680; --line:#DCE2EC;
+  --kick:#C8102E; --link:#1D428A; --head:#1D428A;
+  --win:#1D7A46; --loss:#C8102E; --warn:#A35F00; --tint:rgba(29,66,138,.07); --tint-strong:rgba(29,66,138,.14); --num:#1D428A;
+  --s-det:#2a78d6; --s-opp:#eb6834; --s-neg:#e34948; --c-muted:#6b7590; --c-ink2:#45506a; --c-grid:#e8ecf3; --c-axis:#c5cddb; --c-tip:#0F1F3D; --c-tip-ink:#FFFFFF;
+  --band:#1D428A; --band-ink:#FFFFFF; --band-muted:#C9D5EE; --band-line:rgba(255,255,255,.18); --stripe:#C8102E;
+  --focus:#C8102E; color-scheme:light;
+}
+:root[data-skin="navy"]{
+  --bg:#0B1730; --surface:#0E1B36; --card:#12234A; --ink:#F2F5FB; --muted:#A7B3CD; --line:#223660;
+  --kick:#F0506A; --link:#9DBBF7; --head:#FFFFFF;
+  --win:#4CC38A; --loss:#F0506A; --warn:#F2B04A; --tint:rgba(91,141,239,.10); --tint-strong:rgba(91,141,239,.2); --num:#F2F5FB;
+  --s-det:#3987e5; --s-opp:#d95926; --s-neg:#e66767; --c-muted:#8f9bb8; --c-ink2:#c3cbe0; --c-grid:#1c2f58; --c-axis:#2f4677; --c-tip:#F2F5FB; --c-tip-ink:#0B1730;
+  --band:#12234A; --band-ink:#FFFFFF; --band-muted:#A7B3CD; --band-line:rgba(255,255,255,.14); --stripe:#C8102E;
+  --focus:#F0506A; color-scheme:dark;
+}
+:root[data-skin="red"]{
+  --bg:#4A0A14; --surface:#3A0710; --card:#2C060C; --ink:#FFF4F5; --muted:#E6B8BF; --line:#6B1824;
+  --kick:#9DBBF7; --link:#B8CEFA; --head:#FFFFFF;
+  --win:#5ED39A; --loss:#FF8FA0; --warn:#F2B04A; --tint:rgba(255,255,255,.06); --tint-strong:rgba(91,141,239,.22); --num:#FFF4F5;
+  --s-det:#5B8DEF; --s-opp:#F2A65A; --s-neg:#FF8FA0; --c-muted:#D9A9B1; --c-ink2:#F3D3D8; --c-grid:#5A1220; --c-axis:#7A2232; --c-tip:#FFF4F5; --c-tip-ink:#2C060C;
+  --band:#2C060C; --band-ink:#FFFFFF; --band-muted:#E6B8BF; --band-line:rgba(255,255,255,.14); --stripe:#1D428A;
+  --focus:#9DBBF7; color-scheme:dark;
+  --lit-bg:#1D428A;
+}
+/* tokens the pages didn't have before, for the device-setting default */
+:root{--head:#1D428A;--tint-strong:rgba(29,66,138,.14)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]):not([data-skin]){--head:#FFFFFF;--tint-strong:rgba(91,141,239,.2)}}
+:root[data-theme="dark"]:not([data-skin]){--head:#FFFFFF;--tint-strong:rgba(91,141,239,.2)}
+body{transition:background .25s,color .25s}
+.band::after{background:var(--stripe,var(--red))}
+
+/* ---------- header (same sizes as the hub's) ---------- */
+.topwrap{max-width:1180px;margin:0 auto;padding-inline:clamp(16px,3vw,32px)}
+.topwrap .top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:18px}
+.topwrap .brand{display:flex;align-items:center;gap:12px;min-width:0;text-decoration:none;color:inherit}
+.topwrap .mark{width:40px;height:40px;border-radius:50%;background:var(--blue);display:grid;place-items:center;box-shadow:inset 0 0 0 3px var(--red),inset 0 0 0 5px #fff;flex:none}
+.topwrap .mark span{font:800 13px/1 var(--f-disp);color:#fff;letter-spacing:.02em}
+.topwrap .ttl{display:block;font:800 26px/1 var(--f-disp);letter-spacing:.01em;color:var(--head)}
+.topwrap .brand small{display:block;font:600 12px/1.2 var(--f-body);color:var(--muted);letter-spacing:.04em;margin-top:3px}
+.topwrap .updated{display:inline;font-size:inherit;color:inherit;text-align:left}
+.topwrap .updated:not(:empty)::before{content:" · "}
+.top-r{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.sites{display:inline-flex;gap:6px}
+.site-pill{display:inline-flex;align-items:center;gap:4px;font:600 13px/1 var(--f-body);padding:11px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;white-space:nowrap}
+.site-pill:hover{background:var(--tint-strong)}
+.site-pill .pl,.site-pill .ps{color:inherit;font-weight:inherit}
+.site-pill .ps{display:none}
+.site-pill.hub{color:var(--kick);font-weight:700}
+.site-pill.hub svg{width:9px;height:9px;flex:none}
+/* the page you're on */
+.site-pill[aria-current="page"]{background:var(--card);border-color:var(--kick);box-shadow:inset 0 -2px 0 var(--kick);cursor:default}
+.site-pill[aria-current="page"]:hover{background:var(--card)}
+.skin{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px;background:var(--surface);gap:2px}
+.skin button{border:0;background:transparent;border-radius:999px;padding:6px 12px 6px 8px;display:flex;align-items:center;gap:7px;cursor:pointer;font-weight:600;font-size:13px;color:var(--muted)}
+.skin button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.sw{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.15)}
+.sw.navy{background:#0B1730;box-shadow:inset -5px 0 0 #1D428A}.sw.red{background:#4A0A14;box-shadow:inset -5px 0 0 #C8102E}.sw.light{background:#fff;box-shadow:inset -5px 0 0 #C8102E}
+@media (max-width:560px){
+  .topwrap .top{gap:12px}
+  .top-r{width:100%;justify-content:space-between;gap:6px}
+  .site-pill{padding:11px 9px}
+  .site-pill .pl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .site-pill .ps{display:inline}
+  .sites{gap:5px}
+  .skin .lbl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .skin button{padding:8px 9px!important}
+  .skin .sw{width:16px;height:16px}
+}
+@media (max-width:380px){
+  .top-r{gap:4px}
+  .sites{gap:3px}
+  .site-pill{padding:11px 6px;gap:3px}
+  .skin{padding:2px;gap:1px}
+  .skin button{padding:8px 5px!important}
+}
+
+/* footer: the hub's */
+.foot{font-size:12.5px;color:var(--muted)}

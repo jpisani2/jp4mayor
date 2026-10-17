@@ -443,7 +443,7 @@ function lastGamePanel(g){
     ${box.length ? `<details><summary style="cursor:pointer;font-weight:600">Pistons box score</summary><div class="tbl-wrap" style="margin-top:8px"><table class="mini box"><thead><tr><th>Player</th><th>Min</th><th>Pts</th><th>Reb</th><th>Ast</th><th class="hidden-sm">Stl</th><th class="hidden-sm">Blk</th><th>FG</th><th class="hidden-sm">3PT</th><th class="hidden-sm">+/-</th></tr></thead><tbody>${boxRows}</tbody></table></div></details>` : ""}
     ${link ? `<p style="margin:10px 0 0;font-size:13.5px"><a href="${esc(link)}" target="_blank" rel="noopener">Full box score<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>` : ""}
     ${presserBlock(g)}
-    ${SITE.recap ? `<p style="margin:12px 0 0;font-size:14px;font-weight:600"><a href="${SITE.recap}" target="_blank" rel="noopener">Full recap: Pistons Postgame<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>` : ""}
+    ${SITE.recap ? `<p style="margin:12px 0 0;font-size:14px;font-weight:600"><a href="${SITE.recap}">Full recap: Pistons Postgame</a></p>` : ""}
   </div>`;
 }
 
@@ -497,8 +497,8 @@ function paintSitePills(){
   let st = { k: "" };
   try { st = siteState(); } catch(e) {}
   const set = (id, on, tip) => { const a = document.getElementById(id); if (!a) return; a.classList.toggle("lit", on); if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); a.title = tip; };
-  set("site-pre", st.k === "pre", st.k === "pre" ? (st.live ? "Game on: today's preview (opens in a new tab)" : "Today's game preview (opens in a new tab)") : "Pistons Pregame (opens in a new tab)");
-  set("site-post", st.k === "post", st.k === "post" ? "Latest game recap (opens in a new tab)" : "Pistons Postgame (opens in a new tab)");
+  set("site-pre", st.k === "pre", st.k === "pre" ? (st.live ? "Game on: today's preview" : "Today's game preview") : "Pistons Pregame");
+  set("site-post", st.k === "post", st.k === "post" ? "Latest game recap" : "Pistons Postgame");
 }
 renderSitePills();
 setInterval(paintSitePills, 60e3);
@@ -664,7 +664,7 @@ function nextPanel(n, up){
     ${n.oppRecord ? `<div class="kv" style="margin-top:8px"><span class="nowrap" style="flex:none">Opponent record</span><b class="long">${esc(n.oppRecord)}</b></div>` : ""}
     ${n.preview ? `<p>${esc(n.preview)}</p>` : ""}
     ${n.watch ? `<p><b>Watch for:</b> ${esc(n.watch)}</p>` : ""}
-    ${SITE.preview ? `<p style="margin:10px 0 0;font-size:14px;font-weight:600"><a href="${SITE.preview}" target="_blank" rel="noopener">Full preview: Pistons Pregame<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></p>` : ""}
+    ${SITE.preview ? `<p style="margin:10px 0 0;font-size:14px;font-weight:600"><a href="${SITE.preview}">Full preview: Pistons Pregame</a></p>` : ""}
     ${Array.isArray(up) && up.length ? `<div class="upnext"><div class="eyebrow" style="margin-bottom:4px">After that</div>${up.map(u => `<div class="kv"><span>${esc(u.date ? fmtDate(u.date) : "")}${u.type && u.type !== "Regular season" ? " · " + esc(u.type) : ""}</span><b>${u.home ? "vs" : "@"} ${esc(u.opponent)}${u.time ? " · " + esc(fmtTime(u.time)) : ""}</b></div>`).join("")}</div>` : ""}
   </div>`;
 }
@@ -902,7 +902,7 @@ function gdPanel(st){
   const head = `<div class="gd-head"><div class="eyebrow">${st.k === "pre" ? "Game day" : st.k === "live" ? "Game on" : "Final"}${g.type && !/regular/i.test(g.type) ? " · " + esc(g.type) : ""}</div>
       <button type="button" class="gd-std" data-gd-std="1">Standard layout</button></div>
     <div class="gd-opp" role="heading" aria-level="3">${g.home ? "vs" : "@"} ${esc(g.opp)}</div><p class="gd-when">${when}</p>`;
-  const preview = SITE.preview ? `<a class="gd-go" href="${SITE.preview}" target="_blank" rel="noopener">Full preview: Pistons Pregame<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : "";
+  const preview = SITE.preview ? `<a class="gd-go" href="${SITE.preview}">Full preview: Pistons Pregame</a>` : "";
   if (st.k === "pre") {
     return `<div class="panel gd">${head}
       <div class="cd" data-iso="${esc(g.tip.toISOString())}" aria-live="off"></div>
@@ -926,7 +926,7 @@ function gdPanel(st){
   const box = (f && espnBox(f.id)) || espnDay(g.date);
   return `<div class="panel gd">${head}${score}
     <div class="gd-links">
-      ${SITE.recap ? `<a class="gd-go" href="${SITE.recap}" target="_blank" rel="noopener">Recap: Pistons Postgame<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>` : ""}
+      ${SITE.recap ? `<a class="gd-go" href="${SITE.recap}">Recap: Pistons Postgame</a>` : ""}
       <a href="${esc(box)}" target="_blank" rel="noopener">Box score<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       <a href="https://www.youtube.com/results?search_query=${q}" target="_blank" rel="noopener">Postgame pressers on YouTube<svg class="ext" viewBox="0 0 10 10" aria-hidden="true" focusable="false"><path d="M2.5 7.5 7.5 2.5M3.5 2.5h4v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     </div>
