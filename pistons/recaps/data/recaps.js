@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-10-14T22:50:00-04:00",
+  "updated": "2026-10-16T22:15:00-04:00",
   "games": [
+    {
+          "id": "g20261016",
+          "date": "2026-10-16",
+          "phase": "Preseason",
+          "home": true,
+          "venue": "Little Caesars Arena, Detroit",
+          "attendance": 12639,
+          "opp": {
+                "abbr": "TOR",
+                "name": "Toronto Raptors",
+                "short": "Raptors",
+                "score": 125,
+                "quarters": [
+                      33,
+                      19,
+                      28,
+                      45
+                ]
+          },
+          "det": {
+                "score": 129,
+                "quarters": [
+                      33,
+                      26,
+                      34,
+                      36
+                ]
+          },
+          "result": "W",
+          "record": "3-1",
+          "headline": "Held on at the line after a 45-point Raptors fourth",
+          "dek": "Detroit led by 14 early in the fourth, watched Toronto run off 15 straight, and still closed out the preseason finale 129-125 with late free throws.",
+          "leaders": [
+                {
+                      "team": "DET",
+                      "name": "Cade Cunningham",
+                      "line": "18 PTS · 8-12 FG · 7 AST",
+                      "sub": "26 minutes with just 2 turnovers. His 7 assists tied for the most in the league Friday",
+                      "badge": "Top night"
+                },
+                {
+                      "team": "DET",
+                      "name": "Ebuka Okorie",
+                      "line": "14 PTS · 4-4 FG · 5-6 FT",
+                      "sub": "Scored 14 in 9 minutes off the bench, including two free throws with 5.7 left to make it a three-point game"
+                },
+                {
+                      "team": "DET",
+                      "name": "Jalen Duren",
+                      "line": "14 PTS · 6-9 FG · 2 STL",
+                      "sub": "20 minutes, but 6 turnovers and 4 fouls"
+                },
+                {
+                      "team": "DET",
+                      "name": "Ausar Thompson",
+                      "line": "12 PTS · 5-5 FG · 4 AST",
+                      "sub": "Perfect from the field in 19 minutes and fed three dunks in the third quarter"
+                },
+                {
+                      "team": "TOR",
+                      "name": "Malachi Smith",
+                      "line": "24 PTS · 8-17 FG · 7 REB",
+                      "sub": "Toronto's top scorer in 33 minutes, tied for 3rd among Friday's team leaders"
+                },
+                {
+                      "team": "TOR",
+                      "name": "Trayce Jackson-Davis",
+                      "line": "23 PTS · 15-16 FT · 4-6 FG",
+                      "sub": "Got 15 of his 23 points at the line in 29 minutes"
+                }
+          ],
+          "context": [
+                {
+                      "label": "Friday's slate",
+                      "text": "Cunningham's 18 points ranked 6th among team leaders (Embiid 27, Herro 25, Smith and Siakam 24, Gonzalez 21). His 7 assists tied LeBron James, Hayden Gray and Andrew Nembhard for the lead, and John Collins' 8 rebounds tied for 5th."
+                },
+                {
+                      "label": "This week",
+                      "text": "Across 42 games, the top scoring line is still Austin Reaves' 28. Cunningham's 7 assists are well off Payton Pritchard's and Trae Young's 11."
+                },
+                {
+                      "label": "Season series",
+                      "text": "Preseason only. The regular-season series with Toronto starts Nov. 20."
+                }
+          ],
+          "talkingPoints": [
+                "Detroit was up 94-80 at the start of the fourth, then Toronto went on a 15-0 run and took the lead at 5:43.",
+                "Toronto scored 45 in the fourth quarter. Detroit still held on, 129-125.",
+                "Okorie went 4-for-4 from the floor and 5-for-6 at the line for 14 points in just 9 minutes.",
+                "Ausar Thompson was 5-for-5 and set up three dunks in the third quarter.",
+                "Detroit scored 62 points in the paint to Toronto's 38 and shot 58% overall, but turned it over 19 times.",
+                "Toronto went to the line 46 times to Detroit's 32. Jackson-Davis alone made 15 of 16."
+          ],
+          "notable": [
+                {
+                      "stat": "15-0",
+                      "label": "Toronto run in the fourth",
+                      "note": "From 9:05 to 6:48, flipping a 14-point Detroit lead into a 106-104 Raptors edge"
+                },
+                {
+                      "stat": "45",
+                      "label": "Raptors fourth-quarter points",
+                      "note": "Toronto won the quarter 45-36 and still lost"
+                },
+                {
+                      "stat": "5-5",
+                      "label": "Ausar Thompson from the field",
+                      "note": "12 points and 4 assists in 19 minutes"
+                },
+                {
+                      "stat": "62-38",
+                      "label": "Points in the paint",
+                      "note": "Detroit's edge, plus 19-9 on the fast break"
+                },
+                {
+                      "stat": "15-16",
+                      "label": "Jackson-Davis at the line",
+                      "note": "Toronto was 39-46 as a team; Detroit 21-32"
+                },
+                {
+                      "stat": "58%",
+                      "label": "Pistons field-goal pct",
+                      "note": "47-81, vs 42% for Toronto (36-85)"
+                }
+          ],
+          "story": [
+                "The first half was a close one. The teams tied at 33 after a quarter, then Detroit won the second 26-19 to lead 59-52. Cade Cunningham, Jalen Duren and John Collins kept the Pistons moving at the rim, and Toronto's biggest lead was only 7.",
+                "The third quarter opened the gap. Ausar Thompson fed Duren and Cunningham for dunks, Collins added an alley-oop, and Detroit won the period 34-28 to lead 93-80. Detroit's lead hit 14 early in the fourth.",
+                "Then Toronto came back. The Raptors scored 45 in the fourth, including a 15-0 run from 9:05 to 6:48, and Elijah Harkless' dunk at 5:43 put Detroit back in front 106-104 for the last lead change. Nimari Burnett's three made it 125-124 with 6.2 left; Ebuka Okorie hit two free throws, and Harkless made two more with 3.8 to go for the 129-125 final."
+          ],
+          "teamStats": [
+                {
+                      "label": "FG",
+                      "det": "47-81 (58%)",
+                      "opp": "36-85 (42%)"
+                },
+                {
+                      "label": "3PT",
+                      "det": "14-34 (41%)",
+                      "opp": "14-38 (37%)"
+                },
+                {
+                      "label": "FT",
+                      "det": "21-32 (66%)",
+                      "opp": "39-46 (85%)"
+                },
+                {
+                      "label": "Rebounds",
+                      "det": "36",
+                      "opp": "40"
+                },
+                {
+                      "label": "Assists",
+                      "det": "29",
+                      "opp": "20"
+                },
+                {
+                      "label": "Steals",
+                      "det": "11",
+                      "opp": "10"
+                },
+                {
+                      "label": "Blocks",
+                      "det": "4",
+                      "opp": "4"
+                },
+                {
+                      "label": "Turnovers",
+                      "det": "19",
+                      "opp": "18"
+                },
+                {
+                      "label": "Paint pts",
+                      "det": "62",
+                      "opp": "38"
+                }
+          ],
+          "share": "Pistons 129, Raptors 125. DET led by 14 in the 4th, survived a 15-0 Toronto run; Okorie 14 pts in 9 min, Cade 18 & 7 ast.",
+          "sources": [
+                {
+                      "title": "ESPN box score",
+                      "url": "https://www.espn.com/nba/game/_/gameId/401908946"
+                }
+          ]
+    },
     {
       "id": "g20261014",
       "date": "2026-10-14",
