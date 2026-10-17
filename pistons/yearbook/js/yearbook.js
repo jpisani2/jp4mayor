@@ -782,10 +782,27 @@ function render(dir) {
   // wide tables scroll sideways: make those focusable so the arrow keys can scroll them
   sp.querySelectorAll(".scroll").forEach(el => { if (el.scrollWidth > el.clientWidth) el.tabIndex = 0; });
   $("#pageno").textContent = `Page ${n} of ${PAGES.length}`;
+  if (pg.p) {
+    const nm = String(pg.p.name || ""), sp = nm.indexOf(" "), hasNum = pg.p.num !== undefined && pg.p.num !== null && pg.p.num !== "";
+    /* the first name is dropped on the narrowest phones */
+    $("#pwho").innerHTML = (hasNum ? `<b>#${esc(pg.p.num)}</b>` : "") + (sp > 0 ? `<span class="fn">${esc(nm.slice(0, sp + 1))}</span>${esc(nm.slice(sp + 1))}` : esc(nm));
+  } else $("#pwho").innerHTML = "";
+  watchName();
   $("#prev").disabled = cur === 0; $("#next").disabled = cur === PAGES.length - 1;
   document.title = (pg.p ? pg.p.name + " · " : "") + "Pistons Yearbook 2026-27";
   document.querySelectorAll("#dots button").forEach((b, i) => { if (i === cur) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
 }
+/* sticky player label (Oct 17, 2026): once the player's name block scrolls under the top bar,
+   the bar shows his number and name in place of "Page n of N" */
+let nameRaf = 0;
+function watchName() {
+  const bar = $("#bar"), name = document.querySelector("#spread .pname");
+  if (!bar) return;
+  if (!name || !$("#pwho").textContent) { bar.classList.remove("past"); return; }
+  bar.classList.toggle("past", name.getBoundingClientRect().bottom < bar.getBoundingClientRect().bottom);
+}
+window.addEventListener("scroll", () => { if (!nameRaf) nameRaf = requestAnimationFrame(() => { nameRaf = 0; watchName(); }); }, { passive: true });
+window.addEventListener("resize", () => watchName());
 function go(i, fromHash) {
   if (i < 0 || i >= PAGES.length) return;
   const dir = i > cur ? 1 : i < cur ? -1 : 0;
