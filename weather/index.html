@@ -425,9 +425,12 @@ async function fetchOM(base,p,ms=25000,tries=8){
       if(hit){console.warn('Open-Meteo dropped',bad[1]);return fetchOM(base,np,ms,tries-1)}}
     const rng=/to (\d{4}-\d{2}-\d{2})/.exec(reason);
     if(/out of allowed range/i.test(reason)&&rng&&p.end_date&&tries>0&&rng[1]<p.end_date){return fetchOM(base,{...p,end_date:rng[1]},ms,tries-1)}
-    throw new Error(reason||'request failed');
+    const err=new Error(e.status===429?'the free weather service is busy (rate limit)':(reason||'request failed'));err.status=e.status;throw err;
   }
 }
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+// One automatic retry after a minute when Open-Meteo says the per-minute limit was hit.
+async function withRetry(fn,onWait){try{return await fn()}catch(e){if(e.status!==429)throw e;onWait&&onWait();await sleep(65000);return fn()}}
 const omBase=L=>({latitude:L.lat.toFixed(4),longitude:L.lon.toFixed(4),timezone:'auto'});
 const HOURLY=['temperature_2m','relative_humidity_2m','dew_point_2m','apparent_temperature','precipitation_probability','precipitation','snowfall','weather_code','pressure_msl','cloud_cover','cloud_cover_low','cloud_cover_mid','cloud_cover_high','visibility','wind_speed_10m','wind_direction_10m','wind_gusts_10m','wind_speed_80m','wind_speed_120m','wind_speed_180m','uv_index','is_day','cape','lifted_index','freezing_level_height','wet_bulb_temperature_2m','snow_depth'];
 const DAILY=['weather_code','temperature_2m_max','temperature_2m_min','apparent_temperature_max','apparent_temperature_min','sunrise','sunset','daylight_duration','sunshine_duration','uv_index_max','precipitation_sum','snowfall_sum','precipitation_hours','precipitation_probability_max','wind_speed_10m_max','wind_gusts_10m_max','wind_direction_10m_dominant','shortwave_radiation_sum','et0_fao_evapotranspiration'];
@@ -442,21 +445,46 @@ async function loadEns(L){let last;
     try{const j=await fetchOM('https://ensemble-api.open-meteo.com/v1/ensemble',{...omBase(L),hourly:['temperature_2m','precipitation'],models:[m],forecast_days:16},40000);
       if(j&&j.hourly)return {label,j}}catch(e){last=e}}
   throw last||new Error('no ensemble');}
-async function loadHistory(L){
-  const key='wx:hist:'+locKey(L);const lastY=+browserToday().slice(0,4)-1;const end=lastY+'-12-31';
-  let h=LS.get(key,null);if(h&&h.end===end&&h.v===1)return h;
-  $('#histNote').textContent='Downloading daily records back to 1940 for this spot. This happens once per location.';
-  const j=await fetchOM('https://archive-api.open-meteo.com/v1/archive',{...omBase(L),start_date:'1940-01-01',end_date:end,daily:['temperature_2m_max','temperature_2m_min','precipitation_sum','snowfall_sum']},120000);
-  const d=j.daily;h={v:1,start:d.time[0],end:d.time[d.time.length-1],tmax:r1(d.temperature_2m_max),tmin:r1(d.temperature_2m_min),prcp:r1(d.precipitation_sum),snow:r1(d.snowfall_sum)};
-  if(!LS.set(key,h)){LS.keys().filter(k=>k.startsWith('wx:hist:')&&k!==key).forEach(LS.del);LS.set(key,h)}
-  return h;
+const ARCH='https://archive-api.open-meteo.com/v1/archive';
+const HVARS=['temperature_2m_max','temperature_2m_min','precipitation_sum','snowfall_sum'];
+const HIST_INFLIGHT={};
+function histMsg(t){S.histMsg=t;const el=$('#histNote');if(el)el.textContent=t||''}
+function packDaily(d){return {start:d.time[0],end:d.time[d.time.length-1],tmax:r1(d.temperature_2m_max),tmin:r1(d.temperature_2m_min),prcp:r1(d.precipitation_sum),snow:r1(d.snowfall_sum)}}
+function saveHist(key,h){if(!LS.set(key,h)){LS.keys().filter(k=>k.startsWith('wx:hist:')&&k!==key).forEach(LS.del);LS.set(key,h)}}
+const histDone=h=>!!h&&h.start==='1940-01-01';
+// Open-Meteo weighs a request by days x variables: 1940-today in one go counts as ~900 calls, over the
+// free 600-per-minute limit, which made the requests right after it fail. So: 1991-on first (~365),
+// then 1940-1990 (~530) a minute later. onPart renders as soon as the first half lands.
+function loadHistory(L,onPart){
+  const key='wx:hist:'+locKey(L);
+  if(!HIST_INFLIGHT[key])HIST_INFLIGHT[key]=(async()=>{
+    const lastY=+browserToday().slice(0,4)-1;const end=lastY+'-12-31';
+    let h=LS.get(key,null);if(h&&h.end!==end)h=null;
+    if(histDone(h))return h;
+    const get=(a,b)=>withRetry(()=>fetchOM(ARCH,{...omBase(L),start_date:a,end_date:b,daily:HVARS},120000),()=>histMsg('The free weather service is busy. Trying the climate record again in a minute…'));
+    let wait=0;
+    if(!(h&&h.start==='1991-01-01')){
+      histMsg('Downloading 1991–'+lastY+' for this spot. This happens once per location.');
+      const t0=Date.now();h={v:2,...packDaily((await get('1991-01-01',end)).daily)};saveHist(key,h);
+      wait=Math.max(0,t0+62000-Date.now());
+    }
+    onPart&&onPart(h);
+    histMsg('Adding 1940–1990 to the record. This takes about a minute the first time.');
+    await sleep(wait);
+    const o=packDaily((await get('1940-01-01','1990-12-31')).daily);
+    const gap=Math.max(0,dayDiff(o.start,h.start)-o.tmax.length);const padN=a=>a.concat(new Array(gap).fill(null));
+    const full={v:2,start:o.start,end:h.end,tmax:padN(o.tmax).concat(h.tmax),tmin:padN(o.tmin).concat(h.tmin),prcp:padN(o.prcp).concat(h.prcp),snow:padN(o.snow).concat(h.snow)};
+    saveHist(key,full);histMsg('');return full;
+  })().finally(()=>{delete HIST_INFLIGHT[key]});
+  else if(onPart){const h=LS.get(key,null);if(h)onPart(h)}
+  return HIST_INFLIGHT[key];
 }
 async function loadRecent(L){
   const today=browserToday();const start=today.slice(0,4)+'-01-01';const end=addDays(today,-1);
   if(end<start)return {start,tmax:[],tmin:[],prcp:[],snow:[]};
   const key='wx:recent:'+locKey(L);const c=LS.get(key,null);
   if(c&&c.reqEnd===end&&Date.now()-c.at<6*3600e3)return c;
-  const j=await fetchOM('https://archive-api.open-meteo.com/v1/archive',{...omBase(L),start_date:start,end_date:end,daily:['temperature_2m_max','temperature_2m_min','precipitation_sum','snowfall_sum']},60000);
+  const j=await withRetry(()=>fetchOM(ARCH,{...omBase(L),start_date:start,end_date:end,daily:HVARS},60000));
   const d=j.daily;const r={start:d.time[0],reqEnd:end,at:Date.now(),tmax:r1(d.temperature_2m_max),tmin:r1(d.temperature_2m_min),prcp:r1(d.precipitation_sum),snow:r1(d.snowfall_sum)};
   LS.set(key,r);return r;
 }
@@ -761,7 +789,7 @@ function renderHistory(){
   if(S.histErr&&!S.hist){fail('#histBody','the climate record',S.histErr);return}
   if(!S.hist){return}
   const today=todayStr(),md=mdOf(today),Y=+today.slice(0,4),c=ctx();
-  $('#histTitle').textContent='On '+fMDL(today);$('#histNote').textContent=`ERA5 daily record, ${S.hist.start.slice(0,4)}–${Y-1}`;
+  $('#histTitle').textContent='On '+fMDL(today);$('#histNote').textContent=S.histMsg||`ERA5 daily record, ${S.hist.start.slice(0,4)}–${Y-1}`;
   const yrV=(y,k)=>val(mdDate(y,md),k);const avg=(k,y0,y1)=>mean(yearsWith(md,k,y0,y1).map(x=>x.v));
   const all=k=>yearsWith(md,k,+S.hist.start.slice(0,4),Y-1);
   const rec=(k,f)=>{const a=all(k);if(!a.length)return null;return a.reduce((b,x)=>f(x.v,b.v)?x:b)};
@@ -788,7 +816,7 @@ function renderHistory(){
   el.innerHTML=`<div class="cols2"><div class="block"><div class="hscroll">${table}</div>${facts}</div>
      <div class="block"><div class="ph" style="margin-bottom:4px"><h3 style="margin:0">${fMD(today)} through the years</h3><div class="seg sm" role="group" aria-label="Variable"><button type="button" data-hk="tmax" aria-pressed="${(S.hk||'tmax')==='tmax'}">Highs</button><button type="button" data-hk="tmin" aria-pressed="${S.hk==='tmin'}">Lows</button></div></div><div class="chart" id="chYears"></div><p class="note" id="trendNote"></p></div></div>
    <div class="cols2" style="margin-top:26px"><div class="block"><h3>Last 30 days vs. normal</h3><div class="chart" id="chAnom"></div><p class="note" id="anomNote"></p></div>
-     <div class="block"><h3>Precipitation so far this year</h3><div class="chart" id="chYTD"></div><div class="stat" id="ptot"></div></div></div>
+     <div class="block"><h3>Precipitation so far this year</h3><div class="chart" id="chYTD"></div><p class="note" id="ytdNote" hidden></p><div class="stat" id="ptot"></div></div></div>
    <div style="margin-top:26px"><h3>Season watch</h3><div class="stat" id="season"></div></div>`;
   $$('[data-hk]',el).forEach(b=>b.addEventListener('click',()=>{S.hk=b.dataset.hk;renderHistory()}));
   // through the years
@@ -818,14 +846,18 @@ function renderHistory(){
   const y0=Y+'-01-01',yd=addDays(today,-1);const nd=Math.max(1,dayDiff(y0,yd)+1);
   const act=[],nrm=[];let ca=0;const nAcc=new Array(nd).fill(0);let ny=0;
   for(let y=1991;y<=2020;y++){let cs=0,ok=true;const row=[];for(let j=0;j<nd;j++){const v=hv(addDays(y+'-01-01',j),'prcp');if(v==null){ok=false;break}cs+=v;row.push(cs)}if(ok){ny++;row.forEach((v,j)=>nAcc[j]+=v)}}
-  for(let j=0;j<nd;j++){const v=hv(addDays(y0,j),'prcp');ca+=v||0;act.push(U.p(ca));nrm.push(ny?U.p(nAcc[j]/ny):null)}
+  const missing=[];
+  for(let j=0;j<nd;j++){const dd=addDays(y0,j);const v=hv(dd,'prcp');if(v==null){missing.push(dd);act.push(null)}else{ca+=v;act.push(U.p(ca))}nrm.push(ny?U.p(nAcc[j]/ny):null)}
   const ytdDates=[];for(let j=0;j<nd;j++)ytdDates.push(addDays(y0,j));
   chart($('#chYTD'),{n:nd,label:'Cumulative precipitation this year vs normal',series:[{name:`${Y}`,values:act,color:'var(--c2)',width:2.5},{name:'Normal (1991–2020)',values:nrm,color:'var(--faint)',dash:'5 4'}],
     yFloor:0,yFmt:v=>v.toFixed(US()?1:0),xTick:i=>{const d=pT(ytdDates[i]);return d.getUTCDate()===1&&d.getUTCMonth()%2===0?MON[d.getUTCMonth()]:null},height:200,tipTitle:i=>fMD(ytdDates[i])});
   const mStart=today.slice(0,8)+'01';const mtd=cumBetween(mStart,yd,'prcp').s;
   const mtdN=mean(Array.from({length:30},(_,k)=>{const y=1991+k;return cumBetween(y+'-'+mStart.slice(5),mdDate(y,mdOf(yd)),'prcp').s}));
   const ytdN=ny?nAcc[nd-1]/ny:null;const pct=(a,b)=>b?Math.round(a/b*100)+'% of normal':'';
-  $('#ptot').innerHTML=`<div><div class="k">Year to date</div><div class="v">${fP(ca)}</div><div class="s">${pct(ca,ytdN)} (${fP(ytdN)})</div></div>
+  const spans=[];missing.forEach(d=>{const l=spans[spans.length-1];if(l&&addDays(l[1],1)===d)l[1]=d;else spans.push([d,d])});
+  const spanTxt=spans.slice(0,3).map(([a,b])=>a===b?fMD(a):fMD(a)+'–'+fMD(b)).join(', ')+(spans.length>3?' and more':'');
+  const ytdEl=$('#ytdNote');if(missing.length){ytdEl.hidden=false;ytdEl.textContent=(S.recentPending?'Still loading this year\'s daily record':S.recentErr?"This year's daily record didn't load ("+S.recentErr.message+")":'Some days are missing from the record')+`: no data yet for ${spanTxt}. The line breaks where days are missing, so the total below is incomplete.`}else ytdEl.hidden=true;
+  $('#ptot').innerHTML=`<div><div class="k">Year to date</div><div class="v">${fP(ca)}</div><div class="s">${missing.length?`Incomplete, ${missing.length} days missing · normal ${fP(ytdN)}`:`${pct(ca,ytdN)} (${fP(ytdN)})`}</div></div>
     <div><div class="k">${MONL[+today.slice(5,7)-1]} so far</div><div class="v">${fP(today.slice(8)==='01'?0:mtd)}</div><div class="s">${today.slice(8)==='01'?'Month just started':pct(mtd,mtdN)+` (${fP(mtdN)})`}</div></div>`;
   // season watch: freeze climatology, dry streak, snow season
   const fallYear=+today.slice(5,7)>=7?Y:Y-1;
@@ -1067,7 +1099,7 @@ function renderAFD(){
 function renderAll(){renderHeader();renderAlerts();if(S.fc){renderNow();renderHourly();renderDaily();renderAtmos();renderSky()}renderHistory();renderModels();renderEns();renderAir();renderObs();renderAFD();renderOutlooks()}
 async function loadAll(){
   const id=++S.loadId;const L=S.loc;const ok=()=>id===S.loadId;const k=locKey(L);
-  if(S.histKey!==k){S.hist=null;S.histKey=k;NC=new Map()}
+  if(S.histKey!==k){S.hist=null;S.histKey=k;S.histMsg='';NC=new Map()}
   S.fc=S.aq=S.models=S.ens=S.nws=S.alerts=S.obs=S.afd=S.recent=S.p92=null;S.histErr=null;
   renderHeader();setStatus('Updating…');
   ['#now','#hourlyBody','#dailyBody','#atmosBody','#skyBody','#airBody','#obsBody','#afdBody','#olBody','#modelsBody','#ensBody'].forEach(s=>{$(s).innerHTML='<div class="loading">Loading…</div>'});
@@ -1082,10 +1114,15 @@ async function loadAll(){
   tasks.push(loadAQ(L).then(d=>{if(ok()){S.aq=d;renderAir();renderNow()}}).catch(e=>{if(ok()){S.aq={error:e};renderAir()}}));
   tasks.push(loadModels(L).then(d=>{if(ok()){S.models=d;renderModels()}}).catch(e=>{if(ok()){S.models={error:e};renderModels()}}));
   tasks.push(loadEns(L).then(d=>{if(ok()){S.ens=d;renderEns()}}).catch(e=>{if(ok()){S.ens={error:e};renderEns()}}));
-  const histP=(S.hist?Promise.resolve(S.hist):loadHistory(L)).then(h=>{if(ok()){S.hist=h;NC=new Map()}}).catch(e=>{if(ok())S.histErr=e});
-  const recP=loadRecent(L).then(r=>{if(ok())S.recent=r}).catch(e=>console.warn('recent',e));
-  const p92P=loadP92(L).then(j=>{if(!ok())return;const d=j.daily,m={};d.time.forEach((t,i)=>{m[t]={tmax:d.temperature_2m_max[i],tmin:d.temperature_2m_min[i],prcp:d.precipitation_sum[i],snow:d.snowfall_sum?d.snowfall_sum[i]:null}});S.p92=m}).catch(e=>console.warn('p92',e));
-  tasks.push(Promise.all([histP,recP,p92P]).then(()=>{if(!ok())return;NC=new Map();$('#histNote').textContent='';renderHistory();if(S.fc){renderDaily();renderNow()}}));
+  const rh=()=>{if(!ok()||!S.hist)return;NC=new Map();renderHistory();if(S.fc){renderDaily();renderNow()}};
+  S.recentErr=null;S.recentPending=true;
+  // This year's record goes first: it is small and is what the year-to-date numbers depend on.
+  tasks.push(loadRecent(L).then(r=>{if(ok())S.recent=r}).catch(e=>{if(ok()){S.recentErr=e;console.warn('recent',e)}}).finally(()=>{if(ok()){S.recentPending=false;rh()}}));
+  tasks.push(loadP92(L).then(j=>{if(!ok())return;const d=j.daily,m={};d.time.forEach((t,i)=>{m[t]={tmax:d.temperature_2m_max[i],tmin:d.temperature_2m_min[i],prcp:d.precipitation_sum[i],snow:d.snowfall_sum?d.snowfall_sum[i]:null}});S.p92=m;rh()}).catch(e=>console.warn('p92',e)));
+  if(!histDone(S.hist))loadHistory(L,part=>{if(ok()&&!histDone(S.hist)){S.hist=part;rh()}})
+    .then(h=>{if(ok()){S.hist=h;rh()}})
+    .catch(e=>{if(!ok())return;if(S.hist)histMsg("Records before 1991 couldn't load ("+e.message+"). They'll be tried again next time you open the page.");else{S.histErr=e;renderHistory()}});
+  else rh();
   tasks.push(fetchJSON(`https://api.weather.gov/points/${L.lat.toFixed(4)},${L.lon.toFixed(4)}`,12000).then(async j=>{
       if(!ok())return;S.nws=j.properties;renderHeader();renderRadar();renderOutlooks();const P=S.nws;
       await Promise.all([
