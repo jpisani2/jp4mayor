@@ -957,6 +957,7 @@ function renderHistory(){
      <div class="block"><div class="ph" style="margin-bottom:4px"><h3 style="margin:0">${fMD(today)} through the years</h3><div class="seg sm" role="group" aria-label="Variable"><button type="button" data-hk="tmax" aria-pressed="${(S.hk||'tmax')==='tmax'}">Highs</button><button type="button" data-hk="tmin" aria-pressed="${S.hk==='tmin'}">Lows</button></div></div><div class="chart" id="chYears"></div><p class="note" id="trendNote"></p></div></div>
    <div class="cols2" style="margin-top:26px"><div class="block"><h3>Last 30 days vs. normal</h3><div class="chart" id="chAnom"></div><p class="note" id="anomNote"></p></div>
      <div class="block"><h3>Precipitation so far this year</h3><div class="chart" id="chYTD"></div><p class="note" id="ytdNote" hidden></p><div class="stat" id="ptot"></div></div></div>
+   <div style="margin-top:26px"><h3>Precipitation, last 45 days</h3><div class="cols2"><div class="block"><div class="eyebrow" style="margin-bottom:6px">Running total vs. normal</div><div class="chart" id="ch45c"></div></div><div class="block"><div class="eyebrow" style="margin-bottom:6px">Each day, plus the 7-day forecast</div><div class="chart" id="ch45d"></div></div></div><div class="stat" id="p45" style="margin-top:12px"></div></div>
    <div style="margin-top:26px"><h3>Season watch</h3><div class="stat" id="season"></div></div>`;
   $$('[data-hk]',el).forEach(b=>b.addEventListener('click',()=>{S.hk=b.dataset.hk;renderHistory()}));
   // through the years
@@ -999,6 +1000,35 @@ function renderHistory(){
   const ytdEl=$('#ytdNote');if(missing.length){ytdEl.hidden=false;ytdEl.textContent=(S.recentPending?'Still loading this year\'s daily record':S.recentErr?"This year's daily record didn't load ("+S.recentErr.message+")":'Some days are missing from the record')+`: no data yet for ${spanTxt}. The line breaks where days are missing, so the total below is incomplete.`}else ytdEl.hidden=true;
   $('#ptot').innerHTML=`<div><div class="k">Year to date</div><div class="v">${fP(ca)}</div><div class="s">${missing.length?`Incomplete, ${missing.length} days missing · normal ${fP(ytdN)}`:`${pct(ca,ytdN)} (${fP(ytdN)})`}</div></div>
     <div><div class="k">${MONL[+today.slice(5,7)-1]} so far</div><div class="v">${fP(today.slice(8)==='01'?0:mtd)}</div><div class="s">${today.slice(8)==='01'?'Month just started':pct(mtd,mtdN)+` (${fP(mtdN)})`}</div></div>`;
+  // last 45 days up close, plus the next 7 forecast days
+  {
+    const N=45,days=[];for(let k=N;k>=1;k--)days.push(addDays(today,-k));
+    const daily=days.map(d=>hv(d,'prcp'));
+    // normal: average of the same 45-day window in each year 1991-2020 (cumulative + wet-day count)
+    const nAcc=new Array(N).fill(0);let ny=0,wetN=0;
+    for(let y=1991;y<=2020;y++){const base=mdDate(y,md);let cs=0,wd=0,ok=true;const row=[];
+      for(let k=0;k<N;k++){const v=hv(addDays(base,k-N),'prcp');if(v==null){ok=false;break}cs+=v;if(v>=0.25)wd++;row.push(cs)}
+      if(ok){ny++;wetN+=wd;row.forEach((v,k)=>nAcc[k]+=v)}}
+    const miss=[];let tot=0;const cumA=daily.map((v,k)=>{if(v==null){miss.push(days[k]);return null}tot+=v;return U.p(tot)});
+    const cumN=nAcc.map(v=>ny?U.p(v/ny):null);const totN=ny?nAcc[N-1]/ny:null;
+    const fD=[],fV=[];if(c)for(let k=0;k<7&&c.di+k<c.D.time.length;k++){fD.push(c.D.time[c.di+k]);fV.push(at(c.D.precipitation_sum,c.di+k))}
+    const allD=days.concat(fD),allV=daily.concat(fV).map(v=>v==null?null:U.p(v));
+    const tk=(n,el)=>i=>{const st=el.clientWidth<520?14:7;return i<N&&(N-i)%st===0?fMD(allD[i]):(i===n-1&&i>N&&st===7?fMD(allD[i]):null)};
+    chart($('#ch45c'),{n:N,label:'Cumulative precipitation over the last 45 days vs normal',
+      series:[{name:'Last 45 days',values:cumA,color:'var(--c2)',width:2.5},{name:'Normal (1991–2020)',values:cumN,color:'var(--faint)',dash:'5 4'}],
+      yFloor:0,yFmt:v=>v.toFixed(US()?1:0),xTick:tk(N,$('#ch45c')),tipTitle:i=>fDow(days[i])+' '+fMD(days[i]),height:190,minSpan:US()?0.5:10});
+    chart($('#ch45d'),{n:allD.length,label:'Daily precipitation, last 45 days and next 7 forecast days',series:[],nowIndex:N,
+      bars:{values:allV,color:(v,i)=>i>=N?'color-mix(in srgb,var(--c2) 38%,transparent)':'var(--c2)',max:10},
+      legend:'<div class="legend"><span><i class="blk" style="--c:var(--c2)"></i>Measured</span><span><i class="blk" style="--c:color-mix(in srgb,var(--c2) 38%,transparent)"></i>Forecast</span></div>',
+      yFloor:0,yFmt:v=>v.toFixed(US()?1:0),xTick:tk(allD.length,$('#ch45d')),height:170,minSpan:US()?0.4:10,
+      tip:i=>{const d=allD[i];const nm=normal(mdOf(d),'prcp');return `<b>${fDow(d)} ${fMD(d)}${i>=N?' (forecast)':''}</b><div class="tr"><i style="background:var(--c2)"></i>${i>=N?'Forecast':'Measured'}<span>${allV[i]==null?'—':allV[i].toFixed(U.pd())+' '+U.pu()}</span></div><div class="tr"><i style="background:var(--faint)"></i>Normal for the date<span>${fP(nm)}</span></div>`}});
+    const wet=daily.filter(v=>v!=null&&v>=0.25).length;const big=daily.reduce((b,v,k)=>v!=null&&(b==null||v>daily[b])?k:b,null);
+    const last7=sum(daily.slice(-7)),next7=sum(fV);
+    $('#p45').innerHTML=`<div><div class="k">45-day total</div><div class="v">${fP(tot)}</div><div class="s">${miss.length?`Incomplete, ${miss.length} days missing`:pct(tot,totN)} · normal ${fP(totN)}</div></div>
+      <div><div class="k">Wet days</div><div class="v">${wet}</div><div class="s">of 45 · normal about ${ny?Math.round(wetN/ny):'—'}</div></div>
+      <div><div class="k">Wettest day</div><div class="v">${big!=null&&daily[big]>0?fP(daily[big]):'None'}</div><div class="s">${big!=null&&daily[big]>0?fDow(days[big])+' '+fMD(days[big]):'No measurable rain'}</div></div>
+      <div><div class="k">Last 7 days</div><div class="v">${fP(last7)}</div><div class="s">Next 7 forecast: ${fP(next7)}</div></div>`;
+  }
   // season watch: freeze climatology, dry streak, snow season
   const fallYear=+today.slice(5,7)>=7?Y:Y-1;
   const freezeDays=[];const springDays=[];
