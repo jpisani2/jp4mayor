@@ -112,33 +112,40 @@ h3{font:600 18px/1.1 var(--f-disp);letter-spacing:.06em;text-transform:uppercase
 .err{color:var(--bad);font-size:14px}
 @media (prefers-reduced-motion:reduce){.loading::before{animation:none}}
 
-/* at a glance */
-.glance{display:grid;gap:14px;padding-block:16px}
-.gl-line{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;font:600 clamp(21px,4.4vw,30px)/1.15 var(--f-disp);font-variant-numeric:tabular-nums}
-.gl-line .dim{color:var(--muted);font-weight:500}
-.gl-line .wind{display:inline-flex;align-items:center;gap:6px}
-.warrow{width:1.05em;height:1.05em;flex:none}
-.acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
-@media (max-width:700px){.acts{grid-template-columns:minmax(0,1fr)}}
+/* at a glance (summary) */
+.glance{display:grid;gap:8px;padding-block:14px}
+.sum1{display:flex;flex-wrap:wrap;align-items:center;gap:2px 16px;font:600 clamp(24px,5vw,34px)/1.1 var(--f-disp);font-variant-numeric:tabular-nums}
+.sum1 .scond{display:inline-flex;align-items:center;gap:6px}
+.sum1 .scond svg{width:1.15em;height:1.15em;flex:none}
+.sum1 .dim,.sum2 .dim{color:var(--muted);font-weight:500}
+.sum2{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;font-size:15px;color:var(--muted);font-variant-numeric:tabular-nums}
+.sum2 b{color:var(--ink);font-weight:600}
+.sum2 .wind{display:inline-flex;align-items:center;gap:5px}
+.warrow{width:20px;height:20px;flex:none}
+.rainchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:3px 11px 3px 8px;color:var(--ink);font-size:14px}
+.rainchip svg{width:14px;height:14px;flex:none}
+
+/* bike + drone (compact) */
+.acts-panel{padding-block:14px}
+.acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:start;margin-top:8px}
+@media (max-width:760px){.acts{grid-template-columns:minmax(0,1fr)}}
 .act{border:1px solid var(--line);border-left:6px solid var(--st);border-radius:8px;background:var(--panel);min-width:0}
-.act summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px 14px;align-items:center;padding:12px 14px}
+.act summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:baseline;padding:9px 12px}
 .act summary::-webkit-details-marker{display:none}
-.act .what{font:600 13px/1.1 var(--f-disp);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.act .verdict{font:700 24px/1.05 var(--f-disp);letter-spacing:.02em}
-.act .why{font-size:13.5px;color:var(--muted);line-height:1.35}
-.act .more{font-size:12px;color:var(--muted);white-space:nowrap;align-self:start}
+.act .head{min-width:0;line-height:1.3}
+.act .what{font:600 12.5px/1 var(--f-disp);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-right:8px}
+.act .verdict{font:700 19px/1 var(--f-disp);letter-spacing:.02em;margin-right:8px}
+.act .why{font-size:13.5px;color:var(--muted)}
+.act .more{font-size:12px;color:var(--muted);white-space:nowrap}
 .act[open] .more::after{content:" ▴"}
 .act:not([open]) .more::after{content:" ▾"}
-.lamp{display:flex;flex-direction:column;gap:4px;background:var(--lamp);border-radius:9px;padding:5px}
-.lamp i{width:14px;height:14px;border-radius:50%;background:var(--lamp-off)}
-.lamp i.on{background:var(--c);box-shadow:0 0 8px var(--c)}
-.win{grid-column:1/-1;display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:2px;margin-top:2px}
-.win span{height:8px;border-radius:2px;background:var(--c)}
-.wtxt{grid-column:1/-1;font-size:13.5px;color:var(--muted);margin-top:2px}
+.wrow{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;font-size:12.5px;color:var(--muted)}
+.wbar{display:flex;align-items:center;gap:6px;flex:1 1 200px;min-width:0;font-size:11px;color:var(--faint)}
+.win{flex:1;display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:2px}
+.win span{height:7px;border-radius:2px;background:var(--c)}
 .wtxt b{color:var(--ink);font-weight:600}
-.winlab{grid-column:1/-1;display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--faint);margin-top:-3px}
-.factors{list-style:none;margin:0;padding:0 14px 12px;border-top:1px solid var(--line)}
-.factors li{display:grid;grid-template-columns:12px minmax(0,9em) minmax(0,1fr);gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.factors{list-style:none;margin:0;padding:0 12px 10px;border-top:1px solid var(--line)}
+.factors li{display:grid;grid-template-columns:12px minmax(0,9em) minmax(0,1fr);gap:10px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line);font-size:13.5px}
 .factors li:last-child{border-bottom:0}
 .factors i{width:10px;height:10px;border-radius:50%;background:var(--c);display:inline-block}
 .factors .fn{color:var(--muted)}
@@ -279,7 +286,7 @@ footer p{max-width:900px;margin:6px 0}
 </header>
 <nav class="jump" aria-label="Sections">
   <div class="wrap">
-    <a href="#now">Now</a><a href="#hourly">48 hours</a><a href="#daily">16 days</a><a href="#history">History</a><a href="#radar">Radar</a><a href="#atmos">Atmosphere</a><a href="#models">Models</a><a href="#sky">Sun &amp; moon</a><a href="#outlooks">Outlooks</a><a href="#afd">Discussion</a>
+    <a href="#now">Now</a><a href="#hourly">48 hours</a><a href="#ride">Ride &amp; fly</a><a href="#daily">16 days</a><a href="#history">History</a><a href="#radar">Radar</a><a href="#atmos">Atmosphere</a><a href="#models">Models</a><a href="#sky">Sun &amp; moon</a><a href="#outlooks">Outlooks</a><a href="#afd">Discussion</a>
   </div>
 </nav>
 
@@ -292,6 +299,11 @@ footer p{max-width:900px;margin:6px 0}
   <section class="panel" id="hourly">
     <div class="ph"><div><div class="eyebrow">Hour by hour</div><h2>Next 48 hours</h2></div><div id="bestHour" class="small muted"></div></div>
     <div id="hourlyBody"><div class="loading">Loading hourly forecast…</div></div>
+  </section>
+
+  <section class="panel acts-panel" id="ride" aria-label="Bike and drone conditions">
+    <div class="eyebrow">Ride &amp; fly · tap a card for details</div>
+    <div class="acts" id="actsBody"><div class="loading">Loading…</div></div>
   </section>
 
   <section class="panel" id="daily">
@@ -754,27 +766,41 @@ function actCard(id,what,f,levels,times,note){
   const why=l===0?(id==='drone'?`Light winds aloft, ${lead?lead.t:''}`:`Good riding weather. ${lead?lead.t:''}`):worst.slice(0,2).join(' · ');
   const strip=levels.map((v,k)=>`<span style="--c:${LVC[v]}" title="${fHour(times[k])}: ${LVW[v]}"></span>`).join('');
   return `<details class="act" id="act-${id}" style="--st:${LVC[l]}"><summary>
-    <span class="lamp" aria-hidden="true">${[2,1,0].map(v=>`<i class="${v===l?'on':''}" style="--c:${LVC[v]}"></i>`).join('')}</span>
-    <span style="min-width:0"><span class="what">${what}</span><br><span class="verdict">${LVW[l]}</span><br><span class="why">${esc(why)}</span></span>
+    <span class="head"><span class="what">${what}</span><span class="verdict">${LVW[l]}</span><span class="why">${esc(why)}</span></span>
     <span class="more">Why</span>
-    <span class="wtxt">Next 12 hours: ${windowText(levels,times,l)}</span>
-    <span class="win" aria-label="Rating for each of the next 12 hours">${strip}</span>
-    <span class="winlab"><span>Now</span><span>${fHour(times[Math.floor(times.length/2)])}</span><span>${fHour(times[times.length-1])}</span></span>
+    <span class="wrow"><span class="wbar"><span>Now</span><span class="win" aria-label="Rating for each of the next 12 hours">${strip}</span><span>${fHour(times[times.length-1])}</span></span><span class="wtxt">Next 12 h: ${windowText(levels,times,l)}</span></span>
   </summary><ul class="factors">${f.map(x=>`<li><i style="--c:${LVC[x.l]}"></i><span class="fn">${esc(x.n)}</span><span>${esc(x.t)}</span></li>`).join('')}${note?`<li style="display:block"><span class="fx">${note}</span></li>`:''}</ul></details>`;
 }
+// When the next rain (or snow) is likely, or when current rain should stop. Hourly: >=0.1 mm or >=50% chance counts as wet.
+function rainCallout(c){
+  const {H,C,ci,today}=c;const code=C.weather_code;const end=Math.min(H.time.length,ci+48);
+  const when=i=>{const d=H.time[i].slice(0,10);const t=fHour(H.time[i]);return d===today?t:d===addDays(today,1)?'tomorrow '+t:fDow(H.time[i])+' '+t};
+  const wetAt=i=>(at(H.precipitation,i)||0)>=0.1||(at(H.precipitation_probability,i)||0)>=50;
+  const kind=i=>((at(H.snowfall,i)||0)>0||SNOWY(at(H.weather_code,i)))?'snow':'rain';
+  const nowWet=(C.precipitation||0)>0||WET(code)||SNOWY(code)||FREEZE(code)||code>=95;
+  if(nowWet){const k=SNOWY(code)?'Snow':'Rain';for(let i=ci+1;i<end;i++)if(!wetAt(i))return {wet:true,txt:`${k} ending around ${when(i)}`};return {wet:true,txt:`${k} continuing past ${when(end-1)}`}}
+  for(let i=ci;i<end;i++)if(wetAt(i)){const pp=at(H.precipitation_probability,i);const k=kind(i);
+    return {wet:false,txt:i===ci?`${k[0].toUpperCase()+k.slice(1)} possible this hour`:`Next ${k} ~${when(i)}`,pp}}
+  return {wet:false,txt:'No rain expected in 48 h'};
+}
 function renderGlance(){
-  const el=$('#glance');const c=ctx();if(!el||!c)return;
-  const {C,D,H,di,ci}=c;const open=$$('.act[open]',el).map(d=>d.id);
+  const el=$('#glance'),ael=$('#actsBody');const c=ctx();if(!el||!c)return;
+  const {C,D,H,di,ci}=c;const open=$$('.act[open]').map(d=>d.id);
   const dir=C.wind_direction_10m,to=dir==null?null:(dir+180)%360;
   const arrow=to==null?'':`<svg class="warrow" viewBox="0 0 24 24" role="img" aria-label="Blowing toward ${card(to)}"><g transform="rotate(${to.toFixed(0)} 12 12)"><path d="M12 2.5 L18.5 11 H14.2 V21.5 H9.8 V11 H5.5 Z" fill="var(--ink)"/></g></svg>`;
-  const line=`<div class="gl-line"><span>${fT(C.temperature_2m)}${US()?'F':'C'}</span><span class="dim">H ${fT(at(D.temperature_2m_max,di))} / L ${fT(at(D.temperature_2m_min,di))}</span>
-    <span class="wind" title="Arrow points where the wind is blowing toward. Up is north.">${arrow}<span>${fW(C.wind_speed_10m)}</span><span class="dim">from ${card(dir)}${C.wind_gusts_10m!=null?`, gusts ${Math.round(U.w(C.wind_gusts_10m))}`:''}</span></span></div>`;
+  const rc=rainCallout(c);
+  const drop=`<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5C6 4.6 3.5 7.4 3.5 10a4.5 4.5 0 0 0 9 0C12.5 7.4 10 4.6 8 1.5z" fill="${rc.wet||rc.pp!=null?'var(--rain)':'var(--faint)'}"/></svg>`;
+  el.innerHTML=`<div class="sum1"><span>${fT(C.temperature_2m)}${US()?'F':'C'}</span><span class="scond">${icon(C.weather_code,C.is_day)}<span>${esc(wLabel(C.weather_code))}</span></span><span class="dim">H ${fT(at(D.temperature_2m_max,di))} / L ${fT(at(D.temperature_2m_min,di))}</span></div>
+    <div class="sum2"><span>Feels like <b>${fT(C.apparent_temperature)}</b></span><span>Humidity <b>${C.relative_humidity_2m!=null?Math.round(C.relative_humidity_2m)+'%':'—'}</b></span>
+      <span class="wind" title="Arrow points where the wind is blowing toward. Up is north.">${arrow}<b>${fW(C.wind_speed_10m)}</b><span>from ${card(dir)}${C.wind_gusts_10m!=null?`, gusts ${Math.round(U.w(C.wind_gusts_10m))}`:''}</span></span>
+      <span class="rainchip" title="Estimated from the hourly forecast">${drop}${esc(rc.txt)}${rc.pp!=null&&!rc.wet?` · ${rc.pp}%`:''}</span></div>`;
+  if(!ael)return;
   const aqi=S.aq&&S.aq.current&&isNum(S.aq.current.us_aqi)?S.aq.current.us_aqi:null;const kp=isNum(S.kp)?S.kp:null;
   const idx=[];for(let i=ci;i<=Math.min(ci+12,H.time.length-1);i++)idx.push(i);const times=idx.map(i=>H.time[i]);
   const xs=idx.map((i,k)=>wxAt(c,i,k===0));
   const bf=xs.map(x=>rateBike(x,aqi)),df=xs.map(x=>rateDrone(x,kp));
   const b4u='Check airspace before every flight: <a href="https://www.faa.gov/uas/getting_started/b4ufly" target="_blank" rel="noopener">B4UFLY ↗</a>. Limits are set well under a DJI Mini’s 24 mph wind rating.'+(kp==null?' Solar storm data isn’t available right now.':'');
-  el.innerHTML=line+`<div class="acts">${actCard('bike','Bike ride',bf[0],bf.map(lvlOf),times,'')}${actCard('drone','Drone · 249 g',df[0],df.map(lvlOf),times,b4u)}</div>`;
+  ael.innerHTML=actCard('bike','Bike ride',bf[0],bf.map(lvlOf),times,'')+actCard('drone','Drone · 249 g',df[0],df.map(lvlOf),times,b4u);
   open.forEach(id=>{const d=document.getElementById(id);if(d)d.open=true});
 }
 async function loadKp(){
@@ -1219,7 +1245,7 @@ async function loadAll(){
   if(S.histKey!==k){S.hist=null;S.histKey=k;S.histMsg='';NC=new Map()}
   S.kp=null;S.fc=S.aq=S.models=S.ens=S.nws=S.alerts=S.obs=S.afd=S.recent=S.p92=null;S.histErr=null;
   renderHeader();setStatus('Updating…');
-  ['#glance','#now','#hourlyBody','#dailyBody','#atmosBody','#skyBody','#airBody','#obsBody','#afdBody','#olBody','#modelsBody','#ensBody'].forEach(s=>{$(s).innerHTML='<div class="loading">Loading…</div>'});
+  ['#glance','#actsBody','#now','#hourlyBody','#dailyBody','#atmosBody','#skyBody','#airBody','#obsBody','#afdBody','#olBody','#modelsBody','#ensBody'].forEach(s=>{$(s).innerHTML='<div class="loading">Loading…</div>'});
   if(!S.hist)$('#histBody').innerHTML='<div class="loading">Loading the climate record…</div>';
   $('#alerts').innerHTML='';$('#bestHour').textContent='';
   const lastKey='wx:last:'+k;
@@ -1227,7 +1253,7 @@ async function loadAll(){
   tasks.push(loadForecast(L).then(d=>{if(!ok())return;S.fc=d;LS.set(lastKey,{at:Date.now(),fc:d});renderHeader();renderNow();renderHourly();renderDaily();renderAtmos();renderSky();renderAir();renderHistory()})
     .catch(e=>{if(!ok())return;const cached=LS.get(lastKey,null);
       if(cached&&cached.fc){S.fc=cached.fc;S.offline=cached.at;renderNow();renderHourly();renderDaily();renderAtmos();renderSky();renderHistory()}
-      else['#glance','#now','#hourlyBody','#dailyBody','#atmosBody','#skyBody'].forEach(s=>fail(s,'the forecast',e));throw e}));
+      else['#glance','#actsBody','#now','#hourlyBody','#dailyBody','#atmosBody','#skyBody'].forEach(s=>fail(s,'the forecast',e));throw e}));
   tasks.push(loadKp().then(v=>{if(ok()){S.kp=v;renderGlance()}}).catch(e=>console.warn('kp',e)));
   tasks.push(loadAQ(L).then(d=>{if(ok()){S.aq=d;renderAir();renderNow()}}).catch(e=>{if(ok()){S.aq={error:e};renderAir()}}));
   tasks.push(loadModels(L).then(d=>{if(ok()){S.models=d;renderModels()}}).catch(e=>{if(ok()){S.models={error:e};renderModels()}}));
