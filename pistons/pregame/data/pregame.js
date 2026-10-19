@@ -1,7 +1,105 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-16T16:55:00-04:00",
+  "updated": "2026-10-18T20:55:00-04:00",
   "games": [
+    {
+      "id": "g20261020",
+      "date": "2026-10-20",
+      "phase": "Regular season",
+      "headline": "Opening day: Pistons host Celtics on NBC",
+      "dek": "Detroit opens the 2026-27 season against Boston on Tuesday at 3 p.m. at Little Caesars Arena, the first regular-season game of the NBA year.",
+      "keys": [
+        {
+          "title": "The East's top two collide",
+          "text": "Detroit finished 60-22 and Boston 56-26 last season, the top two in the East. The Pistons won three of the four meetings, per preseason reports. DraftKings has Boston a 1.5-point favorite with a 222.5 total, so the market sees a coin flip."
+        },
+        {
+          "title": "New faces on both sides",
+          "text": "The Pistons are integrating John Collins and Isaiah Joe around Cade Cunningham. Boston added Paul George, Mitchell Robinson and Mike Conley Jr. Rotations are still settling, so minutes are the big unknown."
+        },
+        {
+          "title": "Tatum is expected back in the mix",
+          "text": "Jayson Tatum missed every meeting with Detroit last season but is expected to play. Boston is 4-0 in the preseason, Detroit 3-1, both with three days of rest."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "23.9 PTS · 9.9 AST · 5.5 REB",
+          "sub": "Last season's averages (64 games)",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Jalen Duren",
+          "line": "19.5 PTS · 10.5 REB",
+          "sub": "Last season's averages (70 games), on 65.0% shooting"
+        },
+        {
+          "team": "DET",
+          "name": "John Collins",
+          "line": "13.6 PTS · 5.3 REB",
+          "sub": "Last season's averages with the Clippers (69 games); new to Detroit"
+        },
+        {
+          "team": "BOS",
+          "name": "Jayson Tatum",
+          "line": "21.8 PTS · 10.0 REB · 5.3 AST",
+          "sub": "Last season's averages (16 games)",
+          "badge": "Star"
+        },
+        {
+          "team": "BOS",
+          "name": "Paul George",
+          "line": "17.3 PTS · 5.3 REB",
+          "sub": "Last season's averages with Philadelphia (37 games); new to Boston"
+        }
+      ],
+      "injuryNote": "ESPN list (Oct. 18, 10:49 a.m.): DET none listed. BOS Devin Carter out (illness), expected back Oct. 27. No starting lineups reported yet.",
+      "talkingPoints": [
+        "It's the very first game of the NBA season, and it's in Detroit.",
+        "Pistons were 60-22 last year and beat Boston three times in four tries.",
+        "Detroit is 3-1 in the preseason after beating Toronto 129-125 on Friday.",
+        "Tatum missed all four games against Detroit last year and should be there this time.",
+        "Boston has Paul George and Mitchell Robinson now, so it's a new-look Celtics team.",
+        "Books have it basically even: Boston by 1.5, total 222.5."
+      ],
+      "facts": [
+        {
+          "label": "Broadcast",
+          "text": "NBC (national), part of a three-game opening-day slate"
+        },
+        {
+          "label": "Preseason",
+          "text": "DET 3-1, BOS 4-0 (preseason records)"
+        }
+      ],
+      "projNotes": {
+        "John Collins": "New: last season's rates came with the Clippers",
+        "Isaiah Joe": "New: last season's rates came with OKC",
+        "Taurean Prince": "New: last season's rates came with Milwaukee",
+        "Elijah Harkless": "New: last season's rates came with Utah",
+        "Jalen Duren": "26 min projected vs. 27.4 last year; Boston trims center scoring",
+        "Cade Cunningham": "Boston gives guards fewer points and assists than usual"
+      },
+      "projNote": "Not projected: Javonte Green, Ronald Holland II, Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ebuka Okorie and Ugonna Onyenso (no NBA box scores).",
+      "pick": {
+        "call": "Pistons by a bucket",
+        "text": "Just for fun: home floor and three days of rest tip a coin-flip game toward Detroit, 111-109."
+      },
+      "share": "Opening day: Pistons host the Celtics Tuesday at 3 p.m. on NBC. East's top two, new faces everywhere.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909088"
+        },
+        {
+          "title": "Detroit Pistons to Open 2026-27 Season on Oct. 20 Against Boston Celtics",
+          "url": "https://ground.news/article/knicks-sixers-spurs-thunder-and-pistons-celtics-in-opening"
+        }
+      ]
+    },
     {
       "id": "g20261016",
       "date": "2026-10-16",
