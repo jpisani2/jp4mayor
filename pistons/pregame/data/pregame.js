@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-18T20:55:00-04:00",
+  "updated": "2026-10-20T05:55:00-04:00",
   "games": [
     {
       "id": "g20261020",
@@ -11,7 +11,7 @@ window.PISTONS_PREGAME = {
       "keys": [
         {
           "title": "The East's top two collide",
-          "text": "Detroit finished 60-22 and Boston 56-26 last season, the top two in the East. The Pistons won three of the four meetings, per preseason reports. DraftKings has Boston a 1.5-point favorite with a 222.5 total, so the market sees a coin flip."
+          "text": "Detroit finished 60-22 and Boston 56-26 last season, the top two in the East. The Pistons won three of the four meetings, per preseason reports. DraftKings has Boston a 1.5-point favorite with a 221.5 total (down a point from the weekend), so the market sees a coin flip."
         },
         {
           "title": "New faces on both sides",
@@ -56,14 +56,15 @@ window.PISTONS_PREGAME = {
           "sub": "Last season's averages with Philadelphia (37 games); new to Boston"
         }
       ],
-      "injuryNote": "ESPN list (Oct. 18, 10:49 a.m.): DET none listed. BOS Devin Carter out (illness), expected back Oct. 27. No starting lineups reported yet.",
+      "injuryNote": "ESPN list (Oct. 19, 6:13 p.m.): DET Taurean Prince day-to-day (personal), return date listed as Oct. 20. BOS Devin Carter out (illness), return date listed as Nov. 8. No starting lineups reported yet.",
       "talkingPoints": [
         "It's the very first game of the NBA season, and it's in Detroit.",
         "Pistons were 60-22 last year and beat Boston three times in four tries.",
         "Detroit is 3-1 in the preseason after beating Toronto 129-125 on Friday.",
         "Tatum missed all four games against Detroit last year and should be there this time.",
+        "Taurean Prince is day-to-day for personal reasons, so check the lineup before tip.",
         "Boston has Paul George and Mitchell Robinson now, so it's a new-look Celtics team.",
-        "Books have it basically even: Boston by 1.5, total 222.5."
+        "Books have it basically even: Boston by 1.5, total 221.5."
       ],
       "facts": [
         {
@@ -73,12 +74,16 @@ window.PISTONS_PREGAME = {
         {
           "label": "Preseason",
           "text": "DET 3-1, BOS 4-0 (preseason records)"
+        },
+        {
+          "label": "Line",
+          "text": "DraftKings: BOS -1.5, total 221.5; moneyline BOS -115, DET -105"
         }
       ],
       "projNotes": {
         "John Collins": "New: last season's rates came with the Clippers",
         "Isaiah Joe": "New: last season's rates came with OKC",
-        "Taurean Prince": "New: last season's rates came with Milwaukee",
+        "Taurean Prince": "Day-to-day (personal); rates came with Milwaukee",
         "Elijah Harkless": "New: last season's rates came with Utah",
         "Jalen Duren": "26 min projected vs. 27.4 last year; Boston trims center scoring",
         "Cade Cunningham": "Boston gives guards fewer points and assists than usual"
@@ -86,7 +91,7 @@ window.PISTONS_PREGAME = {
       "projNote": "Not projected: Javonte Green, Ronald Holland II, Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ebuka Okorie and Ugonna Onyenso (no NBA box scores).",
       "pick": {
         "call": "Pistons by a bucket",
-        "text": "Just for fun: home floor and three days of rest tip a coin-flip game toward Detroit, 111-109."
+        "text": "Just for fun: home floor and three days of rest tip a coin-flip game toward Detroit, 110-108."
       },
       "share": "Opening day: Pistons host the Celtics Tuesday at 3 p.m. on NBC. East's top two, new faces everywhere.",
       "sources": [
@@ -98,7 +103,10 @@ window.PISTONS_PREGAME = {
           "title": "Detroit Pistons to Open 2026-27 Season on Oct. 20 Against Boston Celtics",
           "url": "https://ground.news/article/knicks-sixers-spurs-thunder-and-pistons-celtics-in-opening"
         }
-      ]
+      ],
+      "ouNotes": {
+        "Taurean Prince": "Listed day-to-day (personal); watch for his status near tip"
+      }
     },
     {
       "id": "g20261016",
