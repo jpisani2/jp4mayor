@@ -1,5 +1,5 @@
 // ESPN feed access + normalization into one simple game shape
-import { BASE, RELAY, LEAGUES } from './config.js';
+import { BASE, STANDINGS_BASE, RELAY, LEAGUES } from './config.js';
 import { fmtTime } from './util.js';
 
 export async function getJSON(url, timeout = 15000) {
@@ -28,9 +28,14 @@ export const api = {
     const L = LEAGUES[lg];
     return getJSON(`${BASE}/${L.path}/summary?event=${id}`);
   },
-  teams(lg, groups) {
+  // (ESPN's /teams feed doesn't allow browser requests, so team lists use these two)
+  groups(lg, groups) {
     const L = LEAGUES[lg];
-    return getJSON(`${BASE}/${L.path}/teams?${qs({ limit: 1000, groups })}`);
+    return getJSON(`${BASE}/${L.path}/groups?${qs({ groups })}`);
+  },
+  standings(lg, group) {
+    const L = LEAGUES[lg];
+    return getJSON(`${STANDINGS_BASE}/${L.path}/standings?${qs({ group })}`, 30000);
   },
 };
 

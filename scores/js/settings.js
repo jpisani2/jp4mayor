@@ -1,16 +1,24 @@
 // Settings: team picker + appearance
 import { LEAGUES, ORDER } from './config.js';
 import { api } from './espn.js';
-import { $, esc, store, logo, toast } from './util.js';
+import { $, esc, store, logo } from './util.js';
 
-const S = { el: null, q: '', browse: 'nba', index: null, loading: null, cb: {} };
-const INDEX_VER = 1;
-const WEEK = 7 * 86400000;
+// Team lists come from ESPN's "groups" feed (pro) and "standings" feed (college) —
+// ESPN's /teams feed blocks browser requests. Each league is cached for 30 days.
+const S = { el: null, q: '', browse: 'nba', byLg: {}, status: {}, index: [], cb: {} };
+const INDEX_VER = 2;
+const TTL = 30 * 86400000;
 
 export function initSettings(el, cb) {
   S.el = el; S.cb = cb;
   const cached = store.get('teamIndex', null);
-  if (cached && cached.v === INDEX_VER && Array.isArray(cached.teams)) S.index = cached.teams;
+  if (cached && cached.v === INDEX_VER && cached.leagues) {
+    for (const lg of ORDER) {
+      const c = cached.leagues[lg];
+      if (c && Array.isArray(c.teams) && c.teams.length) { S.byLg[lg] = c; S.status[lg] = 'ok'; }
+    }
+    rebuildIndex();
+  }
   el.addEventListener('click', onClick);
   el.addEventListener('input', (e) => {
     if (e.target.id === 'teamSearch') { S.q = e.target.value; renderResults(); }
@@ -19,33 +27,58 @@ export function initSettings(el, cb) {
 
 export function openSettings() {
   render();
-  const cached = store.get('teamIndex', null);
-  if (!S.index || !cached || Date.now() - cached.ts > WEEK) loadIndex();
+  loadIndex();
 }
 
-async function loadIndex() {
-  if (S.loading) return S.loading;
-  S.loading = (async () => {
-    const res = await Promise.allSettled(ORDER.map(async (lg) => {
-      const L = LEAGUES[lg];
-      let data = await api.teams(lg, L.college ? L.allGroup : undefined);
-      let list = data.sports?.[0]?.leagues?.[0]?.teams || [];
-      if (!list.length && L.college) { data = await api.teams(lg); list = data.sports?.[0]?.leagues?.[0]?.teams || []; }
-      return list.map((x) => slim(x.team || x, lg));
-    }));
-    const teams = res.flatMap((r) => (r.status === 'fulfilled' ? r.value : []));
-    if (teams.length) {
-      // keep old entries for any league that failed this time
-      const okLgs = new Set(ORDER.filter((_, i) => res[i].status === 'fulfilled'));
-      const keep = (S.index || []).filter((t) => !okLgs.has(t.lg));
-      S.index = [...teams, ...keep];
-      store.set('teamIndex', { v: INDEX_VER, ts: Date.now(), teams: S.index });
-    } else if (!S.index) {
-      toast("Couldn't load the team list — check your connection");
-    }
-    renderResults();
-  })().finally(() => { S.loading = null; });
-  return S.loading;
+function rebuildIndex() {
+  S.index = ORDER.flatMap((lg) => S.byLg[lg]?.teams || []);
+}
+
+// pro leagues first (small), then college (big, compressed over the wire)
+async function loadIndex(force = false) {
+  const stale = (lg) => force || !S.byLg[lg] || Date.now() - S.byLg[lg].ts > TTL;
+  const pro = ORDER.filter((lg) => !LEAGUES[lg].college && stale(lg));
+  const col = ORDER.filter((lg) => LEAGUES[lg].college && stale(lg));
+  await Promise.allSettled(pro.map(loadLeague));
+  await Promise.allSettled(col.map(loadLeague));
+}
+
+async function loadLeague(lg) {
+  if (S.status[lg] === 'loading') return;
+  const had = !!S.byLg[lg];
+  S.status[lg] = had ? 'ok' : 'loading';
+  renderResults();
+  try {
+    const teams = await fetchLeagueTeams(lg);
+    if (!teams.length) throw new Error('empty');
+    S.byLg[lg] = { ts: Date.now(), teams };
+    S.status[lg] = 'ok';
+    rebuildIndex();
+    const leagues = {};
+    for (const k of ORDER) if (S.byLg[k]) leagues[k] = S.byLg[k];
+    store.set('teamIndex', { v: INDEX_VER, leagues });
+  } catch {
+    if (!had) S.status[lg] = 'err';
+  }
+  renderResults();
+}
+
+async function fetchLeagueTeams(lg) {
+  const L = LEAGUES[lg];
+  const seen = new Map();
+  const add = (t) => { if (t && t.id != null && !seen.has(String(t.id))) seen.set(String(t.id), slim(t, lg)); };
+  if (L.college) {
+    try {
+      const walk = (g) => { for (const e of g.standings?.entries || []) add(e.team); for (const c of g.children || []) walk(c); };
+      walk(await api.standings(lg, L.allGroup));
+    } catch { /* fall through to groups */ }
+  }
+  if (!seen.size) {
+    const walk = (g) => { for (const t of g.teams || []) add(t); for (const c of g.children || []) walk(c); };
+    const data = await api.groups(lg, L.college ? L.allGroup : undefined);
+    for (const g of data.groups || []) walk(g);
+  }
+  return [...seen.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
 function slim(t, lg) {
@@ -83,6 +116,7 @@ function onClick(e) {
   else if (act === 'toggle') toggle(a.dataset.lg, a.dataset.id);
   else if (act === 'browse') { S.browse = a.dataset.lg; renderResults(); renderBrowseChips(); }
   else if (act === 'theme') { store.set('theme', a.dataset.v); S.cb.onTheme?.(a.dataset.v); renderTheme(); }
+  else if (act === 'retry') { for (const lg of ORDER) if (S.status[lg] === 'err') S.status[lg] = null; loadIndex(); }
   else if (act === 'clear') { S.q = ''; $('#teamSearch', S.el).value = ''; renderResults(); }
 }
 
@@ -137,13 +171,16 @@ function renderResults() {
   renderBrowseChips();
   const clr = $('.clr', S.el);
   if (clr) clr.hidden = !S.q;
-  if (!S.index) {
-    box.innerHTML = '<p class="snote"><span class="spin sm"></span> Loading teams…</p>';
-    return;
-  }
   const q = norm(S.q).trim();
+  const loadingNote = (lgs) => `<p class="snote"><span class="spin sm"></span> Loading ${lgs.map((l) => LEAGUES[l].tag).join(', ')} teams…</p>`;
+  const errNote = (lgs) => `<p class="snote">Couldn't load ${lgs.map((l) => LEAGUES[l].tag).join(', ')} teams. <button class="linkbtn" data-act="retry">Try again</button></p>`;
   let list;
   if (!q) {
+    const st = S.status[S.browse];
+    if (!S.byLg[S.browse]) {
+      box.innerHTML = st === 'err' ? errNote([S.browse]) : loadingNote([S.browse]);
+      return;
+    }
     list = S.index.filter((t) => t.lg === S.browse).sort((a, b) => a.name.localeCompare(b.name));
   } else {
     const toks = q.split(/\s+/);
@@ -162,7 +199,15 @@ function renderResults() {
     }
     list = scored.sort((a, b) => b[0] - a[0] || a[1].name.localeCompare(b[1].name)).slice(0, 60).map((x) => x[1]);
   }
-  box.innerHTML = list.length ? list.map((t) => teamRow(t, 'result')).join('') : `<p class="snote">No teams match “${esc(S.q)}”.</p>`;
+  let html = list.length ? list.map((t) => teamRow(t, 'result')).join('') : '';
+  if (q) {
+    const pending = ORDER.filter((l) => !S.byLg[l] && S.status[l] !== 'err');
+    const failed = ORDER.filter((l) => !S.byLg[l] && S.status[l] === 'err');
+    if (pending.length) html += loadingNote(pending);
+    if (failed.length) html += errNote(failed);
+    if (!list.length && !pending.length) html = `<p class="snote">No teams match “${esc(S.q)}”.</p>` + (failed.length ? errNote(failed) : '');
+  }
+  box.innerHTML = html;
 }
 
 function renderTheme() {

@@ -1,7 +1,7 @@
 // Scores service worker — scope stays inside /scores/.
 // Caches only the app's own files so it opens instantly and works offline;
 // ESPN data is never cached here (the app keeps its own small copy).
-const VERSION = 'scores-v1';
+const VERSION = 'scores-v2';
 const SHELL = [
   './', './index.html', './app.css', './manifest.webmanifest',
   './js/main.js', './js/config.js', './js/util.js', './js/espn.js', './js/rows.js',

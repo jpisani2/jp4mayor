@@ -6,6 +6,7 @@
 export const RELAY = '';
 
 export const BASE = 'https://site.api.espn.com/apis/site/v2/sports';
+export const STANDINGS_BASE = 'https://site.api.espn.com/apis/v2/sports';
 
 // season: [[startMonth, startDay], [endMonth, endDay]] — rough in-season window,
 // used only to order the league chips on All scores.

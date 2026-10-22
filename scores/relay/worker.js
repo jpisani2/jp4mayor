@@ -10,7 +10,7 @@ export default {
     };
     if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
     const target = new URL(request.url).searchParams.get('url') || '';
-    if (!/^https:\/\/site\.api\.espn\.com\/apis\/site\/v2\/sports\//.test(target)) {
+    if (!/^https:\/\/site\.api\.espn\.com\/apis\/(site\/)?v2\/sports\//.test(target)) {
       return new Response('Not allowed', { status: 400, headers: cors });
     }
     const res = await fetch(target, { cf: { cacheTtl: 15, cacheEverything: true } });

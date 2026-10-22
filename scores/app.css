@@ -224,9 +224,9 @@ body.busy #top .bar { opacity: .5; animation: load 1.4s ease-in-out infinite; }
 /* win probability */
 .wphead { font-size: 14px; margin: -4px 0 8px; display: flex; }
 .wphead span { display: flex; align-items: center; gap: 6px; }
-.wp { display: flex; gap: 8px; height: 120px; }
+.wp { display: flex; gap: 8px; height: 120px; overflow: hidden; }
 .wpl { display: flex; flex-direction: column; justify-content: space-between; padding: 2px 0; }
-.wp svg { flex: 1; height: 120px; overflow: visible; }
+.wp svg { flex: 1; min-width: 0; width: 100%; height: 120px; }
 .wpmid { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .wpq { stroke: var(--line); stroke-width: 1; vector-effect: non-scaling-stroke; }
 
@@ -358,3 +358,4 @@ table.box tr:last-child td { border-bottom: 0; }
   .view .list, .allhead > *, .gtop > *, .gbody, .sbody, .snav { max-width: 640px; margin-left: auto; margin-right: auto; }
 }
 @media (prefers-reduced-motion: reduce) { .sheet { animation: none; } .dot { animation: none; } }
+.linkbtn { color: var(--text); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
