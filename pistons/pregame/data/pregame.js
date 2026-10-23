@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-23T12:55:00-04:00",
+  "updated": "2026-10-23T17:55:00-04:00",
   "games": [
     {
       "id": "g20261023",
@@ -56,7 +56,7 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (1 game)"
         }
       ],
-      "injuryNote": "NBA report via NBC Sports and Heavy (Oct. 22): Taurean Prince probable (personal reasons); CBS Sports still lists him as a game-time decision. Elijah Harkless, Isaac Jones and Ugonna Onyenso are out on G League assignment. MIA lists nobody out, doubtful or questionable. ESPN still shows Prince day-to-day. No starting lineups yet.",
+      "injuryNote": "NBA report via NBC Sports and Heavy (Oct. 22): Taurean Prince probable (personal reasons); CBS Sports still lists him as a game-time decision. Elijah Harkless, Isaac Jones and Ugonna Onyenso are out on G League assignment. MIA lists nobody out, doubtful or questionable. As of 5:50 p.m. ET ESPN lists no injuries for either team (Prince no longer shown), and a news search found no newer word or starting lineups.",
       "talkingPoints": [
         "The Pistons are 1-0 after coming back from 22 down to beat Boston.",
         "Giannis dropped 35 in Miami's opener, so he's the headline.",
