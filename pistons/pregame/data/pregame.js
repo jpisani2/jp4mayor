@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-23T17:55:00-04:00",
+  "updated": "2026-10-23T18:55:00-04:00",
   "games": [
     {
       "id": "g20261023",
@@ -15,7 +15,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "title": "Rest and form favor Detroit",
-          "text": "The Pistons have two days off after beating Boston 121-113; Miami is on one day after a 131-106 loss to Minnesota, its third in its last four. DraftKings has DET -1.5 with a 235.5 total (DET -125, MIA +105)."
+          "text": "The Pistons have two days off after beating Boston 121-113; Miami is on one day after a 131-106 loss to Minnesota, its third in its last four. DraftKings has DET -1.5 with a 234.5 total (DET -125, MIA +105)."
         },
         {
           "title": "Miami's threes and turnovers",
@@ -56,12 +56,12 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (1 game)"
         }
       ],
-      "injuryNote": "NBA report via NBC Sports and Heavy (Oct. 22): Taurean Prince probable (personal reasons); CBS Sports still lists him as a game-time decision. Elijah Harkless, Isaac Jones and Ugonna Onyenso are out on G League assignment. MIA lists nobody out, doubtful or questionable. As of 5:50 p.m. ET ESPN lists no injuries for either team (Prince no longer shown), and a news search found no newer word or starting lineups.",
+      "injuryNote": "NBA report via NBC Sports and Heavy (Oct. 22): Taurean Prince probable (personal reasons); CBS Sports still lists him as a game-time decision. Elijah Harkless, Isaac Jones and Ugonna Onyenso are out on G League assignment. MIA lists nobody out, doubtful or questionable. As of 6:50 p.m. ET ESPN lists no injuries for either team (Prince no longer shown), and a news search found no newer word or starting lineups.",
       "talkingPoints": [
         "The Pistons are 1-0 after coming back from 22 down to beat Boston.",
         "Giannis dropped 35 in Miami's opener, so he's the headline.",
         "Detroit has two days of rest; Miami played Wednesday and lost 131-106.",
-        "Books like Detroit by 1.5, total 235.5.",
+        "Books like Detroit by 1.5, total 234.5.",
         "Taurean Prince is probable after missing the opener for personal reasons.",
         "This is the first of four Pistons-Heat games; the next is Nov. 14."
       ],
@@ -76,7 +76,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "label": "Line",
-          "text": "DraftKings: DET -1.5, total 235.5; moneyline DET -125 / MIA +105"
+          "text": "DraftKings: DET -1.5, total 234.5; moneyline DET -125 / MIA +105"
         }
       ],
       "projNotes": {
