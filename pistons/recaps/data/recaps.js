@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-10-20T17:50:00-04:00",
+  "updated": "2026-10-23T22:50:00-04:00",
   "games": [
+    {
+      "id": "g20261023",
+      "date": "2026-10-23",
+      "phase": "Regular season",
+      "home": false,
+      "venue": "Kaseya Center, Miami",
+      "attendance": 19616,
+      "opp": {
+        "abbr": "MIA",
+        "name": "Miami Heat",
+        "short": "Heat",
+        "score": 111,
+        "quarters": [
+          26,
+          27,
+          27,
+          31
+        ]
+      },
+      "det": {
+        "score": 128,
+        "quarters": [
+          41,
+          24,
+          38,
+          25
+        ]
+      },
+      "result": "W",
+      "record": "2-0",
+      "headline": "Pistons lead wire to wire, beat Miami 128-111",
+      "dek": "Detroit scored 41 in the first quarter, never trailed and shot 18-for-38 from three to beat the Heat 128-111 and move to 2-0.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "John Collins",
+          "line": "23 PTS · 9-15 FG · 5-6 3PT",
+          "sub": "Hit the game's first basket, a three at 11:16 of the first, and finished +15 in 29 minutes",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "19 PTS · 11 REB · 8-11 FG",
+          "sub": "Double-double off the bench in 26 minutes, with no turnovers"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "17 PTS · 5-10 3PT · +22",
+          "sub": "Best plus/minus on the team in 28 minutes"
+        },
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "16 PTS · 8 AST · 3 BLK",
+          "sub": "5-for-8 from the field, but 7 turnovers and 5 fouls in 30 minutes"
+        },
+        {
+          "team": "MIA",
+          "name": "Giannis Antetokounmpo",
+          "line": "36 PTS · 12 REB · 15-26 FG",
+          "sub": "Double-double with 6 offensive boards, but Miami was outscored by 23 with him on the floor"
+        },
+        {
+          "team": "MIA",
+          "name": "Davion Mitchell",
+          "line": "18 PTS · 5 AST · 3-9 3PT",
+          "sub": "Second on the Heat in scoring in 33 minutes"
+        }
+      ],
+      "context": [
+        {
+          "label": "Friday's slate",
+          "text": "Giannis' 36 points tied Jayson Tatum's 36 for the most of any player Friday, and his 12 rebounds were tied for fourth. Collins' 23 tied Pascal Siakam for seventh."
+        },
+        {
+          "label": "This week",
+          "text": "Giannis' 36 ties Tatum for fourth in scoring across the week's games (Edwards 45, Jerome 45, George 38). No Pistons player cracked the week's top five in points, rebounds or assists."
+        },
+        {
+          "label": "Season series",
+          "text": "ESPN lists Detroit leading the series 1-0."
+        }
+      ],
+      "talkingPoints": [
+        "Detroit scored 41 in the first quarter and led 65-53 at the half. It never trailed, and the game had zero lead changes.",
+        "The Pistons shot 18-for-38 from three (47%) to Miami's 15-for-51 (29%).",
+        "The biggest lead was 23, at 1:18 of the third, after a 10-0 run. Detroit won the third 38-27.",
+        "Giannis scored 36 with 12 rebounds and Miami still lost by 17. All five Miami starters finished between -19 and -24.",
+        "Paul Reed had 19 points and 11 rebounds in 26 minutes off the bench, and Jalen Duren played just 10 minutes while listed day-to-day with a thigh issue.",
+        "Detroit is 2-0, with a road win in Miami after the opening win over Boston."
+      ],
+      "notable": [
+        {
+          "stat": "0",
+          "label": "Lead changes",
+          "note": "Detroit led from the 11:16 mark of the first quarter on and was ahead for 98% of the game"
+        },
+        {
+          "stat": "41",
+          "label": "First-quarter points",
+          "note": "Detroit led 41-26 after one, helped by an 11-0 run from 11:16 to 9:49"
+        },
+        {
+          "stat": "18-38",
+          "label": "Pistons from three",
+          "note": "47%, vs 15-51 (29%) for Miami"
+        },
+        {
+          "stat": "23",
+          "label": "Biggest Pistons lead",
+          "note": "At 1:18 of the third, after a 10-0 run from 3:32"
+        },
+        {
+          "stat": "34-24",
+          "label": "Assist edge",
+          "note": "Detroit had 34 assists to Miami's 24, plus 20 fast-break points to 16"
+        },
+        {
+          "stat": "6",
+          "label": "Kevin Huerter fouls",
+          "note": "Fouled out in 20 minutes with 5 points and 6 rebounds"
+        }
+      ],
+      "story": [
+        "Detroit took control right away. John Collins hit a three for the game's first points, and the Pistons ran off an 11-0 start, and Jalen Duren's alley-oop dunk from Cade Cunningham made it 19-5. They led 41-26 after one and never trailed.",
+        "Miami cut it to 48-39 behind Giannis Antetokounmpo, who scored 36, but Detroit went into the half up 65-53 and then won the third 38-27. A 10-0 run from 3:32 to 1:18 stretched the lead to 23 at 103-80.",
+        "The Pistons shot 47-for-89 (53%) with 18 threes and 34 assists, while Miami went 39-for-102 (38%) and 15-for-51 from three. Paul Reed added 19 and 11 off the bench, Daniss Jenkins scored 15, and Cunningham had 8 assists but also 7 turnovers. Detroit improves to 2-0."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "47-89 (53%)",
+          "opp": "39-102 (38%)"
+        },
+        {
+          "label": "3PT",
+          "det": "18-38 (47%)",
+          "opp": "15-51 (29%)"
+        },
+        {
+          "label": "FT",
+          "det": "16-20 (80%)",
+          "opp": "18-28 (64%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "53",
+          "opp": "49"
+        },
+        {
+          "label": "Assists",
+          "det": "34",
+          "opp": "24"
+        },
+        {
+          "label": "Steals",
+          "det": "8",
+          "opp": "8"
+        },
+        {
+          "label": "Blocks",
+          "det": "7",
+          "opp": "5"
+        },
+        {
+          "label": "Turnovers",
+          "det": "19",
+          "opp": "12"
+        },
+        {
+          "label": "Paint pts",
+          "det": "42",
+          "opp": "46"
+        }
+      ],
+      "share": "Pistons 128, Heat 111. DET led wire to wire (41 in the 1st), hit 18 threes. Collins 23, Reed 19 & 11, Robinson 17. Giannis had 36. 2-0.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909847"
+        }
+      ]
+    },
     {
       "id": "g20261020",
       "date": "2026-10-20",
