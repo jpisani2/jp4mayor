@@ -1,7 +1,112 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-20T13:55:00-04:00",
+  "updated": "2026-10-23T18:55:00-04:00",
   "games": [
+    {
+      "id": "g20261023",
+      "date": "2026-10-23",
+      "phase": "Regular season",
+      "headline": "Pistons head to Miami to face Giannis",
+      "dek": "Detroit (1-0) visits the Heat (0-1) Friday at 8 p.m. at Kaseya Center; Prince is probable and Miami lists no injuries.",
+      "keys": [
+        {
+          "title": "Giannis is the problem",
+          "text": "Giannis Antetokounmpo scored 35 on 68.4% shooting in 30 minutes in Miami's opener, a 131-106 loss to Minnesota. Detroit has to wall off the paint without fouling."
+        },
+        {
+          "title": "Rest and form favor Detroit",
+          "text": "The Pistons have two days off after beating Boston 121-113; Miami is on one day after a 131-106 loss to Minnesota, its third in its last four. DraftKings has DET -1.5 with a 234.5 total (DET -125, MIA +105)."
+        },
+        {
+          "title": "Miami's threes and turnovers",
+          "text": "The Heat shot 24.2% from three (8 makes) and turned it over 18 times in the opener. Detroit hit 15 threes at 37.5% against Boston, so shot-making is the swing."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "22 PTS · 8 AST · 4 REB",
+          "sub": "2026-27 season (1 game); 44.4% FG against Boston",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Jalen Duren",
+          "line": "22 PTS · 9 REB",
+          "sub": "2026-27 season (1 game), on 61.5% shooting"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "21 PTS · 5 3PM",
+          "sub": "2026-27 season (1 game); 5-9 from three against Boston"
+        },
+        {
+          "team": "MIA",
+          "name": "Giannis Antetokounmpo",
+          "line": "35 PTS · 6 REB",
+          "sub": "2026-27 season (1 game), on 68.4% shooting",
+          "badge": "Star"
+        },
+        {
+          "team": "MIA",
+          "name": "Bam Adebayo",
+          "line": "15 PTS · 7 REB · 4 AST · 3 STL",
+          "sub": "2026-27 season (1 game)"
+        }
+      ],
+      "injuryNote": "NBA report via NBC Sports and Heavy (Oct. 22): Taurean Prince probable (personal reasons); CBS Sports still lists him as a game-time decision. Elijah Harkless, Isaac Jones and Ugonna Onyenso are out on G League assignment. MIA lists nobody out, doubtful or questionable. As of 6:50 p.m. ET ESPN lists no injuries for either team (Prince no longer shown), and a news search found no newer word or starting lineups.",
+      "talkingPoints": [
+        "The Pistons are 1-0 after coming back from 22 down to beat Boston.",
+        "Giannis dropped 35 in Miami's opener, so he's the headline.",
+        "Detroit has two days of rest; Miami played Wednesday and lost 131-106.",
+        "Books like Detroit by 1.5, total 234.5.",
+        "Taurean Prince is probable after missing the opener for personal reasons.",
+        "This is the first of four Pistons-Heat games; the next is Nov. 14."
+      ],
+      "facts": [
+        {
+          "label": "Broadcast",
+          "text": "NBA League Pass (away broadcast)"
+        },
+        {
+          "label": "Up next",
+          "text": "Heat host Detroit again on Nov. 14 per ESPN's season series"
+        },
+        {
+          "label": "Line",
+          "text": "DraftKings: DET -1.5, total 234.5; moneyline DET -125 / MIA +105"
+        }
+      ],
+      "projNotes": {
+        "Cade Cunningham": "Miami allows a bit more than average to guards",
+        "Taurean Prince": "Probable; new team (MIL rates), hasn't played yet",
+        "Elijah Harkless": "On G League assignment per NBA report; likely not playing",
+        "Ausar Thompson": "Projected 27 min; played 33 with 11 boards vs. BOS",
+        "John Collins": "Rate is last season's mix; played 25 min vs. Boston"
+      },
+      "projNote": "Not projected: Javonte Green, Ronald Holland II, Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ebuka Okorie and Ugonna Onyenso (no NBA box scores). Prince is projected but probable; Harkless is projected but on G League assignment.",
+      "pick": {
+        "call": "Pistons by a bucket",
+        "text": "Just for fun: rest and the line point to a close one, Detroit 119, Miami 117."
+      },
+      "share": "Pistons at Heat tonight, 8 p.m. on League Pass. Detroit's 1-0, Giannis is coming off 35, and the books favor Detroit by 1.5.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909847"
+        },
+        {
+          "title": "Heat Get Unexpected Roster News After Giannis Antetokounmpo Calls Out Team (Heavy)",
+          "url": "https://heavy.com/sports/nba/miami-heat/heat-pistons-injury-update-giannis-debut"
+        },
+        {
+          "title": "Taurean Prince (personal) probable Friday vs. MIA (NBC Sports)",
+          "url": "https://www.nbcsports.com/fantasy/basketball/player-news/2026-10-22/taurean-prince-personal-probable-friday-vs-mia"
+        }
+      ]
+    },
     {
       "id": "g20261020",
       "date": "2026-10-20",
