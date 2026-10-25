@@ -1,17 +1,17 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-25T16:58:00-04:00",
+  "updated": "2026-10-25T19:00:00-04:00",
   "games": [
     {
       "id": "g20261025",
       "date": "2026-10-25",
       "phase": "Regular season",
       "headline": "Sixers sit Embiid as unbeaten teams meet",
-      "dek": "Detroit (2-0) plays at Philadelphia (3-0) Sunday at 7:30 p.m.; Joel Embiid is out for the Sixers, Jalen Duren is out for the Pistons, and Philadelphia is on a back-to-back.",
+      "dek": "Detroit (2-0) plays at Philadelphia (3-0) Sunday at 7:30 p.m.; Joel Embiid is out for the Sixers, Jalen Duren and Ausar Thompson are out for the Pistons, and Philadelphia is on a back-to-back.",
       "keys": [
         {
           "title": "No Embiid, no Duren",
-          "text": "ESPN reports the 76ers chose to sit Joel Embiid (right foot plantar fasciitis management) even though he had said he wanted to play, and its injury list now shows him out. Jalen Duren (right hamstring strain, at least two weeks) is also out, so both teams are thin at center."
+          "text": "ESPN reports the 76ers chose to sit Joel Embiid (right foot plantar fasciitis management) even though he had said he wanted to play, and its injury list now shows him out. Jalen Duren (right hamstring strain, at least two weeks) is also out, and ESPN now lists Ausar Thompson (right ankle sprain) out too, so both teams are thin up front."
         },
         {
           "title": "Detroit's offense vs. a back-to-back",
@@ -56,11 +56,11 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (3 games), 35.7 minutes a night"
         }
       ],
-      "injuryNote": "As of the 4:50 p.m. ET update: ESPN lists Embiid out (right heel; its story says plantar fasciitis management), plus Tacko Fall and Jabari Walker out, Dominick Barlow and Ariel Hukporti out. LeBron James is no longer on ESPN's list; the AP preview had listed him out, so check before tip. For Detroit, Duren is out and Ausar Thompson is day-to-day (right ankle sprain); Taurean Prince missed Friday for personal reasons and is out per team reports. A news search found no starting lineups yet.",
+      "injuryNote": "As of the 6:50 p.m. ET update: ESPN now lists Ausar Thompson out (right ankle sprain, updated about 6 p.m.). It also lists Embiid out (right heel; its story says plantar fasciitis management), plus Tacko Fall and Jabari Walker out, Dominick Barlow and Ariel Hukporti out. LeBron James is no longer on ESPN's list; the AP preview had listed him out, so check before tip. Also on ESPN: VJ Edgecombe is day-to-day (abdomen bruise). For Detroit, Duren is out; Taurean Prince missed Friday for personal reasons and is out per team reports. A news search found no confirmed starting lineups.",
       "talkingPoints": [
         "Both teams are unbeaten: Detroit 2-0, Philadelphia 3-0.",
         "The Sixers are sitting Joel Embiid for foot management, per ESPN.",
-        "Duren is out too, so Reed and Collins get the big minutes.",
+        "Duren and Ausar Thompson are out too, so Reed and Collins get the big minutes.",
         "Philadelphia played Saturday night; Detroit had the day off.",
         "Maxey is averaging 28.7 a night, and he now has the ball even more.",
         "DraftKings has Detroit -1.5 with a 228.5 total."
@@ -80,12 +80,13 @@ window.PISTONS_PREGAME = {
         }
       ],
       "projNotes": {
-        "Cade Cunningham": "Up to 38 min with Duren out; Philly allows a bit less to guards",
+        "Cade Cunningham": "Set to 37 min with Duren and Thompson out",
         "Paul Reed": "Set to 26 min as the reported starter with Duren out",
-        "Ausar Thompson": "Day-to-day; projected 29 min, would drop if limited",
+        "Daniss Jenkins": "31 min with Thompson out; last-five minutes were higher",
+        "Duncan Robinson": "35 min as the wing minutes open up with Thompson out",
         "John Collins": "Minutes up to 26 with Duren out"
       },
-      "projNote": "Not projected: Jalen Duren (out), Taurean Prince (out, personal reasons), Elijah Harkless, Isaac Jones and Ugonna Onyenso (G League), Chaz Lanier, Tolu Smith and Ebuka Okorie have few or no NBA minutes.",
+      "projNote": "Not projected: Jalen Duren and Ausar Thompson (out), Taurean Prince (out, personal reasons), Elijah Harkless, Isaac Jones and Ugonna Onyenso (G League), Chaz Lanier, Tolu Smith and Ebuka Okorie have few or no NBA minutes.",
       "pick": {
         "call": "Pistons by a hair",
         "text": "Just for fun: the line implies Detroit about 115, Philadelphia about 113.5; the back-to-back and no Embiid tilt it to Detroit, Pistons 116, Sixers 112."
