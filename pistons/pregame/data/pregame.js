@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-25T05:55:00-04:00",
+  "updated": "2026-10-25T12:56:00-04:00",
   "games": [
     {
       "id": "g20261025",
@@ -15,11 +15,11 @@ window.PISTONS_PREGAME = {
         },
         {
           "title": "Maxey and the Sixers' stars",
-          "text": "Tyrese Maxey is averaging 30.0 points and 40.5 minutes, with Jaylen Brown at 20.0 and Joel Embiid at 18.5. Embiid is listed day-to-day (rest), so his minutes may decide how big a Detroit frontcourt night is."
+          "text": "Tyrese Maxey is averaging 28.7 points through three games, with Jaylen Brown at 22.3 and Joel Embiid at 21.7 points and 9.7 rebounds. Embiid scored 28 with 10 assists Saturday and is still listed day-to-day (rest), so his minutes may decide how big a Detroit frontcourt night is."
         },
         {
           "title": "Life without Duren",
-          "text": "Jalen Duren (hamstring) is out until at least Oct. 27, so John Collins and Paul Reed (19 points, 11 rebounds at Miami) carry the interior. Ausar Thompson (ankle) is day-to-day."
+          "text": "Jalen Duren (right hamstring strain) is out, and ESPN reports at least two weeks, so John Collins and Paul Reed (19 points, 11 rebounds at Miami) carry the interior; Reed is projected at 26 minutes. Ausar Thompson (ankle) is day-to-day."
         }
       ],
       "watch": [
@@ -45,25 +45,25 @@ window.PISTONS_PREGAME = {
         {
           "team": "PHI",
           "name": "Tyrese Maxey",
-          "line": "30.0 PTS · 5.5 AST",
-          "sub": "2026-27 season (2 games), 40.5 minutes a night",
+          "line": "28.7 PTS · 5.0 AST",
+          "sub": "2026-27 season (3 games), 39.0 minutes a night",
           "badge": "Star"
         },
         {
           "team": "PHI",
           "name": "Joel Embiid",
-          "line": "18.5 PTS · 9.0 REB",
-          "sub": "2026-27 season (2 games); listed day-to-day (rest)"
+          "line": "21.7 PTS · 9.7 REB",
+          "sub": "2026-27 season (3 games); 28 points, 10 assists Saturday; listed day-to-day (rest)"
         }
       ],
-      "injuryNote": "As of the 5:50 a.m. ET ESPN list: Duren out (right hamstring strain, back around Oct. 27); Thompson day-to-day (right ankle sprain). Philadelphia lists Embiid (rest) and Jabari Walker (knee) day-to-day, and Tacko Fall and Dominick Barlow out. LeBron James is also listed out (back). A news search found no newer word or starting lineups.",
+      "injuryNote": "As of the 12:50 p.m. ET update: ESPN lists Duren out (right hamstring strain, at least two weeks) and Thompson day-to-day (right ankle sprain); Taurean Prince missed Friday for personal reasons and is out per team reports. Philadelphia lists LeBron James (back), Embiid (rest) and Jabari Walker (knee) day-to-day, with Tacko Fall and Dominick Barlow out; the AP preview had James out. A news search found no newer word or starting lineups.",
       "talkingPoints": [
         "Both teams are unbeaten: Detroit 2-0, Philadelphia 3-0.",
         "Detroit won 128-111 at Miami on Friday and is averaging 124.5 points.",
         "The Sixers played Saturday night; Detroit had Saturday off.",
         "Duren is out, so Reed and Collins get the big minutes.",
-        "Maxey is averaging 30 a night; Embiid is listed day-to-day for rest.",
-        "DraftKings has Philadelphia -2.5 with a 226.5 total."
+        "Maxey is averaging 28.7 a night; Embiid is listed day-to-day for rest.",
+        "DraftKings now has Detroit -1.5 with a 227.5 total."
       ],
       "facts": [
         {
@@ -76,20 +76,18 @@ window.PISTONS_PREGAME = {
         },
         {
           "label": "Line",
-          "text": "DraftKings: PHI -2.5, total 226.5; moneyline PHI -142 / DET +120"
+          "text": "DraftKings: DET -1.5, total 227.5; moneyline DET -108 / PHI -112"
         }
       ],
       "projNotes": {
-        "Cade Cunningham": "Philadelphia allows a bit less than average to guards",
         "Ausar Thompson": "Day-to-day; projected 26 min, would drop if limited",
-        "Taurean Prince": "New team (MIL rates); hasn't played this season",
-        "Elijah Harkless": "New team (UTAH rates); hasn't played this season",
-        "Paul Reed": "Extra minutes expected with Duren out"
+        "Paul Reed": "Set to 26 min as the reported starter with Duren out",
+        "Cade Cunningham": "Philadelphia allows a bit less than average to guards"
       },
-      "projNote": "Not projected: Jalen Duren (out), Ronald Holland II, Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ebuka Okorie and Ugonna Onyenso (no NBA box scores). Prince and Harkless are projected from past teams' rates.",
+      "projNote": "Not projected: Jalen Duren (out), Taurean Prince (out, personal reasons), Elijah Harkless, Isaac Jones and Ugonna Onyenso (G League), Chaz Lanier, Tolu Smith and Ebuka Okorie have few or no NBA minutes.",
       "pick": {
-        "call": "Sixers by a few",
-        "text": "Just for fun: the line implies Philadelphia 114.5, Detroit 112; the Sixers' back-to-back keeps it close, Philadelphia 116, Detroit 113."
+        "call": "Pistons by a hair",
+        "text": "Just for fun: the line implies Detroit about 114.5, Philadelphia about 113; the Sixers' back-to-back tilts it a hair to Detroit, Pistons 114, Sixers 112."
       },
       "share": "Pistons at 76ers tonight, 7:30 on League Pass. Both teams are unbeaten, Duren is out, and the Sixers are on a back-to-back.",
       "sources": [
@@ -100,6 +98,10 @@ window.PISTONS_PREGAME = {
         {
           "title": "ESPN preview",
           "url": "http://www.espn.com/nba/preview?gameId=401909866"
+        },
+        {
+          "title": "ESPN: Duren out at least two weeks",
+          "url": "https://www.espn.com/nba/story/_/id/50277066/pistons-jalen-duren-hamstring-strain-least-2-weeks"
         }
       ]
     },
