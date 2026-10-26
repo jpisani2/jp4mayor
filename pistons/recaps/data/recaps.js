@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-10-23T22:50:00-04:00",
+  "updated": "2026-10-25T22:25:00-04:00",
   "games": [
+    {
+      "id": "g20261025",
+      "date": "2026-10-25",
+      "phase": "Regular season",
+      "home": false,
+      "venue": "Xfinity Mobile Arena, Philadelphia",
+      "attendance": 21117,
+      "opp": {
+        "abbr": "PHI",
+        "name": "Philadelphia 76ers",
+        "short": "76ers",
+        "score": 93,
+        "quarters": [
+          22,
+          22,
+          25,
+          24
+        ]
+      },
+      "det": {
+        "score": 106,
+        "quarters": [
+          34,
+          22,
+          23,
+          27
+        ]
+      },
+      "result": "W",
+      "record": "3-0",
+      "headline": "Pistons never trail, beat the 76ers 106-93 to go 3-0",
+      "dek": "Detroit led from the opening minute, built a 21-point lead in the second quarter and held off Philadelphia's runs to win 106-93 on the road.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "26 PTS · 8 REB · 8 AST · 2 STL · 2 BLK",
+          "sub": "9-for-19 from the field and +20 in 33 minutes, with 4 turnovers",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "21 PTS · 5-9 3PT · +22",
+          "sub": "Best plus/minus on the team in 32 minutes, plus a technical free throw late in the fourth"
+        },
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "18 PTS · 8 REB · 6 AST · 3-4 3PT",
+          "sub": "Played 38 minutes, the most on the team, without a foul"
+        },
+        {
+          "team": "DET",
+          "name": "John Collins",
+          "line": "16 PTS · 11 REB · 2 BLK",
+          "sub": "Double-double with 3 offensive boards in 34 minutes, +17"
+        },
+        {
+          "team": "PHI",
+          "name": "Tyrese Maxey",
+          "line": "29 PTS · 11-24 FG · 3 STL",
+          "sub": "Scored the most of any player in the game, but Philadelphia was outscored by 9 with him on the floor"
+        },
+        {
+          "team": "PHI",
+          "name": "Adem Bona",
+          "line": "6 PTS · 13 REB · 3 BLK",
+          "sub": "Gave the 76ers 5 offensive rebounds and 3 blocks in 25 minutes off the bench"
+        }
+      ],
+      "context": [
+        {
+          "label": "Sunday's slate",
+          "text": "Maxey's 29 was third-most on the day, behind Luka Doncic (52) and Shai Gilgeous-Alexander (34). Cunningham's 26 tied Anthony Edwards for sixth. Bona's 13 rebounds tied for second behind Karl-Anthony Towns (14)."
+        },
+        {
+          "label": "This week",
+          "text": "Nobody in this game cracked the week's top six in points (Doncic 52, Edwards 45, Jerome 45, Booker 43, Murray 42, George 38). Cunningham's 8 assists were outside the top five on Sunday's slate (Jalen Johnson led the week with 16)."
+        },
+        {
+          "label": "Season series",
+          "text": "ESPN lists Detroit leading the series 1-0."
+        }
+      ],
+      "talkingPoints": [
+        "Detroit scored 34 in the first quarter and led 56-44 at the half. There were zero lead changes and zero ties; Philadelphia never led.",
+        "The Pistons' biggest lead was 21, at 1:33 of the second quarter, after an 8-0 run.",
+        "Detroit won the rebounding battle 54-37 with 15 offensive boards, and blocked 11 shots to Philadelphia's 8.",
+        "The Pistons hit 14 of 34 threes (41%). The 76ers went 7-for-27 (26%).",
+        "Maxey scored 29, but Jaylen Brown shot 5-for-20 and Philadelphia shot 40% as a team.",
+        "Cunningham had 26 points, 8 rebounds, 8 assists, 2 steals and 2 blocks, and Detroit is 3-0 with two road wins."
+      ],
+      "notable": [
+        {
+          "stat": "0",
+          "label": "Lead changes",
+          "note": "Detroit led from the 11:21 mark of the first quarter on; Philadelphia never led or tied"
+        },
+        {
+          "stat": "21",
+          "label": "Biggest Pistons lead",
+          "note": "At 1:33 of the second quarter, after an 8-0 run from 3:17"
+        },
+        {
+          "stat": "54-37",
+          "label": "Rebounding edge",
+          "note": "Detroit had 15 offensive rebounds to Philadelphia's 9"
+        },
+        {
+          "stat": "11",
+          "label": "Pistons blocks",
+          "note": "Paul Reed had 3, and Collins, Cunningham and Holland had 2 each; Philadelphia had 8"
+        },
+        {
+          "stat": "14-34",
+          "label": "Pistons from three",
+          "note": "41%, vs 7-27 (26%) for Philadelphia"
+        },
+        {
+          "stat": "5-20",
+          "label": "Jaylen Brown shooting",
+          "note": "16 points in 40 minutes, with 5 fouls"
+        }
+      ],
+      "story": [
+        "Detroit controlled the game from the start. John Collins scored the first basket and the Pistons never trailed, with Isaiah Joe's running dunk and Adem Bona's alley-oop making it 27-13 late in the first. They led 34-22 after one and 56-44 at the half, with the lead peaking at 21 late in the second quarter.",
+        "Philadelphia answered with a 14-0 run that stretched from the end of the second quarter into the third, but Detroit steadied. The Pistons led 78-69 after three and 79-69 to open the fourth, and the 76ers got within 4 at 79-73 before Detroit pulled away. Duncan Robinson's technical free throw made it 89-80 with 6:58 left.",
+        "Cade Cunningham led with 26 points, 8 rebounds and 8 assists, Robinson added 21 and Daniss Jenkins 18. Detroit out-rebounded Philadelphia 54-37 and blocked 11 shots. Tyrese Maxey scored 29 for the 76ers, but Jaylen Brown went 5-for-20. The Pistons improve to 3-0."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "38-87 (44%)",
+          "opp": "36-90 (40%)"
+        },
+        {
+          "label": "3PT",
+          "det": "14-34 (41%)",
+          "opp": "7-27 (26%)"
+        },
+        {
+          "label": "FT",
+          "det": "16-25 (64%)",
+          "opp": "14-23 (61%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "54",
+          "opp": "37"
+        },
+        {
+          "label": "Assists",
+          "det": "25",
+          "opp": "22"
+        },
+        {
+          "label": "Steals",
+          "det": "4",
+          "opp": "10"
+        },
+        {
+          "label": "Blocks",
+          "det": "11",
+          "opp": "8"
+        },
+        {
+          "label": "Turnovers",
+          "det": "17",
+          "opp": "11"
+        },
+        {
+          "label": "Paint pts",
+          "det": "42",
+          "opp": "52"
+        }
+      ],
+      "share": "Pistons 106, 76ers 93. DET never trailed, out-rebounded PHI 54-37. Cade 26/8/8, Robinson 21, Jenkins 18. Maxey had 29. 3-0.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909866"
+        }
+      ]
+    },
     {
       "id": "g20261023",
       "date": "2026-10-23",
