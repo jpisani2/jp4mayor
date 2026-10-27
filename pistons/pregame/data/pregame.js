@@ -1,13 +1,13 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-27T12:58:00-04:00",
+  "updated": "2026-10-27T17:58:00-04:00",
   "games": [
     {
       "id": "g20261027",
       "date": "2026-10-27",
       "phase": "Regular season",
       "headline": "Unbeaten Pistons visit winless Knicks",
-      "dek": "Detroit (3-0) plays at New York (0-3) Tuesday at 8:00 p.m. ET on NBC; Jalen Duren is out, and Ausar Thompson and Isaiah Joe are questionable.",
+      "dek": "Detroit (3-0) plays at New York (0-3) Tuesday at 8:00 p.m. ET on NBC; Jalen Duren is out, and Ausar Thompson and Isaiah Joe remain day-to-day.",
       "keys": [
         {
           "title": "Detroit's offense is humming",
@@ -56,14 +56,14 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (3 games)"
         }
       ],
-      "injuryNote": "ESPN lists Ausar Thompson (right ankle sprain, updated this morning) and Isaiah Joe (hip bruise) as day-to-day; MLive reported both as questionable after Joe's hard fall Sunday. Jalen Duren (right hamstring strain) is out with a re-evaluation set for Nov. 8, and Taurean Prince is out for personal reasons. For New York, Jose Alvarado is out (left ankle sprain). No starting lineups confirmed yet.",
+      "injuryNote": "ESPN lists Ausar Thompson (right ankle sprain, updated this afternoon) and Isaiah Joe (hip bruise) as day-to-day; MLive reported both as questionable after Joe's hard fall Sunday. Jalen Duren (right hamstring strain) is out with a re-evaluation set for Nov. 8, and Taurean Prince is out for personal reasons. For New York, Jose Alvarado is out (left ankle sprain). No starting lineups confirmed as of 5:55 p.m.",
       "talkingPoints": [
         "Detroit is the East's only unbeaten team at 3-0.",
         "The Knicks are 0-3 and have lost three straight.",
         "Duren is out, so Reed and Collins take the minutes up front.",
         "Duncan Robinson is shooting 53.6% from three.",
         "Thompson and Joe are game-time calls, so Holland and Jenkins could play bigger roles.",
-        "DraftKings has New York -3.5 with a 219.5 total."
+        "DraftKings has New York -4.5 with a 219.5 total."
       ],
       "facts": [
         {
@@ -72,7 +72,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "label": "Line",
-          "text": "DraftKings: NY -3.5, total 219.5; moneyline NY -155 / DET +130"
+          "text": "DraftKings: NY -4.5, total 219.5; moneyline NY -170 / DET +142"
         },
         {
           "label": "Rest",
@@ -80,16 +80,17 @@ window.PISTONS_PREGAME = {
         }
       ],
       "projNotes": {
-        "Cade Cunningham": "Knicks allow fewer points than average to guards; extra minutes with the wings thin",
+        "Cade Cunningham": "Knicks allow fewer points than average to guards; heavy minutes with the wings thin",
         "Ausar Thompson": "Day-to-day with an ankle sprain; minutes could change",
         "Isaiah Joe": "Day-to-day with a hip bruise",
-        "Paul Reed": "More minutes with Duren out",
-        "John Collins": "More minutes with Duren out"
+        "Paul Reed": "Minutes set to 24 by hand with Duren out",
+        "John Collins": "More minutes with Duren out",
+        "Ronald Holland II": "Projected small; bigger role if Thompson or Joe sit"
       },
-      "projNote": "Not projected: Jalen Duren, Taurean Prince (out), Elijah Harkless (G League), Ronald Holland II, Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores).",
+      "projNote": "Not projected: Jalen Duren, Taurean Prince (out), Elijah Harkless (G League), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores).",
       "pick": {
         "call": "Knicks by a bucket",
-        "text": "Just for fun: the line implies New York about 111.5 and Detroit about 108; Detroit's hot start and the Knicks' 0-3 hole make it close, Knicks 111, Pistons 109."
+        "text": "Just for fun: the line has New York as a 4.5-point favorite, but Detroit's hot start (+16.6 scoring margin) and the Knicks' 0-3 hole make it close, Knicks 111, Pistons 109."
       },
       "share": "Pistons (3-0) at Knicks (0-3) tonight, 8:00 on NBC. Duren is out; Cade is averaging 21.3 points and 8.0 assists.",
       "sources": [
