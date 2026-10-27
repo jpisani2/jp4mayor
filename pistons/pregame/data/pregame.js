@@ -1,7 +1,104 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-25T19:00:00-04:00",
+  "updated": "2026-10-27T05:55:00-04:00",
   "games": [
+    {
+      "id": "g20261027",
+      "date": "2026-10-27",
+      "phase": "Regular season",
+      "headline": "Unbeaten Pistons visit winless Knicks",
+      "dek": "Detroit (3-0) plays at New York (0-3) Tuesday at 8:00 p.m. ET on NBC; Jalen Duren is out and Ausar Thompson and Isaiah Joe are day-to-day.",
+      "keys": [
+        {
+          "title": "Detroit's offense is humming",
+          "text": "The Pistons average 118.3 points on 47.3% shooting and 42.0% from three through three games, with a +16.6 scoring margin over New York's 101.7 average. They won 106-93 at Philadelphia on Sunday."
+        },
+        {
+          "title": "A winless Knicks team at home",
+          "text": "New York is 0-3 and has lost three straight: 100-106 to Philadelphia, 103-107 at Boston and 102-111 to Orlando on Sunday. The Knicks shoot 40.8% from the field and 32.4% from three this season."
+        },
+        {
+          "title": "Frontcourt without Duren",
+          "text": "Jalen Duren (right hamstring strain, listed back around Nov. 9) is out. Karl-Anthony Towns is averaging 21.0 points and 12.0 rebounds, so Paul Reed (8.3 rebounds a game) and John Collins (7.7) carry the glass."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "21.3 PTS · 8.0 AST · 4.7 REB",
+          "sub": "2026-27 season (3 games), 32.7 minutes a night",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "19.7 PTS · 5.0 3PM",
+          "sub": "2026-27 season (3 games), 53.6% from three"
+        },
+        {
+          "team": "DET",
+          "name": "John Collins",
+          "line": "15.0 PTS · 7.7 REB",
+          "sub": "2026-27 season (3 games), 51.4% from the field"
+        },
+        {
+          "team": "NY",
+          "name": "Jalen Brunson",
+          "line": "22.7 PTS · 3.7 AST",
+          "sub": "2026-27 season (3 games), 34.7 minutes a night",
+          "badge": "Star"
+        },
+        {
+          "team": "NY",
+          "name": "Karl-Anthony Towns",
+          "line": "21.0 PTS · 12.0 REB",
+          "sub": "2026-27 season (3 games)"
+        }
+      ],
+      "injuryNote": "Per ESPN's list: Jalen Duren is out (right hamstring strain). Ausar Thompson (right ankle sprain) and Isaiah Joe (hip bruise) are day-to-day. For New York, Jose Alvarado is out (left ankle sprain, listed back Oct. 28). A morning news search found no newer update or confirmed starting lineups, so check closer to tip.",
+      "talkingPoints": [
+        "Detroit is the only unbeaten team in the Central at 3-0.",
+        "The Knicks are 0-3 and have lost three straight.",
+        "Duren is out, so Reed and Collins take the minutes up front.",
+        "Duncan Robinson is shooting 53.6% from three.",
+        "Towns is averaging 12 rebounds a night, a big test for Detroit's bigs.",
+        "DraftKings has New York -4.5 with a 219.5 total."
+      ],
+      "facts": [
+        {
+          "label": "Broadcast",
+          "text": "NBC (national)"
+        },
+        {
+          "label": "Line",
+          "text": "DraftKings: NY -4.5, total 219.5; moneyline NY -175 / DET +145"
+        },
+        {
+          "label": "Rest",
+          "text": "Both teams played Sunday, so each has one day of rest"
+        }
+      ],
+      "projNotes": {
+        "Cade Cunningham": "Knicks allow fewer points than average to guards",
+        "Ausar Thompson": "Day-to-day with an ankle sprain; minutes could change",
+        "Isaiah Joe": "Day-to-day with a hip bruise",
+        "Taurean Prince": "New this year (last played for MIL); no games yet for DET",
+        "Elijah Harkless": "New this year (last played for UTAH); no games yet for DET"
+      },
+      "projNote": "Not projected: Jalen Duren (out), Ronald Holland II, Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores).",
+      "pick": {
+        "call": "Knicks by a bucket",
+        "text": "Just for fun: the line implies New York about 112 and Detroit about 107.5; Detroit's hot start and the Knicks' 0-3 hole make it close, Knicks 111, Pistons 109."
+      },
+      "share": "Pistons (3-0) at Knicks (0-3) tonight, 8:00 on NBC. Duren is out; Cade is averaging 21.3 points and 8.0 assists.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909878"
+        }
+      ]
+    },
     {
       "id": "g20261025",
       "date": "2026-10-25",
