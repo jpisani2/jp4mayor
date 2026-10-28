@@ -1,7 +1,109 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-27T18:55:00-04:00",
+  "updated": "2026-10-28T05:55:00-04:00",
   "games": [
+    {
+      "id": "g20261028",
+      "date": "2026-10-28",
+      "phase": "Regular season",
+      "headline": "Pistons host Hornets on a back-to-back",
+      "dek": "Detroit (3-1) hosts Charlotte (3-1) Wednesday at 7:00 p.m. ET, one night after a 111-97 loss at New York; Jalen Duren is out and the Hornets are missing four players.",
+      "keys": [
+        {
+          "title": "Bouncing back on no rest",
+          "text": "Detroit played at New York on Tuesday night and drops in on a back-to-back with zero days of rest, while Charlotte last played Monday. The Pistons were outscored 63-25 across the second and third quarters in that 97-111 loss, but are still 1-0 at home and average 118.3 points this season."
+        },
+        {
+          "title": "Hornets short-handed in the backcourt",
+          "text": "Coby White (left calf strain), Kon Knueppel (left hamstring), Grant Williams (right hamstring) and Kylan Boswell (right knee surgery) are all out, with ESPN listing Nov. 2 as their return date. Charlotte has leaned on Brandon Miller (24.2 points a game) and Naz Reid (19.5 points, 9.5 rebounds)."
+        },
+        {
+          "title": "Two teams on different ends of the three-point line",
+          "text": "Detroit shoots 42.0% from three (15.7 makes a game) this season; Charlotte shoots 29.8%, though it hit 3.5 a night for Reid and Grayson Allen each. The Hornets also followed an 81-128 loss to Atlanta with wins over Miami (115-110) and Washington (110-103)."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "21.3 PTS · 8.0 AST · 4.7 REB",
+          "sub": "2026-27 season (3 games); 19 points, 9 rebounds and 8 assists at New York",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "19.7 PTS · 5.0 3PM",
+          "sub": "2026-27 season (3 games), 53.6% from three; 4-for-14 at New York"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "11.0 PTS · 8.3 REB",
+          "sub": "2026-27 season (3 games); 22 points and 9 rebounds at New York with Duren out"
+        },
+        {
+          "team": "CHA",
+          "name": "Brandon Miller",
+          "line": "24.2 PTS · 4.8 REB",
+          "sub": "2026-27 season (4 games), 37.0% from the field",
+          "badge": "Star"
+        },
+        {
+          "team": "CHA",
+          "name": "Naz Reid",
+          "line": "19.5 PTS · 9.5 REB",
+          "sub": "2026-27 season (4 games), 41.2% from three"
+        }
+      ],
+      "injuryNote": "ESPN lists Isaiah Joe (right hip bruise) as day-to-day with a Oct. 28 return date, and Jalen Duren (right hamstring strain) as out until about Nov. 9. For Charlotte, Coby White, Kon Knueppel, Grant Williams and Kylan Boswell are out. I found no newer reporting on lineups as of this morning.",
+      "talkingPoints": [
+        "Detroit is 3-1 and in first in the Central after Tuesday's 111-97 loss in New York.",
+        "Playing the second night of a back-to-back, with Duren still out.",
+        "Charlotte is 3-1 too, but without White, Knueppel and Williams.",
+        "Brandon Miller is scoring 24.2 a night, though on 37.0% shooting.",
+        "Duncan Robinson is shooting 53.6% from three; the Pistons had gone 9-for-37 at New York.",
+        "DraftKings has Detroit -7.5 with a 215.5 total."
+      ],
+      "facts": [
+        {
+          "label": "Broadcast",
+          "text": "NBA League Pass (away broadcast)"
+        },
+        {
+          "label": "Line",
+          "text": "DraftKings: DET -7.5, total 215.5; moneyline DET -278 / CHA +225"
+        },
+        {
+          "label": "Rest",
+          "text": "Detroit played Tuesday night; Charlotte played Monday"
+        },
+        {
+          "label": "Up next",
+          "text": "The teams meet again Nov. 2 in Charlotte"
+        }
+      ],
+      "projNotes": {
+        "Cade Cunningham": "Hornets allow slightly fewer guard points than average",
+        "Paul Reed": "Minutes set low in the model; he played 26 at New York with Duren out",
+        "John Collins": "More minutes with Duren out",
+        "Taurean Prince": "New team and no games yet this season; minutes uncertain",
+        "Isaiah Joe": "Day-to-day with a hip bruise",
+        "Elijah Harkless": "New team and no games yet this season; role unclear"
+      },
+      "projNote": "Not projected: Jalen Duren (out), Ronald Holland II, Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores).",
+      "pick": {
+        "call": "Pistons by about seven",
+        "text": "Just for fun: Detroit is a 7.5-point favorite at home against a short-handed Charlotte, but back-to-back legs keep it from feeling safe. Pistons 112, Hornets 105."
+      },
+      "share": "Pistons (3-1) host the Hornets (3-1) tonight at 7:00 ET. Duren is out, Charlotte is missing four, and Cade averages 21.3 and 8.0 assists.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909883"
+        }
+      ]
+    },
     {
       "id": "g20261027",
       "date": "2026-10-27",
