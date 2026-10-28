@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-10-25T22:25:00-04:00",
+  "updated": "2026-10-27T22:58:00-04:00",
   "games": [
+    {
+      "id": "g20261027",
+      "date": "2026-10-27",
+      "phase": "Regular season",
+      "home": false,
+      "venue": "Madison Square Garden, New York",
+      "attendance": 19812,
+      "opp": {
+        "abbr": "NY",
+        "name": "New York Knicks",
+        "short": "Knicks",
+        "score": 111,
+        "quarters": [
+          25,
+          26,
+          37,
+          23
+        ]
+      },
+      "det": {
+        "score": 97,
+        "quarters": [
+          38,
+          12,
+          13,
+          34
+        ]
+      },
+      "result": "L",
+      "record": "3-1",
+      "headline": "Knicks outscore Pistons 63-25 in middle, win 111-97",
+      "dek": "Detroit led 38-25 after one, then scored 25 points across the second and third quarters as New York pulled away, and a 34-point fourth quarter was too late.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "22 PTS · 9 REB · 9-12 FG · 2 STL",
+          "sub": "Led Detroit in scoring and rebounding in 26 minutes, with 5 fouls and a flagrant 1 early in the third"
+        },
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "19 PTS · 9 REB · 8 AST",
+          "sub": "7-for-18 from the field in 36 minutes and a team-worst -15, with 3 turnovers"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "12 PTS · 4-14 FG · 2-10 3PT",
+          "sub": "Played 33 minutes and went -15 on a night Detroit shot 9-for-37 from three"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "11 PTS · 6 REB · 2 STL · 6 PF",
+          "sub": "5-for-9 from the field in 25 minutes, with 4 turnovers and 6 fouls"
+        },
+        {
+          "team": "NY",
+          "name": "Karl-Anthony Towns",
+          "line": "27 PTS · 20 REB · 12-21 FG",
+          "sub": "Double-double with 8 offensive boards, though he also had 7 turnovers",
+          "badge": "Top night"
+        },
+        {
+          "team": "NY",
+          "name": "Jalen Brunson",
+          "line": "23 PTS · 7 AST · 13-16 FT",
+          "sub": "Shot 5-for-18 from the field and 0-for-5 from three, but got to the line 16 times; his free throw at 2.4 of the second gave New York its last lead change"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's slate",
+          "text": "Towns' 27 points tied Michael Porter Jr. for third on the day behind Jayson Tatum (40) and Victor Wembanyama (29). Reed's 22 was sixth. Towns' 20 rebounds led the day, and Cunningham's 8 assists tied for the day's high with Tatum, Devin Vassell and Domantas Sabonis."
+        },
+        {
+          "label": "This week",
+          "text": "Towns' 20 rebounds tied Rudy Gobert (Oct. 26) for the week's high. Nobody in this game made the week's top 10 in points (Doncic 52, Edwards 47) or assists (Jalen Johnson 16)."
+        },
+        {
+          "label": "Season series",
+          "text": "ESPN lists New York leading the series 1-0."
+        }
+      ],
+      "talkingPoints": [
+        "Detroit led 38-25 after one, then scored 12 in the second quarter and 13 in the third while the Knicks scored 26 and 37.",
+        "It was 50-51 at the half, and Brunson's free throw with 2.4 seconds left in the second was the last lead change of the game.",
+        "New York's lead reached 27 at 11:10 of the fourth, and Detroit's 34-23 fourth quarter only cut it to 14.",
+        "Detroit shot 9-for-37 from three (24%). The Knicks went 12-for-36 and 23-for-28 at the line, while the Pistons were 14-for-24.",
+        "Towns had 27 points and 20 rebounds, and Josh Hart had 5 steals and was +19 in 27 minutes.",
+        "Ausar Thompson fouled out of the game with 6, Reed had 5, and the Pistons fall to 3-1 after the first loss of the year."
+      ],
+      "notable": [
+        {
+          "stat": "63-25",
+          "label": "Knicks edge, Q2 and Q3",
+          "note": "After trailing 38-25, New York outscored Detroit by 38 over the middle two quarters"
+        },
+        {
+          "stat": "27",
+          "label": "Biggest Knicks lead",
+          "note": "At 11:10 of the fourth quarter; Detroit's biggest lead was 13, at 2.8 of the first"
+        },
+        {
+          "stat": "14-0",
+          "label": "Knicks run",
+          "note": "Began with 31.6 seconds left in the second quarter and ran to 9:26 of the third"
+        },
+        {
+          "stat": "20",
+          "label": "Towns rebounds",
+          "note": "8 offensive; most of anyone on Tuesday's slate and tied for the week's high"
+        },
+        {
+          "stat": "5",
+          "label": "Josh Hart steals",
+          "note": "In 27 minutes, with 6 points on 2-for-2 shooting and a team-best +19"
+        },
+        {
+          "stat": "9-37",
+          "label": "Pistons from three",
+          "note": "24%, vs 12-36 (33%) for New York"
+        }
+      ],
+      "story": [
+        "Detroit started well. The Pistons scored 38 in the first quarter and led by as many as 13 at the end of it, 38-25. From there the game flipped: the Pistons managed 12 points in the second, Brunson's free throw at 2.4 seconds gave New York a 51-50 lead, and that was the last lead change of the night.",
+        "The Knicks opened the third on a 14-0 run that began in the last seconds of the second quarter, and Reed was called for a flagrant 1 at 8:30 of the third, with Towns making both free throws for a 66-54 lead. New York outscored Detroit 37-13 in the quarter and led 88-63 after three, going up by as many as 27 early in the fourth. Detroit shot 9-for-37 from three and had 14 free throws to New York's 23.",
+        "Reed led Detroit with 22 points and 9 rebounds, Cunningham had 19 points, 9 rebounds and 8 assists, and Robinson added 12 on 4-for-14 shooting. The Pistons won the fourth 34-23 but lost 111-97. Towns had 27 points and 20 rebounds for New York, and Brunson scored 23. Detroit drops to 3-1 and was without Jalen Duren and Isaiah Joe."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "37-87 (43%)",
+          "opp": "38-88 (43%)"
+        },
+        {
+          "label": "3PT",
+          "det": "9-37 (24%)",
+          "opp": "12-36 (33%)"
+        },
+        {
+          "label": "FT",
+          "det": "14-24 (58%)",
+          "opp": "23-28 (82%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "45",
+          "opp": "49"
+        },
+        {
+          "label": "Assists",
+          "det": "23",
+          "opp": "28"
+        },
+        {
+          "label": "Steals",
+          "det": "8",
+          "opp": "10"
+        },
+        {
+          "label": "Blocks",
+          "det": "11",
+          "opp": "2"
+        },
+        {
+          "label": "Turnovers",
+          "det": "14",
+          "opp": "18"
+        },
+        {
+          "label": "Paint pts",
+          "det": "48",
+          "opp": "44"
+        }
+      ],
+      "share": "Knicks 111, Pistons 97. DET led 38-25 after one, then got outscored 63-25 in Q2-Q3. Reed 22, Cade 19/9/8. Towns 27 and 20. DET falls to 3-1.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909878"
+        }
+      ]
+    },
     {
       "id": "g20261025",
       "date": "2026-10-25",
