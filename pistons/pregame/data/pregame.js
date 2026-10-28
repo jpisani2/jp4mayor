@@ -1,13 +1,13 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-28T12:55:00-04:00",
+  "updated": "2026-10-28T16:55:00-04:00",
   "games": [
     {
       "id": "g20261028",
       "date": "2026-10-28",
       "phase": "Regular season",
       "headline": "Pistons host Hornets on a back-to-back",
-      "dek": "Detroit (3-1) hosts Charlotte (3-1) Wednesday at 7:00 p.m. ET, one night after a 111-97 loss at New York; Jalen Duren is out, Isaiah Joe is day-to-day and the Hornets are missing four players.",
+      "dek": "Detroit (3-1) hosts Charlotte (3-1) Wednesday at 7:00 p.m. ET, one night after a 111-97 loss at New York; Jalen Duren and Isaiah Joe are out, Ausar Thompson is day-to-day and the Hornets are missing four players.",
       "keys": [
         {
           "title": "Bouncing back on no rest",
@@ -56,14 +56,14 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (4 games), 41.2% from three"
         }
       ],
-      "injuryNote": "ESPN lists Isaiah Joe (right hip bruise) as day-to-day with an Oct. 28 return date; he missed Tuesday at New York and is a game-time decision per the Oct. 28 team report. Jalen Duren (right hamstring strain) is out until about Nov. 9. For Charlotte, White, Knueppel, Williams and Boswell are out. I found no newer lineup news as of 12:50 p.m.",
+      "injuryNote": "As of 4:50 p.m. ET ESPN now lists Isaiah Joe (right hip bruise) out with an Oct. 30 return date (the morning team report had him as a game-time decision), and Ausar Thompson (ankle) day-to-day. Jalen Duren (right hamstring strain) is out until about Nov. 9. For Charlotte, White, Knueppel, Williams and Boswell are out. A news search found no confirmed starting lineups.",
       "talkingPoints": [
         "Detroit is 3-1 and first in the Central after Tuesday's 111-97 loss in New York.",
-        "Second night of a back-to-back, with Duren still out and Joe a game-time call.",
+        "Second night of a back-to-back, with Duren and Joe out and Ausar Thompson day-to-day.",
         "Charlotte is 3-1 too, but without White, Knueppel, Williams and Boswell.",
         "Brandon Miller is scoring 24.2 a night, though on 37.0% shooting.",
         "The Pistons shot 9-for-37 from three at New York; they hit 37.6% on the season.",
-        "DraftKings has Detroit -7.5 with a 213.5 total."
+        "DraftKings has Detroit -7.5 with a 212.5 total."
       ],
       "facts": [
         {
@@ -72,7 +72,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "label": "Line",
-          "text": "DraftKings: DET -7.5, total 213.5; moneyline DET -290 / CHA +235"
+          "text": "DraftKings: DET -7.5, total 212.5; moneyline DET -290 / CHA +235"
         },
         {
           "label": "Rest",
@@ -88,15 +88,16 @@ window.PISTONS_PREGAME = {
         "Paul Reed": "Model has 17 min; he played 26 at New York with Duren out",
         "John Collins": "Frontcourt minutes up with Duren out",
         "Taurean Prince": "Back Tuesday after two absences; played 7 min, role uncertain",
-        "Isaiah Joe": "Day-to-day with a hip bruise; may not play",
-        "Elijah Harkless": "Played 3 min Tuesday; projected role may be too large"
+        "Isaiah Joe": "Listed out (hip bruise) as of 4:50 p.m.; not projected",
+        "Elijah Harkless": "Played 3 min Tuesday; projected role may be too large",
+        "Ausar Thompson": "Day-to-day (ankle); projection assumes he plays"
       },
-      "projNote": "Not projected: Jalen Duren (out), Ronald Holland II, Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 110.5 Detroit points.",
+      "projNote": "Not projected: Jalen Duren and Isaiah Joe (out), Ronald Holland II, Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 110.0 Detroit points.",
       "pick": {
         "call": "Pistons by about seven",
         "text": "Just for fun: Detroit is a 7.5-point favorite at home against a short-handed Charlotte, but back-to-back legs keep it from feeling safe. Pistons 111, Hornets 104."
       },
-      "share": "Pistons (3-1) host the Hornets (3-1) tonight at 7:00 ET. Duren is out, Joe is a game-time call, Charlotte is missing four, and Cade averages 20.8 and 8.0 assists.",
+      "share": "Pistons (3-1) host the Hornets (3-1) tonight at 7:00 ET. Duren and Joe are out, Charlotte is missing four, and Cade averages 20.8 and 8.0 assists.",
       "sources": [
         {
           "title": "ESPN game page",
