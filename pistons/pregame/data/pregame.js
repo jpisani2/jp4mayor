@@ -1,46 +1,46 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-28T05:55:00-04:00",
+  "updated": "2026-10-28T12:55:00-04:00",
   "games": [
     {
       "id": "g20261028",
       "date": "2026-10-28",
       "phase": "Regular season",
       "headline": "Pistons host Hornets on a back-to-back",
-      "dek": "Detroit (3-1) hosts Charlotte (3-1) Wednesday at 7:00 p.m. ET, one night after a 111-97 loss at New York; Jalen Duren is out and the Hornets are missing four players.",
+      "dek": "Detroit (3-1) hosts Charlotte (3-1) Wednesday at 7:00 p.m. ET, one night after a 111-97 loss at New York; Jalen Duren is out, Isaiah Joe is day-to-day and the Hornets are missing four players.",
       "keys": [
         {
           "title": "Bouncing back on no rest",
-          "text": "Detroit played at New York on Tuesday night and drops in on a back-to-back with zero days of rest, while Charlotte last played Monday. The Pistons were outscored 63-25 across the second and third quarters in that 97-111 loss, but are still 1-0 at home and average 118.3 points this season."
+          "text": "Detroit played at New York on Tuesday and has zero days of rest; Charlotte last played Monday. The Pistons were outscored 63-25 across the second and third quarters in that 97-111 loss, but average 113.0 points this season and are 1-0 at home."
         },
         {
           "title": "Hornets short-handed in the backcourt",
-          "text": "Coby White (left calf strain), Kon Knueppel (left hamstring), Grant Williams (right hamstring) and Kylan Boswell (right knee surgery) are all out, with ESPN listing Nov. 2 as their return date. Charlotte has leaned on Brandon Miller (24.2 points a game) and Naz Reid (19.5 points, 9.5 rebounds)."
+          "text": "Coby White (left calf), Kon Knueppel (left hamstring), Grant Williams (right hamstring) and Kylan Boswell (right knee surgery) are all out, with ESPN listing Nov. 2 as their return date. Charlotte has leaned on Brandon Miller (24.2 points a game) and Naz Reid (19.5 points, 9.5 rebounds)."
         },
         {
-          "title": "Two teams on different ends of the three-point line",
-          "text": "Detroit shoots 42.0% from three (15.7 makes a game) this season; Charlotte shoots 29.8%, though it hit 3.5 a night for Reid and Grayson Allen each. The Hornets also followed an 81-128 loss to Atlanta with wins over Miami (115-110) and Washington (110-103)."
+          "title": "Three-point bounce-back vs. a cold-shooting team",
+          "text": "Detroit shoots 37.6% from three this season but went 9-for-37 at New York; Charlotte shoots 29.8% from deep and 41.4% overall, though Reid and Grayson Allen each hit 3.5 threes a night. The Hornets followed an 81-128 loss to Atlanta with wins over Miami and Washington."
         }
       ],
       "watch": [
         {
           "team": "DET",
           "name": "Cade Cunningham",
-          "line": "21.3 PTS · 8.0 AST · 4.7 REB",
-          "sub": "2026-27 season (3 games); 19 points, 9 rebounds and 8 assists at New York",
+          "line": "20.8 PTS · 8.0 AST · 5.8 REB",
+          "sub": "2026-27 season (4 games); 19 points, 9 rebounds and 8 assists at New York",
           "badge": "Star"
         },
         {
           "team": "DET",
           "name": "Duncan Robinson",
-          "line": "19.7 PTS · 5.0 3PM",
-          "sub": "2026-27 season (3 games), 53.6% from three; 4-for-14 at New York"
+          "line": "17.8 PTS · 4.2 3PM",
+          "sub": "2026-27 season (4 games), 44.7% from three; 2-for-10 from deep at New York"
         },
         {
           "team": "DET",
           "name": "Paul Reed",
-          "line": "11.0 PTS · 8.3 REB",
-          "sub": "2026-27 season (3 games); 22 points and 9 rebounds at New York with Duren out"
+          "line": "13.8 PTS · 8.5 REB",
+          "sub": "2026-27 season (4 games); 22 points on 9-of-12 at New York, but foul trouble limited his minutes"
         },
         {
           "team": "CHA",
@@ -56,23 +56,23 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (4 games), 41.2% from three"
         }
       ],
-      "injuryNote": "ESPN lists Isaiah Joe (right hip bruise) as day-to-day with a Oct. 28 return date, and Jalen Duren (right hamstring strain) as out until about Nov. 9. For Charlotte, Coby White, Kon Knueppel, Grant Williams and Kylan Boswell are out. I found no newer reporting on lineups as of this morning.",
+      "injuryNote": "ESPN lists Isaiah Joe (right hip bruise) as day-to-day with an Oct. 28 return date; he missed Tuesday at New York and is a game-time decision per the Oct. 28 team report. Jalen Duren (right hamstring strain) is out until about Nov. 9. For Charlotte, White, Knueppel, Williams and Boswell are out. I found no newer lineup news as of 12:50 p.m.",
       "talkingPoints": [
-        "Detroit is 3-1 and in first in the Central after Tuesday's 111-97 loss in New York.",
-        "Playing the second night of a back-to-back, with Duren still out.",
-        "Charlotte is 3-1 too, but without White, Knueppel and Williams.",
+        "Detroit is 3-1 and first in the Central after Tuesday's 111-97 loss in New York.",
+        "Second night of a back-to-back, with Duren still out and Joe a game-time call.",
+        "Charlotte is 3-1 too, but without White, Knueppel, Williams and Boswell.",
         "Brandon Miller is scoring 24.2 a night, though on 37.0% shooting.",
-        "Duncan Robinson is shooting 53.6% from three; the Pistons had gone 9-for-37 at New York.",
-        "DraftKings has Detroit -7.5 with a 215.5 total."
+        "The Pistons shot 9-for-37 from three at New York; they hit 37.6% on the season.",
+        "DraftKings has Detroit -7.5 with a 213.5 total."
       ],
       "facts": [
         {
           "label": "Broadcast",
-          "text": "NBA League Pass (away broadcast)"
+          "text": "NBA League Pass (away broadcast); local: WMYD, DAZN"
         },
         {
           "label": "Line",
-          "text": "DraftKings: DET -7.5, total 215.5; moneyline DET -278 / CHA +225"
+          "text": "DraftKings: DET -7.5, total 213.5; moneyline DET -290 / CHA +235"
         },
         {
           "label": "Rest",
@@ -85,18 +85,18 @@ window.PISTONS_PREGAME = {
       ],
       "projNotes": {
         "Cade Cunningham": "Hornets allow slightly fewer guard points than average",
-        "Paul Reed": "Minutes set low in the model; he played 26 at New York with Duren out",
-        "John Collins": "More minutes with Duren out",
-        "Taurean Prince": "New team and no games yet this season; minutes uncertain",
-        "Isaiah Joe": "Day-to-day with a hip bruise",
-        "Elijah Harkless": "New team and no games yet this season; role unclear"
+        "Paul Reed": "Model has 17 min; he played 26 at New York with Duren out",
+        "John Collins": "Frontcourt minutes up with Duren out",
+        "Taurean Prince": "Back Tuesday after two absences; played 7 min, role uncertain",
+        "Isaiah Joe": "Day-to-day with a hip bruise; may not play",
+        "Elijah Harkless": "Played 3 min Tuesday; projected role may be too large"
       },
-      "projNote": "Not projected: Jalen Duren (out), Ronald Holland II, Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores).",
+      "projNote": "Not projected: Jalen Duren (out), Ronald Holland II, Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 110.5 Detroit points.",
       "pick": {
         "call": "Pistons by about seven",
-        "text": "Just for fun: Detroit is a 7.5-point favorite at home against a short-handed Charlotte, but back-to-back legs keep it from feeling safe. Pistons 112, Hornets 105."
+        "text": "Just for fun: Detroit is a 7.5-point favorite at home against a short-handed Charlotte, but back-to-back legs keep it from feeling safe. Pistons 111, Hornets 104."
       },
-      "share": "Pistons (3-1) host the Hornets (3-1) tonight at 7:00 ET. Duren is out, Charlotte is missing four, and Cade averages 21.3 and 8.0 assists.",
+      "share": "Pistons (3-1) host the Hornets (3-1) tonight at 7:00 ET. Duren is out, Joe is a game-time call, Charlotte is missing four, and Cade averages 20.8 and 8.0 assists.",
       "sources": [
         {
           "title": "ESPN game page",
