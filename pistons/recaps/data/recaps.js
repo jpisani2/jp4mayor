@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-10-27T22:58:00-04:00",
+  "updated": "2026-10-28T21:42:00-04:00",
   "games": [
+    {
+      "id": "g20261028",
+      "date": "2026-10-28",
+      "phase": "Regular season",
+      "home": true,
+      "venue": "Little Caesars Arena, Detroit",
+      "attendance": 19023,
+      "opp": {
+        "abbr": "CHA",
+        "name": "Charlotte Hornets",
+        "short": "Hornets",
+        "score": 89,
+        "quarters": [
+          22,
+          29,
+          19,
+          19
+        ]
+      },
+      "det": {
+        "score": 97,
+        "quarters": [
+          21,
+          23,
+          32,
+          21
+        ]
+      },
+      "result": "W",
+      "record": "4-1",
+      "headline": "Pistons beat Hornets 97-89 behind Cade's 30",
+      "dek": "Detroit trailed 51-44 at the half, outscored Charlotte 32-19 in the third behind a 12-0 run, and forced 23 turnovers to win and improve to 4-1.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "30 PTS · 7 AST · 5 REB · 10-22 FG",
+          "sub": "Scored 30 on 10-for-22 with 6-for-8 at the line and just 1 turnover in 39 minutes; his three at 7:04 of the third was the last lead change",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "16 PTS · 5-7 FG · 3 STL",
+          "sub": "Shot 5-for-7 with 2-for-2 from three in 38 minutes and was +6"
+        },
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "14 PTS · 6-10 FG · 2 STL",
+          "sub": "Scored 14 off the bench in 24 minutes with no turnovers and a +11"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "7 PTS · 9 REB · 8 AST",
+          "sub": "Filled the stat sheet in 29 minutes with 9 rebounds and 8 assists, though he had 3 turnovers and went 3-for-5 from the field"
+        },
+        {
+          "team": "CHA",
+          "name": "Brandon Miller",
+          "line": "31 PTS · 12 REB · 12-26 FG",
+          "sub": "Double-double with 3 threes and 2 steals in 38 minutes, but Charlotte was only +1 with him on the floor"
+        },
+        {
+          "team": "CHA",
+          "name": "Dennis Schroder",
+          "line": "14 PTS · 5 AST · 6-10 FG",
+          "sub": "Shot 6-for-10 but had 5 turnovers in 34 minutes"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's slate",
+          "text": "Miller's 31 led the day's scorers, with Cunningham's 30 second ahead of Giannis Antetokounmpo and Evan Mobley (24 each). Thompson's 8 assists were fourth on the day, behind Jalen Johnson and Kyshawn George (11) and Davion Mitchell (10), and his 9 rebounds tied Johnson for fourth."
+        },
+        {
+          "label": "This week",
+          "text": "Neither Miller nor Cunningham reached the week's top 10 in points, where Doncic (52) and Edwards (47) lead. Giannis' 18 rebounds on Wednesday were fourth among the week's best."
+        },
+        {
+          "label": "Season series",
+          "text": "ESPN lists Detroit leading the series 1-0."
+        }
+      ],
+      "talkingPoints": [
+        "Charlotte led 51-44 at the half after a 29-point second quarter, and its biggest lead was 12, at 6:22 of the second.",
+        "Detroit outscored the Hornets 32-19 in the third, including a 12-0 run that started at 8:32.",
+        "Cunningham's three at 7:04 of the third put Detroit ahead 57-56, and that was the last lead change.",
+        "The Pistons turned Charlotte over 23 times while committing 13 themselves, and had 13 steals to the Hornets' 7.",
+        "Cade had 30 points with one turnover, and Miller answered with 31 and 12 for Charlotte.",
+        "Detroit did it without Jalen Duren and Isaiah Joe, and is 4-1 after its second home win."
+      ],
+      "notable": [
+        {
+          "stat": "32-19",
+          "label": "Pistons' third quarter",
+          "note": "After trailing 51-44 at the half, Detroit took the lead on a 12-0 run starting at 8:32"
+        },
+        {
+          "stat": "23-13",
+          "label": "Turnovers, CHA to DET",
+          "note": "Charlotte had 23 turnovers to Detroit's 13; both teams scored 21 points off them"
+        },
+        {
+          "stat": "13-7",
+          "label": "Steals",
+          "note": "Robinson had 4 and Reed 3 among Detroit's 13"
+        },
+        {
+          "stat": "30",
+          "label": "Cunningham points",
+          "note": "10-for-22 from the field, 4-for-9 from three and 6-for-8 at the line, second on the day behind Miller's 31"
+        },
+        {
+          "stat": "+23",
+          "label": "Javonte Green",
+          "note": "Best plus-minus in the game in 21 minutes, with 7 points"
+        },
+        {
+          "stat": "26-17",
+          "label": "Assists",
+          "note": "Detroit assisted on 26 of its 34 baskets; Charlotte on 17 of 31"
+        }
+      ],
+      "story": [
+        "Charlotte had the better of the first half. Miller got going early and a 29-point second quarter gave the Hornets a 51-44 lead at the break, their biggest at 12 with 6:22 left in the second.",
+        "The third quarter changed it. Detroit scored 32 points to Charlotte's 19, starting with a 12-0 run at 8:32, and Cunningham's three at 7:04 made it 57-56 for the last lead change of the night. The Hornets never led again.",
+        "Charlotte kept it within reach with Miller (31 points, 12 rebounds), but 23 turnovers and 13 Detroit steals were too much. Detroit's lead reached 10 at 10:59 of the fourth, and Schroder's three at 54 seconds only cut it to 94-89 before the Pistons closed it out at 97-89."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "34-76 (45%)",
+          "opp": "31-71 (44%)"
+        },
+        {
+          "label": "3PT",
+          "det": "13-33 (39%)",
+          "opp": "12-35 (34%)"
+        },
+        {
+          "label": "FT",
+          "det": "16-20 (80%)",
+          "opp": "15-19 (79%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "33",
+          "opp": "45"
+        },
+        {
+          "label": "Assists",
+          "det": "26",
+          "opp": "17"
+        },
+        {
+          "label": "Steals",
+          "det": "13",
+          "opp": "7"
+        },
+        {
+          "label": "Blocks",
+          "det": "3",
+          "opp": "5"
+        },
+        {
+          "label": "Turnovers",
+          "det": "13",
+          "opp": "23"
+        },
+        {
+          "label": "Paint pts",
+          "det": "36",
+          "opp": "32"
+        }
+      ],
+      "share": "Pistons 97, Hornets 89. Down 7 at half, DET won the 3rd 32-19 and forced 23 turnovers. Cade 30, Reed 16, Jenkins 14. Miller had 31. DET is 4-1.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909883"
+        }
+      ]
+    },
     {
       "id": "g20261027",
       "date": "2026-10-27",
