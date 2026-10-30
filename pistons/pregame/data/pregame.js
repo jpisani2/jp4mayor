@@ -1,13 +1,13 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-30T05:58:00-04:00",
+  "updated": "2026-10-30T12:58:00-04:00",
   "games": [
     {
       "id": "g20261030",
       "date": "2026-10-30",
       "phase": "Regular season",
       "headline": "Pistons look to stay hot in Brooklyn",
-      "dek": "Detroit (4-1) visits winless Brooklyn (0-4) Friday at 7:30 p.m. ET as a 7.5-point favorite, still without Jalen Duren and with Isaiah Joe day-to-day.",
+      "dek": "Detroit (4-1) visits winless Brooklyn (0-4) Friday at 7:30 p.m. ET as an 8.5-point favorite, still without Jalen Duren and with Isaiah Joe day-to-day.",
       "keys": [
         {
           "title": "Brooklyn is still looking for win No. 1",
@@ -56,14 +56,14 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (4 games), 35.2 minutes a night"
         }
       ],
-      "injuryNote": "ESPN lists Isaiah Joe (right hip bruise) as day-to-day with an Oct. 30 return date, and Jalen Duren (right hamstring strain) out until about Nov. 9. For Brooklyn, Egor Demin and Tyler Bilodeau are out. A news search this morning found no confirmed starting lineups or newer injury report.",
+      "injuryNote": "ESPN lists Isaiah Joe (right hip bruise) as day-to-day with an Oct. 30 return date, and Jalen Duren (right hamstring strain) out until about Nov. 9. For Brooklyn, Egor Demin (leg) and Tyler Bilodeau (shoulder) are out, and Noah Clowney is day-to-day with an illness (new on ESPN's list). The midday news search found no confirmed starting lineups or newer team report.",
       "talkingPoints": [
         "Detroit is 4-1 and first in the Central after Wednesday's 97-89 win over Charlotte.",
         "Brooklyn is 0-4 and has lost four straight, the latest by one point at Boston.",
         "Duren is still out until about Nov. 9, and Joe is day-to-day with a hip bruise.",
         "Cade is averaging 22.6 points and 7.8 assists.",
         "Porter Jr. (22.8) and Randle (22.5) are the Nets' scoring engine.",
-        "DraftKings has Detroit -7.5 with a 222.5 total."
+        "DraftKings now has Detroit -8.5 with a 222.5 total, up a point from this morning."
       ],
       "facts": [
         {
@@ -72,7 +72,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "label": "Line",
-          "text": "DraftKings: DET -7.5, total 222.5; moneyline DET -298 / BKN +240"
+          "text": "DraftKings: DET -8.5, total 222.5; moneyline DET -325 / BKN +260"
         },
         {
           "label": "Rest",
