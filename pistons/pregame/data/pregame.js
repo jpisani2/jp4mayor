@@ -1,13 +1,13 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-30T12:58:00-04:00",
+  "updated": "2026-10-30T16:58:00-04:00",
   "games": [
     {
       "id": "g20261030",
       "date": "2026-10-30",
       "phase": "Regular season",
       "headline": "Pistons look to stay hot in Brooklyn",
-      "dek": "Detroit (4-1) visits winless Brooklyn (0-4) Friday at 7:30 p.m. ET as an 8.5-point favorite, still without Jalen Duren and with Isaiah Joe day-to-day.",
+      "dek": "Detroit (4-1) visits winless Brooklyn (0-4) Friday at 7:30 p.m. ET as an 8.5-point favorite, still without Jalen Duren and now without Isaiah Joe, who ESPN lists as out.",
       "keys": [
         {
           "title": "Brooklyn is still looking for win No. 1",
@@ -15,7 +15,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "title": "Frontcourt without Duren",
-          "text": "Jalen Duren (right hamstring strain) is out until about Nov. 9. Paul Reed (14.2 points, 7.6 rebounds) and John Collins (6.8 rebounds) carry the minutes against a Nets team that gets 22.8 from Michael Porter Jr. and 22.5 from Julius Randle."
+          "text": "Jalen Duren (right hamstring strain) is out until about Nov. 9 and Isaiah Joe (hip bruise) is now out too. Paul Reed (14.2 points, 7.6 rebounds) and John Collins (6.8 rebounds) carry the minutes against a Nets team that gets 22.8 from Michael Porter Jr. and 22.5 from Julius Randle."
         },
         {
           "title": "Rested legs, thin Nets backcourt",
@@ -56,14 +56,14 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (4 games), 35.2 minutes a night"
         }
       ],
-      "injuryNote": "ESPN lists Isaiah Joe (right hip bruise) as day-to-day with an Oct. 30 return date, and Jalen Duren (right hamstring strain) out until about Nov. 9. For Brooklyn, Egor Demin (leg) and Tyler Bilodeau (shoulder) are out, and Noah Clowney is day-to-day with an illness (new on ESPN's list). The midday news search found no confirmed starting lineups or newer team report.",
+      "injuryNote": "ESPN updated Isaiah Joe (right hip bruise) from day-to-day to out this afternoon, with a Nov. 2 return date; Jalen Duren (right hamstring strain) is out until about Nov. 9. For Brooklyn, Egor Demin (leg) and Tyler Bilodeau (shoulder) are out, and Noah Clowney is day-to-day with an illness. An afternoon news search found no confirmed starting lineups.",
       "talkingPoints": [
         "Detroit is 4-1 and first in the Central after Wednesday's 97-89 win over Charlotte.",
         "Brooklyn is 0-4 and has lost four straight, the latest by one point at Boston.",
-        "Duren is still out until about Nov. 9, and Joe is day-to-day with a hip bruise.",
+        "Duren is out until about Nov. 9, and Joe is now out with a hip bruise.",
         "Cade is averaging 22.6 points and 7.8 assists.",
         "Porter Jr. (22.8) and Randle (22.5) are the Nets' scoring engine.",
-        "DraftKings now has Detroit -8.5 with a 222.5 total, up a point from this morning."
+        "DraftKings has Detroit -8.5 with a 223.5 total."
       ],
       "facts": [
         {
@@ -72,7 +72,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "label": "Line",
-          "text": "DraftKings: DET -8.5, total 222.5; moneyline DET -325 / BKN +260"
+          "text": "DraftKings: DET -8.5, total 223.5; moneyline DET -310 / BKN +250"
         },
         {
           "label": "Rest",
@@ -89,14 +89,14 @@ window.PISTONS_PREGAME = {
         "John Collins": "Frontcourt minutes up with Duren out",
         "Duncan Robinson": "Shot 4.0 threes a night so far; model expects a dip",
         "Elijah Harkless": "One game this season; role may be smaller than projected",
-        "Isaiah Joe": "Day-to-day (hip bruise); projection assumes he plays"
+        "Daniss Jenkins": "Backcourt minutes up with Joe out"
       },
-      "projNote": "Not projected: Jalen Duren (out), Ronald Holland II, Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 115 Detroit points.",
+      "projNote": "Not projected: Jalen Duren and Isaiah Joe (out), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 116 Detroit points.",
       "pick": {
         "call": "Pistons by about nine",
         "text": "Just for fun: Brooklyn is winless and thin in the backcourt, but they've been in close games. Pistons 115, Nets 106."
       },
-      "share": "Pistons (4-1) at winless Nets (0-4) tonight, 7:30 ET. Duren is out, Joe is day-to-day, and Cade is averaging 22.6 and 7.8 assists.",
+      "share": "Pistons (4-1) at winless Nets (0-4) tonight, 7:30 ET. Duren and Joe are both out, and Cade is averaging 22.6 and 7.8 assists.",
       "sources": [
         {
           "title": "ESPN game page",
