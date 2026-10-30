@@ -1,7 +1,109 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-28T16:55:00-04:00",
+  "updated": "2026-10-30T05:58:00-04:00",
   "games": [
+    {
+      "id": "g20261030",
+      "date": "2026-10-30",
+      "phase": "Regular season",
+      "headline": "Pistons look to stay hot in Brooklyn",
+      "dek": "Detroit (4-1) visits winless Brooklyn (0-4) Friday at 7:30 p.m. ET as a 7.5-point favorite, still without Jalen Duren and with Isaiah Joe day-to-day.",
+      "keys": [
+        {
+          "title": "Brooklyn is still looking for win No. 1",
+          "text": "The Nets are 0-4 and on a four-game skid, and the last one was a 124-125 loss at Boston on Monday. They average 114.2 points but shoot 42.9% from the field and turn it over 17.5 times a game."
+        },
+        {
+          "title": "Frontcourt without Duren",
+          "text": "Jalen Duren (right hamstring strain) is out until about Nov. 9. Paul Reed (14.2 points, 7.6 rebounds) and John Collins (6.8 rebounds) carry the minutes against a Nets team that gets 22.8 from Michael Porter Jr. and 22.5 from Julius Randle."
+        },
+        {
+          "title": "Rested legs, thin Nets backcourt",
+          "text": "Detroit beat Charlotte 97-89 on Wednesday and has a day of rest; Brooklyn last played Tuesday and has two. Egor Demin (leg bruise) is out until about Nov. 7 and Tyler Bilodeau (shoulder) until about Nov. 1."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "22.6 PTS · 7.8 AST · 5.6 REB",
+          "sub": "2026-27 season (5 games); 30 points on 10-for-22 against Charlotte",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "16.8 PTS · 4.0 3PM",
+          "sub": "2026-27 season (5 games), 43.5% from three"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "14.2 PTS · 7.6 REB",
+          "sub": "2026-27 season (5 games); 16 points and 3 steals against Charlotte"
+        },
+        {
+          "team": "BKN",
+          "name": "Michael Porter Jr.",
+          "line": "22.8 PTS · 7.0 REB",
+          "sub": "2026-27 season (4 games), 40.5% from three",
+          "badge": "Star"
+        },
+        {
+          "team": "BKN",
+          "name": "Julius Randle",
+          "line": "22.5 PTS · 7.5 REB · 5.8 AST",
+          "sub": "2026-27 season (4 games), 35.2 minutes a night"
+        }
+      ],
+      "injuryNote": "ESPN lists Isaiah Joe (right hip bruise) as day-to-day with an Oct. 30 return date, and Jalen Duren (right hamstring strain) out until about Nov. 9. For Brooklyn, Egor Demin and Tyler Bilodeau are out. A news search this morning found no confirmed starting lineups or newer injury report.",
+      "talkingPoints": [
+        "Detroit is 4-1 and first in the Central after Wednesday's 97-89 win over Charlotte.",
+        "Brooklyn is 0-4 and has lost four straight, the latest by one point at Boston.",
+        "Duren is still out until about Nov. 9, and Joe is day-to-day with a hip bruise.",
+        "Cade is averaging 22.6 points and 7.8 assists.",
+        "Porter Jr. (22.8) and Randle (22.5) are the Nets' scoring engine.",
+        "DraftKings has Detroit -7.5 with a 222.5 total."
+      ],
+      "facts": [
+        {
+          "label": "Broadcast",
+          "text": "NBA League Pass (away broadcast); Brooklyn's local feed is DAZN (YES)"
+        },
+        {
+          "label": "Line",
+          "text": "DraftKings: DET -7.5, total 222.5; moneyline DET -298 / BKN +240"
+        },
+        {
+          "label": "Rest",
+          "text": "Detroit played Wednesday night; Brooklyn played Tuesday at Boston"
+        },
+        {
+          "label": "Up next",
+          "text": "The teams meet again Dec. 14 in Detroit"
+        }
+      ],
+      "projNotes": {
+        "Cade Cunningham": "Nets allow slightly more assists to guards than average",
+        "Paul Reed": "Projected 20 min with Duren out; he averages 26",
+        "John Collins": "Frontcourt minutes up with Duren out",
+        "Duncan Robinson": "Shot 4.0 threes a night so far; model expects a dip",
+        "Elijah Harkless": "One game this season; role may be smaller than projected",
+        "Isaiah Joe": "Day-to-day (hip bruise); projection assumes he plays"
+      },
+      "projNote": "Not projected: Jalen Duren (out), Ronald Holland II, Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 115 Detroit points.",
+      "pick": {
+        "call": "Pistons by about nine",
+        "text": "Just for fun: Brooklyn is winless and thin in the backcourt, but they've been in close games. Pistons 115, Nets 106."
+      },
+      "share": "Pistons (4-1) at winless Nets (0-4) tonight, 7:30 ET. Duren is out, Joe is day-to-day, and Cade is averaging 22.6 and 7.8 assists.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909279"
+        }
+      ]
+    },
     {
       "id": "g20261028",
       "date": "2026-10-28",
