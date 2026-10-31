@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-10-28T21:42:00-04:00",
+  "updated": "2026-10-30T22:03:00-04:00",
   "games": [
+    {
+      "id": "g20261030",
+      "date": "2026-10-30",
+      "phase": "Regular season",
+      "home": false,
+      "venue": "Barclays Center, Brooklyn",
+      "attendance": 17548,
+      "opp": {
+        "abbr": "BKN",
+        "name": "Brooklyn Nets",
+        "short": "Nets",
+        "score": 94,
+        "quarters": [
+          28,
+          21,
+          17,
+          28
+        ]
+      },
+      "det": {
+        "score": 110,
+        "quarters": [
+          21,
+          35,
+          36,
+          18
+        ]
+      },
+      "result": "W",
+      "record": "5-1",
+      "headline": "Pistons rout Nets 110-94 with a 71-38 middle",
+      "dek": "Detroit trailed 28-21 after one, then outscored Brooklyn 71-38 over the second and third quarters, led by as many as 30 and moved to 5-1.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Ronald Holland II",
+          "line": "18 PTS · 4 STL · 6-10 FG",
+          "sub": "Scored 18 off the bench in 22 minutes with 4 steals and a block, and was +14",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "20 PTS · 7-7 FT · 4 AST",
+          "sub": "Led Detroit with 20 on 6-for-15 shooting and a perfect 7-for-7 at the line, with 4 turnovers in 28 minutes"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "17 PTS · 3 STL · 5-5 FT",
+          "sub": "Scored 17 in 26 minutes with 2 threes, 3 steals, no turnovers and a +14"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "11 PTS · 8 REB · 6 AST",
+          "sub": "Filled the sheet in 26 minutes with 2 steals and no turnovers; his 6 assists included the dunk by John Collins that was the last lead change"
+        },
+        {
+          "team": "BKN",
+          "name": "Moritz Wagner",
+          "line": "16 PTS · 8 REB · 7-10 FG",
+          "sub": "Led Brooklyn in scoring in 23 minutes, but the Nets were outscored by 7 with him on the floor"
+        },
+        {
+          "team": "BKN",
+          "name": "Julius Randle",
+          "line": "15 PTS · 8 REB · 5 TO",
+          "sub": "Hit 3 of 6 threes but shot 4-for-13 overall and had 5 turnovers in 25 minutes"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's slate",
+          "text": "With several games still in progress at the time of writing, Anthony Davis' 25 led the day's scorers, with Cunningham's 20 second and Wagner's 16 fourth. Collins' 9 rebounds were third behind Davis (13) and Moussa Diabate (12), and Thompson's 6 assists were third behind Trae Young (9) and Dennis Schroder (8)."
+        },
+        {
+          "label": "This week",
+          "text": "Cunningham's 20 did not reach the week's top 10 in points, which starts at 37 and is led by Doncic's 52 and Edwards' 47."
+        },
+        {
+          "label": "Season series",
+          "text": "ESPN lists Detroit leading the series 1-0."
+        }
+      ],
+      "talkingPoints": [
+        "Brooklyn led 28-21 after one, but Detroit won the second 35-21 and the third 36-17 for a 71-38 stretch.",
+        "The Pistons led 56-49 at the half, and the last lead change was Collins' dunk at 1:15 of the second.",
+        "The lead hit 30 at 11:13 of the fourth, and Detroit never let it get close.",
+        "The Pistons forced 23 turnovers against 12 of their own, and won fast-break points 27-11.",
+        "Brooklyn had 10 blocks and a 50-41 rebounding edge, and still lost by 16 because it shot 31-for-77.",
+        "Detroit did it again without Jalen Duren and Isaiah Joe, and Holland and Robinson combined for 35 points and 7 steals."
+      ],
+      "notable": [
+        {
+          "stat": "71-38",
+          "label": "Second and third quarters",
+          "note": "Detroit won the middle quarters 35-21 and 36-17 after trailing 28-21 after one"
+        },
+        {
+          "stat": "30",
+          "label": "Biggest Pistons lead",
+          "note": "At 11:13 of the fourth; Brooklyn's biggest lead was 10, at 10:44 of the second"
+        },
+        {
+          "stat": "27-11",
+          "label": "Fast-break points",
+          "note": "Detroit also won the paint 48-36"
+        },
+        {
+          "stat": "23-12",
+          "label": "Turnovers, BKN to DET",
+          "note": "Randle had 5 and Nolan Traore and Noah Clowney 3 each; Detroit had 14 steals to Brooklyn's 8"
+        },
+        {
+          "stat": "7-7",
+          "label": "Cunningham free throws",
+          "note": "Part of Detroit's 22-for-28 night at the line, against 21-for-26 for the Nets"
+        },
+        {
+          "stat": "12-41",
+          "label": "Pistons from three",
+          "note": "29%, vs 11-37 (30%) for Brooklyn; Detroit won anyway by shooting 38-for-90 and taking care of the ball"
+        }
+      ],
+      "story": [
+        "Brooklyn started better, scoring 28 in the first quarter and opening with an 8-0 run to lead 28-21 after one. Detroit tied the game and took control in the second, outscoring the Nets 35-21 to go to the half up 56-49, with Collins' dunk at 1:15 the last lead change of the night.",
+        "The third quarter made it a rout. Detroit won it 36-17, including an 8-0 run from 5:10 to 3:55, and led 92-66 going into the fourth. Bickerstaff drew a technical at 3:36 of the third, and the Pistons later pushed the lead to 30 at 11:13 of the fourth. Brooklyn won the final quarter 28-18 but the game ended 110-94.",
+        "Holland had 18 off the bench with 4 steals, Cunningham added 20 with a perfect 7-for-7 at the line and Robinson scored 17 with 3 steals. Detroit forced 23 turnovers and took 27 fast-break points to 11, without Jalen Duren and Isaiah Joe, and improved to 5-1."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "38-90 (42%)",
+          "opp": "31-77 (40%)"
+        },
+        {
+          "label": "3PT",
+          "det": "12-41 (29%)",
+          "opp": "11-37 (30%)"
+        },
+        {
+          "label": "FT",
+          "det": "22-28 (79%)",
+          "opp": "21-26 (81%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "41",
+          "opp": "50"
+        },
+        {
+          "label": "Assists",
+          "det": "25",
+          "opp": "20"
+        },
+        {
+          "label": "Steals",
+          "det": "14",
+          "opp": "8"
+        },
+        {
+          "label": "Blocks",
+          "det": "3",
+          "opp": "10"
+        },
+        {
+          "label": "Turnovers",
+          "det": "12",
+          "opp": "23"
+        },
+        {
+          "label": "Paint pts",
+          "det": "48",
+          "opp": "36"
+        }
+      ],
+      "share": "Pistons 110, Nets 94. Down 7 after one, DET won Q2+Q3 71-38 and led by 30. Cade 20, Holland 18, Robinson 17. DET is 5-1.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909279"
+        }
+      ]
+    },
     {
       "id": "g20261028",
       "date": "2026-10-28",
