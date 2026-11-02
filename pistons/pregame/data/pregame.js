@@ -1,13 +1,13 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-02T05:55:00-05:00",
+  "updated": "2026-11-02T12:58:00-05:00",
   "games": [
     {
       "id": "g20261102",
       "date": "2026-11-02",
       "phase": "Regular season",
-      "headline": "Pistons visit a banged-up Hornets team",
-      "dek": "Detroit (5-1) is at Charlotte (3-4) Monday at 7:30 p.m. ET as a 4.5-point favorite, still without Jalen Duren and Isaiah Joe, while the Hornets are missing Kon Knueppel and Grant Williams.",
+      "headline": "Pistons chase a sixth win in Charlotte",
+      "dek": "Detroit (5-1) is at Charlotte (3-4) Monday at 7:30 p.m. ET as a 5.5-point favorite; Duren is out, Joe's status is murky, and the Hornets are missing Knueppel and Williams.",
       "keys": [
         {
           "title": "Charlotte is sliding",
@@ -15,7 +15,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "title": "Both teams are thin",
-          "text": "Duren (right hamstring) is out until about Nov. 9, and ESPN lists Joe (hip bruise) as out with a Nov. 2 return date. Charlotte is without Knueppel and Williams (both hamstring), also listed to return about Nov. 9."
+          "text": "Duren (right hamstring) is out until about Nov. 9. ESPN lists Joe (hip bruise) as out with a Nov. 4 return date, while NBC and CBS had him questionable or a game-time call. Charlotte is without Knueppel and Grant Williams (both hamstring), also listed to return about Nov. 9."
         },
         {
           "title": "Brandon Miller vs. the Pistons' depth",
@@ -56,14 +56,14 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (7 games)"
         }
       ],
-      "injuryNote": "Per ESPN's injury list: Detroit's Jalen Duren (right hamstring strain, about Nov. 9) and Isaiah Joe (right hip bruise, Nov. 2 return date) are out; Charlotte's Kon Knueppel and Grant Williams (hamstrings, about Nov. 9) are out. A news search found no newer lineup reports.",
+      "injuryNote": "ESPN's injury list (updated Nov. 1) has Joe out with a Nov. 4 return date; NBC Sports had him questionable and CBS Sports a game-time decision. An SI game page lists Joe day-to-day and Ausar Thompson (ankle) day-to-day, which ESPN's list doesn't show, so check the official report near tip. Duren is out; Knueppel and Williams are out for Charlotte.",
       "talkingPoints": [
         "Detroit is 5-1 and has won two straight, including 110-94 at Brooklyn.",
         "Charlotte has lost three in a row and is 3-4.",
         "The Pistons beat the Hornets 97-89 on Oct. 28 and lead the season series 1-0.",
         "Brandon Miller is averaging 24.4 points for Charlotte.",
-        "Cade is at 22.2 points and 7.2 assists, with Duren still out.",
-        "DraftKings has Detroit -4.5 with a 210.5 total."
+        "Cade is at 22.2 points and 7.2 assists, with Duren still out and Joe iffy.",
+        "DraftKings has Detroit -5.5 with a 210.5 total."
       ],
       "facts": [
         {
@@ -72,7 +72,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "label": "Line",
-          "text": "DraftKings: DET -4.5, total 210.5; moneyline DET -175 / CHA +145"
+          "text": "DraftKings: DET -5.5, total 210.5; moneyline DET -219 / CHA +182"
         },
         {
           "label": "Rest",
@@ -87,22 +87,33 @@ window.PISTONS_PREGAME = {
         "Cade Cunningham": "Hornets give guards slightly fewer points and assists",
         "Duncan Robinson": "Hot three-point start (3.7 a night); model expects a dip",
         "John Collins": "Projected 24 min with Duren and Joe out; averages 26.7",
-        "Ausar Thompson": "Assist rate has run below last season's pace",
+        "Ausar Thompson": "Assist rate below last season's pace; ankle listed day-to-day by SI",
         "Elijah Harkless": "No games yet this season; role may be smaller than projected",
         "Daniss Jenkins": "Backcourt minutes up with Joe out"
       },
-      "projNote": "Not projected: Jalen Duren and Isaiah Joe (out), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 107.5 Detroit points.",
+      "projNote": "Not projected: Jalen Duren and Isaiah Joe (out per ESPN), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 108 Detroit points.",
       "pick": {
-        "call": "Pistons by about five",
-        "text": "Just for fun: Charlotte is missing two starters and has lost three straight, but home games can be scrappy. Pistons 107, Hornets 101."
+        "call": "Pistons by about six",
+        "text": "Just for fun: Charlotte is missing two starters and has lost three straight, but home games can be scrappy. Pistons 108, Hornets 102."
       },
-      "share": "Pistons (5-1) at Hornets (3-4) tonight, 7:30 ET. Duren and Joe are out, Cade is averaging 22.2 and 7.2 assists.",
+      "share": "Pistons (5-1) at Hornets (3-4) tonight, 7:30 ET. Duren is out, Joe is iffy, and Cade is averaging 22.2 and 7.2 assists.",
       "sources": [
         {
           "title": "ESPN game page",
           "url": "https://www.espn.com/nba/game/_/gameId/401909908"
+        },
+        {
+          "title": "SI game page",
+          "url": "https://www.si.com/nba/scoreboard/pistons-vs-hornets-11-2-2026-1584"
+        },
+        {
+          "title": "NBC Sports: Isaiah Joe questionable",
+          "url": "https://www.nbcsports.com/fantasy/basketball/player-news/2026-11-01/isaiah-joe-hip-questionable-monday-vs-charlotte"
         }
-      ]
+      ],
+      "ouNotes": {
+        "Ausar Thompson": "SI lists an ankle issue (day-to-day); not on ESPN's list"
+      }
     },
     {
       "id": "g20261030",
