@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-02T12:58:00-05:00",
+  "updated": "2026-11-02T16:55:00-05:00",
   "games": [
     {
       "id": "g20261102",
@@ -56,14 +56,14 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (7 games)"
         }
       ],
-      "injuryNote": "ESPN's injury list (updated Nov. 1) has Joe out with a Nov. 4 return date; NBC Sports had him questionable and CBS Sports a game-time decision. An SI game page lists Joe day-to-day and Ausar Thompson (ankle) day-to-day, which ESPN's list doesn't show, so check the official report near tip. Duren is out; Knueppel and Williams are out for Charlotte.",
+      "injuryNote": "ESPN's injury list (updated Monday) has Joe out with a hip bruise and a Nov. 4 return date; NBC Sports had him questionable on Nov. 1 and CBS Sports a game-time decision, so treat him as out unless the official report says otherwise. An SI game page lists Joe day-to-day and Ausar Thompson (ankle) day-to-day, which ESPN's list doesn't show, so check the official report near tip. Duren is out; Knueppel and Williams are out for Charlotte.",
       "talkingPoints": [
         "Detroit is 5-1 and has won two straight, including 110-94 at Brooklyn.",
         "Charlotte has lost three in a row and is 3-4.",
         "The Pistons beat the Hornets 97-89 on Oct. 28 and lead the season series 1-0.",
         "Brandon Miller is averaging 24.4 points for Charlotte.",
         "Cade is at 22.2 points and 7.2 assists, with Duren still out and Joe iffy.",
-        "DraftKings has Detroit -5.5 with a 210.5 total."
+        "DraftKings has Detroit -5.5 with a 209.5 total."
       ],
       "facts": [
         {
@@ -72,7 +72,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "label": "Line",
-          "text": "DraftKings: DET -5.5, total 210.5; moneyline DET -219 / CHA +182"
+          "text": "DraftKings: DET -5.5, total 209.5; moneyline DET -229 / CHA +189"
         },
         {
           "label": "Rest",
