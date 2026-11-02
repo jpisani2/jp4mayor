@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-02T16:55:00-05:00",
+  "updated": "2026-11-02T18:55:00-05:00",
   "games": [
     {
       "id": "g20261102",
@@ -72,7 +72,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "label": "Line",
-          "text": "DraftKings: DET -5.5, total 209.5; moneyline DET -229 / CHA +189"
+          "text": "DraftKings: DET -5.5, total 209.5; moneyline DET -237 / CHA +196"
         },
         {
           "label": "Rest",
