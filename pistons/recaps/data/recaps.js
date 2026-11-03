@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-10-30T22:03:00-04:00",
+  "updated": "2026-11-02T22:12:00-05:00",
   "games": [
+    {
+      "id": "g20261102",
+      "date": "2026-11-02",
+      "phase": "Regular season",
+      "home": false,
+      "venue": "Spectrum Center, Charlotte",
+      "attendance": 18760,
+      "opp": {
+        "abbr": "CHA",
+        "name": "Charlotte Hornets",
+        "short": "Hornets",
+        "score": 91,
+        "quarters": [
+          24,
+          30,
+          21,
+          16
+        ]
+      },
+      "det": {
+        "score": 124,
+        "quarters": [
+          27,
+          38,
+          33,
+          26
+        ]
+      },
+      "result": "W",
+      "record": "6-1",
+      "headline": "Pistons rout Hornets 124-91, lead hit 33",
+      "dek": "Detroit shot 57% and hit 18 threes, turned a 65-54 halftime lead into a 19-0 third-quarter run and moved to 6-1 with a second win over Charlotte this season.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "33 PTS · 5 STL · 7 AST",
+          "sub": "Scored 33 on 13-for-20 shooting in just 27 minutes, with 5 steals, 7 assists and a +19",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "24 PTS · 6-9 3PT · 3 STL",
+          "sub": "Hit 6 of 9 threes in 32 minutes with 3 steals, 1 turnover and a game-best +25"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "14 PTS · 6 REB · 4 AST",
+          "sub": "Shot 5-for-7 in 26 minutes with 4 assists and a +15, including the pass on Cunningham's dunk at 11:28 of the third"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "11 PTS · 5 REB · 4 AST · 2 BLK",
+          "sub": "Shot 5-for-6 in 28 minutes with 2 steals and 2 blocks, and was +23 as a starter"
+        },
+        {
+          "team": "CHA",
+          "name": "Brandon Miller",
+          "line": "17 PTS · 3-11 3PT",
+          "sub": "Led Charlotte in scoring on 7-for-18 shooting in 31 minutes, and the Hornets were outscored by 14 with him on the floor"
+        },
+        {
+          "team": "CHA",
+          "name": "Moussa Diabate",
+          "line": "7 PTS · 9 REB · 6 OREB · 3 STL",
+          "sub": "Led all players with 6 offensive rebounds, but Charlotte was outscored by 23 in his 24 minutes"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's slate",
+          "text": "With several games still in progress at the time of writing, Shai Gilgeous-Alexander's 43 and Nickeil Alexander-Walker's 34 led the day's scorers, with Cunningham's 33 third. Diabate's 9 rebounds were tied for fourth, behind Isaiah Hartenstein's 14."
+        },
+        {
+          "label": "This week",
+          "text": "Cunningham's 33 did not reach the week's top 10 in points, which starts at 38 and is led by Luka Doncic's 45 and Stephen Curry's 44."
+        },
+        {
+          "label": "Season series",
+          "text": "Detroit now leads the series 2-0, after a 97-89 win on October 28."
+        }
+      ],
+      "talkingPoints": [
+        "Cade needed only 27 minutes for 33 points, 7 assists and 5 steals, and shot 13-for-20.",
+        "It was 27-24 after one, but Detroit won the second 38-30 and the third 33-21, and led 98-75 going into the fourth.",
+        "Detroit went on a 19-0 run from 4:39 to 1:09 of the third, and the lead reached 33 at 5:00 of the fourth.",
+        "The Pistons hit 18 of 37 threes (49%) while Charlotte went 13-for-44 (30%), and Robinson was 6-for-9.",
+        "Detroit won fast-break points 27-4 and the paint 52-36, and had 30 assists on 47 baskets.",
+        "They did it again without Jalen Duren and Isaiah Joe, and Charlotte got Coby White back for his season debut: 7 points, 3 turnovers."
+      ],
+      "notable": [
+        {
+          "stat": "19-0",
+          "label": "Pistons run in the third",
+          "note": "From 4:39 to 1:09 of the third, turning a 79-75 game into a 98-75 lead"
+        },
+        {
+          "stat": "33",
+          "label": "Biggest Pistons lead",
+          "note": "At 5:00 of the fourth; Charlotte's biggest lead was 3, at 11:39 of the first"
+        },
+        {
+          "stat": "18-37",
+          "label": "Pistons from three",
+          "note": "49%, against 13-44 (30%) for Charlotte; Robinson was 6-for-9 and Holland II 3-for-6"
+        },
+        {
+          "stat": "27-4",
+          "label": "Fast-break points",
+          "note": "Detroit also won the paint 52-36 and had 15 steals to Charlotte's 8"
+        },
+        {
+          "stat": "30-19",
+          "label": "Assists, DET to CHA",
+          "note": "Daniss Jenkins had 7 and Cunningham 7, while Charlotte had 25 turnovers, 5 from Dennis Schroder"
+        },
+        {
+          "stat": "18",
+          "label": "Hornets offensive rebounds",
+          "note": "Diabate had 6 and Ryan Kalkbrenner 5, and Charlotte won the boards 44-37 but shot 32-for-84 (38%)"
+        }
+      ],
+      "story": [
+        "Charlotte hung around early. Detroit led 27-24 after one and went to the half up 65-54 after a 38-point second quarter, with Paul Reed's alley-oop from Cunningham at 6:06 helping spark an 8-0 run. The last lead change came at 6:35 of the second, on a Collins layup that made it 39-37.",
+        "The third quarter ended it. Detroit outscored the Hornets 33-21, including a 19-0 run from 4:39 to 1:09, and led 98-75 going into the fourth. Cunningham finished the quarter with a dunk at 2:24, and the lead reached 33 at 5:00 of the fourth. Collins was called for a flagrant 1 at 7:58 of the fourth, with Charlotte on the wrong side of a 106-81 score.",
+        "Cunningham scored 33 in 27 minutes with 5 steals, Robinson added 24 with 6 threes and Thompson, Reed and Holland II scored 14, 11 and 11. Detroit shot 57% and won fast-break points 27-4, without Jalen Duren and Isaiah Joe, and improved to 6-1. Coby White made his season debut for Charlotte and Kon Knueppel and Grant Williams were out."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "47-82 (57%)",
+          "opp": "32-84 (38%)"
+        },
+        {
+          "label": "3PT",
+          "det": "18-37 (49%)",
+          "opp": "13-44 (30%)"
+        },
+        {
+          "label": "FT",
+          "det": "12-15 (80%)",
+          "opp": "14-19 (74%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "37",
+          "opp": "44"
+        },
+        {
+          "label": "Assists",
+          "det": "30",
+          "opp": "19"
+        },
+        {
+          "label": "Steals",
+          "det": "15",
+          "opp": "8"
+        },
+        {
+          "label": "Blocks",
+          "det": "7",
+          "opp": "6"
+        },
+        {
+          "label": "Turnovers",
+          "det": "14",
+          "opp": "25"
+        },
+        {
+          "label": "Paint pts",
+          "det": "52",
+          "opp": "36"
+        }
+      ],
+      "share": "Pistons 124, Hornets 91. Cade 33 in 27 min, Robinson 24 with 6 threes, a 19-0 third-quarter run and a 33-point lead. DET is 6-1.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909908"
+        }
+      ]
+    },
     {
       "id": "g20261030",
       "date": "2026-10-30",
