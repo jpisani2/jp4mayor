@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-04T06:05:00-05:00",
+  "updated": "2026-11-04T12:55:00-05:00",
   "games": [
     {
       "id": "g20261104",
@@ -15,7 +15,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "title": "Detroit's depth vs. Philadelphia's stars",
-          "text": "The Pistons are still without Jalen Duren (hamstring, listed to return about Nov. 9) and Isaiah Joe (hip bruise, about Nov. 8). Philadelphia leans on Tyrese Maxey (29.1 points), Jaylen Brown (20.6) and Joel Embiid (18.5 points, 9.2 rebounds), with Dominick Barlow out."
+          "text": "Duren (hamstring, about Nov. 9) and Joe (hip bruise, about Nov. 8) are both out for Detroit. Philadelphia leans on Tyrese Maxey (29.1 points), Jaylen Brown (20.6) and Joel Embiid (18.5 points, 9.2 rebounds), but Embiid is on a minutes restriction and Barlow is out."
         },
         {
           "title": "Shooting from deep",
@@ -56,13 +56,13 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (6 games), 40.7% from the field"
         }
       ],
-      "injuryNote": "From ESPN's injury list (updated Tuesday): Detroit is without Duren (right hamstring strain) and Joe (right hip bruise); Philadelphia is without Barlow (back fracture, about Nov. 12) and Hukporti (Achilles surgery). My news search turned up no newer report for this game, so check the official report near tip.",
+      "injuryNote": "ESPN list (Joe updated Tue night): Detroit is without Duren (right hamstring, about Nov. 9) and Joe (right hip bruise, ruled out for tonight, about Nov. 8). Philadelphia is without Barlow (back fracture) and Hukporti (Achilles surgery). Embiid is not on the list but is on a minutes restriction for right foot plantar fasciitis after 25 minutes Monday (Field Level Media). Check the official report near tip.",
       "talkingPoints": [
         "Detroit is 6-1 and has won three in a row, with a 124-91 win in Charlotte on Monday.",
         "Philadelphia is 7-1 and has won four straight.",
         "The Pistons won 106-93 in Philadelphia on Oct. 25 and lead the season series 1-0.",
         "Cade is at 23.7 points and 7.1 assists; Maxey is at 29.1 points for the Sixers.",
-        "Duren and Joe are both still out for Detroit.",
+        "Duren and Joe are both out for Detroit; Embiid is on a minutes limit.",
         "DraftKings has Detroit -2.5 with a 218.5 total."
       ],
       "facts": [
@@ -89,9 +89,11 @@ window.PISTONS_PREGAME = {
         "John Collins": "Projected 23 min with Duren and Joe out; averages 25.6",
         "Ausar Thompson": "Assist rate below his season average; model projects 3.1",
         "Elijah Harkless": "One game this season; role may be smaller than projected",
-        "Taurean Prince": "Two games so far; small sample"
+        "Taurean Prince": "Two games so far; small sample",
+        "Paul Reed": "Starts in Duren's place; model gives 22 min vs 27 avg",
+        "Daniss Jenkins": "Picks up minutes with Joe and Duren out"
       },
-      "projNote": "Not projected: Jalen Duren and Isaiah Joe (out per ESPN), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 110.5 Detroit points.",
+      "projNote": "Not projected: Jalen Duren and Isaiah Joe (out per ESPN), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 111 Detroit points.",
       "pick": {
         "call": "Pistons by about three",
         "text": "Just for fun: Philadelphia is the hotter team on paper, but Detroit won the first meeting by 13 and has the home crowd. Pistons 111, 76ers 108."
@@ -101,9 +103,15 @@ window.PISTONS_PREGAME = {
         {
           "title": "ESPN game page",
           "url": "https://www.espn.com/nba/game/_/gameId/401909922"
+        },
+        {
+          "title": "East-leading 76ers, Pistons make early play for positioning (Field Level Media)",
+          "url": "https://www.1075thegame.com/2026/11/03/east-leading-76ers-pistons-make-early-play-for-positioning/"
         }
       ],
-      "ouNotes": {}
+      "ouNotes": {
+        "Duncan Robinson": "Hit six 3s for 24 at Charlotte Monday; model still leans under"
+      }
     },
     {
       "id": "g20261102",
