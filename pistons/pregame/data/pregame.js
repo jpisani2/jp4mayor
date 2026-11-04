@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-04T16:55:00-05:00",
+  "updated": "2026-11-04T17:55:00-05:00",
   "games": [
     {
       "id": "g20261104",
@@ -56,7 +56,7 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (6 games), 40.7% from the field"
         }
       ],
-      "injuryNote": "ESPN list (Joe updated Tue night): Detroit is without Duren (right hamstring, about Nov. 9) and Joe (right hip bruise, ruled out for tonight, about Nov. 8). Philadelphia is without Barlow (back fracture) and Hukporti (Achilles surgery). Embiid is not on the list but is on a minutes restriction for right foot plantar fasciitis after 25 minutes Monday (Field Level Media). No new Embiid update found as of 4:50 p.m.; check the official report near tip.",
+      "injuryNote": "ESPN list (Joe updated Tue night): Detroit is without Duren (right hamstring, about Nov. 9) and Joe (right hip bruise, ruled out for tonight, about Nov. 8). Philadelphia is without Barlow (back fracture) and Hukporti (Achilles surgery). Embiid is not on the list but is on a minutes restriction for right foot plantar fasciitis after 25 minutes Monday (Field Level Media). No new Embiid update found as of 5:50 p.m.; check the official report near tip.",
       "talkingPoints": [
         "Detroit is 6-1 and has won three in a row, with a 124-91 win in Charlotte on Monday.",
         "Philadelphia is 7-1 and has won four straight.",
