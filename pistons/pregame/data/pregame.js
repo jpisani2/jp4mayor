@@ -1,7 +1,120 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-10-30T18:56:00-04:00",
+  "updated": "2026-11-02T18:55:00-05:00",
   "games": [
+    {
+      "id": "g20261102",
+      "date": "2026-11-02",
+      "phase": "Regular season",
+      "headline": "Pistons chase a sixth win in Charlotte",
+      "dek": "Detroit (5-1) is at Charlotte (3-4) Monday at 7:30 p.m. ET as a 5.5-point favorite; Duren is out, Joe's status is murky, and the Hornets are missing Knueppel and Williams.",
+      "keys": [
+        {
+          "title": "Charlotte is sliding",
+          "text": "The Hornets have lost three straight, 89-97 at Detroit, 79-95 at Washington and 104-109 to Philadelphia on Saturday. They score 98.3 points a game and shoot 40.8% from the field and 29.6% from three."
+        },
+        {
+          "title": "Both teams are thin",
+          "text": "Duren (right hamstring) is out until about Nov. 9. ESPN lists Joe (hip bruise) as out with a Nov. 4 return date, while NBC and CBS had him questionable or a game-time call. Charlotte is without Knueppel and Grant Williams (both hamstring), also listed to return about Nov. 9."
+        },
+        {
+          "title": "Brandon Miller vs. the Pistons' depth",
+          "text": "Miller averages 24.4 points, with Naz Reid at 15.9 points and 8.6 rebounds and Grayson Allen at 15.4. Detroit held Charlotte to 89 in the first meeting on Oct. 28 and has two days of rest to Charlotte's one."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "22.2 PTS · 7.2 AST · 5.5 REB",
+          "sub": "2026-27 season (6 games)",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "16.8 PTS · 3.7 3PM",
+          "sub": "2026-27 season (6 games), 41.5% from three"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "13.8 PTS · 7.0 REB",
+          "sub": "2026-27 season (6 games), 63.0% from the field"
+        },
+        {
+          "team": "CHA",
+          "name": "Brandon Miller",
+          "line": "24.4 PTS · 6.1 REB",
+          "sub": "2026-27 season (7 games), 37.7% from the field",
+          "badge": "Star"
+        },
+        {
+          "team": "CHA",
+          "name": "Naz Reid",
+          "line": "15.9 PTS · 8.6 REB",
+          "sub": "2026-27 season (7 games)"
+        }
+      ],
+      "injuryNote": "ESPN's injury list (updated Monday) has Joe out with a hip bruise and a Nov. 4 return date; NBC Sports had him questionable on Nov. 1 and CBS Sports a game-time decision, so treat him as out unless the official report says otherwise. An SI game page lists Joe day-to-day and Ausar Thompson (ankle) day-to-day, which ESPN's list doesn't show, so check the official report near tip. Duren is out; Knueppel and Williams are out for Charlotte.",
+      "talkingPoints": [
+        "Detroit is 5-1 and has won two straight, including 110-94 at Brooklyn.",
+        "Charlotte has lost three in a row and is 3-4.",
+        "The Pistons beat the Hornets 97-89 on Oct. 28 and lead the season series 1-0.",
+        "Brandon Miller is averaging 24.4 points for Charlotte.",
+        "Cade is at 22.2 points and 7.2 assists, with Duren still out and Joe iffy.",
+        "DraftKings has Detroit -5.5 with a 209.5 total."
+      ],
+      "facts": [
+        {
+          "label": "Broadcast",
+          "text": "NBA League Pass (away broadcast)"
+        },
+        {
+          "label": "Line",
+          "text": "DraftKings: DET -5.5, total 209.5; moneyline DET -237 / CHA +196"
+        },
+        {
+          "label": "Rest",
+          "text": "Detroit played Friday and has two days of rest; Charlotte played Saturday"
+        },
+        {
+          "label": "Up next",
+          "text": "The teams meet again March 20 in Detroit and March 24 in Charlotte"
+        }
+      ],
+      "projNotes": {
+        "Cade Cunningham": "Hornets give guards slightly fewer points and assists",
+        "Duncan Robinson": "Hot three-point start (3.7 a night); model expects a dip",
+        "John Collins": "Projected 24 min with Duren and Joe out; averages 26.7",
+        "Ausar Thompson": "Assist rate below last season's pace; ankle listed day-to-day by SI",
+        "Elijah Harkless": "No games yet this season; role may be smaller than projected",
+        "Daniss Jenkins": "Backcourt minutes up with Joe out"
+      },
+      "projNote": "Not projected: Jalen Duren and Isaiah Joe (out per ESPN), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 108 Detroit points.",
+      "pick": {
+        "call": "Pistons by about six",
+        "text": "Just for fun: Charlotte is missing two starters and has lost three straight, but home games can be scrappy. Pistons 108, Hornets 102."
+      },
+      "share": "Pistons (5-1) at Hornets (3-4) tonight, 7:30 ET. Duren is out, Joe is iffy, and Cade is averaging 22.2 and 7.2 assists.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909908"
+        },
+        {
+          "title": "SI game page",
+          "url": "https://www.si.com/nba/scoreboard/pistons-vs-hornets-11-2-2026-1584"
+        },
+        {
+          "title": "NBC Sports: Isaiah Joe questionable",
+          "url": "https://www.nbcsports.com/fantasy/basketball/player-news/2026-11-01/isaiah-joe-hip-questionable-monday-vs-charlotte"
+        }
+      ],
+      "ouNotes": {
+        "Ausar Thompson": "SI lists an ankle issue (day-to-day); not on ESPN's list"
+      }
+    },
     {
       "id": "g20261030",
       "date": "2026-10-30",
