@@ -1,7 +1,110 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-02T18:55:00-05:00",
+  "updated": "2026-11-04T06:05:00-05:00",
   "games": [
+    {
+      "id": "g20261104",
+      "date": "2026-11-04",
+      "phase": "Regular season",
+      "headline": "Unbeaten-at-home Pistons host first-place Sixers",
+      "dek": "Detroit (6-1) hosts Philadelphia (7-1) Wednesday at 7 p.m. ET on ESPN as a 2.5-point favorite, a rematch of the Pistons' 106-93 win in Philadelphia on Oct. 25.",
+      "keys": [
+        {
+          "title": "Two teams on the move, one-day rest each",
+          "text": "Detroit has won three straight (124-91 at Charlotte on Monday) and Philadelphia has won four straight (126-107 over Chicago on Monday). Both played Monday, so neither has a rest edge."
+        },
+        {
+          "title": "Detroit's depth vs. Philadelphia's stars",
+          "text": "The Pistons are still without Jalen Duren (hamstring, listed to return about Nov. 9) and Isaiah Joe (hip bruise, about Nov. 8). Philadelphia leans on Tyrese Maxey (29.1 points), Jaylen Brown (20.6) and Joel Embiid (18.5 points, 9.2 rebounds), with Dominick Barlow out."
+        },
+        {
+          "title": "Shooting from deep",
+          "text": "Detroit shoots 38.1% from three (14.1 makes a game) to Philadelphia's 34.2%, and the Pistons beat the Sixers 106-93 on Oct. 25 for a 1-0 series lead. Embiid is shooting 13.0% from three, so the Pistons can sag off him."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "23.7 PTS · 7.1 AST · 5.4 REB",
+          "sub": "2026-27 season (7 games), 48.3% from the field",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "17.9 PTS · 4.0 3PM",
+          "sub": "2026-27 season (7 games), 45.2% from three"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "13.4 PTS · 6.7 REB",
+          "sub": "2026-27 season (7 games), 65.0% from the field"
+        },
+        {
+          "team": "PHI",
+          "name": "Tyrese Maxey",
+          "line": "29.1 PTS · 5.2 AST · 4.1 REB",
+          "sub": "2026-27 season (8 games), 37.4 minutes a night",
+          "badge": "Star"
+        },
+        {
+          "team": "PHI",
+          "name": "Joel Embiid",
+          "line": "18.5 PTS · 9.2 REB · 4.8 AST",
+          "sub": "2026-27 season (6 games), 40.7% from the field"
+        }
+      ],
+      "injuryNote": "From ESPN's injury list (updated Tuesday): Detroit is without Duren (right hamstring strain) and Joe (right hip bruise); Philadelphia is without Barlow (back fracture, about Nov. 12) and Hukporti (Achilles surgery). My news search turned up no newer report for this game, so check the official report near tip.",
+      "talkingPoints": [
+        "Detroit is 6-1 and has won three in a row, with a 124-91 win in Charlotte on Monday.",
+        "Philadelphia is 7-1 and has won four straight.",
+        "The Pistons won 106-93 in Philadelphia on Oct. 25 and lead the season series 1-0.",
+        "Cade is at 23.7 points and 7.1 assists; Maxey is at 29.1 points for the Sixers.",
+        "Duren and Joe are both still out for Detroit.",
+        "DraftKings has Detroit -2.5 with a 218.5 total."
+      ],
+      "facts": [
+        {
+          "label": "Broadcast",
+          "text": "ESPN (national)"
+        },
+        {
+          "label": "Line",
+          "text": "DraftKings: DET -2.5, total 218.5; moneyline DET -130 / PHI +110"
+        },
+        {
+          "label": "Rest",
+          "text": "Both teams played Monday and have one day of rest"
+        },
+        {
+          "label": "Up next",
+          "text": "The teams meet again Feb. 5, 2027 in Detroit"
+        }
+      ],
+      "projNotes": {
+        "Cade Cunningham": "Sixers give guards slightly fewer points and assists",
+        "Duncan Robinson": "Hot three-point start (4.0 a night); model expects a dip",
+        "John Collins": "Projected 23 min with Duren and Joe out; averages 25.6",
+        "Ausar Thompson": "Assist rate below his season average; model projects 3.1",
+        "Elijah Harkless": "One game this season; role may be smaller than projected",
+        "Taurean Prince": "Two games so far; small sample"
+      },
+      "projNote": "Not projected: Jalen Duren and Isaiah Joe (out per ESPN), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 110.5 Detroit points.",
+      "pick": {
+        "call": "Pistons by about three",
+        "text": "Just for fun: Philadelphia is the hotter team on paper, but Detroit won the first meeting by 13 and has the home crowd. Pistons 111, 76ers 108."
+      },
+      "share": "Pistons (6-1) host the 76ers (7-1) tonight, 7 ET on ESPN. Duren and Joe are out; Cade is at 23.7 and 7.1 assists.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909922"
+        }
+      ],
+      "ouNotes": {}
+    },
     {
       "id": "g20261102",
       "date": "2026-11-02",
