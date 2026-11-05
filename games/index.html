@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Brainwave</title>
+  <meta name="description" content="Brain teasers for a sharper morning: logic and number puzzles that are quick to learn and hard to put down.">
+  <meta name="theme-color" content="#F1F0F8">
+  <meta name="color-scheme" content="light dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Brainwave">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preload" href="fonts/gabarito.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
+  <script>
+    // Apply the saved theme before first paint to avoid a flash
+    try {
+      var s = JSON.parse(localStorage.getItem('bw1:settings') || '{}');
+      if (s.theme === 'light' || s.theme === 'dark') document.documentElement.setAttribute('data-theme', s.theme);
+    } catch (e) {}
+  </script>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div id="app" aria-live="off"></div>
+  <nav id="tabbar" aria-label="Main"></nav>
+  <noscript><p style="padding:24px;font-family:system-ui">Brainwave needs JavaScript turned on.</p></noscript>
+  <script src="js/core.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/games/lights-out.js"></script>
+  <script src="js/games/code-breaker.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
