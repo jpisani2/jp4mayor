@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-11-02T22:12:00-05:00",
+  "updated": "2026-11-04T22:00:00-05:00",
   "games": [
+    {
+      "id": "g20261104",
+      "date": "2026-11-04",
+      "phase": "Regular season",
+      "home": true,
+      "venue": "Little Caesars Arena, Detroit",
+      "attendance": 20198,
+      "opp": {
+        "abbr": "PHI",
+        "name": "Philadelphia 76ers",
+        "short": "76ers",
+        "score": 112,
+        "quarters": [
+          29,
+          27,
+          35,
+          21
+        ]
+      },
+      "det": {
+        "score": 106,
+        "quarters": [
+          21,
+          21,
+          33,
+          31
+        ]
+      },
+      "result": "L",
+      "record": "6-2",
+      "headline": "Pistons rally from 18 down, fall 112-106",
+      "dek": "Detroit outscored Philadelphia 31-21 in the fourth and cut it to 106-104 with 1:05 left, but the 76ers hit 25 of 28 free throws to close it out and hand the Pistons their second loss.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "27 PTS · 7-11 3PT",
+          "sub": "Hit 7 of 11 threes in 37 minutes, second-most points of any player in tonight's games",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "26 PTS · 11 AST · 7 REB",
+          "sub": "Double-double in 40 minutes with 2 steals and 2 blocks, but 9-for-22 from the floor, 1-for-9 on threes and 4 turnovers"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "17 REB · 11 PTS · 3 AST",
+          "sub": "Game-high 17 rebounds, best by any player in tonight's games, with 2 steals in 34 minutes"
+        },
+        {
+          "team": "DET",
+          "name": "John Collins",
+          "line": "16 PTS · 7-9 FG",
+          "sub": "Efficient 7-for-9 in 26 minutes, though 4 fouls limited his time"
+        },
+        {
+          "team": "PHI",
+          "name": "Jaylen Brown",
+          "line": "30 PTS · 11-19 FG · 0 TO",
+          "sub": "Game-high 30 on 11-for-19 with no turnovers in 37 minutes"
+        },
+        {
+          "team": "PHI",
+          "name": "Joel Embiid",
+          "line": "26 PTS · 15 REB · 10-10 FT",
+          "sub": "Perfect 10-for-10 at the line with 15 rebounds, 4 on the offensive glass"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's scorers",
+          "text": "Brown's 30 and Robinson's 27 were the two best scoring lines among the league's per-team leaders in tonight's games so far."
+        },
+        {
+          "label": "Glass",
+          "text": "Thompson's 17 rebounds led all tonight's per-team leaders; Embiid's 15 ranked third."
+        },
+        {
+          "label": "Season series",
+          "text": "Regular Season Series: Series tied 1-1."
+        }
+      ],
+      "talkingPoints": [
+        "Down 18 in the fourth and still had a shot at 106-104 with a minute left.",
+        "The free-throw gap hurt: Philly 25-of-28, Detroit 18-of-23, and 24 fouls to 18.",
+        "Duncan Robinson was on fire from deep, 7 of 11.",
+        "Ausar Thompson grabbed 17 boards, the most of anyone in tonight's games.",
+        "Philly got 9 offensive rebounds to Detroit's 4 and won the second-chance fight.",
+        "Cade had 11 dimes but needed 22 shots for 26 points and went 1-for-9 from three."
+      ],
+      "notable": [
+        {
+          "stat": "18",
+          "label": "Largest PHI lead",
+          "note": "Reached at 11:40 of the fourth"
+        },
+        {
+          "stat": "31-21",
+          "label": "DET fourth quarter",
+          "note": "Detroit won the final period but not the game"
+        },
+        {
+          "stat": "7-11",
+          "label": "Robinson 3PT",
+          "note": "27 points in 37 minutes"
+        },
+        {
+          "stat": "17",
+          "label": "Thompson rebounds",
+          "note": "Game-high, with 11 points and 2 steals"
+        },
+        {
+          "stat": "25-28",
+          "label": "PHI free throws",
+          "note": "Detroit was 18-of-23"
+        },
+        {
+          "stat": "9-4",
+          "label": "Offensive rebounds",
+          "note": "PHI over DET"
+        }
+      ],
+      "story": [
+        "Philadelphia took control early, running off a 10-0 burst in the first quarter and leading 56-42 at the half. The 76ers pushed the lead to 18 early in the fourth quarter behind Jaylen Brown's 30 points and Joel Embiid's 26 and 15.",
+        "Detroit would not go away. A 9-0 run starting around the 10:34 mark of the fourth cut into the margin, Duncan Robinson kept hitting threes, and Cade Cunningham's driving layup with 1:05 left made it 106-102. The Pistons outscored Philadelphia 31-21 in the quarter.",
+        "The 76ers finished it at the line, going 25-of-28 on free throws against Detroit's 18-of-23, and added 9 offensive rebounds. Detroit drops to 6-2; Philadelphia improves to 8-1, and the season series is tied 1-1."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "38-83 (46%)",
+          "opp": "39-86 (45%)"
+        },
+        {
+          "label": "3PT",
+          "det": "12-34 (35%)",
+          "opp": "9-24 (38%)"
+        },
+        {
+          "label": "FT",
+          "det": "18-23 (78%)",
+          "opp": "25-28 (89%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "41",
+          "opp": "48"
+        },
+        {
+          "label": "Assists",
+          "det": "25",
+          "opp": "23"
+        },
+        {
+          "label": "Steals",
+          "det": "5",
+          "opp": "6"
+        },
+        {
+          "label": "Blocks",
+          "det": "7",
+          "opp": "2"
+        },
+        {
+          "label": "Turnovers",
+          "det": "12",
+          "opp": "12"
+        },
+        {
+          "label": "Paint pts",
+          "det": "46",
+          "opp": "44"
+        }
+      ],
+      "share": "76ers 112, Pistons 106. Detroit rallied from 18 down and got within 2, but PHI hit 25 of 28 FTs. Robinson 27, Cade 26-11, Ausar 17 boards. DET is 6-2.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909922"
+        }
+      ]
+    },
     {
       "id": "g20261102",
       "date": "2026-11-02",
