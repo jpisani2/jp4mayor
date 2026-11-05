@@ -74,6 +74,7 @@
 
   /* ---------------- Sheets ---------------- */
   let openSheets = 0;
+  let toastEl = null, toastTimer = 0;
   const closers = new Set();
   function closeAll() { [...closers].forEach((c) => c()); }
   function sheet({ title, body, actions = [], dismissable = true, onClose, cls = '' }) {
@@ -87,6 +88,7 @@
     const wrap = h('div', { class: 'sheet-wrap' }, backdrop, panel);
     document.body.append(wrap);
     openSheets++;
+    if (toastEl) toastEl.classList.remove('show');
     BW.emit('sheet', openSheets);
     requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('open')));
     setTimeout(() => panel.focus({ preventScroll: true }), 60);
@@ -126,7 +128,6 @@
   }
 
   /* ---------------- Toast ---------------- */
-  let toastEl = null, toastTimer = 0;
   function toast(msg, { action, onAction, ms = 2400 } = {}) {
     if (!toastEl) {
       toastEl = h('div', { class: 'toast', role: 'status', 'aria-live': 'polite' });

@@ -237,6 +237,11 @@
 
     function showResult(extra) {
       const r = session.result;
+      const idx = def.difficulties.findIndex((d) => d.id === diff);
+      const nextLevel = def.levels && r && r.won ? def.difficulties[idx + 1] : null;
+      const nextBtn = () => nextLevel
+        ? button('Next level', { kind: 'accent', onClick: () => { s.close(); switchDiff(nextLevel.id); } })
+        : button(def.levels ? 'Play again' : def.nextLabel || 'Next puzzle', { kind: 'accent', onClick: () => { s.close(); newPuzzle(); } });
       if (!r || !document.body.contains(el)) return;
       const rec = BW.stats.rec(id, diff);
       const titleList = r.won ? TITLES[r.stars] || TITLES[1] : [def.loseTitle || 'Not this time.'];
@@ -248,7 +253,7 @@
         starRow,
         h('div', { class: 'r-grid' },
           stat('Time', fmtTime(r.time), r.newBestTime ? 'New best' : null),
-          stat(def.movesLabel || 'Moves', String(r.moves), r.newBestMoves ? 'New best' : null),
+          stat(def.movesLabel || 'Moves', String(r.moves), r.newBestMoves && def.movesBest !== false ? 'New best' : null),
           r.hints ? stat(r.hints === 1 ? 'Hint' : 'Hints', String(r.hints))
             : r.prevBestTime != null ? stat('Best time', fmtTime(rec.bestTime))
             : stat('Solved', String(rec.won))
@@ -261,7 +266,7 @@
         body,
         cls: 'result-sheet',
         actions: [
-          button('Next puzzle', { kind: 'accent', onClick: () => { s.close(); newPuzzle(); } }),
+          nextBtn(),
           button('Back to games', { kind: 'ghost', onClick: () => { s.close(); location.hash = '#/'; } }),
         ],
       });
@@ -315,6 +320,7 @@
       get diffInfo() { return diffInfo(); },
       get hints() { return session.hints; },
       get moves() { return session.moves; },
+      get elapsed() { return session.elapsed; },
       get status() { return session.status; },
       update({ moves } = {}) {
         if (session.status !== 'playing') return;
@@ -363,3 +369,17 @@
     };
   };
 })();
+
+/* Shared scoring helpers */
+BW.timeStars = (ms, parSec, hints) => {
+  const s = ms / 1000;
+  let st = s <= parSec ? 3 : s <= parSec * 2 ? 2 : 1;
+  if (hints > 0) st = Math.min(st, 2);
+  return st;
+};
+BW.moveStars = (moves, par, hints, slack) => {
+  let st = moves <= par ? 3 : moves <= par + (slack != null ? slack : Math.max(2, Math.ceil(par * 0.4))) ? 2 : 1;
+  if (hints > 0) st = Math.min(st, 2);
+  return st;
+};
+BW.fmtPar = (sec) => BW.util.fmtTime(sec * 1000);

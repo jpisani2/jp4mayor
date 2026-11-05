@@ -2,7 +2,7 @@
 (() => {
   'use strict';
   const BW = (window.BW = window.BW || {});
-  BW.version = '1.0.0';
+  BW.version = '1.1.0';
 
   /* ---------------- DOM helpers ---------------- */
   function h(tag, props, ...kids) {
@@ -270,14 +270,14 @@
   BW.catalog = [
     { id: 'lights-out', cat: 'logic', name: 'Lights Out', blurb: 'Flip tiles and their neighbors until the board goes dark', color: '#FFC93C', deep: '#D9A116' },
     { id: 'code-breaker', cat: 'logic', name: 'Code Breaker', blurb: 'Crack a hidden color code from clues', color: '#45D3B8', deep: '#1E9E87' },
-    { id: 'nonogram', cat: 'logic', name: 'Nonogram', blurb: 'Reveal a hidden picture from number clues', color: '#9C99FF', deep: '#6763DB', soon: true },
-    { id: 'binary', cat: 'logic', name: 'Binary Grid', blurb: 'Balance the 0s and 1s in every line', color: '#FF94BC', deep: '#D9628F', soon: true },
-    { id: 'sudoku', cat: 'logic', name: 'Sudoku', blurb: 'Fill every row, column and box', color: '#72C7FF', deep: '#3A97D6', soon: true },
-    { id: 'river', cat: 'logic', name: 'River Crossing', blurb: 'Get everyone across without disaster', color: '#93DA72', deep: '#5BAA3D', soon: true },
-    { id: 'make24', cat: 'numbers', name: 'Make 24', blurb: 'Four numbers, four operations, one target', color: '#FF8E6A', deep: '#D9623F', soon: true },
-    { id: 'sequence', cat: 'numbers', name: 'What Comes Next', blurb: 'Find the rule hiding in the sequence', color: '#CBA4FF', deep: '#9A6AE0', soon: true },
-    { id: 'jugs', cat: 'numbers', name: 'Water Jugs', blurb: 'Pour your way to an exact amount', color: '#62D8EA', deep: '#2CA9BD', soon: true },
-    { id: 'nim', cat: 'numbers', name: 'Nim', blurb: 'Outthink the computer in a game of piles', color: '#FF7676', deep: '#D44848', soon: true },
+    { id: 'nonogram', cat: 'logic', name: 'Nonogram', blurb: 'Reveal a hidden picture from number clues', color: '#9C99FF', deep: '#6763DB' },
+    { id: 'binary', cat: 'logic', name: 'Binary Grid', blurb: 'Balance the 0s and 1s in every line', color: '#FF94BC', deep: '#D9628F' },
+    { id: 'sudoku', cat: 'logic', name: 'Sudoku', blurb: 'Fill every row, column and box', color: '#72C7FF', deep: '#3A97D6' },
+    { id: 'river', cat: 'logic', name: 'River Crossing', blurb: 'Get everyone across without disaster', color: '#93DA72', deep: '#5BAA3D' },
+    { id: 'make24', cat: 'numbers', name: 'Make 24', blurb: 'Four numbers, four operations, one target', color: '#FF8E6A', deep: '#D9623F' },
+    { id: 'sequence', cat: 'numbers', name: 'What Comes Next', blurb: 'Find the rule hiding in the sequence', color: '#CBA4FF', deep: '#9A6AE0' },
+    { id: 'jugs', cat: 'numbers', name: 'Water Jugs', blurb: 'Pour your way to an exact amount', color: '#62D8EA', deep: '#2CA9BD' },
+    { id: 'nim', cat: 'numbers', name: 'Nim', blurb: 'Outthink the computer in a game of piles', color: '#FF7676', deep: '#D44848' },
   ];
   BW.meta = (id) => BW.catalog.find((g) => g.id === id);
 

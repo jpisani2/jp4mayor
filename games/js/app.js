@@ -32,6 +32,11 @@
     let meta;
     if (g.soon) meta = h('span', { class: 't-meta soon' }, 'Coming soon');
     else if (prog) meta = h('span', { class: 't-meta' }, h('span', { class: 'dot' }), 'In progress');
+    else if (BW.games[g.id] && BW.games[g.id].levels) {
+      const st = BW.stats.get(g.id);
+      const done = BW.games[g.id].difficulties.filter((d) => st.d[d.id] && st.d[d.id].won).length;
+      meta = h('span', { class: 't-meta' }, icon('star'), `${done} of ${BW.games[g.id].difficulties.length} levels`);
+    }
     else if (sum.won) meta = h('span', { class: 't-meta' }, icon('star'), `${sum.won} solved`);
     else meta = h('span', { class: 't-meta' }, 'New');
     const el = h(g.soon ? 'div' : 'button', {
@@ -101,8 +106,7 @@
           h('h3', { class: 'cat-title' }, c.name),
           h('div', { class: 'tiles' }, games.map(tile))
         );
-      }),
-      h('p', { class: 'home-foot' }, 'More games are on the way.')
+      })
     );
     return { el: h('div', { class: 'view home-view' }, scroll), tab: 'home' };
   }

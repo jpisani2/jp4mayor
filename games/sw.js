@@ -1,5 +1,5 @@
 /* Brainwave service worker — offline-first app shell */
-const VERSION = 'bw-1.0.0';
+const VERSION = 'bw-1.1.0';
 const ASSETS = [
   './',
   'index.html',
@@ -11,6 +11,14 @@ const ASSETS = [
   'js/app.js',
   'js/games/lights-out.js',
   'js/games/code-breaker.js',
+  'js/games/nonogram.js',
+  'js/games/binary.js',
+  'js/games/sudoku.js',
+  'js/games/river.js',
+  'js/games/make24.js',
+  'js/games/sequence.js',
+  'js/games/jugs.js',
+  'js/games/nim.js',
   'fonts/gabarito.woff2',
   'fonts/figtree.woff2',
   'icons/icon.svg',
