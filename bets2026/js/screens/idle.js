@@ -5,6 +5,7 @@
 
 import { state, goto, openMenu } from "../store.js";
 import { esc, money, matchup } from "../format.js";
+import { flavor } from "../theme.js";
 import { rollUp } from "../scoring.js";
 import { balancesAcrossGames, isSquare, CARRY_UNDER } from "../ledger.js";
 import * as setup from "./setup.js";
@@ -13,7 +14,7 @@ import * as stats from "./stats.js";
 import * as menu from "./menu.js";
 
 export function view() {
-  if (!state.history.loaded) return `<div class="center"><p>Catching up…</p></div>`;
+  if (!state.history.loaded) return `<div class="center"><p>${esc(flavor("loading", "Catching up…"))}</p></div>`;
 
   const { games, bets, payments } = state.history;
   const last = games.find(g => g.phase === "closed");
@@ -23,6 +24,7 @@ export function view() {
 
   return `<div class="page">
     ${state.game ? `<button class="banner bannerbtn" id="toboard">
+      ${flavor("gameOpen", "") ? `${esc(flavor("gameOpen", ""))}<br>` : ""}
       ${state.game.phase === "pregame" ? "Tonight's game is up" : "Tonight's game is on"}
       — ${esc(matchup(state.game))}. Tap to go to the board.</button>` : ""}
     <header class="head">

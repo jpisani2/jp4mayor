@@ -1,4 +1,5 @@
-/* The new-bet chime, and this device's choice to hear it.
+/* The new-bet chime (and, under a seasonal theme, its lock and grade
+   sounds), and this device's choice to hear them.
 
    Like the theme, the on/off choice is per device and never in the
    database — muting your phone doesn't mute the big screen.
@@ -8,6 +9,8 @@
    eventually goes silent. Phones also refuse to play sound until the page has
    been touched, so the first tap anywhere unlocks it. An iPhone on silent
    can't be made to beep by any web page. */
+
+import { activeSeason } from "./theme.js";
 
 const KEY = "betroom.sound";
 let ctx = null;
@@ -35,36 +38,21 @@ export function unlockAudio() {
   if (c && c.state === "suspended") c.resume().catch(() => {});
 }
 
-/* Under a Halloween theme the chime is a theremin's "ooo-OOO-ooo" instead:
-   a sine that swoops up then sinks a minor sixth, with a slow wobble. */
-const haunted = () => (document.documentElement.dataset.theme || "").startsWith("halloween");
-
-function ghostly(c) {
-  const t = c.currentTime;
-  const osc = c.createOscillator(), wobble = c.createOscillator();
-  const depth = c.createGain(), gain = c.createGain();
-  osc.type = "sine";
-  osc.frequency.setValueAtTime(440, t);
-  osc.frequency.exponentialRampToValueAtTime(880, t + 0.28);
-  osc.frequency.exponentialRampToValueAtTime(554, t + 1.0);
-  wobble.frequency.value = 6.5;
-  depth.gain.value = 14;
-  wobble.connect(depth).connect(osc.frequency);
-  gain.gain.setValueAtTime(0.0001, t);
-  gain.gain.exponentialRampToValueAtTime(0.11, t + 0.12);
-  gain.gain.setValueAtTime(0.11, t + 0.7);
-  gain.gain.exponentialRampToValueAtTime(0.001, t + 1.1);
-  osc.connect(gain).connect(c.destination);
-  osc.start(t); wobble.start(t);
-  osc.stop(t + 1.12); wobble.stop(t + 1.12);
+/* A seasonal theme can bring its own sounds: chime() for a new bet, and
+   lockChime() and gradeChime() for a bet locking and being graded. Without
+   one, a new bet gets the plain two-note beep and the others stay quiet. */
+function ready() {
+  if (!soundOn()) return null;
+  const c = context();
+  return c && c.state === "running" ? c : null;
 }
 
 export function beep() {
-  if (!soundOn()) return;
   try {
-    const c = context();
-    if (!c || c.state !== "running") return;
-    if (haunted()) { ghostly(c); return; }
+    const c = ready();
+    if (!c) return;
+    const own = activeSeason()?.chime;
+    if (own) { own(c); return; }
     const osc = c.createOscillator(), gain = c.createGain();
     const t = c.currentTime;
     osc.type = "sine";
@@ -77,3 +65,14 @@ export function beep() {
     osc.stop(t + 0.26);
   } catch (e) { /* audio is a nicety, never a failure */ }
 }
+
+function seasonal(name) {
+  try {
+    const c = ready();
+    const own = activeSeason()?.[name];
+    if (c && own) own(c);
+  } catch (e) { /* likewise */ }
+}
+
+export const lockSound = () => seasonal("lockChime");
+export const gradeSound = () => seasonal("gradeChime");

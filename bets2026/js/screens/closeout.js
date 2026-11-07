@@ -6,9 +6,10 @@
    buttons, and each answer is confirmed before it counts. */
 
 import { state, stake, nameOf, unlockAdmin, goto, isBusy,
-         closeOutNight, scrapGame, home } from "../store.js";
-import { esc, money, matchup, plural } from "../format.js";
-import { takers, rollUp, pot } from "../scoring.js";
+         closeOutNight, scrapGame, home, tonight } from "../store.js";
+import { esc, money, matchup, plural, listNames } from "../format.js";
+import { takers, rollUp, pot, nightAwards } from "../scoring.js";
+import { flavor } from "../theme.js";
 import * as grading from "./grading.js";
 
 let confirmingDelete = false;
@@ -50,6 +51,7 @@ export function view() {
 
     <div class="sechead"><span>Where it finished</span><span class="rule"></span></div>
     ${scoreboard()}
+    ${awards()}
 
     <div class="rowbtns" style="margin-top:22px">
       <button class="btn primary" id="closeout" ${unanswered.length || closing ? "disabled" : ""}>
@@ -122,6 +124,31 @@ function scoreboard() {
       </tr>`;
     }).join("")}</tbody>
   </table>`;
+}
+
+/* A seasonal theme's awards for the night, named from the same numbers as
+   the table above. Nothing shows under a theme without them. */
+function awards() {
+  const man = flavor("awardMan", ""), bandits = flavor("awardBandits", ""), left = flavor("awardLeft", "");
+  if (!man) return "";
+  const a = nightAwards(state.bets, state.players, stake(), tonight());
+  const who = ids => ids.length ? esc(listNames(ids.map(nameOf))) : "nobody";
+  const net = ids => ids.length ? ` <span class="num ${a.totals[ids[0]].net > 0 ? "up" : "down"}">${
+    money(a.totals[ids[0]].net)}${ids.length > 1 ? " each" : ""}</span>` : "";
+  return `<div class="sechead"><span>Tonight's awards</span><span class="rule"></span></div>
+    <div class="awards">
+      <div class="award"><div class="awardname">${esc(man)}<span class="crown"></span></div>
+        <div class="awardwho">${who(a.man)}${net(a.man)}</div>
+        <div class="awardwhy">The night's biggest winner. Wears the crown until next
+          week's night is closed out.</div></div>
+      <div class="award"><div class="awardname">${esc(bandits)}</div>
+        <div class="awardwho">${a.bandits.map(id => `${esc(nameOf(id))} <span class="num down">${
+          money(a.totals[id].net)}</span>`).join(", ") || "nobody"}</div>
+        <div class="awardwhy">The night's two biggest losers.</div></div>
+      <div class="award"><div class="awardname">${esc(left)}</div>
+        <div class="awardwho">${who(a.left)}</div>
+        <div class="awardwhy">Here tonight, never took a side.</div></div>
+    </div>`;
 }
 
 function pinView() {

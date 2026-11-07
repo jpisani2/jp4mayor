@@ -38,8 +38,11 @@ them.
 ## The files
 
 ```
-index.html          Shell. Loads the stylesheet, Supabase, and app.js.
-styles.css          All styling. Semantic colors documented at the top.
+index.html          Shell. Loads the stylesheet, Supabase, and app.js (and,
+                    before anything draws, a seasonal theme's stylesheet if
+                    this device is on one).
+styles.css          The core styling. Semantic colors documented at the top.
+                    Seasonal themes bring their own (see js/seasonal/).
 sql/
   2026-09-safeguards.sql
                     Run once in Supabase's SQL editor: all-or-nothing
@@ -59,10 +62,12 @@ js/
   scoring.js        Settlement math. Mirrors the SQL views.
   pregame.js        The eleven pregame bets and how they derive from the line.
   ledger.js         Balances, rounding, and who hands what to whom.
-  theme.js          The eight themes and which one this device chose.
-  halloween.js      The Halloween dressing: sky, moon, fog, bats, spider,
-                    ghosts, webs, embers or leaves, a cat, jack-o'-lanterns.
-                    Drawn outside #app, so redraws never restart it.
+  theme.js          The themes, which one this device chose, and which
+                    seasonal themes are retired (one flag each).
+  seasonal/         One .js and one .css per seasonal theme. See "Seasonal
+                    themes" below.
+    halloween.js/.css   October. Retired until next year.
+    homealone.js/.css   The holidays: Home Alone, night and morning.
   db.js             Every Supabase call.
   store.js          State, derived values, actions, realtime wiring.
   app.js            Picks a screen, renders it, wires it. Nothing else.
@@ -82,7 +87,10 @@ js/
     offline.js      "Can't connect" — shown when the database can't be
                     reached at start-up; retries on its own.
     menu.js         Part: everything that isn't the board, themes, sound.
+                    Everyday items first; admin ones below Themes.
     grading.js      Part: grade buttons that ask to confirm first.
+    flourish.js     Part: a seasonal theme's lock and grade flourishes, and
+                    the Man of the House crown.
     adminsheet.js   Part: PIN then confirm, for kickoff and pulling a bet.
     bigscreen.js    The shared dashboard for a laptop or iPad. Not a player:
                     it locks, grades, kicks off and closes out, but never picks.
@@ -133,25 +141,102 @@ must not be reused for decoration. A theme recolors the environment through
 color sits too close to one of them, the semantic color is nudged along its
 own hue rather than swapped: side B shifts toward teal under Lions, side A
 toward orange under Michigan, money green brightens under Michigan State.
-Under Halloween, pumpkin orange is the brand, so side A moves to candle-yellow
-and money lost to blood red. Amber is still amber everywhere.
+Under Home Alone, holly red is the brand, so money lost moves to raspberry and
+money won to a bright mint. Amber is still amber everywhere.
 
-## The Halloween themes
+## Seasonal themes
 
-`halloween.js` adds one layer at the back of the page, outside `#app`, and
-`styles.css` (the Halloween section at the end) decides what shows in each
-mode. It takes no taps and is hidden from screen readers. On a phone set to
-reduce motion, the bats, ghosts, spider, embers and leaves stay home. The
-new-bet chime turns into a theremin while either theme is on (`sound.js`), and
-on the big screen a new bet brings lightning and a swarm of bats.
+A seasonal theme is a pair of files in `js/seasonal/`: a `.js` that builds
+its decorations and a `.css` that dresses the app. Each `.js` exports the
+same small shape (`SEASON`, `THEMES`, `CSS`, `dress()`, and optionally
+`chime()`, `lockChime()`, `gradeChime()`, `STRINGS`, `stage()` and `SINCE`)
+so `theme.js` treats them all alike:
 
-The title font is Creepster from Google Fonts, loaded only when a Halloween
-theme is picked. Windows falls back to Chiller.
+- A theme's stylesheet loads only while that theme is on, so no other theme
+  downloads it. Its swatches for the picker stay in `styles.css`, so they show
+  from inside any theme.
+- Its decorations live in one layer at the back of the page, outside `#app`,
+  so the redraw on every change never restarts them. They take no taps and
+  are hidden from screen readers.
+- `sound.js` asks the active theme for its sounds and falls back to the
+  plain beep (and silence for locks and grades).
+- Screens ask for a seasonal line with `flavor(key, usual)` from `theme.js`
+  and get the usual wording under every other theme.
 
-The photos are free under the [Unsplash License](https://unsplash.com/license)
-and load straight from Unsplash's CDN, only while a Halloween theme is on. If
-Unsplash can't be reached, the painted sky and all the drawn pieces still
-show. Credits:
+**Retiring one after its season is one flag**: set `retired: true` for it in
+`SEASONS` at the top of `js/theme.js`. It drops out of the menu picker, the
+join screen and the big-screen dots, and any device still on it falls back
+to Dark. Nothing is deleted, so bringing it back is setting `retired` to
+false again.
+
+On a phone set to reduce motion, every seasonal theme keeps only its still
+decorations.
+
+### Home Alone (the holidays)
+
+Two versions: **Home Alone** (a snowed-in house after dark, every window lit,
+rigged for intruders) and **Home Alone light** (Christmas morning: sun on
+fresh snow, icicles, frost at the corners, and the evidence of last night's
+traps).
+
+On phones and laptops there's falling snow (three layers, fewer on a phone),
+a strand of lights that twinkles and now and then runs a chase, a tree in
+one corner, the front door with its wreath in the other, and every 30–90
+seconds one trap at random: a paint can on a rope, toy cars and marbles, a
+flashlight beam (night), footprints in the snow, the spider back as a
+tarantula, or iced front steps glinting (morning).
+
+On the big screen the backdrop is the house from John's reference photo, the
+approved v2-1 prototype: the party train behind the French doors with
+tonight's players on name tags (the leader up front), a window lit for each
+player home, the delivery guy's run once a minute with a stack of pizzas
+that grows with the money riding on open bets, a flashlight sweep when an
+open bet goes lopsided (3 to 1 or worse, at least 4 people — a first guess,
+tune it in `lonely()` in `bigscreen.js`), a plain van down the street at
+night and a crowbar by the door in the morning. The board sits on a frosted
+panel across the lower part of the screen. A new bet springs a trap (a paint
+can swings across, the screen flashes, the border lights chase); a lock
+frosts the card over and clicks a padlock shut; a grade gives the winners a
+snow-globe burst. Before kickoff nothing on the house gives a hidden pick
+away.
+
+The extras that come with it: the close-out screen names **Man of the
+House**, **The Wet Bandits** and **Left Behind**, and the Man of the House
+wears a crown on the board, Stats and the big screen until the next night is
+closed out; Stats gets an ornament tree per player (one ornament per win
+since `SINCE` in `homealone.js`, sized by the winnings, voids never count);
+setup offers four optional Christmas-week bets; the idle big screen counts
+down to Christmas; and a set of lines replaces the usual wording (all in
+`STRINGS` in `homealone.js`). None of it changes the rules, the money or the
+database.
+
+Sounds are synthesized: sleigh bells for a new bet, a knock at the door for a
+lock, a sleigh-bell flourish for a grade. The title font is Mountains of
+Christmas from Google Fonts, loaded only while the theme is on.
+
+All artwork is drawn for this app. No movie stills, no photos of the actors,
+none of the movie's people, and none of its names or signs: the party
+cutouts and the delivery guy (green beanie, red car, a lit pizza slice on the
+roof sign) are original.
+
+The two backdrop photos are free under the
+[Unsplash License](https://unsplash.com/license) and load straight from
+Unsplash's CDN, only while the theme is on. If Unsplash can't be reached,
+the painted sky and every drawn piece still show. Credits:
+
+- House covered in Christmas lights at night: [Nellie Adamyan](https://unsplash.com/photos/a-house-covered-in-christmas-lights-at-night--FG6wI-hDO8) (night)
+- Snow-covered tree in front of a house: [David Mirabal](https://unsplash.com/photos/_uAQ2eSS850) (morning)
+
+### Halloween (October) — retired
+
+`halloween.js` and `halloween.css`: a haunted sky, the moon, fog, bats, a
+spider on its thread, ghosts, cobwebs, embers or falling leaves, a black cat
+and jack-o'-lanterns. The new-bet chime is a theremin, and on the big screen
+a new bet brings lightning and a swarm of bats. Under Halloween, pumpkin
+orange is the brand, so side A moves to candle-yellow and money lost to
+blood red. The title font is Creepster (Windows falls back to Chiller).
+
+Photo credits (Unsplash License):
 
 - Haunted house in fog: [m wrona](https://unsplash.com/photos/gray-wooden-house-covered-by-fog-pCgxm-HDMNs) (dark sky)
 - Moon behind trees: [Aron Visuals](https://unsplash.com/photos/full-moon-behind-a-tree-silhouettes-4zxSWESyZio)
@@ -159,8 +244,8 @@ show. Credits:
 - Misty forest: [Rythik](https://unsplash.com/photos/silhouette-photography-of-house-surrounded-by-withered-trees-bxkyazW_6KY) (light sky)
 - Pumpkins at golden hour: [Elijah Pilchard](https://unsplash.com/photos/pumpkins-in-a-field-during-golden-hour-0ZQG2WeU8KM) (light, bottom edge)
 
-To retire the theme after the season, delete the two Halloween entries in
-`theme.js`; anyone still on one falls back to Dark.
+To bring it back next October, set `retired: false` for it in `js/theme.js`
+(and probably `retired: true` for Home Alone).
 
 ## Adding or updating `js/vendor/supabase.js`
 

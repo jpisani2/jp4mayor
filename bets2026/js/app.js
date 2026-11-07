@@ -4,7 +4,7 @@
 
 import { state, onChange, boot } from "./store.js";
 import { esc } from "./format.js";
-import { restore } from "./theme.js";
+import { restore, flavor, stage } from "./theme.js";
 import { unlockAudio } from "./sound.js";
 import * as join from "./screens/join.js";
 import * as seat from "./screens/seat.js";
@@ -27,7 +27,7 @@ const SCREENS = { join, seat, room, setup, closeout, settle, stats, idle, roster
                   rules, past, offline, big };
 
 const STATIC = {
-  loading: () => `<div class="center"><p>Connecting…</p></div>`,
+  loading: () => `<div class="center"><p>${esc(flavor("loading", "Connecting…"))}</p></div>`,
 
   unconfigured: () => `<div class="center">
     <h1 class="cond">Almost there</h1>
@@ -82,6 +82,9 @@ let shown = null;
 
 function render() {
   dot.dataset.live = state.live ? "1" : "0";
+  // Lets a seasonal theme dress the big screen differently from a phone.
+  document.documentElement.dataset.screen = state.screen;
+  if (state.screen !== "big") stage(null);
   const kept = state.screen === shown ? capture() : null;
 
   const screen = SCREENS[state.screen];

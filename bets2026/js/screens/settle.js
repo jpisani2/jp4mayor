@@ -6,6 +6,7 @@
 
 import { state, goto, home, isBusy, logPayment, undoPayment } from "../store.js";
 import { esc, money } from "../format.js";
+import { flavor } from "../theme.js";
 import { balancesAcrossGames, roundAgainstYourself, suggestTransfers, leaverPlan,
          CARRY_UNDER } from "../ledger.js";
 
@@ -22,7 +23,7 @@ export function reset() {
 const nameOf = id => state.players.find(p => p.id === id)?.name ?? "—";
 
 export function view() {
-  if (!state.history.loaded) return `<div class="center"><p>Working it out…</p></div>`;
+  if (!state.history.loaded) return `<div class="center"><p>${esc(flavor("loading", "Working it out…"))}</p></div>`;
 
   const { games, bets, payments } = state.history;
   const rows = balancesAcrossGames(games, bets, payments, state.players);
@@ -44,6 +45,7 @@ export function view() {
       </div>
       <button class="btn sm" id="back">Back</button>
     </header>
+    ${flavor("settle", "") ? `<div class="flavor">${esc(flavor("settle", ""))}</div>` : ""}
 
     ${state.notice ? `<div class="banner">${esc(state.notice)}</div>` : ""}
     ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}

@@ -2,7 +2,7 @@
 
 import { state, stake, nameOf, betsBy, awaiting, isPregame, isBlind, isBusy,
          pick, lock, ungrade, pull, pullNeedsAdmin, openProposeSheet, openSheet,
-         goto, openMenu, visibleBets, toggleInPlayAll } from "../store.js";
+         goto, openMenu, visibleBets, toggleInPlayAll, crownIds } from "../store.js";
 import { MAX_OPEN_BETS } from "../config.js";
 import { esc, money, matchup } from "../format.js";
 import { riskFor, takers, pot, canLock, settle, ifThisHits, winIfJoined, oneOnOne,
@@ -11,6 +11,8 @@ import * as propose from "./propose.js";
 import * as menu from "./menu.js";
 import * as grading from "./grading.js";
 import * as adminsheet from "./adminsheet.js";
+import { lockFx, globeFx, crown } from "./flourish.js";
+import { flavor } from "../theme.js";
 
 export function view() {
   if (!state.game) return closedView();
@@ -38,11 +40,12 @@ export function view() {
     ${state.notice ? `<div class="banner">${esc(state.notice)}</div>` : ""}
     ${state.error && !state.sheet ? `<div class="err">${esc(state.error)}</div>` : ""}
 
-    ${section(isPregame() ? `Pregame board (${open.length})` : `Taking picks (${open.length})`)}
+    ${isPregame() ? section(`Pregame board (${open.length})`)
+      : section(`${flavor("boardHeader", "Taking picks")} (${open.length})`, true)}
     ${open.length ? open.map(openCard).join("")
-      : `<div class="empty">${isPregame()
+      : `<div class="empty">${esc(flavor("emptyBoard", isPregame()
           ? "The pregame board is empty."
-          : "Nothing on the table. Call one before the next snap."}</div>`}
+          : "Nothing on the table. Call one before the next snap."))}</div>`}
 
     ${locked.length ? section(`Locked, waiting on the result (${locked.length})`)
       + locked.map(lockedCard).join("") : ""}
@@ -153,7 +156,9 @@ function inPlayBar() {
 }
 
 const tone = n => n > 0.001 ? "up" : n < -0.001 ? "down" : "";
-const section = title => `<div class="sechead"><span>${esc(title)}</span><span class="rule"></span></div>`;
+/* The live board's own header can be styled as something else by a
+   seasonal theme (a delivery slip, under Home Alone). */
+const section = (title, slip = false) => `<div class="sechead"${slip ? " data-slip" : ""}><span>${esc(title)}</span><span class="rule"></span></div>`;
 
 /* What you'd actually win on this side, counting who's already in. When
    sides are hidden before kickoff, a live figure would give the counts away,
@@ -246,7 +251,7 @@ function badge(bet) {
 
 function lockedCard(bet) {
   const names = side => takers(bet, side).map(id => esc(nameOf(id))).join(", ") || "—";
-  return `<article class="card">
+  return `<article class="card">${lockFx(bet)}
     <div class="grp">${esc(bet.category)}</div>
     <div class="q">${esc(bet.body)}</div>
     <div class="lineup">
@@ -263,7 +268,7 @@ function lockedCard(bet) {
 function gradedCard(bet) {
   const nets = settle(bet, stake());
   const busy = isBusy(`grade:${bet.id}`);
-  return `<article class="card">
+  return `<article class="card graded-fx">${globeFx(bet)}
     <div class="grp">${esc(bet.category)}</div>
     <div class="q" style="margin-bottom:6px">${esc(bet.body)}</div>
     <div class="result">Result: <b>${esc(grading.resultLabel(bet))}</b></div>
@@ -277,12 +282,13 @@ function gradedCard(bet) {
 }
 
 function scoreboard(totals) {
+  const crowned = crownIds();
   return `<table class="board num">
     <thead><tr><th>Player</th><th>In</th><th>W–L–P</th><th>Risked</th><th>Net</th></tr></thead>
     <tbody>${state.players.map(p => {
       const r = totals[p.id];
       return `<tr>
-        <td class="${p.id === state.me ? "you" : ""}">${esc(p.name)}</td>
+        <td class="${p.id === state.me ? "you" : ""}">${esc(p.name)}${crown(p.id, crowned)}</td>
         <td>${r.bets}</td>
         <td>${r.wins}–${r.losses}–${r.pushes}</td>
         <td>${money(r.risked)}</td>

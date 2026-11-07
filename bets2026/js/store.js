@@ -6,9 +6,10 @@
 
 import * as db from "./db.js";
 import { DORMANT_AFTER, MAX_OPEN_BETS } from "./config.js";
-import { isDormant, canLock, takers } from "./scoring.js";
+import { isDormant, canLock, takers, effectiveResult, nightAwards } from "./scoring.js";
 import { withTeams } from "./format.js";
-import { beep } from "./sound.js";
+import { beep, lockSound, gradeSound } from "./sound.js";
+import { flavor, activeSeason } from "./theme.js";
 
 /* Big screen random bets: interval choices in minutes, and where this device
    remembers its setting. Declared before state, which reads them. */
@@ -40,6 +41,8 @@ export const state = {
   inPlayAll: false,    // everyone's in-play totals expanded in the room
   bigScreen: false,    // this device is the shared dashboard, not a player
   fresh: {},           // big screen: bet id -> when it first appeared
+  justLocked: {},      // bet id -> when this device saw it lock (for a flourish)
+  justGraded: {},      // bet id -> when this device saw it graded
   autoBet: loadAutoBet(), // big screen: random bets { on, every, since }
   admin: false,
   rulesFrom: null,     // where the rules screen's Back button goes
@@ -132,7 +135,7 @@ export const isBlind = bet => isPregame() && bet.is_pregame;
 /* Who is in tonight's game: anyone who opened the app for it, plus anyone
    who has made a pick themselves (in case their check-in didn't save). If
    attendance couldn't be read, returns null and everyone counts. */
-function tonight() {
+export function tonight() {
   if (!state.attendance) return null;
   const ids = new Set(state.attendance);
   state.bets.forEach(b => b.picks.forEach(p => { if (!p.auto) ids.add(p.player_id); }));
@@ -265,6 +268,7 @@ async function reloadPass(announce, history) {
   try {
     const openBefore = betsBy("open").length;
     const known = new Set(state.bets.map(b => b.id));
+    const was = new Map(state.bets.map(b => [b.id, b.status]));
     const [game, players] = await Promise.all([db.fetchOpenGame(), db.fetchPlayers()]);
     state.game = game;
     state.players = players;
@@ -280,6 +284,7 @@ async function reloadPass(announce, history) {
     checkIn();
     if (state.bigScreen) markFresh(betsBy("open").filter(b => !known.has(b.id)));
     else if (announce && betsBy("open").length > openBefore) beep();
+    noticeChanges(was);
 
     // The board draws first; the full history read, when one is needed,
     // follows rather than holding the board up.
@@ -312,6 +317,57 @@ function markFresh(bets) {
   });
   beep();
   setTimeout(beep, 320);   // a double chime, so it carries across the room
+}
+
+/* --- locks and grades, as they happen ------------------------------------ */
+
+/* How long a bet that just locked or was just graded gets its flourish. */
+export const LOCK_FX_MS = 4000;
+export const GRADE_FX_MS = 2800;
+
+/* A bet this device watched lock or get a real grade. Seasonal themes give
+   these a sound and a flourish (and, for a lock, a line in the banner);
+   under the others nothing shows. A bet first seen already locked — a fresh
+   page load, another game — doesn't count. */
+function noticeChanges(was) {
+  const now = Date.now();
+  const locked = [], graded = [];
+  state.bets.forEach(b => {
+    const before = was.get(b.id);
+    if (before === "open" && b.status === "locked") locked.push(b.id);
+    if ((before === "open" || before === "locked") && b.status === "graded"
+        && effectiveResult(b) !== "VOID") graded.push(b.id);
+  });
+  const mark = (ids, into, ms) => ids.forEach(id => {
+    into[id] = now;
+    setTimeout(() => { if (into[id] === now) { delete into[id]; render(); } }, ms);
+  });
+  mark(locked, state.justLocked, LOCK_FX_MS);
+  mark(graded, state.justGraded, GRADE_FX_MS);
+  if (locked.length) {
+    lockSound();
+    const line = flavor("locked", "");
+    if (line) notify(line);
+  }
+  if (graded.length) gradeSound();
+}
+
+/* --- seasonal: the night's awards ---------------------------------------- */
+
+/* The Man of the House from the last night closed out since the seasonal
+   theme went live — the crown stays on until the next night closes. Empty
+   under a theme without awards, or before history has loaded. */
+export function crownIds() {
+  const since = activeSeason()?.SINCE;
+  const h = state.history;
+  if (!since || !h.loaded) return [];
+  const last = h.games
+    .filter(g => g.phase === "closed" && g.kickoff_date >= since)
+    .sort((a, b) => (Date.parse(b.closed_at) || 0) - (Date.parse(a.closed_at) || 0)
+                 || String(b.kickoff_date).localeCompare(String(a.kickoff_date)))[0];
+  if (!last) return [];
+  return nightAwards(h.bets.filter(b => b.game_id === last.id), state.players,
+                     Number(last.base_stake), null).man;
 }
 
 /* --- big screen: random bets --------------------------------------------- */
@@ -490,6 +546,11 @@ export async function boot() {
     goto(state.game ? "room" : "idle");
   } else {
     goto(localStorage.getItem("betroom.pw") ? "seat" : "join");
+  }
+  // A seasonal theme with awards shows last night's crown on the board,
+  // which needs history the board doesn't otherwise read.
+  if (activeSeason()?.SINCE && !state.history.loaded && !historyWanted()) {
+    refreshHistory().then(render).catch(() => { /* the crown can wait */ });
   }
 
   if (!started) {
@@ -782,8 +843,9 @@ export function kickOff() {
     const r = await db.kickOff(state.game.id, presentPlayers().map(p => p.id));
     state.sheet = null;
     await reload();
+    const bait = flavor("oneSided", "").replace(/\.$/, "").toLowerCase();
     notify(`Kickoff — ${r.locked} pregame bet${r.locked === 1 ? "" : "s"} locked` +
-           (r.voided ? `, ${r.voided} voided with no action` : ""), 6000);
+           (r.voided ? `, ${r.voided} voided ${bait ? `— ${bait}` : "with no action"}` : ""), 6000);
   });
 }
 

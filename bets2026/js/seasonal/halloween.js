@@ -1,17 +1,31 @@
-/* The Halloween dressing: a haunted sky, the moon, fog, bats, a spider on
-   its thread, a ghost, cobwebs, embers or falling leaves, a black cat and a
-   row of jack-o'-lanterns.
+/* The Halloween dressing (October 2026): a haunted sky, the moon, fog, bats,
+   a spider on its thread, a ghost, cobwebs, embers or falling leaves, a black
+   cat and a row of jack-o'-lanterns. Retired for the rest of the year; to
+   bring it back, set retired to false for it in js/theme.js.
 
    It all lives in one layer at the back of <body>, outside #app, so the
    full-screen redraw on every change never touches it and nothing restarts
    mid-flight. It never takes a tap (pointer-events: none in the stylesheet)
    and it's hidden from screen readers. Which pieces show, and in what colors,
-   is decided by styles.css per theme; this file only builds the shapes.
+   is decided by halloween.css per theme; this file only builds the shapes.
 
    The photographs come from Unsplash (free under the Unsplash License) and
    load straight from their CDN, only while a Halloween theme is on. If they
    can't load, the painted sky and every drawn piece still show. Credits are
-   in the README. */
+   in the README.
+
+   Every seasonal theme exports the same small shape — THEMES, CSS, dress()
+   and optionally chime() — so js/theme.js can treat them all alike. */
+
+export const SEASON = "halloween";
+
+export const THEMES = [
+  { id: "halloween",       name: "Halloween",       note: "a haunted house, fog, bats and jack-o'-lanterns" },
+  { id: "halloween-light", name: "Halloween light", note: "a misty pumpkin patch, falling leaves, something on a thread" },
+];
+
+/* Loaded by theme.js only while one of THEMES is on. */
+export const CSS = new URL("./halloween.css", import.meta.url).href;
 
 const ID = "spooky";
 const FONT = "https://fonts.googleapis.com/css2?family=Creepster&display=swap";
@@ -42,7 +56,8 @@ function web() {
   return `<svg viewBox="0 0 200 200" aria-hidden="true"><path d="${d}"/></svg>`;
 }
 
-const spider = `<svg viewBox="0 0 40 44" aria-hidden="true">
+/* Exported: the Home Alone theme brings it back as a tarantula. */
+export const spider = `<svg viewBox="0 0 40 44" aria-hidden="true">
   <g class="legs">
     <path d="M17 22 C10 16 6 14 2 16 M17 25 C10 22 5 22 1 26 M17 28 C11 28 6 31 3 36 M18 30 C14 33 11 38 10 43"/>
     <path d="M23 22 C30 16 34 14 38 16 M23 25 C30 22 35 22 39 26 M23 28 C29 28 34 31 37 36 M22 30 C26 33 29 38 30 43"/>
@@ -137,4 +152,26 @@ export function dress(on) {
   if (!on) { have?.remove(); return; }
   loadFont();
   if (!have) document.body.prepend(build());
+}
+
+/* The new-bet chime under Halloween: a theremin's "ooo-OOO-ooo" — a sine
+   that swoops up then sinks a minor sixth, with a slow wobble. */
+export function chime(c) {
+  const t = c.currentTime;
+  const osc = c.createOscillator(), wobble = c.createOscillator();
+  const depth = c.createGain(), gain = c.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(440, t);
+  osc.frequency.exponentialRampToValueAtTime(880, t + 0.28);
+  osc.frequency.exponentialRampToValueAtTime(554, t + 1.0);
+  wobble.frequency.value = 6.5;
+  depth.gain.value = 14;
+  wobble.connect(depth).connect(osc.frequency);
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(0.11, t + 0.12);
+  gain.gain.setValueAtTime(0.11, t + 0.7);
+  gain.gain.exponentialRampToValueAtTime(0.001, t + 1.1);
+  osc.connect(gain).connect(c.destination);
+  osc.start(t); wobble.start(t);
+  osc.stop(t + 1.12); wobble.stop(t + 1.12);
 }

@@ -4,10 +4,11 @@
 
 import { state, retryBoot } from "../store.js";
 import { esc } from "../format.js";
+import { flavor } from "../theme.js";
 
 export function view() {
   return `<div class="center">
-    <h1 class="cond">Can't connect</h1>
+    <h1 class="cond">${esc(flavor("offline", "Can't connect"))}</h1>
     <p>Can't reach the Bet Room right now. Check your signal or Wi-Fi —
        it'll keep trying on its own.</p>
     <button class="btn primary wide" id="retry">Try again</button>

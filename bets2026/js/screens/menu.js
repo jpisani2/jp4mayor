@@ -1,6 +1,7 @@
 /* Everything that isn't the board: the other screens, the theme picker and
    the sound switch. Kept behind one link so the room header stays a board
-   and not a navbar. */
+   and not a navbar. The everyday items come first; the admin ones sit
+   below Themes, out of the way. */
 
 import { state, goto, openMenu, nameOf, switchPlayer, openRules } from "../store.js";
 import { esc } from "../format.js";
@@ -29,14 +30,6 @@ export function view() {
         <span>lifetime, season, categories, export</span></button>
       <button class="menuitem" id="m-rules">House rules
         <span>how bets, money and grading work</span></button>
-      <button class="menuitem" id="m-past">Past games
-        <span>every closed night — fix a wrong result (admin)</span></button>
-      <button class="menuitem" id="m-roster">Roster
-        <span>merge, rename, move a stray pick</span></button>
-      <button class="menuitem" id="m-admin">${state.game ? "Close out the night" : "Set up a game"}
-        <span>admin${state.admin ? "" : " — needs the PIN"}</span></button>
-      <button class="menuitem" id="m-switch">Switch player
-        <span>you're ${esc(nameOf(state.me))} — pick another name, or use this as the big screen</span></button>
     </div>
 
     <div class="toggle">
@@ -58,6 +51,18 @@ export function view() {
     </div>
     <div class="hint" style="margin-top:10px">
       This device only. Nobody else's screen changes.
+    </div>
+
+    <div class="sechead"><span>Admin and device</span><span class="rule"></span></div>
+    <div class="menulist">
+      <button class="menuitem" id="m-past">Past games
+        <span>every closed night — fix a wrong result (admin)</span></button>
+      <button class="menuitem" id="m-roster">Roster
+        <span>merge, rename, move a stray pick</span></button>
+      <button class="menuitem" id="m-admin">${state.game ? "Close out the night" : "Set up a game"}
+        <span>admin${state.admin ? "" : " — needs the PIN"}</span></button>
+      <button class="menuitem" id="m-switch">Switch player
+        <span>you're ${esc(nameOf(state.me))} — pick another name, or use this as the big screen</span></button>
     </div>
   </div></div>`;
 }

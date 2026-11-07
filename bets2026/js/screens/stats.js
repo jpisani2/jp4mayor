@@ -4,9 +4,11 @@
    a corrected grade or a roster merge flows straight through, including back
    through past seasons. Voided bets are left out of every figure. */
 
-import { state, goto, home } from "../store.js";
+import { state, goto, home, crownIds } from "../store.js";
 import { esc, money } from "../format.js";
 import { rollUp, settle, riskFor, counts, effectiveResult } from "../scoring.js";
+import { flavor, activeSeason } from "../theme.js";
+import { crown } from "./flourish.js";
 
 let range = "season";
 let withVoids = false;
@@ -101,7 +103,7 @@ function streaks(bets) {
 }
 
 export function view() {
-  if (!state.history.loaded) return `<div class="center"><p>Adding it up…</p></div>`;
+  if (!state.history.loaded) return `<div class="center"><p>${esc(flavor("loading", "Adding it up…"))}</p></div>`;
 
   const games = state.history.games.filter(inRange);
   const ids = new Set(games.map(g => g.id));
@@ -111,6 +113,7 @@ export function view() {
   const st = streaks(bets);
   const ranked = [...state.players].sort((a, b) => t[b.id].net - t[a.id].net);
   const categories = [...new Set(settled.map(b => b.category))];
+  const crowned = crownIds();
 
   return `<div class="page">
     <header class="head">
@@ -141,7 +144,7 @@ export function view() {
           const decided = r.wins + r.losses;
           return `<tr>
             <td class="rank">${i + 1}</td>
-            <td class="${p.id === state.me ? "you" : ""}">${esc(p.name)}</td>
+            <td class="${p.id === state.me ? "you" : ""}">${esc(p.name)}${crown(p.id, crowned)}</td>
             <td>${r.games.size}</td>
             <td>${r.bets}</td>
             <td>${r.wins}–${r.losses}–${r.pushes}</td>
@@ -180,10 +183,68 @@ export function view() {
           ${withVoids ? "checked" : ""}> Include voided bets</label>
       </div>
     ` : `<div class="empty">No games in this range yet.</div>`}
+
+    ${trees()}
   </div>`;
 }
 
 const tone = n => n > 0.005 ? "up" : n < -0.005 ? "down" : "";
+
+/* --- the ornament trees (Home Alone) -------------------------------------
+
+   Each player gets a tree, and every bet they've won since the theme went
+   live hangs an ornament on it — the bigger the win, the bigger the
+   ornament. Voids and pushes hang nothing. Built from the graded bets this
+   screen already has, whatever range is picked above. */
+
+function wins(playerId, since) {
+  const out = [];
+  state.history.games.filter(g => g.kickoff_date >= since).forEach(game => {
+    const stake = Number(game.base_stake);
+    state.history.bets.filter(b => b.game_id === game.id && counts(b)).forEach(bet => {
+      const net = settle(bet, stake)[playerId];
+      if (net > 0.005) out.push({ id: bet.id, net, stake });
+    });
+  });
+  return out;
+}
+
+const COLORS = ["#D42A3A", "#F2C75C", "#2FD36B", "#62B8F5", "#C9A2F2", "#FF8A3D"];
+
+function treeSvg(list) {
+  // Places come from each bet's id, so ornaments stay put between redraws.
+  const placed = list.slice(0, 60).map((w, i) => {
+    let h = [...String(w.id)].reduce((a, c) => (a * 33 + c.charCodeAt(0)) % 9973, 17);
+    const r01 = () => (h = (h * 7919 + 13) % 9973) / 9973;
+    const t = .18 + r01() * .78;                       // down the tree
+    const half = t * 44;
+    const x = 60 + (r01() * 2 - 1) * half * .85, y = 14 + t * 96;
+    const r = 3 + Math.min(5, (w.net / w.stake) * 1.6);
+    return `<g><line x1="${x.toFixed(1)}" y1="${(y - r - 3).toFixed(1)}" x2="${x.toFixed(1)}" y2="${(y - r).toFixed(1)}" stroke="#C9A24E" stroke-width=".8"/>
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="${COLORS[i % COLORS.length]}"/>
+      <circle cx="${(x - r * .35).toFixed(1)}" cy="${(y - r * .35).toFixed(1)}" r="${(r * .28).toFixed(1)}" fill="#fff" opacity=".55"/></g>`;
+  }).join("");
+  return `<svg viewBox="0 0 120 132" aria-hidden="true">
+    <rect x="54" y="112" width="12" height="16" fill="#4a2c18"/>
+    <path d="M60 4 L104 112 Q60 120 16 112 Z" fill="#17633A"/>
+    <path d="M60 4 L86 66 Q60 72 34 66 Z" fill="#1F7A47"/>
+    <path d="M60 -2 l3 7 l7 .5 l-5.5 4.5 l2 7 l-6.5 -4 l-6.5 4 l2 -7 l-5.5 -4.5 l7 -.5 Z" fill="#F2C75C"/>
+    ${placed}</svg>`;
+}
+
+function trees() {
+  const since = activeSeason()?.SINCE;
+  if (!since) return "";
+  const rows = state.players.map(p => ({ p, list: wins(p.id, since) }))
+    .sort((a, b) => b.list.length - a.list.length || a.p.name.localeCompare(b.p.name));
+  return `<div class="sechead"><span>Ornament trees — every win since ${esc(new Date(since + "T00:00:00")
+      .toLocaleDateString(undefined, { month: "long", day: "numeric" }))}</span><span class="rule"></span></div>
+    <div class="trees">${rows.map(({ p, list }) => `<div class="otree">
+      ${treeSvg(list)}
+      <div class="otreename ${p.id === state.me ? "you" : ""}">${esc(p.name)}</div>
+      <div class="otreecount">${list.length ? `${list.length} ornament${list.length === 1 ? "" : "s"}` : "bare so far"}</div>
+    </div>`).join("")}</div>`;
+}
 
 /* One row per pick, which is the grain everything else is derived from — so
    the export can reproduce any figure on this screen. Voided bets are left

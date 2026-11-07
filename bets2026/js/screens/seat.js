@@ -3,10 +3,11 @@
 
 import { state, takeSeat, addPlayer, enterBigScreen, openRules, isBusy } from "../store.js";
 import { esc } from "../format.js";
+import { flavor } from "../theme.js";
 
 export function view() {
   return `<div class="center">
-    <h1 class="cond">Who are you?</h1>
+    <h1 class="cond">${esc(flavor("seatHeading", "Who are you?"))}</h1>
     <p>Tap your name — same name every week, on any device. That's what keeps
        your record in one piece.</p>
     ${state.error ? `<div class="err">${esc(state.error)}</div>` : ""}

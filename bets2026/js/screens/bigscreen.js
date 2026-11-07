@@ -8,13 +8,15 @@
 import { state, stake, nameOf, betsBy, awaiting, isPregame, isBlind, isBusy,
          lock, ungrade, pull, goto, leaveBigScreen, openSheet,
          FRESH_MS, AUTO_EVERY, autoPaused, setAutoBet, setAutoEvery, nextThrowAt,
-         throwRandomBet } from "../store.js";
+         throwRandomBet, presentPlayers, crownIds } from "../store.js";
 import { esc, money, matchup } from "../format.js";
 import { riskFor, takers, pot, canLock, settle, rollUp, inPlay, winIfJoined, oneOnOne,
          gameTotals, effectiveResult } from "../scoring.js";
 import { balancesAcrossGames, roundAgainstYourself, suggestTransfers } from "../ledger.js";
 import { soundOn, setSound } from "../sound.js";
-import { THEMES, current as currentTheme, apply as applyTheme } from "../theme.js";
+import { THEMES, current as currentTheme, apply as applyTheme, flavor, stage,
+         seasonIs } from "../theme.js";
+import { lockFx, globeFx, isFresh, crown } from "./flourish.js";
 import * as closeout from "./closeout.js";
 import * as grading from "./grading.js";
 import * as adminsheet from "./adminsheet.js";
@@ -67,9 +69,10 @@ function liveView() {
     ${autoBar()}
     <div class="bgrid">
       <main class="bmain">
-        ${section(`${isPregame() ? "Pregame board" : "Taking picks"} (${open.length})`)}
+        ${isPregame() ? section(`Pregame board (${open.length})`)
+          : section(`${flavor("boardHeader", "Taking picks")} (${open.length})`, true)}
         ${open.length ? `<div class="bcards">${open.map(openCard).join("")}</div>`
-          : `<div class="empty">Nothing taking picks. Call one from a phone.</div>`}
+          : `<div class="empty">${esc(flavor("emptyBoard", "Nothing taking picks. Call one from a phone."))}</div>`}
 
         ${locked.length ? section(`Waiting on the result (${locked.length})`)
           + `<div class="bcards">${locked.map(lockedCard).join("")}</div>` : ""}
@@ -83,7 +86,8 @@ function liveView() {
 }
 
 function idleView() {
-  return `<div class="bgrid">
+  const corner = flavor("idleCorner", "");
+  return `${corner ? `<div class="corner-note">${esc(corner)}</div>` : ""}<div class="bgrid">
     <main class="bmain">
       <div class="bidle">
         <h2 class="cond">No game running</h2>
@@ -94,8 +98,10 @@ function idleView() {
   </div>`;
 }
 
-const section = title =>
-  `<div class="sechead"><span>${esc(title)}</span><span class="rule"></span></div>`;
+/* The live board's own header can be styled as something else by a
+   seasonal theme (a delivery slip, under Home Alone). */
+const section = (title, slip = false) =>
+  `<div class="sechead"${slip ? " data-slip" : ""}><span>${esc(title)}</span><span class="rule"></span></div>`;
 
 /* --- new-bet alert ------------------------------------------------------- */
 
@@ -112,7 +118,7 @@ function alerts() {
   const age = since(newest);
   const bet = state.bets.find(b => b.id === newest);
   return `
-    ${age < FLASH_MS ? `<div class="bflash" ${resume(age)}></div>` : ""}
+    ${age < FLASH_MS ? `<div class="bflash" ${resume(age)}><i class="fx-can"></i><i class="fx-stars"></i><i class="fx-puff"></i></div>` : ""}
     ${bet && age < BANNER_MS ? `<div class="bnew" ${resume(age)}>
       <span class="bnewk">New bet</span>
       <span class="bnewq">${esc(bet.body)}</span>
@@ -170,8 +176,10 @@ function sideBlock(bet, side, blind) {
   const win = blind ? `win ${money(oneOnOne(side, bet.p, s))} one-on-one`
     : `win ${money(winIfJoined(bet, side, s, "(newcomer)"))} now`;
   const names = takers(bet, side);
+  const fort = !blind && seasonIs("homealone") && lonely(bet) === side;
   return `<div class="bside-${side} bsidebox">
-    <div class="bsn">${esc(side === "A" ? bet.side_a : bet.side_b)}</div>
+    <div class="bsn">${esc(side === "A" ? bet.side_a : bet.side_b)}${
+      fort ? `<span class="fort">holding the fort</span>` : ""}</div>
     <div class="bsr num">risk ${money(riskFor(side, bet.p, s))} · ${win}</div>
     ${blind ? "" : `<div class="takers">${names.length
       ? names.map(id => `<span class="chip">${esc(nameOf(id))}</span>`).join("")
@@ -211,7 +219,7 @@ function openCard(bet) {
 
 function lockedCard(bet) {
   const names = side => takers(bet, side).map(id => esc(nameOf(id))).join(", ") || "—";
-  return `<article class="card bcard">
+  return `<article class="card bcard">${lockFx(bet)}
     <div class="grp">${esc(bet.category)} · pot <span class="num">${money(pot(bet, stake()))}</span></div>
     <div class="q">${esc(bet.body)}</div>
     <div class="lineup">
@@ -231,6 +239,7 @@ function leaderboard() {
   const s = stake();
   const totals = rollUp(state.bets, state.players, s);
   const hideInPlay = isPregame();
+  const crowned = crownIds();
   const playing = state.players
     .filter(p => state.bets.some(b => b.picks.some(x => x.player_id === p.id && x.side !== "OUT")))
     .map(p => ({ p, r: totals[p.id], ip: inPlay(state.bets, p.id, s).total }))
@@ -241,7 +250,7 @@ function leaderboard() {
     ${playing.length ? `<table class="board num">
       <thead><tr><th>Player</th><th>W–L–P</th>${hideInPlay ? "" : "<th>In play</th>"}<th>Net</th></tr></thead>
       <tbody>${playing.map(({ p, r, ip }) => `<tr>
-        <td>${esc(p.name)}</td>
+        <td>${esc(p.name)}${crown(p.id, crowned)}</td>
         <td>${r.wins}–${r.losses}–${r.pushes}</td>
         ${hideInPlay ? "" : `<td>${money(ip)}</td>`}
         <td class="${tone(r.net)}">${money(r.net)}</td>
@@ -263,7 +272,7 @@ function feed() {
       const label = grading.resultLabel(bet);
       const result = effectiveResult(bet);
       const flat = result === "PUSH" || result === "VOID";
-      return `<div class="bfeed">
+      return `<div class="bfeed${isFresh(bet, "grade") ? " graded-fx" : ""}">${globeFx(bet)}
         <div class="bfq">${esc(bet.body)}</div>
         <div class="bfr">${esc(label)}${flat ? " — no money moved" : ""}</div>
         ${flat ? "" : `<div class="bfn num">${nets
@@ -299,8 +308,40 @@ function owes() {
 
 /* --- wiring -------------------------------------------------------------- */
 
+/* --- the seasonal backdrop ---------------------------------------------- */
+
+/* Lopsided: one side has at least three times the people of the other,
+   with at least four in. Returns the outnumbered side, or null. These
+   thresholds are a first guess, to tune on a real night. */
+function lonely(bet) {
+  const a = takers(bet, "A").length, b = takers(bet, "B").length;
+  if (a + b < 4 || !a || !b) return null;
+  return a >= 3 * b ? "B" : b >= 3 * a ? "A" : null;
+}
+
+/* What a seasonal backdrop gets told on each redraw: who's home tonight
+   (the leader first), how much is riding on open bets (as a stack of 1–6
+   pizzas), and which open bets have gone lopsided. Hidden pregame picks are
+   left out of all three, so nothing on the house gives a blind pick away. */
+function stageInfo() {
+  const s = stake();
+  const totals = rollUp(state.bets, state.players, s);
+  const names = (state.game ? presentPlayers() : [])
+    .map(p => ({ name: p.name, net: totals[p.id]?.net ?? 0 }))
+    .sort((a, b) => b.net - a.net || a.name.localeCompare(b.name))
+    .map(p => p.name);
+  const open = betsBy("open").filter(b => !isBlind(b));
+  const riding = open.reduce((sum, b) => sum + pot(b, s), 0);
+  return {
+    names,
+    boxes: 1 + Math.floor(riding / (3 * s)),
+    lopsided: open.filter(b => lonely(b)).map(b => b.id),
+  };
+}
+
 export function wire(root) {
   keepAwake();
+  stage(stageInfo());
 
   root.querySelectorAll("[data-lock]").forEach(el => {
     el.onclick = () => lock(el.dataset.lock);

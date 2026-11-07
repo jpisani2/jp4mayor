@@ -6,7 +6,8 @@ import { state, unlockAdmin, goto, home, isBusy, holdRender,
          createGameWithBoard } from "../store.js";
 import { esc, money, matchup, localDate } from "../format.js";
 import { riskA, riskB } from "../scoring.js";
-import { buildBoard, toBetRows } from "../pregame.js";
+import { buildBoard, toBetRows, HOLIDAY } from "../pregame.js";
+import { seasonIs } from "../theme.js";
 import * as closeout from "./closeout.js";
 
 let form;
@@ -21,8 +22,13 @@ export function reset() {
     total: 44.5,
     base_stake: 1,
     overrides: {},
+    holiday: [],   // Christmas-week bets ticked, under a Home Alone theme
   };
 }
+
+/* The holiday bets are offered only while a Home Alone theme is on. */
+const holidayOn = () => seasonIs("homealone");
+const draft = () => ({ ...form, holiday: holidayOn() ? form.holiday : [] });
 reset();
 
 /* Next Sunday — or today, on a Sunday — in this device's own time zone. */
@@ -53,7 +59,7 @@ export function view() {
   if (state.game) return stillOpenView();
 
   const issue = problem();
-  const board = issue ? [] : buildBoard(form, form.overrides);
+  const board = issue ? [] : buildBoard(draft(), form.overrides);
   const favName = form.favorite === "home" ? form.home_team : form.away_team;
 
   return `<div class="page">
@@ -139,6 +145,13 @@ function boardView(board) {
       </div>
     </div>`).join("")}
 
+    ${holidayOn() ? `<div class="sechead"><span>Holiday bets — Christmas week</span><span class="rule"></span></div>
+      <div class="hint" style="margin-bottom:8px">Tick any to add them to the board. Graded by hand like
+        the rest — whoever grades the snow one checks the weather.</div>
+      ${HOLIDAY.map(t => `<label class="checkline" style="display:flex;margin:7px 0">
+        <input type="checkbox" data-holiday="${t.key}" ${form.holiday.includes(t.key) ? "checked" : ""}>
+        ${esc(t.body)}</label>`).join("")}` : ""}
+
     <div class="rowbtns" style="margin-top:20px">
       <button class="btn primary" id="post" ${busy ? "disabled" : ""}>${
         busy ? "Opening…" : "Open the pregame board"}</button>
@@ -208,7 +221,7 @@ export function wire(root) {
     const key = el.dataset.odds;
     const move = () => {
       form.overrides[key] = +el.value;
-      const row = buildBoard(form, form.overrides).find(r => r.key === key);
+      const row = buildBoard(draft(), form.overrides).find(r => r.key === key);
       const pct = $(`#pct-${key}`);
       pct.textContent = `${row.pct}%`;
       pct.classList.toggle("edited", row.changed);
@@ -223,9 +236,18 @@ export function wire(root) {
 
   if ($("#resetodds")) $("#resetodds").onclick = () => { form.overrides = {}; redraw(); };
 
+  root.querySelectorAll("[data-holiday]").forEach(el => {
+    el.onchange = () => {
+      const key = el.dataset.holiday;
+      form.holiday = el.checked ? [...new Set([...form.holiday, key])]
+                                : form.holiday.filter(k => k !== key);
+      redraw();
+    };
+  });
+
   if ($("#post")) $("#post").onclick = () => {
     if (problem()) return redraw();
-    const board = buildBoard(form, form.overrides);
+    const board = buildBoard(draft(), form.overrides);
     createGameWithBoard({
       kickoff_date: form.kickoff_date,
       home_team: form.home_team.trim(),

@@ -12,6 +12,18 @@
 <meta name="apple-mobile-web-app-title" content="Bet Room">
 <meta name="theme-color" content="#0E1A16">
 <link rel="stylesheet" href="styles.css">
+<!-- A seasonal theme's own stylesheet (js/seasonal/), put in before anything
+     draws so a phone opening on one doesn't flash Dark first. js/theme.js
+     takes over from here, and drops it again if that theme is retired. -->
+<script>
+  try {
+    var t = localStorage.getItem("betroom.theme") || "", s = t.replace(/-light$/, "");
+    if (/^(homealone|halloween)$/.test(s)) {
+      document.documentElement.dataset.theme = t;
+      document.write('<link rel="stylesheet" data-season="' + s + '" href="js/seasonal/' + s + '.css">');
+    }
+  } catch (e) { /* private mode: theme.js still applies it */ }
+</script>
 <!-- The database library, from our own copy so it never changes underneath
      us. Until that copy is in js/vendor/, fall back to the public CDN. -->
 <script src="js/vendor/supabase.js"></script>

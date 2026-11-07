@@ -7,6 +7,7 @@
 import { state, stake, nameOf, isBusy, askGrade, cancelGrade, grade } from "../store.js";
 import { esc, money } from "../format.js";
 import { settle, canLock, effectiveResult } from "../scoring.js";
+import { flavor } from "../theme.js";
 
 const label = (bet, result) =>
   result === "A" ? `${bet.side_a} hit` : result === "B" ? `${bet.side_b} hit`
@@ -29,7 +30,10 @@ export function effect(bet, result, s) {
 /* How a graded bet's result reads, including the one-sided safety net. */
 export function resultLabel(bet) {
   const r = effectiveResult(bet);
-  if (r !== bet.result) return "Void — nobody was on the other side";
+  const bait = flavor("oneSided", "");
+  if (r !== bet.result) return bait || "Void — nobody was on the other side";
+  // Voided at kickoff (or pulled) with takers on one side only.
+  if (bait && r === "VOID" && !canLock(bet) && bet.picks.some(p => p.side === "A" || p.side === "B")) return bait;
   return r === "A" ? bet.side_a : r === "B" ? bet.side_b : r === "PUSH" ? "Push" : "Void";
 }
 

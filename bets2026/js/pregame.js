@@ -1,7 +1,8 @@
 /* ===========================================================================
    The pregame board.
 
-   Eleven bets derived from two numbers: the spread and the total. Only the
+   Eleven bets derived from two numbers: the spread and the total (plus
+   four optional ones for Christmas week, at the end). Only the
    first three are principled — a spread and a total are 50/50 by definition,
    and a coin toss is a coin toss. The moneyline conversion is standard. The
    remaining seven are rules of thumb, not fitted to data. They exist to save
@@ -59,15 +60,37 @@ export const TEMPLATES = [
   { key: "margin", body: "Final margin over or under 7",
     a: "Over 7", b: "Under 7",
     derive: s => clamp(0.45 + s * 0.008), note: "widens with the spread" },
+
+  /* Christmas week. Offered on the setup screen only while a Home Alone
+     theme is on, and only posted if ticked. Graded by hand like the rest —
+     whoever grades the snow one checks the weather. */
+  { key: "snow", holiday: true, body: "Will it be snowing at kickoff?",
+    a: "Yes", b: "No",
+    derive: () => 0.2, note: "a guess — set it from the forecast" },
+
+  { key: "longplay", holiday: true, body: "Longest play from scrimmage over 50 yards?",
+    a: "Yes", b: "No",
+    derive: (s, t) => clamp(0.5 + (t - 44) * 0.012), note: "rises with the total" },
+
+  { key: "celebrate", holiday: true, body: "Will a player do a holiday-themed celebration?",
+    a: "Yes", b: "No",
+    derive: () => 0.3, note: "a guess — nudge it" },
+
+  { key: "fgfirst", holiday: true, body: "First score of the game a field goal?",
+    a: "Yes", b: "No",
+    derive: (s, t) => clamp(0.4 - (t - 44) * 0.006), note: "falls as the total rises" },
 ];
+
+export const HOLIDAY = TEMPLATES.filter(t => t.holiday);
 
 /* A game here is the setup form's draft, not necessarily a saved row. */
 function resolve(text, game) {
   const sp = Math.abs(Number(game.spread) || 0);
   const pickem = sp === 0;
   if (pickem && /\{spread(neg|pos)\}/.test(text)) {
-    /* A pick'em has no number to show. */
-    text = text.replace("cover {spreadneg}", "win the game")
+    /* A pick'em has no number to show: "Packers win — pick'em", with the
+       sides just the two teams. */
+    text = text.replace("cover {spreadneg}", "win \u2014 pick'em")
                .replace(" {spreadneg}", "").replace(" {spreadpos}", "");
   }
   const fav = game.favorite === "home" ? game.home_team : game.away_team;
@@ -82,12 +105,14 @@ function resolve(text, game) {
     .replace(/\{spreadpos\}/g, `+${sp}`);
 }
 
-/* Every row the board will post, with derived odds and any override applied. */
+/* Every row the board will post, with derived odds and any override applied.
+   The holiday bets come along only when their keys are in game.holiday. */
 export function buildBoard(game, overrides = {}) {
   const spread = Number(game.spread) || 0;
   const total = Number(game.total) || 44;
+  const holiday = new Set(game.holiday ?? []);
 
-  return TEMPLATES.map(t => {
+  return TEMPLATES.filter(t => !t.holiday || holiday.has(t.key)).map(t => {
     const derived = Math.round(t.derive(spread, total) * 100);
     const pct = overrides[t.key] ?? derived;
     return {

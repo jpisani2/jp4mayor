@@ -156,3 +156,32 @@ export function isDormant(playerId, bets, after) {
   return decided.every(b =>
     !b.picks.some(p => p.player_id === playerId && !p.auto));
 }
+
+/* The night's awards, for a seasonal theme that hands them out. Built on
+   rollUp, so voids never count and nobody's money is worked out twice.
+     man      the night's biggest winner (ties share it); nobody if no one
+              finished up
+     bandits  the two biggest losers, and anyone tied with the second
+     left     seated tonight (`seated`, a set of ids) but never took a side;
+              empty when seated is null */
+export function nightAwards(bets, players, stake, seated) {
+  const EPS = 0.005;
+  const totals = rollUp(bets, players, stake);
+  const nets = players.filter(p => totals[p.id].bets > 0)
+    .map(p => ({ id: p.id, net: totals[p.id].net }));
+
+  const best = Math.max(0, ...nets.map(n => n.net));
+  const man = best > EPS ? nets.filter(n => n.net > best - EPS).map(n => n.id) : [];
+
+  const losers = nets.filter(n => n.net < -EPS).sort((a, b) => a.net - b.net);
+  const cut = losers.length ? losers[Math.min(1, losers.length - 1)].net : 0;
+  const bandits = losers.filter(n => n.net < cut + EPS).map(n => n.id);
+
+  const tookSide = new Set(bets.flatMap(b =>
+    b.picks.filter(p => p.side === "A" || p.side === "B").map(p => p.player_id)));
+  const left = seated
+    ? players.filter(p => seated.has(p.id) && !tookSide.has(p.id)).map(p => p.id)
+    : [];
+
+  return { man, bandits, left, totals };
+}
