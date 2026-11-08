@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-08T15:58:00-05:00",
+  "updated": "2026-11-08T16:58:00-05:00",
   "games": [
     {
         "id": "g20261108",
@@ -63,7 +63,7 @@ window.PISTONS_PREGAME = {
           "Luka Doncic (40.1 points a game) is out with lower back tightness.",
           "Duren (out until about Nov. 24) and Joe are both out for Detroit.",
           "The Pistons are coming off a 106-112 loss to Philadelphia and have had three days of rest.",
-          "DraftKings has Detroit -7.5 with a 217.5 total."
+          "DraftKings has Detroit -7.5 with a 216.5 total."
         ],
         "facts": [
           {
@@ -72,7 +72,7 @@ window.PISTONS_PREGAME = {
           },
           {
             "label": "Line",
-            "text": "DraftKings: DET -7.5, total 217.5; moneyline DET -264 / LAL +217"
+            "text": "DraftKings: DET -7.5, total 216.5; moneyline DET -264 / LAL +217"
           },
           {
             "label": "Rest",
@@ -92,7 +92,7 @@ window.PISTONS_PREGAME = {
           "Taurean Prince": "Small sample this season; minutes a guess",
           "Daniss Jenkins": "Picks up minutes with Joe and Duren out"
         },
-        "projNote": "Not projected: Jalen Duren and Isaiah Joe (out per ESPN), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 113 Detroit points.",
+        "projNote": "Not projected: Jalen Duren and Isaiah Joe (out per ESPN), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 112 Detroit points.",
         "pick": {
           "call": "Pistons by about eight",
           "text": "Just for fun: without Doncic the Lakers lose their best scorer, and Detroit has the home crowd and three days of rest. Pistons 115, Lakers 107."
