@@ -1,7 +1,113 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-04T17:55:00-05:00",
+  "updated": "2026-11-08T06:05:00-05:00",
   "games": [
+    {
+      "id": "g20261108",
+      "date": "2026-11-08",
+      "phase": "Regular season",
+      "headline": "First-place Pistons host Doncic and the 8-2 Lakers",
+      "dek": "Detroit (6-2) hosts Los Angeles (8-2) Sunday at 6 p.m. ET on NBA TV as a 4.5-point favorite, with Luka Doncic listed day-to-day with a back issue.",
+      "keys": [
+        {
+          "title": "Detroit's defense vs. the league's hottest offense",
+          "text": "The Lakers have won four straight and score 122.0 points a game on 50.5% shooting. Detroit gives up fewer points on the other end and has the home floor, but Los Angeles just beat Portland 124-118 on Friday."
+        },
+        {
+          "title": "Rest and short rotation",
+          "text": "Detroit has had three days off since the 106-112 loss to Philadelphia on Nov. 4, while the Lakers played Friday. Duren (hamstring) and Joe (hip bruise) are out, both listed to return about Nov. 9, so Reed, Collins and Jenkins carry extra minutes."
+        },
+        {
+          "title": "Doncic's back",
+          "text": "ESPN lists Doncic as day-to-day with a back issue (updated Saturday night). He averages 40.1 points, 7.8 rebounds and 7.7 assists in 9 games, so his status swings the game; check the official report near tip."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "24.0 PTS · 7.6 AST · 5.6 REB",
+          "sub": "2026-27 season (8 games), 47.2% from the field",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "19.0 PTS · 4.4 3PM",
+          "sub": "2026-27 season (8 games), 47.9% from three"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "9.9 PTS · 8.6 REB · 4.7 AST",
+          "sub": "2026-27 season (7 games), 52.8% from the field"
+        },
+        {
+          "team": "LAL",
+          "name": "Luka Doncic",
+          "line": "40.1 PTS · 7.8 REB · 7.7 AST",
+          "sub": "2026-27 season (9 games), 5.8 3PM a night; day-to-day (back)",
+          "badge": "Star"
+        },
+        {
+          "team": "LAL",
+          "name": "Austin Reaves",
+          "line": "23.5 PTS · 4.7 AST · 3.2 REB",
+          "sub": "2026-27 season (10 games), 50.7% from the field"
+        }
+      ],
+      "injuryNote": "ESPN list: Detroit is without Duren (right hamstring strain, about Nov. 9) and Joe (right hip bruise, about Nov. 9); Isaac Jones and Elijah Harkless are day-to-day. Los Angeles lists Doncic as day-to-day (back, updated Saturday 6:11 p.m. ET). My news search found nothing newer, so check the official report near tip.",
+      "talkingPoints": [
+        "Detroit is 6-2 and leads the Central; Los Angeles is 8-2 and leads the Pacific.",
+        "The Lakers have won four in a row, most recently 124-118 over Portland on Friday.",
+        "Cade is at 24.0 points and 7.6 assists; Doncic is at 40.1 points a night.",
+        "Duren and Joe are both out for Detroit; Doncic is day-to-day with his back.",
+        "The Pistons are coming off a 106-112 loss to Philadelphia and have had three days of rest.",
+        "DraftKings has Detroit -4.5 with a 222.5 total."
+      ],
+      "facts": [
+        {
+          "label": "Broadcast",
+          "text": "NBA TV (national); Spectrum Sports Net for Los Angeles"
+        },
+        {
+          "label": "Line",
+          "text": "DraftKings: DET -4.5, total 222.5; moneyline DET -185 / LAL +155"
+        },
+        {
+          "label": "Rest",
+          "text": "Detroit has three days of rest; Los Angeles played Friday"
+        },
+        {
+          "label": "Up next",
+          "text": "The teams meet again Jan. 8, 2027 in Los Angeles"
+        }
+      ],
+      "projNotes": {
+        "Cade Cunningham": "Lakers give guards slightly fewer rebounds; points near average",
+        "Duncan Robinson": "Projected 28 min with Joe and Duren out; model expects a dip",
+        "Paul Reed": "Starts in Duren's place; model gives 23 min vs 27 avg",
+        "Ausar Thompson": "Rebounds projected well under his 8.6 average",
+        "Elijah Harkless": "No games this season yet; listed day-to-day",
+        "Taurean Prince": "Small sample this season; minutes a guess",
+        "Daniss Jenkins": "Picks up minutes with Joe and Duren out"
+      },
+      "projNote": "Not projected: Jalen Duren and Isaiah Joe (out per ESPN), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 113.5 Detroit points.",
+      "pick": {
+        "call": "Pistons by about two",
+        "text": "Just for fun: the Lakers are hot and Doncic is a wild card, but Detroit has the home crowd and rest. Pistons 114, Lakers 112."
+      },
+      "share": "Pistons (6-2) host the Lakers (8-2) Sunday, 6 ET on NBA TV. Duren and Joe out; Doncic day-to-day. Cade is at 24.0 and 7.6 assists.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909946"
+        }
+      ],
+      "ouNotes": {
+        "Duncan Robinson": "Averages 19.0 but model projects 13.4 with a 28-minute role"
+      }
+    },
     {
       "id": "g20261104",
       "date": "2026-11-04",
