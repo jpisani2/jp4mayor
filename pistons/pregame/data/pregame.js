@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-09T17:05:00-05:00",
+  "updated": "2026-11-09T17:55:00-05:00",
   "games": [
     {
       "id": "g20261109",
@@ -56,7 +56,7 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (6 games), 19-year-old rookie"
         }
       ],
-      "injuryNote": "ESPN list (updated Sunday night): Washington has Anthony Davis day-to-day (right ankle sprain), Tristan Vukcevic out (left hip, about Nov. 16), plus Beekman, Champagnie and Watkins out. Detroit is without Duren (right hamstring strain, about Nov. 24) and Joe (right hip bruise, ESPN lists a return around Nov. 17). 4:50 p.m. check: ESPN's list now also has Washington's Bilal Coulibaly (left hand) day-to-day; no newer report on Davis found. The official report comes closer to tip.",
+      "injuryNote": "ESPN list (updated Sunday night): Washington has Anthony Davis day-to-day (right ankle sprain), Tristan Vukcevic out (left hip, about Nov. 16), plus Beekman, Champagnie and Watkins out. Detroit is without Duren (right hamstring strain, about Nov. 24) and Joe (right hip bruise, ESPN lists a return around Nov. 17). 5:50 p.m. check: ESPN's list (refreshed 1:54 p.m. ET) still has Davis day-to-day and also has Washington's Bilal Coulibaly (left hand) day-to-day; no newer report on Davis found. The official report comes closer to tip.",
       "talkingPoints": [
         "Detroit is 6-3 and leads the Central, but has lost two straight.",
         "Washington is 4-6 and has lost three in a row, including 75-114 at Oklahoma City on Saturday.",
