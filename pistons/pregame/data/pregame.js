@@ -1,7 +1,113 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-08T16:58:00-05:00",
+  "updated": "2026-11-09T06:05:00-05:00",
   "games": [
+{
+  "id": "g20261109",
+  "date": "2026-11-09",
+  "phase": "Regular season",
+  "headline": "Pistons look to snap a skid against slumping Wizards",
+  "dek": "Detroit (6-3) hosts Washington (4-6) Monday at 7 p.m. ET on NBCSN as a 10.5-point favorite, with both teams on losing streaks.",
+  "keys": [
+    {
+      "title": "Stopping a two-game slide on no rest",
+      "text": "Detroit lost 106-112 to Philadelphia and 116-121 to the Lakers on Sunday, and plays its second game in two days. Washington had one day off after a 75-114 loss at Oklahoma City on Saturday."
+    },
+    {
+      "title": "A short Detroit rotation",
+      "text": "Duren (right hamstring strain, ESPN lists a return around Nov. 24) and Joe (right hip bruise, listed out) are unavailable. The model gives Paul Reed, John Collins and Daniss Jenkins more minutes."
+    },
+    {
+      "title": "Davis and Young vs. a team that can't shoot threes",
+      "text": "Anthony Davis (23.4 points, 9.2 rebounds) is day-to-day with a right ankle sprain, and Trae Young is averaging 8.9 assists. Washington shoots 30.2% from three; Detroit hits 37.8%."
+    }
+  ],
+  "watch": [
+    {
+      "team": "DET",
+      "name": "Cade Cunningham",
+      "line": "24.0 PTS \u00b7 7.6 AST \u00b7 5.6 REB",
+      "sub": "2026-27 season (8 games), 47.2% from the field",
+      "badge": "Star"
+    },
+    {
+      "team": "DET",
+      "name": "Duncan Robinson",
+      "line": "19.0 PTS \u00b7 4.4 3PM",
+      "sub": "2026-27 season (8 games), 47.9% from three"
+    },
+    {
+      "team": "DET",
+      "name": "Ausar Thompson",
+      "line": "9.9 PTS \u00b7 8.6 REB \u00b7 4.7 AST",
+      "sub": "2026-27 season (7 games), 52.8% from the field"
+    },
+    {
+      "team": "WSH",
+      "name": "Anthony Davis",
+      "line": "23.4 PTS \u00b7 9.2 REB \u00b7 1.1 BLK",
+      "sub": "2026-27 season (8 games), day-to-day with an ankle sprain",
+      "badge": "Star"
+    },
+    {
+      "team": "WSH",
+      "name": "AJ Dybantsa",
+      "line": "16.0 PTS \u00b7 5.8 REB",
+      "sub": "2026-27 season (6 games), 19-year-old rookie"
+    }
+  ],
+  "injuryNote": "ESPN list (updated Sunday night): Washington has Anthony Davis day-to-day (right ankle sprain), Tristan Vukcevic out (left hip, about Nov. 16), plus Beekman, Champagnie and Watkins out. Detroit is without Duren (right hamstring strain, about Nov. 24) and Joe (right hip bruise, listed out). My news search found no newer lineup reports; check the official report near tip.",
+  "talkingPoints": [
+    "Detroit is 6-3 and leads the Central, but has lost two straight.",
+    "Washington is 4-6 and has lost three in a row, including 75-114 at Oklahoma City on Saturday.",
+    "DraftKings has Detroit -10.5 with a 218.5 total.",
+    "Anthony Davis is day-to-day with an ankle sprain; Duren and Joe are out for Detroit.",
+    "The Pistons are on the second night of a back-to-back; the Wizards had a day off.",
+    "These teams meet again Nov. 12 in Washington."
+  ],
+  "facts": [
+    {
+      "label": "Broadcast",
+      "text": "NBCSN (national)"
+    },
+    {
+      "label": "Line",
+      "text": "DraftKings: DET -10.5, total 218.5; moneyline DET -468 / WSH +361"
+    },
+    {
+      "label": "Rest",
+      "text": "Detroit played Sunday (no rest); Washington has one day of rest"
+    },
+    {
+      "label": "Up next",
+      "text": "The teams meet again Nov. 12 in Washington, then Apr. 11, 2027"
+    }
+  ],
+  "projNotes": {
+    "Cade Cunningham": "Wizards give guards more assists than usual; threes a bit lower",
+    "Duncan Robinson": "Projected 28 min with Joe and Duren out; model expects a dip",
+    "Paul Reed": "Starts in Duren's place; model gives 23 min vs 27 avg",
+    "Ausar Thompson": "Rebounds projected well under his 8.6 average",
+    "Elijah Harkless": "No games this season yet; minutes a guess",
+    "Taurean Prince": "Small sample this season; minutes a guess",
+    "Daniss Jenkins": "Picks up minutes with Joe and Duren out"
+  },
+  "projNote": "Not projected: Jalen Duren and Isaiah Joe (out per ESPN), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 114.5 Detroit points.",
+  "pick": {
+    "call": "Pistons by about ten",
+    "text": "Just for fun: Washington is on a three-game slide and shoots 30.2% from three, while Detroit has the home crowd. Tired legs on a back-to-back are the risk. Pistons 114, Wizards 104."
+  },
+  "share": "Pistons (6-3) host the Wizards (4-6) tonight, 7 ET on NBCSN. Duren, Joe out; Davis day-to-day. DET -10.5.",
+  "sources": [
+    {
+      "title": "ESPN game page",
+      "url": "https://www.espn.com/nba/game/_/gameId/401909954"
+    }
+  ],
+  "ouNotes": {
+    "Duncan Robinson": "Averages 19.0 but model projects 14.2 with a 28-minute role"
+  }
+},
     {
         "id": "g20261108",
         "date": "2026-11-08",
