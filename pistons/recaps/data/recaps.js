@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-11-04T22:00:00-05:00",
+  "updated": "2026-11-08T20:41:09-05:00",
   "games": [
+    {
+      "id": "g20261108",
+      "date": "2026-11-08",
+      "phase": "Regular season",
+      "home": true,
+      "venue": "Little Caesars Arena, Detroit",
+      "attendance": 20178,
+      "opp": {
+        "abbr": "LAL",
+        "name": "Los Angeles Lakers",
+        "short": "Lakers",
+        "score": 121,
+        "quarters": [
+          38,
+          23,
+          27,
+          33
+        ]
+      },
+      "det": {
+        "score": 116,
+        "quarters": [
+          14,
+          34,
+          33,
+          35
+        ]
+      },
+      "result": "L",
+      "record": "6-3",
+      "headline": "Pistons dig out of a 26-point hole, fall 121-116",
+      "dek": "Detroit trailed 38-14 after one quarter and outscored the Lakers 102-83 the rest of the way, but never took the lead and Austin Reaves' 43 points sealed it at the line.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "31 PTS \u00b7 8-15 3PT \u00b7 +22",
+          "sub": "Hit 8 of 15 threes and all 5 free throws in 32 minutes off the bench; second-most points of any player in tonight's games"
+        },
+        {
+          "team": "DET",
+          "name": "Kevin Huerter",
+          "line": "24 PTS \u00b7 5 BLK \u00b7 5 AST",
+          "sub": "9-for-14 shooting with 4 threes and 5 blocks in 35 minutes, and the layup that made it 119-116 with 2.6 seconds left"
+        },
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "14 PTS \u00b7 8 AST \u00b7 4 TO",
+          "sub": "6-for-15 from the floor and 1-for-6 on threes in 38 minutes; a team-worst -15 even as he made two late baskets to keep it close"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "11 REB \u00b7 7 PTS \u00b7 3 AST",
+          "sub": "Tied for second among tonight's rebounders with 11 in 24 minutes, but a -16 in the plus-minus"
+        },
+        {
+          "team": "LAL",
+          "name": "Austin Reaves",
+          "line": "43 PTS \u00b7 14-27 FG \u00b7 11-11 FT",
+          "sub": "Game-high 43 with 4 threes and a perfect 11-for-11 at the line, including both free throws that closed it out",
+          "badge": "Top night"
+        },
+        {
+          "team": "LAL",
+          "name": "Walker Kessler",
+          "line": "16 REB \u00b7 12 PTS \u00b7 3 BLK",
+          "sub": "7 offensive rebounds among his 16 boards in 29 minutes, the most of anyone in tonight's games"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's scorers",
+          "text": "Reaves' 43 topped every player in tonight's games, with Jenkins' 31 second; Reaves' 43 also ranks third among the week's top scoring lines behind Luka Doncic's 53 and Victor Wembanyama's 52."
+        },
+        {
+          "label": "Glass",
+          "text": "Kessler's 16 rebounds led tonight's per-team leaders and Ausar Thompson's 11 tied for second."
+        },
+        {
+          "label": "Season series",
+          "text": "Regular Season Series: LAL lead series 1-0."
+        }
+      ],
+      "talkingPoints": [
+        "Down 38-14 after one quarter and 26 at the worst, yet the Pistons were within 3 with 2.6 seconds left.",
+        "Jenkins was unreal off the bench: 31 points and 8 threes on 15 attempts.",
+        "Detroit never led. Zero lead changes all night, just two ties.",
+        "Austin Reaves went 11-for-11 at the line and finished with 43 with Luka Doncic out.",
+        "The Pistons got 18 offensive rebounds and 27 assists but shot only 13-of-20 at the line, 65 percent.",
+        "Cade had 8 assists but also 4 turnovers and shot 6-for-15 in a minus-15 night."
+      ],
+      "notable": [
+        {
+          "stat": "26",
+          "label": "Largest LAL lead",
+          "note": "Reached at 11:21 of the second quarter"
+        },
+        {
+          "stat": "38-14",
+          "label": "LAL first quarter",
+          "note": "Detroit outscored Los Angeles 102-83 over the final three"
+        },
+        {
+          "stat": "8-15",
+          "label": "Jenkins 3PT",
+          "note": "31 points in 32 minutes"
+        },
+        {
+          "stat": "11-11",
+          "label": "Reaves FT",
+          "note": "43 points, a game high"
+        },
+        {
+          "stat": "18-12",
+          "label": "Offensive rebounds",
+          "note": "DET over LAL"
+        },
+        {
+          "stat": "26-33",
+          "label": "LAL free throws",
+          "note": "Detroit was 13-of-20"
+        }
+      ],
+      "story": [
+        "Los Angeles blew the game open early, opening with a 10-0 run and an 11-0 run in the first quarter on the way to a 38-14 lead. The Lakers pushed it to 26 early in the second, with Austin Reaves doing the damage, and led 61-48 at the half.",
+        "Detroit came back in waves. Daniss Jenkins hit eight threes, Kevin Huerter added 24 with 5 blocks, and an 11-0 run in the third cut the deficit to 7 at the quarter break, 88-81. The Pistons trimmed it to 90-88 early in the fourth and stayed within a possession or two the rest of the way.",
+        "Huerter's three made it 112-107 with 32 seconds left and Cade Cunningham scored twice to keep it alive, and Huerter's layup made it 119-116 with 2.6 seconds left. Reaves then hit both free throws to finish with 43 on a perfect 11-for-11 night at the line. Detroit never led, and the loss drops them to 6-3."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "42-94 (45%)",
+          "opp": "42-84 (50%)"
+        },
+        {
+          "label": "3PT",
+          "det": "19-48 (40%)",
+          "opp": "11-28 (39%)"
+        },
+        {
+          "label": "FT",
+          "det": "13-20 (65%)",
+          "opp": "26-33 (79%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "43",
+          "opp": "44"
+        },
+        {
+          "label": "Assists",
+          "det": "27",
+          "opp": "18"
+        },
+        {
+          "label": "Steals",
+          "det": "10",
+          "opp": "6"
+        },
+        {
+          "label": "Blocks",
+          "det": "7",
+          "opp": "6"
+        },
+        {
+          "label": "Turnovers",
+          "det": "13",
+          "opp": "16"
+        },
+        {
+          "label": "Paint pts",
+          "det": "46",
+          "opp": "58"
+        }
+      ],
+      "share": "Lakers 121, Pistons 116. Detroit trailed by 26 and got within 3 late. Reaves 43 (11-11 FT), Jenkins 31 with 8 threes. DET is 6-3.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909946"
+        }
+      ]
+    },
     {
       "id": "g20261104",
       "date": "2026-11-04",
