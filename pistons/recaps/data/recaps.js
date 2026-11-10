@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-11-08T20:41:09-05:00",
+  "updated": "2026-11-09T21:50:00-05:00",
   "games": [
+    {
+      "id": "g20261109",
+      "date": "2026-11-09",
+      "phase": "Regular season",
+      "home": true,
+      "venue": "Little Caesars Arena, Detroit",
+      "attendance": 18982,
+      "opp": {
+        "abbr": "WSH",
+        "name": "Washington Wizards",
+        "short": "Wizards",
+        "score": 111,
+        "quarters": [
+          32,
+          26,
+          29,
+          24
+        ]
+      },
+      "det": {
+        "score": 122,
+        "quarters": [
+          31,
+          37,
+          35,
+          19
+        ]
+      },
+      "result": "W",
+      "record": "7-3",
+      "headline": "Pistons survive Davis' 44, beat Wizards 122-111",
+      "dek": "Detroit took the lead for good in the second quarter, built a 19-point cushion and shared the ball (31 assists, 10 turnovers) while Anthony Davis scored 44 for Washington.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "John Collins",
+          "line": "24 PTS \u00b7 10 REB \u00b7 9-13 FG",
+          "sub": "Double-double in 28 minutes on 9-for-13 shooting, with 3 offensive boards and a +12",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "22 PTS \u00b7 8 AST \u00b7 4 STL",
+          "sub": "Perfect 6-for-6 at the line and 4 steals in 36 minutes as the starting point guard"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "22 PTS \u00b7 4-8 3PT \u00b7 0 TO",
+          "sub": "6-for-11 overall and 6-for-7 at the line in 34 minutes, a +12"
+        },
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "17 PTS \u00b7 7 AST \u00b7 0 TO",
+          "sub": "Only 27 minutes with 5 fouls, but no turnovers and a +11"
+        },
+        {
+          "team": "WSH",
+          "name": "Anthony Davis",
+          "line": "44 PTS \u00b7 13 REB \u00b7 16-21 FG",
+          "sub": "10-for-11 at the line and 5 offensive rebounds in 34 minutes, the most points of anyone in tonight's games"
+        },
+        {
+          "team": "WSH",
+          "name": "AJ Dybantsa",
+          "line": "21 PTS \u00b7 8 REB \u00b7 5 TO",
+          "sub": "8-for-17 from the floor in 37 minutes; also picked up a first-quarter technical"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's scorers",
+          "text": "Davis' 44 led all of tonight's games, with Luka Doncic's 32 next. It also ranks third among the week's top scoring lines, behind Doncic's 53 and Victor Wembanyama's 52. Collins' 24 was fourth tonight."
+        },
+        {
+          "label": "Glass and dimes",
+          "text": "Collins' 10 rebounds tied Walker Kessler for third among tonight's leaders, behind Ryan Kalkbrenner's 15 and Davis' 13. Jenkins' 8 assists tied Dyson Daniels for third behind Doncic (10) and Coby White (9)."
+        },
+        {
+          "label": "Season series",
+          "text": "ESPN lists Detroit ahead 1-0 in the regular-season series with Washington."
+        }
+      ],
+      "talkingPoints": [
+        "Davis went 16-for-21 and 10-for-11 at the line for 44, and Washington still lost by 11.",
+        "Detroit had 31 assists on 43 made baskets and only 10 turnovers to Washington's 18.",
+        "The Pistons went 8-for-31 from three and still won, because they were 28-for-31 at the line.",
+        "Fast-break points were 19-4 for Detroit.",
+        "Collins was 9-for-13 with a double-double in 28 minutes.",
+        "Paul Reed had 10 rebounds, 5 of them offensive, and 3 blocks off the bench."
+      ],
+      "notable": [
+        {
+          "stat": "19",
+          "label": "Largest DET lead",
+          "note": "Reached at 8:14 of the fourth quarter"
+        },
+        {
+          "stat": "31-10",
+          "label": "Assists vs. turnovers",
+          "note": "Washington had 16 assists and 18 turnovers"
+        },
+        {
+          "stat": "28-31",
+          "label": "DET free throws",
+          "note": "90% at the line, to Washington's 20-28"
+        },
+        {
+          "stat": "19-4",
+          "label": "Fast-break points",
+          "note": "Detroit's edge in transition"
+        },
+        {
+          "stat": "44",
+          "label": "Davis' points",
+          "note": "16-21 FG and 10-11 FT in 34 minutes"
+        },
+        {
+          "stat": "2",
+          "label": "Lead changes",
+          "note": "The last one came at 11:42 of the second quarter"
+        }
+      ],
+      "story": [
+        "Washington led 32-31 after the first quarter, but John Collins' basket at 11:42 of the second quarter put Detroit up 33-32, and it was the last lead change. Detroit outscored the Wizards 37-26 in the second and went into halftime up 68-58.",
+        "Detroit led 103-87 after three quarters and the margin reached 19 with 8:14 left in the fourth. Anthony Davis kept scoring, finishing with 44 on 16-for-21 shooting and 10-for-11 free throws, but nobody else on Washington scored more than 21.",
+        "Detroit won it with ball security and the line: 31 assists to 10 turnovers, 28-for-31 at the free-throw line and 19 fast-break points to 4. Both teams shot under 27% from three, and the Pistons did it without Jalen Duren (hamstring) or Isaiah Joe (hip)."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "43-91 (47%)",
+          "opp": "41-89 (46%)"
+        },
+        {
+          "label": "3PT",
+          "det": "8-31 (26%)",
+          "opp": "9-36 (25%)"
+        },
+        {
+          "label": "FT",
+          "det": "28-31 (90%)",
+          "opp": "20-28 (71%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "45",
+          "opp": "46"
+        },
+        {
+          "label": "Assists",
+          "det": "31",
+          "opp": "16"
+        },
+        {
+          "label": "Steals",
+          "det": "11",
+          "opp": "7"
+        },
+        {
+          "label": "Blocks",
+          "det": "6",
+          "opp": "4"
+        },
+        {
+          "label": "Turnovers",
+          "det": "10",
+          "opp": "18"
+        },
+        {
+          "label": "Paint pts",
+          "det": "58",
+          "opp": "50"
+        }
+      ],
+      "share": "Pistons 122, Wizards 111. Davis scored 44 for Washington, but Collins (24 pts, 10 reb) and Jenkins (22 pts, 8 ast, 4 stl) led Detroit. DET is 7-3.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909954"
+        }
+      ]
+    },
     {
       "id": "g20261108",
       "date": "2026-11-08",
