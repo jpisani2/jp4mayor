@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-12T05:52:21-05:00",
+  "updated": "2026-11-12T12:58:00-05:00",
   "games": [
     {
       "id": "g20261112",
@@ -56,7 +56,7 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (11 games), shooting 39.3% from the field"
         }
       ],
-      "injuryNote": "ESPN list (morning): Detroit is without Jalen Duren (right hamstring strain, return listed around Nov. 24) and Isaiah Joe (right hip bruise, around Nov. 17); Ugonna Onyenso is day-to-day (left foot). Washington has Vukcevic, Beekman, Champagnie and Watkins out; Davis is no longer on the list. No newer reports found this morning.",
+      "injuryNote": "ESPN list (morning): Detroit is without Jalen Duren (right hamstring strain, return listed around Nov. 24) and Isaiah Joe (right hip bruise, around Nov. 17); Ugonna Onyenso is day-to-day (left foot). Washington has Vukcevic, Beekman, Champagnie and Watkins out; Davis is no longer on the list. Midday check (12:50 p.m.): still no newer reports or lineup news; the ESPN listing is unchanged.",
       "talkingPoints": [
         "Same opponent, three days later: Detroit beat Washington 122-111 on Monday.",
         "The Pistons are 7-3, first in the Central, and 4-1 on the road.",
@@ -81,7 +81,7 @@ window.PISTONS_PREGAME = {
       ],
       "projNotes": {
         "Duncan Robinson": "Projected 28 min vs 30.9 avg; model expects a dip from 18.6",
-        "Ausar Thompson": "Rebounds projected 6.2, well under his 8.4 average",
+        "Ausar Thompson": "Rebounds projected 6.1, well under his 8.4 average",
         "Paul Reed": "Starting for Duren; model gives about 22 min vs 25.9 avg",
         "Elijah Harkless": "Only one game this season; 22 minutes is a guess",
         "Taurean Prince": "Two games this season; minutes a guess",
@@ -89,7 +89,8 @@ window.PISTONS_PREGAME = {
       },
       "projNote": "Not projected: Jalen Duren and Isaiah Joe (out per ESPN), Isaac Jones, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 115.5 Detroit points.",
       "ouNotes": {
-        "Duncan Robinson": "22 points Monday, but the model sees fewer minutes than his average"
+        "Duncan Robinson": "22 points Monday, but the model sees fewer minutes than his average",
+      "Ausar Thompson": "No news on his role; the under rests on 25 projected minutes"
       },
       "pick": {
         "call": "Pistons by double digits",
