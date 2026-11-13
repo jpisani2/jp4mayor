@@ -1,7 +1,196 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-11-09T21:50:00-05:00",
+  "updated": "2026-11-12T22:17:00-05:00",
   "games": [
+    {
+      "id": "g20261112",
+      "date": "2026-11-12",
+      "phase": "Regular season",
+      "home": false,
+      "venue": "Capital One Arena, Washington",
+      "attendance": 17443,
+      "opp": {
+        "abbr": "WSH",
+        "name": "Washington Wizards",
+        "short": "Wizards",
+        "score": 140,
+        "quarters": [
+          32,
+          29,
+          29,
+          31,
+          11,
+          8
+        ]
+      },
+      "det": {
+        "score": 144,
+        "quarters": [
+          33,
+          31,
+          30,
+          27,
+          11,
+          12
+        ]
+      },
+      "result": "W",
+      "record": "8-3",
+      "headline": "Cade scores 52 as Pistons outlast Wizards in 2OT",
+      "dek": "Cunningham went 16-for-25 with 11 assists and no turnovers in 48 minutes, and Ausar Thompson added a triple-double. Detroit survived a Trae Young three that forced overtime and a 7-point hole in the first OT to win 144-140.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "52 PTS \u00b7 11 AST \u00b7 0 TO",
+          "sub": "16-for-25 from the floor and 17-for-18 at the line in 48 minutes; scored 12 of Detroit's 23 overtime points",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "17 PTS \u00b7 11 REB \u00b7 11 AST",
+          "sub": "Triple-double with 3 steals, 3 blocks and 5 offensive rebounds, including two putbacks in overtime"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "13 PTS \u00b7 11 REB \u00b7 +25",
+          "sub": "Double-double off the bench in 38 minutes, with 5 offensive boards and the best plus-minus on the floor"
+        },
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "21 PTS \u00b7 3-5 3PT \u00b7 6-6 FT",
+          "sub": "6-for-11 shooting and 2 steals in 42 minutes before fouling out with 15.7 seconds left in the second overtime"
+        },
+        {
+          "team": "WSH",
+          "name": "Trae Young",
+          "line": "37 PTS \u00b7 14 AST \u00b7 17-17 FT",
+          "sub": "Perfect at the line and hit the 29-foot three with 1.1 seconds left that sent it to overtime"
+        },
+        {
+          "team": "WSH",
+          "name": "Alex Sarr",
+          "line": "30 PTS \u00b7 12-14 FG \u00b7 4-6 3PT",
+          "sub": "Missed only two shots in 44 minutes, with 9 rebounds; Anthony Davis also had 30 and 15 rebounds"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's scorers",
+          "text": "Cunningham's 52 led tonight's games, ahead of Young's 37 and RJ Barrett's 31. Among this week's top scoring lines it ranks second, one point behind Luka Doncic's 53 on Nov. 6."
+        },
+        {
+          "label": "Glass and dimes",
+          "text": "Thompson's 11 rebounds were third among tonight's leaders behind Davis (15) and Barrett (14). Young's 14 assists led the night with Cunningham's 11 second; Young's 14 is also third-best this week."
+        },
+        {
+          "label": "Season series",
+          "text": "Detroit has won both meetings with Washington this week (122-111 on Monday) and leads the regular-season series 2-0, per ESPN."
+        }
+      ],
+      "talkingPoints": [
+        "Cade put up 52 and 11 assists with zero turnovers. In a double-overtime game.",
+        "Ausar had a triple-double: 17, 11 and 11, plus 3 steals and 3 blocks.",
+        "Cade blocked Trae to force a shot-clock violation, hit two free throws for a 3-point lead, and Trae still tied it with a 29-footer at 1.1.",
+        "Down 128-121 early in the first overtime, Detroit came all the way back. Cade's 26-foot pull-up tied it at 130.",
+        "Paul Reed was plus-25 off the bench. Nobody else on either team was better than plus-13.",
+        "Huerter came in cold with 25 seconds left in the second OT and hit both free throws to make it a two-possession game."
+      ],
+      "notable": [
+        {
+          "stat": "52",
+          "label": "Cunningham's points",
+          "note": "16-25 FG, 3-5 3PT, 17-18 FT in 48 minutes"
+        },
+        {
+          "stat": "0",
+          "label": "Cunningham turnovers",
+          "note": "With 11 assists in 48 minutes of a 58-minute game"
+        },
+        {
+          "stat": "17-11-11",
+          "label": "Thompson's triple-double",
+          "note": "Plus 3 steals, 3 blocks and 5 offensive rebounds"
+        },
+        {
+          "stat": "26-12",
+          "label": "Fast-break points",
+          "note": "Detroit's edge in transition; Washington won the paint 62-52"
+        },
+        {
+          "stat": "17-17",
+          "label": "Young at the line",
+          "note": "Washington shot 26-29 (90%) at the line as a team"
+        },
+        {
+          "stat": "3",
+          "label": "Fouled out",
+          "note": "Jenkins for Detroit; Davis and Kyshawn George for Washington"
+        }
+      ],
+      "story": [
+        "Neither team led by more than 11 all night. Detroit was up 64-61 at halftime and 94-90 after three, and Cunningham carried the fourth. His free throws with 26.4 seconds left put Detroit up 119-118, he blocked Young's pull-up on the next trip down, and two more free throws with 1.8 seconds left made it 121-118. Young then hit a 29-foot three with 1.1 seconds to go to tie it at 121.",
+        "Washington opened the first overtime on a 7-0 run (George three, Davis floater, Sarr alley-oop) to lead 128-121. Cunningham answered with a pull-up and two free throws, Thompson tipped one in, and after a Davis alley-oop Cunningham's 26-foot pull-up tied it at 130 with 33 seconds left. Duncan Robinson's jumper put Detroit up 132-130, but AJ Dybantsa's pull-up with 2.8 seconds left forced a second overtime.",
+        "Cunningham's three 39 seconds into the second overtime gave Detroit the lead for good. Thompson's tip and Robinson's dunk off a Jenkins steal kept the Wizards at arm's length, Cunningham's 12-footer made it 142-138 with 25.3 seconds left, and after Young's free throws Kevin Huerter hit two of his own with 11.4 seconds left to close it out. Detroit is 8-3 and 5-1 on the road, still without Jalen Duren (hamstring) and Isaiah Joe (hip)."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "49-99 (49%)",
+          "opp": "50-102 (49%)"
+        },
+        {
+          "label": "3PT",
+          "det": "13-35 (37%)",
+          "opp": "14-37 (38%)"
+        },
+        {
+          "label": "FT",
+          "det": "33-39 (85%)",
+          "opp": "26-29 (90%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "47",
+          "opp": "50"
+        },
+        {
+          "label": "Assists",
+          "det": "28",
+          "opp": "33"
+        },
+        {
+          "label": "Steals",
+          "det": "10",
+          "opp": "6"
+        },
+        {
+          "label": "Blocks",
+          "det": "6",
+          "opp": "6"
+        },
+        {
+          "label": "Turnovers",
+          "det": "11",
+          "opp": "16"
+        },
+        {
+          "label": "Paint pts",
+          "det": "52",
+          "opp": "62"
+        }
+      ],
+      "share": "Pistons 144, Wizards 140 (2OT). Cade Cunningham: 52 pts, 11 ast, 0 TO. Ausar Thompson: 17-11-11 triple-double. DET is 8-3.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909977"
+        }
+      ]
+    },
     {
       "id": "g20261109",
       "date": "2026-11-09",
