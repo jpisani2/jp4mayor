@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-14T05:52:09-05:00",
+  "updated": "2026-11-14T12:52:19-05:00",
   "games": [
     {
       "id": "g20261114",
@@ -15,11 +15,11 @@ window.PISTONS_PREGAME = {
         },
         {
           "title": "Containing Giannis again",
-          "text": "Antetokounmpo averages 27.7 points and 12.6 rebounds on 56.7% shooting and had 36 and 12 in the Oct. 23 meeting. Detroit still won 128-111 there, leading wire to wire, with Jalen Duren now out and Paul Reed and John Collins up front."
+          "text": "Antetokounmpo averages 28.5 points and 12.3 rebounds on 58.3% shooting and had 36 and 12 in the Oct. 23 meeting. Detroit still won 128-111 there, leading wire to wire, with Jalen Duren now out and Paul Reed and John Collins up front."
         },
         {
-          "title": "Shooting edge, thinner Heat backcourt",
-          "text": "Detroit shoots 37.0% from three to Miami's 33.6%, and the Heat list Klay Thompson (left ankle, 3.8 threes a game) and Pelle Larsson (illness, 46.9% from three) as out on ESPN's injury list."
+          "title": "Shooting edge, Heat guards in question",
+          "text": "Detroit shoots 37.0% from three to Miami's 33.7%. ESPN's midday update moved Klay Thompson (left ankle, 3.8 threes a game) and Pelle Larsson (illness, 46.9% from three) to day-to-day, so either could play."
         }
       ],
       "watch": [
@@ -45,24 +45,24 @@ window.PISTONS_PREGAME = {
         {
           "team": "MIA",
           "name": "Giannis Antetokounmpo",
-          "line": "27.7 PTS · 12.6 REB · 5.2 AST",
-          "sub": "2026-27 season (11 games); 36 and 12 against Detroit on Oct. 23",
+          "line": "28.5 PTS · 12.3 REB · 4.9 AST",
+          "sub": "2026-27 season (12 games), 58.3% shooting; 36 and 12 against Detroit on Oct. 23",
           "badge": "Star"
         },
         {
           "team": "MIA",
           "name": "Bam Adebayo",
-          "line": "17.8 PTS · 8.4 REB · 2.2 STL",
-          "sub": "2026-27 season (11 games), shooting 50.7% from the field"
+          "line": "19.4 PTS · 8.8 REB · 2.0 STL",
+          "sub": "2026-27 season (12 games), shooting 52.8%; he and Giannis scored 37 each Friday"
         }
       ],
-      "injuryNote": "ESPN list (morning): Detroit is without Jalen Duren (right hamstring strain, return listed around Nov. 24) and Isaiah Joe (right hip bruise, around Nov. 17); Ugonna Onyenso is day-to-day (left foot). Miami lists Klay Thompson (left ankle soreness) and Pelle Larsson (illness) as out as of Friday night. Morning news search found no newer reports.",
+      "injuryNote": "ESPN list (updated midday Saturday): Detroit is without Jalen Duren (right hamstring strain, return listed around Nov. 24) and Isaiah Joe (right hip bruise, around Nov. 17); Ugonna Onyenso is day-to-day (left foot). Miami now lists Klay Thompson (left ankle soreness) and Pelle Larsson (illness) as day-to-day, not out. A midday news search found no newer reports.",
       "talkingPoints": [
         "Cade just went for 52 and 11 with zero turnovers. Two nights later, he gets the Heat.",
         "We already won in Miami once this year: 128-111 on Oct. 23, led the whole way.",
         "The Pistons are 8-3, first in the Central, and 5-1 on the road.",
         "Miami played Cleveland last night. We had a day off.",
-        "No Klay, no Larsson for the Heat, per ESPN's list.",
+        "Klay and Larsson are day-to-day for Miami now. Watch the warmups.",
         "DraftKings has Detroit -4.5 with a 228.5 total."
       ],
       "facts": [
@@ -98,9 +98,9 @@ window.PISTONS_PREGAME = {
       },
       "pick": {
         "call": "Pistons by 8",
-        "text": "Just for fun: rested Detroit against a Heat team on the second night of a back-to-back and short two guards. Giannis gets his, but the shooters swing it. Pistons 120, Heat 112."
+        "text": "Just for fun: rested Detroit against a Heat team on the second night of a back-to-back, with two guards questionable. Giannis gets his, but the shooters swing it. Pistons 120, Heat 112."
       },
-      "share": "Pistons (8-3) at the Heat (6-6) tonight, 8 ET on NBA TV. Cade's coming off 52; Miami's on a back-to-back. DET -4.5, total 228.5.",
+      "share": "Pistons (8-3) at the Heat (6-6) tonight, 8 ET on NBA TV. Cade's coming off 52; Miami's on a back-to-back with Klay questionable. DET -4.5.",
       "sources": [
         {
           "title": "ESPN game page",
