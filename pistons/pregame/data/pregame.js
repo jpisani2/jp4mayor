@@ -1,7 +1,117 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-12T17:52:50-05:00",
+  "updated": "2026-11-14T05:52:09-05:00",
   "games": [
+    {
+      "id": "g20261114",
+      "date": "2026-11-14",
+      "phase": "Regular season",
+      "headline": "Pistons back in Miami after Cade's 52-point night",
+      "dek": "Detroit (8-3) visits Miami (6-6) Saturday at 8 p.m. ET on NBA TV as a 4.5-point favorite, one day after the Heat beat Cleveland and two nights after Cunningham's 52 in a double-overtime win.",
+      "keys": [
+        {
+          "title": "Fresh legs vs. a back-to-back",
+          "text": "Detroit had Friday off after the 144-140 double-overtime win at Washington. Miami beat Cleveland 133-121 at home Friday night and plays again with no rest, riding a three-game win streak."
+        },
+        {
+          "title": "Containing Giannis again",
+          "text": "Antetokounmpo averages 27.7 points and 12.6 rebounds on 56.7% shooting and had 36 and 12 in the Oct. 23 meeting. Detroit still won 128-111 there, leading wire to wire, with Jalen Duren now out and Paul Reed and John Collins up front."
+        },
+        {
+          "title": "Shooting edge, thinner Heat backcourt",
+          "text": "Detroit shoots 37.0% from three to Miami's 33.6%, and the Heat list Klay Thompson (left ankle, 3.8 threes a game) and Pelle Larsson (illness, 46.9% from three) as out on ESPN's injury list."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "25.0 PTS · 7.9 AST · 5.2 REB",
+          "sub": "2026-27 season (11 games); 52 points, 11 assists and no turnovers in 48 minutes Thursday",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "18.1 PTS · 4.1 3PM",
+          "sub": "2026-27 season (11 games), 43.7% from three; back in the building where he played for the Heat"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "10.1 PTS · 8.7 REB · 5.1 AST",
+          "sub": "2026-27 season (10 games); triple-double (17, 11, 11) Thursday at Washington"
+        },
+        {
+          "team": "MIA",
+          "name": "Giannis Antetokounmpo",
+          "line": "27.7 PTS · 12.6 REB · 5.2 AST",
+          "sub": "2026-27 season (11 games); 36 and 12 against Detroit on Oct. 23",
+          "badge": "Star"
+        },
+        {
+          "team": "MIA",
+          "name": "Bam Adebayo",
+          "line": "17.8 PTS · 8.4 REB · 2.2 STL",
+          "sub": "2026-27 season (11 games), shooting 50.7% from the field"
+        }
+      ],
+      "injuryNote": "ESPN list (morning): Detroit is without Jalen Duren (right hamstring strain, return listed around Nov. 24) and Isaiah Joe (right hip bruise, around Nov. 17); Ugonna Onyenso is day-to-day (left foot). Miami lists Klay Thompson (left ankle soreness) and Pelle Larsson (illness) as out as of Friday night. Morning news search found no newer reports.",
+      "talkingPoints": [
+        "Cade just went for 52 and 11 with zero turnovers. Two nights later, he gets the Heat.",
+        "We already won in Miami once this year: 128-111 on Oct. 23, led the whole way.",
+        "The Pistons are 8-3, first in the Central, and 5-1 on the road.",
+        "Miami played Cleveland last night. We had a day off.",
+        "No Klay, no Larsson for the Heat, per ESPN's list.",
+        "DraftKings has Detroit -4.5 with a 228.5 total."
+      ],
+      "facts": [
+        {
+          "label": "Broadcast",
+          "text": "NBA TV (national) per ESPN"
+        },
+        {
+          "label": "Last meeting",
+          "text": "Oct. 23 in Miami: Pistons 128, Heat 111 (Collins 23, Reed 19 and 11; Antetokounmpo 36 and 12)"
+        },
+        {
+          "label": "Last time out",
+          "text": "Thursday at Washington: Pistons 144, Wizards 140 (2OT); Cunningham 52, Thompson triple-double"
+        },
+        {
+          "label": "Up next in the series",
+          "text": "Feb. 25, 2027 in Detroit"
+        }
+      ],
+      "projNotes": {
+        "Cade Cunningham": "32 min projected after 48 Thursday; Heat give guards more points",
+        "Duncan Robinson": "Projected 29 min vs 31.7 avg; model expects a dip from 18.1",
+        "Ausar Thompson": "Assists projected 3.6, well under his 5.1 average",
+        "Paul Reed": "Starting for Duren; model gives about 23 min vs 27.0 avg",
+        "Elijah Harkless": "Only one game this season; 21 minutes is a guess",
+        "Taurean Prince": "Two games this season; minutes a guess"
+      },
+      "projNote": "Not projected: Jalen Duren and Isaiah Joe (out per ESPN), Isaac Jones, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 116.5 Detroit points.",
+      "ouNotes": {
+        "Duncan Robinson": "Averaging 19.6 over his last five, but the model sees fewer minutes",
+        "Ausar Thompson": "11 assists Thursday; the under rests on 27 projected minutes"
+      },
+      "pick": {
+        "call": "Pistons by 8",
+        "text": "Just for fun: rested Detroit against a Heat team on the second night of a back-to-back and short two guards. Giannis gets his, but the shooters swing it. Pistons 120, Heat 112."
+      },
+      "share": "Pistons (8-3) at the Heat (6-6) tonight, 8 ET on NBA TV. Cade's coming off 52; Miami's on a back-to-back. DET -4.5, total 228.5.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909982"
+        },
+        {
+          "title": "ESPN preview: Detroit visits Miami following Cunningham's 52-point showing",
+          "url": "http://www.espn.com/nba/preview?gameId=401909982"
+        }
+      ]
+    },
     {
       "id": "g20261112",
       "date": "2026-11-12",
