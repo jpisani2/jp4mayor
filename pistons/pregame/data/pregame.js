@@ -1,25 +1,25 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-14T17:58:00-05:00",
+  "updated": "2026-11-14T19:00:00-05:00",
   "games": [
     {
       "id": "g20261114",
       "date": "2026-11-14",
       "phase": "Regular season",
-      "headline": "Pistons at Miami with Giannis now day-to-day",
-      "dek": "Detroit (8-3) visits Miami (6-6) Saturday at 8 p.m. ET on NBA TV as a 3.5-point favorite, with Giannis Antetokounmpo (right wrist sprain) newly listed day-to-day on the Heat's back-to-back.",
+      "headline": "Pistons at Miami; Giannis off the injury list",
+      "dek": "Detroit (8-3) visits Miami (6-6) at 8 p.m. ET on NBA TV as a 4.5-point favorite; Giannis Antetokounmpo and Klay Thompson are off ESPN's injury list, while Pelle Larsson is now out.",
       "keys": [
         {
           "title": "Fresh legs vs. a back-to-back",
           "text": "Detroit had Friday off after the 144-140 double-overtime win at Washington. Miami beat Cleveland 133-121 at home Friday night and plays again with no rest, riding a three-game win streak."
         },
         {
-          "title": "Is Giannis in?",
-          "text": "ESPN added Antetokounmpo (right wrist sprain) as day-to-day Saturday afternoon. He averages 28.5 points and 12.3 rebounds on 58.3% shooting and had 36 and 12 in the Oct. 23 meeting, which Detroit won 128-111. With Duren out, Paul Reed and John Collins handle the size either way."
+          "title": "Giannis looks set to go",
+          "text": "ESPN's evening injury list no longer includes Antetokounmpo (right wrist sprain), who averages 28.5 points and 12.3 rebounds on 58.3% shooting and had 36 and 12 in the Oct. 23 meeting, a 128-111 Detroit win. With Duren out, Paul Reed and John Collins draw him and Bam Adebayo."
         },
         {
-          "title": "Shooting edge, Heat guards in question",
-          "text": "Detroit shoots 37.0% from three to Miami's 33.7%. Klay Thompson (left ankle sprain, 3.8 threes a game) and Pelle Larsson (illness, 46.9% from three) remain day-to-day, so Miami could be short on shooting too."
+          "title": "Shooting edge, Larsson out",
+          "text": "Detroit shoots 37.0% from three to Miami's 33.7%. Pelle Larsson (illness, 46.9% from three) is now listed out; Klay Thompson (3.8 threes a game) has dropped off the injury list after being day-to-day with a left ankle sprain."
         }
       ],
       "watch": [
@@ -46,7 +46,7 @@ window.PISTONS_PREGAME = {
           "team": "MIA",
           "name": "Giannis Antetokounmpo",
           "line": "28.5 PTS · 12.3 REB · 4.9 AST",
-          "sub": "2026-27 season (12 games), 58.3% shooting; day-to-day with a right wrist sprain; 36 and 12 against Detroit Oct. 23",
+          "sub": "2026-27 season (12 games), 58.3% shooting; off ESPN's injury list after a wrist sprain; 36 and 12 against Detroit Oct. 23",
           "badge": "Star"
         },
         {
@@ -56,14 +56,14 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (12 games), shooting 52.8%; he and Giannis scored 37 each Friday"
         }
       ],
-      "injuryNote": "ESPN list (updated Saturday afternoon): Miami now has Giannis Antetokounmpo (right wrist sprain) day-to-day, along with Klay Thompson (left ankle sprain) and Pelle Larsson (illness). Detroit is without Jalen Duren (right hamstring strain, return listed around Nov. 24) and Isaiah Joe (right hip bruise, around Nov. 17); Ugonna Onyenso is day-to-day (left foot). An evening news search found no reports beyond the ESPN listing.",
+      "injuryNote": "ESPN list (updated about 6:30 p.m. ET Saturday): Miami lists only Pelle Larsson (illness) as out; Giannis Antetokounmpo (right wrist) and Klay Thompson (left ankle), day-to-day earlier today, are no longer listed. Detroit is without Jalen Duren (right hamstring strain, return listed around Nov. 24) and Isaiah Joe (right hip bruise, around Nov. 17); Ugonna Onyenso is day-to-day (left foot). A pregame news search found nothing beyond the ESPN listing.",
       "talkingPoints": [
         "Cade just went for 52 and 11 with zero turnovers. Two nights later, he gets the Heat.",
-        "Giannis is day-to-day with a wrist sprain. Big difference if he sits.",
+        "Giannis is off the injury list, so expect him and Bam both.",
         "We already won in Miami once this year: 128-111 on Oct. 23, led the whole way.",
         "The Pistons are 8-3, first in the Central, and 5-1 on the road.",
-        "Miami played Cleveland last night. We had a day off.",
-        "Line's down to Detroit -3.5 with a 229.5 total."
+        "Larsson's out for Miami, one fewer shooter on the Heat bench.",
+        "Line moved to Detroit -4.5 with a 228.5 total."
       ],
       "facts": [
         {
@@ -97,10 +97,10 @@ window.PISTONS_PREGAME = {
         "Ausar Thompson": "11 assists Thursday; the under rests on 27 projected minutes"
       },
       "pick": {
-        "call": "Pistons by 8",
-        "text": "Just for fun: rested Detroit against a Heat team on the second night of a back-to-back, with Giannis, Klay and Larsson all day-to-day. If Giannis plays he gets his, but the shooters swing it. Pistons 120, Heat 112."
+        "call": "Pistons by 7",
+        "text": "Just for fun: rested Detroit against a Heat team on the second night of a back-to-back. Giannis will get his, but Larsson's absence and Detroit's shooting edge swing it. Pistons 119, Heat 112."
       },
-      "share": "Pistons (8-3) at the Heat (6-6) tonight, 8 ET on NBA TV. Cade's off a 52; Giannis (wrist) and Klay are day-to-day on Miami's back-to-back. DET -3.5.",
+      "share": "Pistons (8-3) at the Heat (6-6) tonight, 8 ET on NBA TV. Cade's off a 52; Giannis is off the injury list, Larsson out on Miami's back-to-back. DET -4.5.",
       "sources": [
         {
           "title": "ESPN game page",
