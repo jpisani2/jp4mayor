@@ -1665,17 +1665,82 @@ function awardsPanel(){
   </div>`;
 }
 
-/* former Pistons around the league */
-function formerPanel(){
+/* former Pistons around the league. The stats task (Tue + Fri) decides who is on the list and their Detroit years;
+   this season's numbers come live from ESPN when the League tab opens (at most every 10 minutes). If ESPN can't be
+   reached (e.g. the claude.ai copy of the page), the task's saved numbers stay. ESPN player ids are looked up by name
+   once and kept in localStorage; an "espn" id on a list entry is used first if the task ever adds one. */
+const ESPN_WEB = "https://site.web.api.espn.com/apis/common/v3";
+const ESPN_YEAR = Number(SEASON0.slice(0, 4)) + 1;   // ESPN labels the 2026-27 season 2027
+const FL = { at: 0, busy: false, ok: false, err: false, checked: null, rows: {} };
+const nameKey = s => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z]/g, "");
+async function espnJson(url){
+  const ctl = typeof AbortController === "function" ? new AbortController() : null;
+  const t = ctl ? setTimeout(() => ctl.abort(), 10e3) : 0;
+  try {
+    const r = await fetch(url, { cache: "no-store", signal: ctl ? ctl.signal : undefined });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return await r.json();
+  } finally { clearTimeout(t); }
+}
+async function espnIdFor(name, ids){
+  const k = nameKey(name);
+  if (ids[k]) return ids[k];
+  const j = await espnJson(ESPN_WEB + "/search?query=" + encodeURIComponent(name) + "&limit=5&type=player");
+  const hit = (Array.isArray(j.items) ? j.items : []).find(i => i && i.id && (i.defaultLeagueSlug === "nba" || i.league === "nba") && nameKey(i.displayName) === k);
+  if (hit) ids[k] = String(hit.id);
+  return ids[k] || null;
+}
+/* this season's per-game line from an ESPN athlete stats page; a traded player has one row per team plus a Totals row */
+function espnSeason(j){
+  const avg = (Array.isArray(j.categories) ? j.categories : []).find(c => c && c.name === "averages");
+  if (!avg || !Array.isArray(avg.names)) return null;
+  const rows = (Array.isArray(avg.statistics) ? avg.statistics : []).filter(r => r && r.season && r.season.year === ESPN_YEAR && Array.isArray(r.stats));
+  if (!rows.length) return null;
+  const isTot = r => /totals/i.test(r.teamSlug || r.displayName || "");
+  const tot = rows.find(isTot) || rows[rows.length - 1], last = rows.filter(r => r.teamSlug && !isTot(r)).pop();
+  const tm = last && j.teams ? j.teams[last.teamSlug] : null;
+  const v = n => { const i = avg.names.indexOf(n), x = i < 0 ? NaN : parseFloat(tot.stats[i]); return isFinite(x) ? x : null; };
+  const gp = v("gamesPlayed");
+  if (!gp) return null;
+  const out = { gp, min: v("avgMinutes"), pts: v("avgPoints"), reb: v("avgRebounds"), ast: v("avgAssists") };
+  if (tm && tm.abbreviation) out.team = hubAb(tm.abbreviation);
+  return out;
+}
+async function formerLive(){
   const F = LEAGUE && Array.isArray(LEAGUE.former) ? LEAGUE.former : null;
-  if (!F || !F.length) return "";
+  if (!F || !F.length || FL.busy || Date.now() - FL.at < 10 * 60e3) return;
+  FL.busy = true; FL.at = Date.now();
+  let ids = {};
+  try { ids = JSON.parse(store.get("pistons-espn-ids") || "{}") || {}; } catch(e) {}
+  const rows = {};
+  let reached = 0;
+  await Promise.all(F.map(async x => {
+    try {
+      const id = x.espn || await espnIdFor(x.name, ids);
+      if (!id) return;
+      const s = espnSeason(await espnJson(ESPN_WEB + "/sports/basketball/nba/athletes/" + encodeURIComponent(id) + "/stats?region=us&lang=en&contentorigin=espn"));
+      reached++;   // counts even when he hasn't played yet this season (no row: the saved line stays)
+      if (s) rows[nameKey(x.name)] = s;
+    } catch(e) {}
+  }));
+  store.set("pistons-espn-ids", JSON.stringify(ids));
+  FL.busy = false; FL.err = !reached;
+  if (reached) { FL.ok = true; FL.checked = new Date(); FL.rows = Object.assign({}, FL.rows, rows); }
+  redrawCell("former", formerPanel());
+}
+function formerPanel(){
+  const S = LEAGUE && Array.isArray(LEAGUE.former) ? LEAGUE.former : null;
+  if (!S || !S.length) return "";
+  const F = FL.ok ? S.map(x => Object.assign({}, x, FL.rows[nameKey(x.name)] || {})).sort((a, b) => (num(b.pts) ?? -1) - (num(a.pts) ?? -1)) : S;
+  const asOf = FL.ok ? `live from ESPN, checked ${FL.checked.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit"})}`
+    : `as of ${shortD(LEAGUE.asOf) || "the last update"}${FL.busy ? ", checking ESPN for newer numbers" : FL.err ? " (ESPN couldn't be reached from this page)" : ""}`;
   const top = F.slice(0, 12), rest = F.slice(12);
   const row = x => `<tr><td>${esc(x.name)}<div class="fp-y">Pistons ${x.early ? "through " + esc(String(x.detYears).split(" to ").pop()) : esc(x.detYears)} · ${esc(x.detG)} game${x.detG === 1 ? "" : "s"}</div></td><td>${esc(x.team)}</td><td>${esc(x.gp)}</td><td><b>${f1d(x.pts)}</b></td><td class="hidden-sm">${f1d(x.reb)}</td><td class="hidden-sm">${f1d(x.ast)}</td></tr>`;
   const head = `<thead><tr><th>Player</th><th>Team</th><th>GP</th><th>PTS</th><th class="hidden-sm">REB</th><th class="hidden-sm">AST</th></tr></thead>`;
   return `<div class="panel former"><h3>Former Pistons<span class="tag">${F.length} active</span></h3>
     <div class="tbl-wrap" style="border:0"><table class="mini box fpt">${head}<tbody>${top.map(row).join("")}</tbody></table></div>
     ${rest.length ? `<details class="hmore"><summary>${rest.length} more</summary><div class="tbl-wrap" style="border:0"><table class="mini box fpt">${head}<tbody>${rest.map(row).join("")}</tbody></table></div></details>` : ""}
-    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Everyone who has played for Detroit and has played for another team this season (box scores go back to 2014-15). Per-game numbers this season; updated twice a week.</p>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Everyone who has played for Detroit and has played for another team this season (box scores go back to 2014-15). Per-game numbers this season, ${esc(asOf)}. The list itself updates twice a week.</p>
   </div>`;
 }
 
@@ -1705,6 +1770,7 @@ function renderLeague(){
   if (!el || el.hidden) return;
   const ui = snapUi(el);
   const D = DASH || {};
+  formerLive();   // async: redraws the Former Pistons cell when ESPN answers
   const two = (a, b, sa, sb) => a[3] && b[3] ? [[a[0], a[1], sa, a[3]], [b[0], b[1], sb, b[3]]] : [[a[0], a[1], 12, a[3]], [b[0], b[1], 12, b[3]]];
   const secs = [...two(["race", "East race", 0, eastRacePanel()], ["east", "Standings", 0, standingsPanel(D.standings)], 7, 5),
     ...two(["proj", "Projection", 0, projectionPanel()], ["awards", "Awards", 0, awardsPanel()], 7, 5),
