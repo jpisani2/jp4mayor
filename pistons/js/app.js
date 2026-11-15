@@ -45,19 +45,22 @@ applySkin();
 /* ---------- results merge ---------- */
 let RESULTS = {};   // date -> {det, opp, opponent?, home?, note?, time?}
 let GAMES = [];
+/* live overlay from ESPN (Nov 2026, see liveStats): finals not saved to results.js yet, East standings, player stats */
+const LV = { at: 0, busy: false, finals: {}, standings: null, players: null, checked: null };
 function mergeGames(){
+  const RES = Object.assign({}, LV.finals, RESULTS);   // saved results win over live finals
   const byDate = {};
   SCHED.forEach(g => { if (!g.tbd) byDate[g.date] = true; });
-  const extra = Object.keys(RESULTS).filter(d => !byDate[d] && d >= "2026-12-03" && d <= "2026-12-11").sort();
+  const extra = Object.keys(RES).filter(d => !byDate[d] && d >= "2026-12-03" && d <= "2026-12-11").sort();
   let ei = 0;
   GAMES = SCHED.map(g => {
     let x = Object.assign({}, g);
     if (g.tbd && ei < extra.length) {
-      const r = RESULTS[extra[ei++]];
+      const r = RES[extra[ei++]];
       x = { n:g.n, date:extra[ei-1], time:r.time || "", home:!!r.home, opp:r.opponent || "TBD", tv:r.tv || "", conf:r.conf || "", tz:"", note:r.note || "NBA Cup window game", filled:true };
       if (r.time) { x.iso = x.date + "T" + r.time + ":00-05:00"; }
     }
-    const r = !x.tbd && RESULTS[x.date];
+    const r = !x.tbd && RES[x.date];
     if (r && typeof r.det === "number" && typeof r.opp === "number") { x.det = r.det; x.oppPts = r.opp; x.wl = r.det > r.opp ? "W" : "L"; }
     return x;
   });
@@ -840,7 +843,7 @@ async function livePoll(force){
     const v = parseLive(await r.json(), g.date);
     if (!v) throw new Error("no Pistons game on the scoreboard");
     GD.live = v; GD.err = false;
-    if (v.state === "post") GD.final = v;
+    if (v.state === "post") { GD.final = v; liveStats(true); }
   } catch(e) { GD.err = true; }
   finally { GD.busy = false; }
   paintLive(); gdCheck();
@@ -1580,7 +1583,7 @@ function eastRacePanel(){
     ${rem ? `<p class="race-sub"><b>Schedule left:</b> ${rem.n} games, ${rem.home} at home${hardRank ? ` · the ${ordinal(hardRank)}-hardest remaining schedule of the 15 East teams` : ""} (by opponents' ratings, as of ${esc(shortD(LEAGUE.asOf))}).</p>` : ""}
     ${near.length ? `<div class="eyebrow hk">Season series with the teams around them</div><ul class="race-h">${near.map(r => { const h = H[r.ab] || { w: 0, l: 0, left: 0 };
       return `<li><span>${esc(ordinal(r.rank))} ${esc(r.ab)} <span class="muted">${r.w}–${r.l}</span></span><b>${h.w}–${h.l}${h.left ? ` <span class="muted">· ${h.left} left</span>` : ""}</b></li>`; }).join("")}</ul>` : ""}
-    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Games behind = standings style ((W diff + L diff) / 2). Standings update every morning; schedule strength and series counts update twice a week.</p>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Games behind = standings style ((W diff + L diff) / 2). ${DASH && DASH.standings && DASH.standings.live ? "Standings are live from ESPN" : "Standings update every morning"}; schedule strength and series counts update twice a week.</p>
   </div>`;
 }
 
@@ -1743,6 +1746,96 @@ function formerPanel(){
     <p class="muted" style="font-size:12.5px;margin:8px 0 0">Everyone who has played for Detroit and has played for another team this season (box scores go back to 2014-15). Per-game numbers this season, ${esc(asOf)}. The list itself updates twice a week.</p>
   </div>`;
 }
+
+/* ---------- live standings, record and player stats from ESPN (Nov 2026) ----------
+   daily.js (the morning dashboard) and results.js are saved once a day. Between refreshes the page asks ESPN for the
+   East standings, the Pistons' player stats and any final score not saved yet (at most every 10 minutes while the
+   page is visible, and right after the live score shows a final), and lays them over the latest dashboard only,
+   never over an older day picked on the Today tab. If ESPN can't be reached, the saved numbers stay. */
+const ESPN_API = "https://site.api.espn.com/apis";
+function liveEastRows(j){
+  const east = (Array.isArray(j.children) ? j.children : []).find(c => c && /east/i.test(c.name || c.abbreviation || ""));
+  const ents = east && east.standings && Array.isArray(east.standings.entries) ? east.standings.entries : [];
+  const rows = ents.map(e => {
+    const s = {};
+    (Array.isArray(e.stats) ? e.stats : []).forEach(x => { if (x) { if (x.name) s[x.name] = x; if (x.type) s[x.type] = x; } });
+    const dv = k => s[k] && s[k].displayValue != null ? String(s[k].displayValue) : "";
+    const nv = k => s[k] && isFinite(Number(s[k].value)) ? Number(s[k].value) : null;
+    const gb = dv("gamesBehind");
+    return { rank: nv("playoffSeed"), team: e.team && e.team.displayName, w: nv("wins"), l: nv("losses"), gb: gb === "-" || gb === "" ? "—" : gb, l10: dv("lasttengames"), strk: dv("streak") };
+  }).filter(r => r.team && r.rank && r.w !== null && r.l !== null).sort((a, b) => a.rank - b.rank);
+  return rows.length === 15 && rows.some(r => r.w + r.l > 0) ? rows : null;   // nothing before opening night
+}
+function livePlayerRows(j){
+  const res = Array.isArray(j.results) ? j.results : [];
+  const L = res[0] && Array.isArray(res[0].leaders) ? res[0].leaders : [];
+  const rows = L.map(x => {
+    const s = {};
+    (Array.isArray(x.statistics) ? x.statistics : []).forEach(c => (c && Array.isArray(c.stats) ? c.stats : []).forEach(t => { if (t && t.name && isFinite(Number(t.value))) s[t.name] = Number(t.value); }));
+    const v = k => k in s ? s[k] : null;
+    const pc = (k, att) => v(att) ? v(k) / 100 : null;   // ESPN gives 48.5; the table wants .485
+    const nm = x.athlete && x.athlete.displayName;
+    return { name: NAME_ALIAS[nm] || nm, pos: x.athlete && x.athlete.position ? x.athlete.position.abbreviation || "" : "",
+      gp: v("gamesPlayed"), min: v("avgMinutes"), pts: v("avgPoints"), reb: v("avgRebounds"), ast: v("avgAssists"), stl: v("avgSteals"), blk: v("avgBlocks"),
+      fg: pc("fieldGoalPct", "fieldGoalsAttempted"), tp: pc("threePointFieldGoalPct", "threePointFieldGoalsAttempted"), ft: pc("freeThrowPct", "freeThrowsAttempted") };
+  }).filter(r => r.name && r.gp);
+  return rows.length ? rows : null;
+}
+/* finals for scheduled games that tipped over 2 hours ago (last 10 days) and aren't in results.js yet */
+async function liveFinals(){
+  const now = Date.now(), out = {};
+  const due = GAMES.filter(g => !g.tbd && !g.wl && g.date && tipTime(g) && now - tipTime(g).getTime() > 2 * 3600e3 && now - tipTime(g).getTime() < 10 * 864e5).slice(-5);
+  await Promise.all(due.map(async g => {
+    try {
+      const v = GD.final && GD.final.date === g.date ? GD.final : parseLive(await espnJson(ESPN_SB + "?dates=" + ymd(g.date)), g.date);
+      if (v && v.state === "post" && num(v.det) !== null && num(v.opp) !== null && v.det !== v.opp) out[g.date] = { det: v.det, opp: v.opp, home: !!g.home, opponent: g.opp, live: true };
+    } catch(e) {}
+  }));
+  return out;
+}
+function withLive(d){
+  if (!d || (!LV.standings && !LV.players)) return d;
+  const o = Object.assign({}, d);
+  const t = LV.checked ? "Live from ESPN as of " + LV.checked.toLocaleTimeString("en-US", {hour: "numeric", minute: "2-digit"}) + "." : "Live from ESPN.";
+  if (LV.standings) {
+    const title = d.standings && d.standings.title && !/2025-26/.test(d.standings.title) ? d.standings.title : "East standings";
+    o.standings = { title, note: t, rows: LV.standings, live: true };
+    const det = LV.standings.find(r => isDet(r.team));
+    if (det) o.record = Object.assign({}, d.record || {}, { conf: ordinal(det.rank), gb: det.gb });
+  }
+  if (LV.players) {
+    const saved = d.players && Array.isArray(d.players.rows) ? d.players.rows : [];
+    const pos = {}; saved.forEach(r => { if (r && r.name && r.pos) pos[r.name] = r.pos; });
+    const have = new Set(LV.players.map(r => r.name)), gone = saved.filter(r => r && r.name && !have.has(r.name));
+    o.players = { title: (d.players && d.players.title) || "Player stats", live: true,
+      note: t + (gone.length ? " Players no longer on the roster keep their last saved numbers." : ""),
+      rows: LV.players.map(r => Object.assign({}, r, { pos: pos[r.name] || r.pos })).concat(gone) };
+  }
+  return o;
+}
+async function liveStats(force){
+  if (LV.busy || (!force && Date.now() - LV.at < 10 * 60e3)) return;
+  if (!force && document.visibilityState === "hidden") return;
+  LV.busy = true; LV.at = Date.now();
+  let st = null, pl = null, fin = {};
+  try {
+    [st, pl, fin] = await Promise.all([
+      espnJson(ESPN_API + "/v2/sports/basketball/nba/standings").then(liveEastRows).catch(() => null),
+      espnJson(ESPN_API + "/site/v2/sports/basketball/nba/teams/8/athletes/statistics").then(livePlayerRows).catch(() => null),
+      liveFinals().catch(() => ({}))
+    ]);
+  } finally { LV.busy = false; }
+  const before = JSON.stringify([LV.standings, LV.players, LV.finals]);
+  if (st) LV.standings = st;
+  if (pl) LV.players = pl;
+  Object.assign(LV.finals, fin);
+  if (JSON.stringify([LV.standings, LV.players, LV.finals]) === before) return;   // nothing new: leave the page alone
+  LV.checked = new Date();
+  if (DASH_PICK === "latest" && DASH_LATEST) DASH = withLive(DASH_LATEST);
+  renderAll();
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") liveStats(); });
+setInterval(() => liveStats(), 60e3);
 
 /* Motor City Cruise */
 function cruisePanel(){
@@ -2153,7 +2246,7 @@ let rzT = null, lastW = window.innerWidth;
 window.addEventListener("resize", () => { clearTimeout(rzT); rzT = setTimeout(() => { if (Math.abs(window.innerWidth - lastW) > 40) { lastW = window.innerWidth; renderToday(); renderBetting(); } }, 200); });
 async function pickDay(d){
   DASH_PICK = d;
-  if (d === "latest" || !DB) { DASH = DASH_LATEST; renderToday(); return; }
+  if (d === "latest" || !DB) { DASH = withLive(DASH_LATEST); renderToday(); return; }
   try {
     const snap = await DB.doc("daily/" + d).get();
     DASH = snap.exists ? snap.data() : DASH_LATEST;
@@ -2753,7 +2846,7 @@ async function loadStaticDb(){
     }, () => {});
     db.doc("dashboard/latest").onSnapshot(snap => {
       DASH_LATEST = snap.exists ? snap.data() : null;
-      if (DASH_PICK === "latest") { DASH = DASH_LATEST; renderToday(); }
+      if (DASH_PICK === "latest") { DASH = withLive(DASH_LATEST); renderToday(); }
       renderHealth(); paintSitePills();
     }, () => {});
     db.doc("dashboard/index").onSnapshot(snap => {
@@ -2778,5 +2871,6 @@ async function loadStaticDb(){
       renderHealth();
     }, () => {});
   } catch(e) {}
+  liveStats();
 })();
 })();
