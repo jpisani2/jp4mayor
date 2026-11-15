@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-11-12T22:17:00-05:00",
+  "updated": "2026-11-14T22:47:00-05:00",
   "games": [
+    {
+      "id": "g20261114",
+      "date": "2026-11-14",
+      "phase": "Regular season",
+      "home": false,
+      "venue": "Kaseya Center, Miami",
+      "attendance": 19658,
+      "opp": {
+        "abbr": "MIA",
+        "name": "Miami Heat",
+        "short": "Heat",
+        "score": 137,
+        "quarters": [
+          37,
+          31,
+          35,
+          34
+        ]
+      },
+      "det": {
+        "score": 117,
+        "quarters": [
+          39,
+          21,
+          26,
+          31
+        ]
+      },
+      "result": "L",
+      "record": "8-4",
+      "headline": "Giannis, Heat run away from Pistons in Miami",
+      "dek": "Giannis Antetokounmpo had 34 points, 14 rebounds and 8 assists on 13-for-17 shooting, and Miami took the lead for good midway through the second quarter to beat Detroit 137-117 despite 33 from Cade Cunningham.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "33 PTS \u00b7 8 AST \u00b7 14-14 FT",
+          "sub": "Perfect at the line in 36 minutes, two nights after his 52-point game in Washington",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Kevin Huerter",
+          "line": "20 PTS \u00b7 7 AST \u00b7 3 BLK",
+          "sub": "9-for-15 off the bench in a team-high 38 minutes"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "10 PTS \u00b7 8 REB \u00b7 5 AST",
+          "sub": "5-for-8 with 2 steals and 2 blocks; the only Detroit starter with a positive plus-minus (+5) in 18 foul-limited minutes"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "9 PTS \u00b7 9 REB \u00b7 5 OREB",
+          "sub": "Led an offensive-rebounding edge of 21-13 off the bench"
+        },
+        {
+          "team": "MIA",
+          "name": "Giannis Antetokounmpo",
+          "line": "34 PTS \u00b7 14 REB \u00b7 8 AST",
+          "sub": "13-for-17 from the floor with 3 blocks; his layup at 6:33 of the second was the game's last lead change"
+        },
+        {
+          "team": "MIA",
+          "name": "Klay Thompson",
+          "line": "26 PTS \u00b7 6-11 3PT",
+          "sub": "10-for-17 in only 20 minutes; Bam Adebayo added 20 and Davion Mitchell 15 with 9 assists"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's scorers",
+          "text": "Cunningham's 33 was third in tonight's games, one point behind Antetokounmpo and Kyrie Irving (34 each). His 52 on Wednesday still tops this week's scoring lines."
+        },
+        {
+          "label": "Glass and dimes",
+          "text": "Antetokounmpo's 14 rebounds led tonight's games. Mitchell's 9 assists were third tonight behind Nikola Jokic and Tyrese Proctor (10 each); Cunningham's 8 tied for fourth."
+        },
+        {
+          "label": "Season series",
+          "text": "Detroit won the first meeting 128-111 in Miami on Oct. 23; ESPN now lists the regular-season series tied 1-1."
+        }
+      ],
+      "talkingPoints": [
+        "Giannis missed four shots all night. 13-for-17, 34 points, 14 boards, 8 assists.",
+        "Klay hit six threes in 20 minutes. Twenty minutes!",
+        "Cade went 14-for-14 at the line and scored 33, but Detroit never led after the middle of the second quarter.",
+        "Miami had 14 blocks and won fast-break points 28-11.",
+        "We led 39-37 after one, then got outscored 31-21 in the second and 35-26 in the third.",
+        "Huerter gave us 20 off the bench, and Ausar was plus-5 in 18 minutes before foul trouble."
+      ],
+      "notable": [
+        {
+          "stat": "14-14",
+          "label": "Cunningham at the line",
+          "note": "Detroit shot 28-32 (88%) as a team"
+        },
+        {
+          "stat": "13-17",
+          "label": "Antetokounmpo's shooting",
+          "note": "34 points, 14 rebounds, 8 assists, 3 blocks"
+        },
+        {
+          "stat": "14",
+          "label": "Heat blocks",
+          "note": "Detroit had 6"
+        },
+        {
+          "stat": "28-11",
+          "label": "Fast-break points",
+          "note": "Miami's edge in transition"
+        },
+        {
+          "stat": "21-13",
+          "label": "Offensive rebounds",
+          "note": "Detroit's edge; Reed and Ronald Holland II had 5 each"
+        },
+        {
+          "stat": "20",
+          "label": "Largest MIA lead",
+          "note": "Reached at 1:27 of the fourth; Detroit's biggest was 4"
+        }
+      ],
+      "story": [
+        "Detroit started well and led 39-37 after a quarter, going up four early in the second on a Cunningham running dunk. Neither team led by much until Antetokounmpo's layup with 6:33 left in the half put Miami ahead 49-47, the eighth and final lead change. The Heat won the second quarter 31-21 and took a 68-60 lead into halftime.",
+        "Miami kept pulling away in the third, shooting 51% for the game and turning Detroit misses into a 28-11 advantage on the break. An 8-0 Pistons run early in the quarter got them back within five, but the Heat scored 35 in the period to lead 103-86. Klay Thompson finished 6-for-11 from three in 20 minutes, Bam Adebayo had 20 and Davion Mitchell added 9 assists, while Miami blocked 14 shots.",
+        "Cunningham finished with 33 points, 8 assists and a perfect 14-for-14 at the line, and Kevin Huerter scored 20 off the bench, but Daniss Jenkins (4-for-14) and John Collins (3-for-13) struggled. The lead reached 20 late in the fourth. Detroit falls to 8-4, still without Jalen Duren (hamstring) and Isaiah Joe (hip); Duncan Robinson, listed day-to-day with a thigh injury, started and scored 10."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "39-96 (41%)",
+          "opp": "44-87 (51%)"
+        },
+        {
+          "label": "3PT",
+          "det": "11-34 (32%)",
+          "opp": "16-41 (39%)"
+        },
+        {
+          "label": "FT",
+          "det": "28-32 (88%)",
+          "opp": "33-40 (83%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "45",
+          "opp": "49"
+        },
+        {
+          "label": "Assists",
+          "det": "32",
+          "opp": "34"
+        },
+        {
+          "label": "Steals",
+          "det": "8",
+          "opp": "10"
+        },
+        {
+          "label": "Blocks",
+          "det": "6",
+          "opp": "14"
+        },
+        {
+          "label": "Turnovers",
+          "det": "14",
+          "opp": "14"
+        },
+        {
+          "label": "Paint pts",
+          "det": "52",
+          "opp": "50"
+        }
+      ],
+      "share": "Heat 137, Pistons 117. Giannis: 34 pts, 14 reb, 8 ast on 13-17. Cade Cunningham: 33 pts, 14-14 FT. DET falls to 8-4.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909982"
+        }
+      ]
+    },
     {
       "id": "g20261112",
       "date": "2026-11-12",
