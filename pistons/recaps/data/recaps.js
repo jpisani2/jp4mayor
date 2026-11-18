@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-11-14T22:47:00-05:00",
+  "updated": "2026-11-17T23:06:02-05:00",
   "games": [
+    {
+      "id": "g20261117",
+      "date": "2026-11-17",
+      "phase": "Regular season",
+      "home": false,
+      "venue": "Frost Bank Center, San Antonio",
+      "attendance": 18412,
+      "opp": {
+        "abbr": "SA",
+        "name": "San Antonio Spurs",
+        "short": "Spurs",
+        "score": 93,
+        "quarters": [
+          33,
+          21,
+          18,
+          21
+        ]
+      },
+      "det": {
+        "score": 105,
+        "quarters": [
+          26,
+          29,
+          23,
+          27
+        ]
+      },
+      "result": "W",
+      "record": "9-4",
+      "headline": "Short-handed Pistons wear down Spurs in San Antonio",
+      "dek": "Cade Cunningham scored 27, Daniss Jenkins added 25 and Ausar Thompson piled up 14 points, 12 assists and 5 steals as Detroit came back from 14 down to beat the 12-3 Spurs 105-93.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "14 PTS · 9 REB · 12 AST · 5 STL",
+          "sub": "One rebound shy of a triple-double; his 12 assists led every game tonight",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "27 PTS · 6 AST · 5 REB",
+          "sub": "12-for-25 and a game-best +16; his pull-up at 4:56 of the third was the last lead change"
+        },
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "25 PTS · 5 REB · 5 AST",
+          "sub": "11-for-21 with 3 threes and 1 turnover in 38 minutes"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "10 PTS · 5 AST · 3 STL",
+          "sub": "5-for-8 off the bench and +20, best on the floor"
+        },
+        {
+          "team": "SA",
+          "name": "Victor Wembanyama",
+          "line": "25 PTS · 18 REB · 4 AST",
+          "sub": "11-for-23; the 18 boards top every rebounding line this week"
+        },
+        {
+          "team": "SA",
+          "name": "Dylan Harper",
+          "line": "20 PTS · 8-14 FG",
+          "sub": "Limped off after a slip late in the game, per ESPN"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's scorers",
+          "text": "Cunningham's 27 ranked third in tonight's games so far, behind Jalen Brunson (31) and Ayo Dosunmu (30). His 52 in Washington last Wednesday still tops this week's scoring lines."
+        },
+        {
+          "label": "Dimes and boards",
+          "text": "Thompson's 12 assists led tonight's games and tie for fourth-best this week, behind Davion Mitchell (17), Josh Giddey and Trae Young (14 each). Wembanyama's 18 rebounds were the week's high."
+        },
+        {
+          "label": "Season series",
+          "text": "First meeting of the season; ESPN lists Detroit up 1-0 in the regular-season series."
+        }
+      ],
+      "talkingPoints": [
+        "Ausar had 12 assists and 5 steals and was one rebound from a triple-double.",
+        "No Duren, no Joe, no Robinson, no Holland, and we still beat the 12-3 Spurs on their floor.",
+        "Down 14 early in the second, and we never trailed again after Cade's pull-up in the third.",
+        "Jenkins dropped 25 and turned it over once in 38 minutes.",
+        "60 points in the paint and 24 on the break. We just kept getting downhill.",
+        "Wemby got his 25 and 18, but the Spurs shot 9-for-40 from three."
+      ],
+      "notable": [
+        {
+          "stat": "60-44",
+          "label": "Points in the paint",
+          "note": "Detroit's edge, with only 6 made threes"
+        },
+        {
+          "stat": "10-4",
+          "label": "Steals",
+          "note": "Thompson had 5, Reed 3"
+        },
+        {
+          "stat": "24-15",
+          "label": "Fast-break points",
+          "note": "Detroit pushed off those steals"
+        },
+        {
+          "stat": "9-40",
+          "label": "Spurs from three",
+          "note": "22%; Detroit was 6-25"
+        },
+        {
+          "stat": "31",
+          "label": "Pistons assists",
+          "note": "On 45 made baskets; Spurs had 25"
+        },
+        {
+          "stat": "10-0",
+          "label": "Third-quarter run",
+          "note": "From 5:23 to 2:43, around Cade's go-ahead jumper"
+        }
+      ],
+      "story": [
+        "San Antonio came out fast, scoring 33 in the first quarter and closing it on a 9-0 run that reached into the second for a 40-26 lead, their biggest at 14. Detroit answered with an 8-0 run midway through the period, and Cunningham's running dunk with 11.4 seconds left in the half put the Pistons up 55-54 at the break after a 29-21 second quarter.",
+        "The third went back and forth until Cunningham's 9-foot pull-up with 4:56 left made it 67-66, the last of three lead changes, in the middle of a 10-0 Detroit run; the Pistons led 78-72 after three. Julian Champagnie drew a technical at 4:18 of the fourth with Detroit up nine, the Spurs got within 93-87 by the 3:06 mark, and Thompson's running dunk off a Cunningham feed with 28.4 seconds left capped the 105-93 finish.",
+        "Thompson finished with 14 points, 9 rebounds, 12 assists and 5 steals, Jenkins scored 25 and Reed was +20 off the bench, as Detroit won the paint 60-44 and the steals 10-4 without Jalen Duren, Isaiah Joe, Duncan Robinson, Ronald Holland II and Taurean Prince. Wembanyama had 25 and 18 and Dylan Harper scored 20 before limping off late. Detroit is 9-4 and 6-2 on the road; San Antonio falls to 12-3."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "45-91 (49%)",
+          "opp": "37-89 (42%)"
+        },
+        {
+          "label": "3PT",
+          "det": "6-25 (24%)",
+          "opp": "9-40 (22%)"
+        },
+        {
+          "label": "FT",
+          "det": "9-12 (75%)",
+          "opp": "10-14 (71%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "43",
+          "opp": "43"
+        },
+        {
+          "label": "Assists",
+          "det": "31",
+          "opp": "25"
+        },
+        {
+          "label": "Steals",
+          "det": "10",
+          "opp": "4"
+        },
+        {
+          "label": "Blocks",
+          "det": "3",
+          "opp": "4"
+        },
+        {
+          "label": "Turnovers",
+          "det": "9",
+          "opp": "13"
+        },
+        {
+          "label": "Paint pts",
+          "det": "60",
+          "opp": "44"
+        }
+      ],
+      "share": "Pistons 105, Spurs 93. Cade 27, Daniss Jenkins 25, Ausar Thompson 14 pts, 12 ast, 5 stl. DET wins in San Antonio to go 9-4.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401910004"
+        }
+      ]
+    },
     {
       "id": "g20261114",
       "date": "2026-11-14",
