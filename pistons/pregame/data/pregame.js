@@ -1,7 +1,116 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-14T19:00:00-05:00",
+  "updated": "2026-11-18T10:33:59-05:00",
   "games": [
+    {
+      "id": "g20261118",
+      "date": "2026-11-18",
+      "phase": "Regular season",
+      "headline": "Pistons at New Orleans on the second night",
+      "dek": "Detroit (9-4) plays at New Orleans (5-10) at 8 p.m. ET as a 6.5-point favorite, a night after winning in San Antonio, while the Pelicans are without Trey Murphy III, Dejounte Murray and Bennedict Mathurin.",
+      "keys": [
+        {
+          "title": "Back-to-back legs",
+          "text": "Detroit beat the Spurs 105-93 in San Antonio on Tuesday and plays again with no rest. New Orleans had Tuesday off after beating Golden State 115-94 on Monday, which followed four straight losses."
+        },
+        {
+          "title": "Thin on both benches",
+          "text": "Detroit is still without Jalen Duren (hamstring), Duncan Robinson (quad) and Isaiah Joe (hip); Taurean Prince and Ronald Holland II are day-to-day. New Orleans lists five players out, including Murphy (15.6 PPG) and Murray (13.4 PPG)."
+        },
+        {
+          "title": "Turnovers and threes",
+          "text": "The Pelicans commit 15.1 turnovers a game, and Detroit averages 9.5 steals; Detroit had 10 on Tuesday. The Pistons also make 12.9 threes a game at 36.0% to New Orleans' 9.8 at 33.3%."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "25.8 PTS · 7.8 AST · 5.2 REB",
+          "sub": "2026-27 season (13 games); 27 points in San Antonio Tuesday",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "14.1 PTS · 4.4 AST · 42.4% 3PT",
+          "sub": "2026-27 season (13 games); 21.8 points over his last five, including 25 Tuesday"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "10.4 PTS · 8.7 REB · 5.7 AST",
+          "sub": "2026-27 season (12 games); 14 points, 12 assists and 5 steals Tuesday"
+        },
+        {
+          "team": "NO",
+          "name": "Zion Williamson",
+          "line": "21.5 PTS · 5.3 REB · 1.9 STL",
+          "sub": "2026-27 season (14 games), shooting 59.2%",
+          "badge": "Star"
+        },
+        {
+          "team": "NO",
+          "name": "Jeremiah Fears",
+          "line": "15.5 PTS · 5.5 AST · 4.9 REB",
+          "sub": "2026-27 season (15 games); runs the point with Murray out"
+        }
+      ],
+      "injuryNote": "ESPN list (morning of Nov. 18): New Orleans has Trey Murphy III (knee tendinitis), Dejounte Murray (ankle), Bennedict Mathurin (left foot), Bryce McGowens (left elbow) and Trendon Watford (right ankle) out. Detroit has Duren, Robinson and Joe out, with Prince (right knee soreness) and Holland (left knee bruise) day-to-day. A news search this morning found nothing newer.",
+      "talkingPoints": [
+        "We just beat the 12-3 Spurs on their floor, and now it's the 5-10 Pelicans.",
+        "Second night of a back-to-back, so watch the legs in the fourth.",
+        "No Murphy, no Murray for New Orleans. That's a lot of their scoring sitting.",
+        "Zion's still shooting 59%. Somebody has to keep him out of the paint.",
+        "The Pistons are 9-4, first in the Central, and 6-2 on the road.",
+        "Ausar was one rebound from a triple-double last night."
+      ],
+      "facts": [
+        {
+          "label": "Broadcast",
+          "text": "ESPN lists GCSEN (Pelicans local); check your local Pistons broadcast"
+        },
+        {
+          "label": "Last time out",
+          "text": "Tuesday at San Antonio: Pistons 105, Spurs 93; Cunningham 27, Jenkins 25, Thompson 14 points and 12 assists"
+        },
+        {
+          "label": "Pelicans' last five",
+          "text": "1-4: lost at Golden State 138-87, then to Brooklyn, Memphis and Denver, before beating Golden State 115-94"
+        },
+        {
+          "label": "Up next in the series",
+          "text": "Dec. 30 in Detroit"
+        }
+      ],
+      "projNotes": {
+        "Cade Cunningham": "About 36 min projected; Pelicans give guards more points and assists",
+        "Daniss Jenkins": "31 min with Robinson and Joe out; 21.8 PTS over his last five",
+        "Kevin Huerter": "27 min projected; 33.2 min and 15.2 PTS over his last five",
+        "Ausar Thompson": "Rebounds projected 6.3, well under his 8.7 average",
+        "Taurean Prince": "Day-to-day (knee) and only three games played; minutes a guess",
+        "Elijah Harkless": "Three games this season; 18 minutes is a guess"
+      },
+      "projNote": "Not projected: Jalen Duren, Duncan Robinson and Isaiah Joe (out per ESPN), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 117 Detroit points.",
+      "ouNotes": {
+        "Ausar Thompson": "Had 9 rebounds and 12 assists Tuesday; the under rests on his rebound rate"
+      },
+      "pick": {
+        "call": "Pistons by 9",
+        "text": "Just for fun: tired legs, but New Orleans is missing two of its top five scorers and coughs it up 15 times a game. Detroit's guards take it late. Pistons 118, Pelicans 109."
+      },
+      "share": "Pistons (9-4) at the Pelicans (5-10) tonight, 8 ET. Second night of a back-to-back after beating the Spurs; New Orleans without Murphy and Murray. DET -6.5.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401910013"
+        },
+        {
+          "title": "ESPN preview: Williamson, Pelicans to host Cunningham and the Pistons",
+          "url": "http://www.espn.com/nba/preview?gameId=401910013"
+        }
+      ]
+    },
     {
       "id": "g20261114",
       "date": "2026-11-14",
