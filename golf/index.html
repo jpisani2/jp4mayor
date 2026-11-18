@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Fairway Forge</title>
+  <meta name="description" content="Design golf holes and courses, then play them in 3D.">
+  <meta name="theme-color" content="#0d1a12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Fairway Forge">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="importmap">{ "imports": { "three": "./js/vendor/three.module.min.js" } }</script>
+</head>
+<body>
+  <canvas id="gl"></canvas>
+  <div id="vignette"></div>
+  <div id="app"></div>
+  <div id="splash"><div class="sp-logo"><div class="logo-mark"><span class="lm-flag"></span><span class="lm-ball"></span></div><h1>FAIRWAY<b>FORGE</b></h1></div><div class="sp-bar"><i></i></div></div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
