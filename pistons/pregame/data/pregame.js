@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-18T17:58:00-05:00",
+  "updated": "2026-11-18T18:55:00-05:00",
   "games": [
     {
       "id": "g20261118",
