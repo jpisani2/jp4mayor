@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-18T10:33:59-05:00",
+  "updated": "2026-11-18T12:55:00-05:00",
   "games": [
     {
       "id": "g20261118",
@@ -56,7 +56,7 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (15 games); runs the point with Murray out"
         }
       ],
-      "injuryNote": "ESPN list (morning of Nov. 18): New Orleans has Trey Murphy III (knee tendinitis), Dejounte Murray (ankle), Bennedict Mathurin (left foot), Bryce McGowens (left elbow) and Trendon Watford (right ankle) out. Detroit has Duren, Robinson and Joe out, with Prince (right knee soreness) and Holland (left knee bruise) day-to-day. A news search this morning found nothing newer.",
+      "injuryNote": "ESPN list (morning of Nov. 18): New Orleans has Trey Murphy III (knee tendinitis), Dejounte Murray (ankle), Bennedict Mathurin (left foot), Bryce McGowens (left elbow) and Trendon Watford (right ankle) out. Detroit has Duren, Robinson and Joe out, with Prince (right knee soreness) and Holland (left knee bruise) day-to-day. Midday check (12:50 p.m.): ESPN still lists Prince and Holland day-to-day (updated 10:05 a.m.) and Joe out; a news search found nothing newer, so watch for the official report closer to tip.",
       "talkingPoints": [
         "We just beat the 12-3 Spurs on their floor, and now it's the 5-10 Pelicans.",
         "Second night of a back-to-back, so watch the legs in the fourth.",
