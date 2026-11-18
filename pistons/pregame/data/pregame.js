@@ -1,13 +1,13 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-18T12:55:00-05:00",
+  "updated": "2026-11-18T17:58:00-05:00",
   "games": [
     {
       "id": "g20261118",
       "date": "2026-11-18",
       "phase": "Regular season",
       "headline": "Pistons at New Orleans on the second night",
-      "dek": "Detroit (9-4) plays at New Orleans (5-10) at 8 p.m. ET as a 6.5-point favorite, a night after winning in San Antonio, while the Pelicans are without Trey Murphy III, Dejounte Murray and Bennedict Mathurin.",
+      "dek": "Detroit (9-4) plays at New Orleans (5-10) at 8 p.m. ET as a 4.5-point favorite on the second night of a back-to-back; Cade Cunningham is listed day-to-day with knee soreness and Prince and Holland are now out.",
       "keys": [
         {
           "title": "Back-to-back legs",
@@ -15,7 +15,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "title": "Thin on both benches",
-          "text": "Detroit is still without Jalen Duren (hamstring), Duncan Robinson (quad) and Isaiah Joe (hip); Taurean Prince and Ronald Holland II are day-to-day. New Orleans lists five players out, including Murphy (15.6 PPG) and Murray (13.4 PPG)."
+          "text": "Detroit lists Duncan Robinson (quad), Isaiah Joe (hip), Taurean Prince (knee) and Ronald Holland II (knee) out, with Cunningham day-to-day (right knee soreness). New Orleans lists five out, including Trey Murphy III (15.6 PPG) and Dejounte Murray (13.4 PPG)."
         },
         {
           "title": "Turnovers and threes",
@@ -56,10 +56,10 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (15 games); runs the point with Murray out"
         }
       ],
-      "injuryNote": "ESPN list (morning of Nov. 18): New Orleans has Trey Murphy III (knee tendinitis), Dejounte Murray (ankle), Bennedict Mathurin (left foot), Bryce McGowens (left elbow) and Trendon Watford (right ankle) out. Detroit has Duren, Robinson and Joe out, with Prince (right knee soreness) and Holland (left knee bruise) day-to-day. Midday check (12:50 p.m.): ESPN still lists Prince and Holland day-to-day (updated 10:05 a.m.) and Joe out; a news search found nothing newer, so watch for the official report closer to tip.",
+      "injuryNote": "ESPN list (updated about 2:05-2:10 p.m. ET Nov. 18): Cunningham is day-to-day with right knee soreness; Prince and Holland are now out (ESPN return date Nov. 20), Joe out (right hip) and Robinson out (return around Nov. 27). Jalen Duren (hamstring, ESPN estimate Nov. 24) no longer appears on ESPN's Detroit list; projections here treat him as out because I found no report of a return. New Orleans has Murphy, Murray, Mathurin, McGowens and Watford out. A news search found nothing newer than ESPN, so watch the official report near tip.",
       "talkingPoints": [
         "We just beat the 12-3 Spurs on their floor, and now it's the 5-10 Pelicans.",
-        "Second night of a back-to-back, so watch the legs in the fourth.",
+        "Second night of a back-to-back, and Cade is listed day-to-day with knee soreness.",
         "No Murphy, no Murray for New Orleans. That's a lot of their scoring sitting.",
         "Zion's still shooting 59%. Somebody has to keep him out of the paint.",
         "The Pistons are 9-4, first in the Central, and 6-2 on the road.",
@@ -84,22 +84,21 @@ window.PISTONS_PREGAME = {
         }
       ],
       "projNotes": {
-        "Cade Cunningham": "About 36 min projected; Pelicans give guards more points and assists",
-        "Daniss Jenkins": "31 min with Robinson and Joe out; 21.8 PTS over his last five",
-        "Kevin Huerter": "27 min projected; 33.2 min and 15.2 PTS over his last five",
-        "Ausar Thompson": "Rebounds projected 6.3, well under his 8.7 average",
-        "Taurean Prince": "Day-to-day (knee) and only three games played; minutes a guess",
-        "Elijah Harkless": "Three games this season; 18 minutes is a guess"
+        "Cade Cunningham": "36 min set by hand (day-to-day, back-to-back); Pelicans give guards points",
+        "Daniss Jenkins": "32 min with Robinson, Joe, Holland, Prince out; 21.8 PTS last five",
+        "Kevin Huerter": "32 min projected; 33.2 min and 15.2 PTS over his last five",
+        "Ausar Thompson": "Rebounds projected 7.4, under his 8.7 average",
+        "Elijah Harkless": "Three games this season; 21 minutes is a guess"
       },
-      "projNote": "Not projected: Jalen Duren, Duncan Robinson and Isaiah Joe (out per ESPN), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes) and Ugonna Onyenso (no NBA box scores). Model implies about 117 Detroit points.",
+      "projNote": "Not projected: Jalen Duren (treated as out), Duncan Robinson, Isaiah Joe, Taurean Prince and Ronald Holland II (out per ESPN), Isaac Jones, Chaz Lanier, Ebuka Okorie, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). Model implies about 115.5 Detroit points.",
       "ouNotes": {
-        "Ausar Thompson": "Had 9 rebounds and 12 assists Tuesday; the under rests on his rebound rate"
+        "Cade Cunningham": "Listed day-to-day (right knee soreness) as of 2:09 p.m. ET; the over assumes he plays 36 minutes"
       },
       "pick": {
         "call": "Pistons by 9",
         "text": "Just for fun: tired legs, but New Orleans is missing two of its top five scorers and coughs it up 15 times a game. Detroit's guards take it late. Pistons 118, Pelicans 109."
       },
-      "share": "Pistons (9-4) at the Pelicans (5-10) tonight, 8 ET. Second night of a back-to-back after beating the Spurs; New Orleans without Murphy and Murray. DET -6.5.",
+      "share": "Pistons (9-4) at the Pelicans (5-10) tonight, 8 ET. Back-to-back; Cade day-to-day (knee), New Orleans without Murphy and Murray. DET -4.5.",
       "sources": [
         {
           "title": "ESPN game page",
