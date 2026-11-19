@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-11-17T23:06:02-05:00",
+  "updated": "2026-11-18T22:40:00-05:00",
   "games": [
+    {
+      "id": "g20261118",
+      "date": "2026-11-18",
+      "phase": "Regular season",
+      "home": false,
+      "venue": "Smoothie King Center, New Orleans",
+      "attendance": 16779,
+      "opp": {
+        "abbr": "NO",
+        "name": "New Orleans Pelicans",
+        "short": "Pelicans",
+        "score": 109,
+        "quarters": [
+          31,
+          29,
+          26,
+          23
+        ]
+      },
+      "det": {
+        "score": 122,
+        "quarters": [
+          31,
+          36,
+          25,
+          30
+        ]
+      },
+      "result": "W",
+      "record": "10-4",
+      "headline": "Pistons shoot 17 threes, beat Pelicans without Cade",
+      "dek": "Detroit hit 17 of 32 from deep, got 20 from John Collins and led by as many as 19 in a 122-109 win in New Orleans.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "John Collins",
+          "line": "20 PTS · 7 REB · 4 3PM",
+          "sub": "6-for-10 with 4-of-6 from three in 30 minutes, +11",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Javonte Green",
+          "line": "18 PTS · 7 REB · 2 STL",
+          "sub": "7-for-12; his three at 6:16 of the second was the last lead change"
+        },
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "17 PTS · 9 AST · 3 3PM",
+          "sub": "Game-best +12 in 36 minutes, with 4 turnovers"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "17 PTS · 7 REB · 2 BLK",
+          "sub": "7-for-9 in 20 minutes off the bench"
+        },
+        {
+          "team": "NO",
+          "name": "Zion Williamson",
+          "line": "24 PTS · 7 REB · 4 OREB",
+          "sub": "9-for-14, but New Orleans was outscored by 10 with him on the floor"
+        },
+        {
+          "team": "NO",
+          "name": "Jordan Poole",
+          "line": "22 PTS · 5 AST · 2 STL",
+          "sub": "Perfect 9-for-9 at the line off the bench"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's scorers",
+          "text": "Collins' 20 didn't crack tonight's top eight: Donovan Mitchell and Shai Gilgeous-Alexander led with 34 each, then Cooper Flagg with 33. Cade Cunningham's 52 still tops this week's lines."
+        },
+        {
+          "label": "Dimes",
+          "text": "Jenkins' 9 assists tied James Harden, Giannis Antetokounmpo and Josh Giddey for third among tonight's games so far, behind Franz Wagner and Jalen Johnson (11 each)."
+        },
+        {
+          "label": "Season series",
+          "text": "First meeting of the season; ESPN lists Detroit up 1-0 in the regular-season series."
+        }
+      ],
+      "talkingPoints": [
+        "No Cade, no Duren, no Robinson, no Prince, no Holland, and we still won by 13.",
+        "17 threes on 32 tries. That's 53 percent from deep.",
+        "We never trailed after the middle of the second quarter.",
+        "Paul Reed was 7-for-9 in 20 minutes. Quiet great night.",
+        "Jordan Poole went 9-for-9 at the line and it still wasn't close.",
+        "21-9 on the break, and up by 19 with five minutes to go."
+      ],
+      "notable": [
+        {
+          "stat": "17-32",
+          "label": "Pistons from three",
+          "note": "53%; New Orleans was 11-for-28"
+        },
+        {
+          "stat": "21-9",
+          "label": "Fast-break points",
+          "note": "Detroit ran all night"
+        },
+        {
+          "stat": "19",
+          "label": "Biggest Detroit lead",
+          "note": "At 5:17 of the fourth"
+        },
+        {
+          "stat": "29-23",
+          "label": "Assists",
+          "note": "Jenkins had 9, Huerter 7"
+        },
+        {
+          "stat": "9-9",
+          "label": "Poole at the line",
+          "note": "Part of his 22 off the bench"
+        },
+        {
+          "stat": "7",
+          "label": "Pistons in double figures",
+          "note": "Collins 20, Green 18, Jenkins and Reed 17, Huerter 11, Joe 11, Thompson 10"
+        }
+      ],
+      "story": [
+        "The first quarter ended 31-31, but Detroit pulled away in the second, scoring 36 and closing the half on an 8-0 run that made it 57-48 by the 3:21 mark. Javonte Green's three with 6:16 left in the quarter was the last lead change, and the Pistons took a 67-60 lead to the break despite Zion Williamson's dunk at the horn.",
+        "Detroit led 79-72 by 5:41 of the third and led 92-86 after three, then Green's dunk at 9:10 of the fourth made it 101-88 and the lead reached 19 at 5:17. Technical fouls on Jeremiah Fears and Ausar Thompson were the main drama late.",
+        "Collins led six Pistons in double figures with 20, Green had 18 and Jenkins and Reed each scored 17. Williamson scored 24 and Poole 22 for the Pelicans. Detroit won without Cade Cunningham (right knee soreness), Jalen Duren, Duncan Robinson, Taurean Prince and Ronald Holland II."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "41-77 (53%)",
+          "opp": "37-81 (46%)"
+        },
+        {
+          "label": "3PT",
+          "det": "17-32 (53%)",
+          "opp": "11-28 (39%)"
+        },
+        {
+          "label": "FT",
+          "det": "23-27 (85%)",
+          "opp": "24-28 (86%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "38",
+          "opp": "37"
+        },
+        {
+          "label": "Assists",
+          "det": "29",
+          "opp": "23"
+        },
+        {
+          "label": "Steals",
+          "det": "7",
+          "opp": "6"
+        },
+        {
+          "label": "Blocks",
+          "det": "5",
+          "opp": "3"
+        },
+        {
+          "label": "Turnovers",
+          "det": "15",
+          "opp": "14"
+        },
+        {
+          "label": "Paint pts",
+          "det": "48",
+          "opp": "52"
+        }
+      ],
+      "share": "Pistons 122, Pelicans 109. 17 threes, Collins 20, Green 18, Jenkins 17 and 9 ast, all without Cade. DET moves to 10-4.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401910013"
+        }
+      ]
+    },
     {
       "id": "g20261117",
       "date": "2026-11-17",
@@ -223,38 +408,38 @@ window.PISTONS_RECAPS = {
         {
           "team": "DET",
           "name": "Cade Cunningham",
-          "line": "33 PTS \u00b7 8 AST \u00b7 14-14 FT",
+          "line": "33 PTS · 8 AST · 14-14 FT",
           "sub": "Perfect at the line in 36 minutes, two nights after his 52-point game in Washington",
           "badge": "Top night"
         },
         {
           "team": "DET",
           "name": "Kevin Huerter",
-          "line": "20 PTS \u00b7 7 AST \u00b7 3 BLK",
+          "line": "20 PTS · 7 AST · 3 BLK",
           "sub": "9-for-15 off the bench in a team-high 38 minutes"
         },
         {
           "team": "DET",
           "name": "Ausar Thompson",
-          "line": "10 PTS \u00b7 8 REB \u00b7 5 AST",
+          "line": "10 PTS · 8 REB · 5 AST",
           "sub": "5-for-8 with 2 steals and 2 blocks; the only Detroit starter with a positive plus-minus (+5) in 18 foul-limited minutes"
         },
         {
           "team": "DET",
           "name": "Paul Reed",
-          "line": "9 PTS \u00b7 9 REB \u00b7 5 OREB",
+          "line": "9 PTS · 9 REB · 5 OREB",
           "sub": "Led an offensive-rebounding edge of 21-13 off the bench"
         },
         {
           "team": "MIA",
           "name": "Giannis Antetokounmpo",
-          "line": "34 PTS \u00b7 14 REB \u00b7 8 AST",
+          "line": "34 PTS · 14 REB · 8 AST",
           "sub": "13-for-17 from the floor with 3 blocks; his layup at 6:33 of the second was the game's last lead change"
         },
         {
           "team": "MIA",
           "name": "Klay Thompson",
-          "line": "26 PTS \u00b7 6-11 3PT",
+          "line": "26 PTS · 6-11 3PT",
           "sub": "10-for-17 in only 20 minutes; Bam Adebayo added 20 and Davion Mitchell 15 with 9 assists"
         }
       ],
@@ -412,38 +597,38 @@ window.PISTONS_RECAPS = {
         {
           "team": "DET",
           "name": "Cade Cunningham",
-          "line": "52 PTS \u00b7 11 AST \u00b7 0 TO",
+          "line": "52 PTS · 11 AST · 0 TO",
           "sub": "16-for-25 from the floor and 17-for-18 at the line in 48 minutes; scored 12 of Detroit's 23 overtime points",
           "badge": "Top night"
         },
         {
           "team": "DET",
           "name": "Ausar Thompson",
-          "line": "17 PTS \u00b7 11 REB \u00b7 11 AST",
+          "line": "17 PTS · 11 REB · 11 AST",
           "sub": "Triple-double with 3 steals, 3 blocks and 5 offensive rebounds, including two putbacks in overtime"
         },
         {
           "team": "DET",
           "name": "Paul Reed",
-          "line": "13 PTS \u00b7 11 REB \u00b7 +25",
+          "line": "13 PTS · 11 REB · +25",
           "sub": "Double-double off the bench in 38 minutes, with 5 offensive boards and the best plus-minus on the floor"
         },
         {
           "team": "DET",
           "name": "Daniss Jenkins",
-          "line": "21 PTS \u00b7 3-5 3PT \u00b7 6-6 FT",
+          "line": "21 PTS · 3-5 3PT · 6-6 FT",
           "sub": "6-for-11 shooting and 2 steals in 42 minutes before fouling out with 15.7 seconds left in the second overtime"
         },
         {
           "team": "WSH",
           "name": "Trae Young",
-          "line": "37 PTS \u00b7 14 AST \u00b7 17-17 FT",
+          "line": "37 PTS · 14 AST · 17-17 FT",
           "sub": "Perfect at the line and hit the 29-foot three with 1.1 seconds left that sent it to overtime"
         },
         {
           "team": "WSH",
           "name": "Alex Sarr",
-          "line": "30 PTS \u00b7 12-14 FG \u00b7 4-6 3PT",
+          "line": "30 PTS · 12-14 FG · 4-6 3PT",
           "sub": "Missed only two shots in 44 minutes, with 9 rebounds; Anthony Davis also had 30 and 15 rebounds"
         }
       ],
@@ -597,38 +782,38 @@ window.PISTONS_RECAPS = {
         {
           "team": "DET",
           "name": "John Collins",
-          "line": "24 PTS \u00b7 10 REB \u00b7 9-13 FG",
+          "line": "24 PTS · 10 REB · 9-13 FG",
           "sub": "Double-double in 28 minutes on 9-for-13 shooting, with 3 offensive boards and a +12",
           "badge": "Top night"
         },
         {
           "team": "DET",
           "name": "Daniss Jenkins",
-          "line": "22 PTS \u00b7 8 AST \u00b7 4 STL",
+          "line": "22 PTS · 8 AST · 4 STL",
           "sub": "Perfect 6-for-6 at the line and 4 steals in 36 minutes as the starting point guard"
         },
         {
           "team": "DET",
           "name": "Duncan Robinson",
-          "line": "22 PTS \u00b7 4-8 3PT \u00b7 0 TO",
+          "line": "22 PTS · 4-8 3PT · 0 TO",
           "sub": "6-for-11 overall and 6-for-7 at the line in 34 minutes, a +12"
         },
         {
           "team": "DET",
           "name": "Cade Cunningham",
-          "line": "17 PTS \u00b7 7 AST \u00b7 0 TO",
+          "line": "17 PTS · 7 AST · 0 TO",
           "sub": "Only 27 minutes with 5 fouls, but no turnovers and a +11"
         },
         {
           "team": "WSH",
           "name": "Anthony Davis",
-          "line": "44 PTS \u00b7 13 REB \u00b7 16-21 FG",
+          "line": "44 PTS · 13 REB · 16-21 FG",
           "sub": "10-for-11 at the line and 5 offensive rebounds in 34 minutes, the most points of anyone in tonight's games"
         },
         {
           "team": "WSH",
           "name": "AJ Dybantsa",
-          "line": "21 PTS \u00b7 8 REB \u00b7 5 TO",
+          "line": "21 PTS · 8 REB · 5 TO",
           "sub": "8-for-17 from the floor in 37 minutes; also picked up a first-quarter technical"
         }
       ],
@@ -782,38 +967,38 @@ window.PISTONS_RECAPS = {
         {
           "team": "DET",
           "name": "Daniss Jenkins",
-          "line": "31 PTS \u00b7 8-15 3PT \u00b7 +22",
+          "line": "31 PTS · 8-15 3PT · +22",
           "sub": "Hit 8 of 15 threes and all 5 free throws in 32 minutes off the bench; second-most points of any player in tonight's games"
         },
         {
           "team": "DET",
           "name": "Kevin Huerter",
-          "line": "24 PTS \u00b7 5 BLK \u00b7 5 AST",
+          "line": "24 PTS · 5 BLK · 5 AST",
           "sub": "9-for-14 shooting with 4 threes and 5 blocks in 35 minutes, and the layup that made it 119-116 with 2.6 seconds left"
         },
         {
           "team": "DET",
           "name": "Cade Cunningham",
-          "line": "14 PTS \u00b7 8 AST \u00b7 4 TO",
+          "line": "14 PTS · 8 AST · 4 TO",
           "sub": "6-for-15 from the floor and 1-for-6 on threes in 38 minutes; a team-worst -15 even as he made two late baskets to keep it close"
         },
         {
           "team": "DET",
           "name": "Ausar Thompson",
-          "line": "11 REB \u00b7 7 PTS \u00b7 3 AST",
+          "line": "11 REB · 7 PTS · 3 AST",
           "sub": "Tied for second among tonight's rebounders with 11 in 24 minutes, but a -16 in the plus-minus"
         },
         {
           "team": "LAL",
           "name": "Austin Reaves",
-          "line": "43 PTS \u00b7 14-27 FG \u00b7 11-11 FT",
+          "line": "43 PTS · 14-27 FG · 11-11 FT",
           "sub": "Game-high 43 with 4 threes and a perfect 11-for-11 at the line, including both free throws that closed it out",
           "badge": "Top night"
         },
         {
           "team": "LAL",
           "name": "Walker Kessler",
-          "line": "16 REB \u00b7 12 PTS \u00b7 3 BLK",
+          "line": "16 REB · 12 PTS · 3 BLK",
           "sub": "7 offensive rebounds among his 16 boards in 29 minutes, the most of anyone in tonight's games"
         }
       ],
