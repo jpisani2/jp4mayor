@@ -350,6 +350,161 @@ const SITE = {
           note: "The west side: about 550 map results trimmed to about 190 real candidates, each checked for happy-hour times, deals and business hours.",
           photos: [] }
       ]
+    },
+
+    {
+      id: "weather",
+      page: true,
+      title: "Weather Almanac",
+      year: "2026",
+      status: "In progress",
+      summary: "A weather app for any place that puts the forecast next to the record: radar, alerts, four forecast models side by side, and what this date has looked like every year since 1940.",
+      tags: ["code"],
+      image: "",
+      about: [
+        "Most weather apps give one forecast and a radar. Weather Almanac pulls from the sources forecasters actually use and puts them on one page for any place I search. National Weather Service alerts always sit at the top. Below that: the next 48 hours, a 16-day outlook with each day's normal range behind it, a radar loop, the latest reading from the nearest weather station, the atmosphere, sun and moon times, and air quality and UV.",
+        "Model showdown lines up four global forecast models (ECMWF, GFS, ICON and GEM) plus an ensemble, and says in plain words whether they agree or already disagree today. The bigger picture shows NOAA's national outlook maps, and Forecast discussion is the local Weather Service office's own write-up of what they're thinking.",
+        "The history is the almanac part. It downloads the daily record for that spot back to 1940 and shows today's date in every one of those years, plus how this year so far compares with the 1991–2020 normal.",
+        "At a glance rates the conditions for a bike ride and for flying a small drone. Sections can be hidden or reordered, and hidden ones don't download anything. It's plain JavaScript with no server, all the data comes from free public sources (Open-Meteo, the National Weather Service, NOAA and Iowa State's radar archive), and it goes on the home screen like an app."
+      ],
+      facts: [
+        { label: "Started", value: "October 2026" },
+        { label: "Places", value: "Anywhere, with Weather Service extras in the U.S." },
+        { label: "History", value: "Back to 1940" },
+        { label: "Built with", value: "JavaScript, no server" }
+      ],
+      links: [
+        { label: "Open the app", url: "weather/" }
+      ],
+      log: [
+        { date: "2026-10-18", title: "First version",
+          note: "Forecast, radar, alerts, four models side by side, and the daily record back to 1940.",
+          photos: [] }
+      ]
+    },
+
+    {
+      id: "scores",
+      page: true,
+      title: "Scores",
+      year: "2026",
+      status: "In progress",
+      summary: "Scores and schedules for my teams in one list, live while games are on, plus every score in the NBA, NFL, NHL, MLB and college football and basketball.",
+      tags: ["code", "sports"],
+      image: "",
+      about: [
+        "Scores is one scrolling list for the teams I pick: every game from the last 15 days and the next 15, finished, live and upcoming, with a Now button that jumps straight to what's on. Teams can come from the NBA, NFL, NHL, MLB, college football and men's college basketball. Live games refresh every 30 seconds.",
+        "All scores is the whole slate for any day, league by league, with Top 25 and Big Ten filters for college. Leagues that are in season come first.",
+        "Tapping a game opens the details: box score, play-by-play, leaders, team stats, win probability, the matchup predictor before the game, recent results for both teams, and game info like where it's on TV.",
+        "Everything comes from ESPN's public scores feed, loaded fresh each time the app opens, so there's no server and nothing to keep updated. My teams are saved on the phone, it has light and dark modes, and it goes on the home screen like an app."
+      ],
+      facts: [
+        { label: "Started", value: "October 2026" },
+        { label: "Leagues", value: "NBA, NFL, NHL, MLB, college football and basketball" },
+        { label: "Live games", value: "Refresh every 30 seconds" },
+        { label: "Built with", value: "JavaScript, ESPN's public feed" }
+      ],
+      links: [
+        { label: "Open the app", url: "scores/" }
+      ],
+      log: [
+        { date: "2026-10-22", title: "First version",
+          note: "My teams feed, all scores by league, and full game details.",
+          photos: [] }
+      ]
+    },
+
+    {
+      id: "brainwave",
+      page: true,
+      title: "Brainwave",
+      year: "2026",
+      status: "In progress",
+      summary: "Ten brain teasers for the morning, from Sudoku and nonograms to Make 24 and Nim, each with its own difficulty levels, hints, stars and a daily streak.",
+      tags: ["code", "games"],
+      image: "",
+      about: [
+        "Brainwave is a set of ten puzzles to do with coffee. Six are logic puzzles: Lights Out, Code Breaker, Nonogram, Binary Grid, Sudoku and River Crossing. Four are number puzzles: Make 24, What Comes Next, Water Jugs and Nim.",
+        "Every puzzle except River Crossing is made fresh each time, with four or five difficulty levels, from a 6×6 mini Sudoku up to fiendish. River Crossing is a pack of seven hand-built levels, starting with the wolf, the goat and the cabbage. Nim is played against the computer, and on the top levels it doesn't make mistakes.",
+        "Each solve earns one to three stars, based on time or number of moves against a par for that level. Using a hint caps it at two. Hints explain themselves where they can: the Sudoku hint says why a number goes where it does instead of just filling it in. Solving any puzzle keeps the daily streak going, a calendar shows which days I played, and stats keep the best time and fewest moves for each puzzle.",
+        "It's plain HTML, CSS and JavaScript with no server. Progress stays on the phone, it works offline, and it goes on the home screen like an app."
+      ],
+      facts: [
+        { label: "Started", value: "November 2026" },
+        { label: "Puzzles", value: "10, six logic and four numbers" },
+        { label: "Levels", value: "Up to five per puzzle" },
+        { label: "Built with", value: "JavaScript, no server" }
+      ],
+      links: [
+        { label: "Open the app", url: "games/" }
+      ],
+      log: [
+        { date: "2026-11-05", title: "First version",
+          note: "Ten puzzles, with stars, hints, stats and a daily streak.",
+          photos: [] }
+      ]
+    },
+
+    {
+      id: "fairwayforge",
+      page: true,
+      title: "Fairway Forge",
+      year: "2026",
+      status: "In progress",
+      summary: "A golf game where I design the holes myself, play them in 3D on my phone, and string the favorites together into courses.",
+      tags: ["code", "games"],
+      image: "",
+      about: [
+        "Fairway Forge is a hole designer and a golf game in one. I paint the hole the way a course architect would sketch it: tee boxes, fairway, rough, fescue, bunkers, pot bunkers, water, creeks, cart paths and out of bounds. Then I shape the ground with elevation, side slopes, tiered greens and rolling contours, place the pin, and drop in trees, plants, rocks and course furniture like benches, ball washers and a wooden bridge. If I don't feel like drawing, it can generate a par 3, 4 or 5 and I can edit from there.",
+        "Six climates set the look: parkland, alpine, desert, tropical, links and autumn, each with its own grass, sky and trees (palms in the tropics, saguaros and Joshua trees in the desert). Time of day runs from early morning to golden hour, and wind from calm to a gale.",
+        "Then it plays the hole in 3D. There are 14 clubs from driver to putter, seven shot types including draw, fade, punch, chip and run, and flop, and a swing meter. The ball flight accounts for launch, spin and wind, and the ball bounces and rolls differently off fairway, rough, sand and green. Three difficulty levels change how forgiving the swing meter is and how much help there is reading putts.",
+        "Favorite holes go into a collection, and up to 18 of them can be routed into a course with scorecards and stats. Random Round makes up holes on the spot to play. Holes and courses can be shared with a link. It's built on Three.js with no build step and no server, everything stays on the phone, and it goes on the home screen like an app."
+      ],
+      facts: [
+        { label: "Started", value: "November 2026" },
+        { label: "Climates", value: "6" },
+        { label: "Clubs", value: "14, driver to putter" },
+        { label: "Built with", value: "JavaScript, Three.js" }
+      ],
+      links: [
+        { label: "Open the game", url: "golf/" }
+      ],
+      log: [
+        { date: "2026-11-18", title: "First version",
+          note: "The hole designer, 3D play, collections, courses up to 18 holes, and share links.",
+          photos: [] }
+      ]
+    },
+
+    {
+      id: "playmaker",
+      page: true,
+      title: "Playmaker",
+      year: "2026",
+      status: "In progress",
+      summary: "Draw up a football play on my phone, then run it against a simulated defense and see if it moves the chains.",
+      tags: ["code", "games"],
+      image: "",
+      about: [
+        "Playmaker is a play designer and a football game. I start from one of 13 plays, from HB Dive and Power O to Mesh, Smash and Four Verticals, or from a blank field. Drag players into place, tap one to give him a job, and draw his route point by point. Numbered badges set the QB's read order, and one tap flips the whole play to the other side.",
+        "The defense picks a front (4-3, 3-4, nickel or dime), a coverage from Cover 0 through Cover 4 plus 2-Man, and a blitz, based on my personnel and the down and distance. I see the alignment before the snap, and the call is revealed after the play. I can also set the defense myself to see how a play holds up against one look. On harder levels defenders react faster, shed blocks sooner, tackle better and jump more routes.",
+        "On pass plays I tap a receiver to throw, and a ring around each one shows who's open. Holding and dragging scrambles the QB or steers the runner after a catch or handoff. Or I switch to the AI QB and watch it work through the reads on its own. Downs, distance and field position carry over from play to play, so every drive is a real drive, with a play-by-play log, slow-motion replays, and Run it back to try the same snap again.",
+        "Plays save to a playbook and can be shared as a code that someone else pastes in. It's one HTML file with no server, works offline, and goes on the home screen like an app."
+      ],
+      facts: [
+        { label: "Started", value: "November 2026" },
+        { label: "Plays", value: "13 to start from, plus my own" },
+        { label: "Defense", value: "4 fronts, 6 coverages, 4 blitzes" },
+        { label: "Built with", value: "One HTML file, no server" }
+      ],
+      links: [
+        { label: "Open the game", url: "playmaker/" }
+      ],
+      log: [
+        { date: "2026-11-18", title: "First version",
+          note: "13 starting plays, a play designer, an AI defense with three difficulty levels, and full drives.",
+          photos: [] }
+      ]
     }
 
     /* House remodel: hidden until there's something to show. To bring it
