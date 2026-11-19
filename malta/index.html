@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Malta &amp; Gozo 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lib/leaflet.css">
+<style>
+:root{
+  /* Layout idea: limestone-gold type over deep harbour blue; full-bleed photo rows per day, map as the trip overview. */
+  --sea:#0c1822;
+  --deep:#13242f;
+  --line:#22394a;
+  --stone:#e2c48d;
+  --foam:#eef0ea;
+  --mist:#9badb8;
+  --teal:#56b8c3;
+  --rowh:230px;
+  --display:"Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --body:"Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--sea);color:var(--foam);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:var(--stone)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--stone);outline-offset:2px}
+
+/* Hero */
+.hero{position:relative;min-height:min(62vh,560px);display:flex;align-items:flex-end;overflow:hidden;background:var(--deep)}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,24,34,0) 30%,rgba(12,24,34,.55) 62%,var(--sea) 100%)}
+.hero-text{position:relative;z-index:1;padding:0 clamp(16px,5vw,64px) 28px;max-width:1100px}
+.eyebrow{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--stone);font-weight:600}
+h1{font-family:var(--display);font-weight:500;font-size:clamp(2.6rem,7vw,5.2rem);line-height:1;margin:.25em 0 .2em;text-wrap:balance}
+h1 em{font-style:italic;color:var(--stone)}
+.lede{max-width:60ch;color:#dfe3dd;margin:0}
+.stats{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:18px;font-variant-numeric:tabular-nums;color:var(--mist);font-size:.92rem}
+.stats b{color:var(--foam);font-weight:600;font-size:1.05rem;margin-right:4px}
+
+/* Nav */
+nav.days{position:sticky;top:0;z-index:20;background:rgba(12,24,34,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.days-inner{display:flex;gap:6px;overflow-x:auto;padding:10px clamp(16px,5vw,64px);scrollbar-width:none}
+.days-inner::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 12px;font-size:.85rem;color:var(--mist);cursor:pointer;white-space:nowrap}
+.chip:hover{border-color:var(--stone);color:var(--foam)}
+.chip.on{background:var(--stone);color:#1b1408;border-color:var(--stone)}
+.chip.map{color:var(--teal);border-color:#2c5560}
+.chip.all{color:var(--stone);border-color:#5a4a2c}
+.hero-btn{margin-top:20px;display:inline-flex;align-items:center;gap:10px;background:var(--stone);color:#1b1408;border:0;border-radius:999px;padding:10px 20px;font-weight:600;font-size:.95rem;cursor:pointer}
+.hero-btn:hover{background:#ecd3a3}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px 12px;margin-top:20px}
+.hero-actions .hero-btn{margin-top:0}
+.hero-link{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--stone);color:var(--stone);background:rgba(12,24,34,.45);border-radius:999px;padding:9px 19px;font-weight:600;font-size:.95rem;text-decoration:none}
+.hero-link:hover{background:var(--stone);color:#1b1408}
+.hero-link small{font-weight:400;color:inherit;opacity:.8;font-size:.82rem}
+a.chip{text-decoration:none}
+.chip.tn{color:var(--stone);border-color:#5a4a2c;font-style:italic;font-family:var(--display)}
+.chip.tn:hover{border-color:var(--stone)}
+
+section{padding:0 clamp(16px,5vw,64px)}
+h2{font-family:var(--display);font-weight:500;font-size:clamp(1.7rem,3.6vw,2.4rem);line-height:1.1;margin:0;text-wrap:balance}
+
+/* Map */
+#map-section{padding-top:44px;padding-bottom:12px}
+.map-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px;margin-bottom:16px}
+.map-head p{margin:0;color:var(--mist);max-width:62ch;font-size:.95rem}
+.map-wrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:stretch}
+#map{height:560px;border-radius:6px;border:1px solid var(--line);background:#0f2533}
+.leaflet-container{background:#0f2533;font-family:var(--body)}
+.place-panel{background:var(--deep);border:1px solid var(--line);border-radius:6px;display:flex;flex-direction:column;min-height:0;height:560px}
+.panel-head{padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.panel-head h3{margin:0;font-family:var(--display);font-weight:500;font-size:1.25rem;line-height:1.2}
+.panel-head p{margin:2px 0 0;color:var(--mist);font-size:.85rem}
+.panel-body{overflow-y:auto;padding:10px 12px 14px;flex:1}
+.place-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.place-list .dayhdr{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--stone);margin:10px 4px 4px}
+.place-list button{width:100%;text-align:left;background:none;border:0;border-radius:4px;padding:6px 8px;display:flex;justify-content:space-between;gap:10px;cursor:pointer;color:var(--foam);font-size:.92rem}
+.place-list button:hover{background:#1b3242}
+.place-list .n{color:var(--mist);font-variant-numeric:tabular-nums}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.thumbs button{padding:0;border:0;background:var(--sea);border-radius:3px;overflow:hidden;cursor:pointer;aspect-ratio:1}
+.thumbs img{width:100%;height:100%;object-fit:cover;transition:opacity .2s}
+.thumbs button:hover img{opacity:.8}
+.back{background:none;border:0;color:var(--teal);cursor:pointer;padding:0;font-size:.85rem;margin-bottom:6px}
+.map-note{color:var(--mist);font-size:.8rem;margin:10px 0 0}
+.pin-label{background:none;border:0;box-shadow:none;color:var(--foam);font-size:12px;font-weight:600;text-shadow:0 1px 3px #000,0 0 6px #000;padding:0}
+.pin-label::before{display:none}
+.town{color:#7d8f73;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;white-space:nowrap;pointer-events:none;text-shadow:0 0 4px #e6d3ab}
+.leaflet-tooltip.place-tip{background:var(--deep);color:var(--foam);border:1px solid var(--line);border-radius:4px;font-family:var(--body);box-shadow:none}
+.leaflet-tooltip.place-tip::before{display:none}
+.leaflet-control-attribution{background:rgba(12,24,34,.75)!important;color:var(--mist)!important;font-size:10px}
+.leaflet-control-attribution a{color:var(--mist)!important}
+.leaflet-bar a{background:var(--deep);color:var(--foam);border-color:var(--line)}
+.leaflet-bar a:hover{background:#1b3242}
+
+/* Gallery */
+.day{padding-top:56px}
+.day-head{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;align-items:end;margin-bottom:16px;max-width:1100px}
+.day-num{font-family:var(--display);font-size:clamp(2.4rem,5vw,3.6rem);line-height:.85;color:var(--stone);grid-row:span 2;font-variant-numeric:lining-nums}
+.day-date{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mist);font-weight:600}
+.day-places{grid-column:1/-1;color:var(--mist);font-size:.9rem;margin-top:4px}
+.rows{display:flex;flex-wrap:wrap;gap:6px}
+.rows::after{content:"";flex-grow:999}
+.ph{width:calc(var(--ar) * var(--rowh));position:relative;margin:0;background:var(--deep);border-radius:3px;overflow:hidden;cursor:zoom-in;padding:0;border:0;display:block}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.ph .sp{display:block}
+.ph:hover img{transform:scale(1.03)}
+.ph figcaption{position:absolute;left:0;right:0;bottom:0;padding:22px 10px 8px;font-size:.82rem;line-height:1.3;text-align:left;background:linear-gradient(180deg,transparent,rgba(5,12,18,.85));opacity:0;transition:opacity .25s}
+.ph:hover figcaption,.ph:focus-visible figcaption{opacity:1}
+@media (hover:none){.ph figcaption{opacity:1;font-size:.75rem}}
+
+footer{padding:64px clamp(16px,5vw,64px) 48px;color:var(--mist);font-size:.85rem;border-top:1px solid var(--line);margin-top:72px}
+footer p{margin:0 0 4px;max-width:70ch}
+
+/* Lightbox */
+.lb{position:fixed;inset:0;z-index:1000;background:rgba(6,12,17,.96);display:none;grid-template-rows:1fr auto;}
+.lb.open{display:grid}
+.lb-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:0;padding:16px 64px}
+.lb-stage img{max-width:100%;max-height:100%;object-fit:contain;border-radius:2px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.lb-info{padding:12px clamp(16px,5vw,64px) 18px;display:flex;flex-wrap:wrap;gap:6px 24px;align-items:baseline;justify-content:space-between;border-top:1px solid var(--line);background:var(--sea)}
+.lb-cap{font-family:var(--display);font-size:clamp(1.05rem,2.2vw,1.4rem);line-height:1.3;max-width:60ch}
+.lb-meta{color:var(--mist);font-size:.85rem;font-variant-numeric:tabular-nums;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.lb-meta button{background:none;border:1px solid #2c5560;color:var(--teal);border-radius:999px;padding:3px 10px;cursor:pointer;font-size:.8rem}
+.lb-btn{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:64px;border:0;background:rgba(19,36,47,.6);border-radius:4px;cursor:pointer;font-size:1.6rem;color:var(--foam)}
+.lb-btn:hover{background:var(--deep)}
+.lb-prev{left:10px}.lb-next{right:10px}
+.lb-close{position:absolute;top:10px;right:10px;width:44px;height:44px;border:0;border-radius:50%;background:rgba(19,36,47,.7);cursor:pointer;font-size:1.3rem;z-index:2}
+.lb-count{position:absolute;top:18px;left:18px;color:var(--mist);font-size:.8rem;font-variant-numeric:tabular-nums;max-width:calc(50% - 40px)}
+.lb-play{position:absolute;top:10px;right:62px;height:44px;padding:0 16px;border:0;border-radius:999px;background:rgba(19,36,47,.7);cursor:pointer;font-size:.85rem;z-index:2;display:flex;align-items:center;gap:8px}
+.lb-play:hover,.lb-close:hover{background:var(--deep)}
+.lb-play.on{background:var(--stone);color:#1b1408}
+.lb-daytag{position:absolute;top:66px;left:50%;transform:translateX(-50%);background:rgba(19,36,47,.9);border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-size:.85rem;white-space:nowrap;opacity:0;transition:opacity .4s;pointer-events:none;z-index:2}
+.lb-daytag b{color:var(--stone);font-weight:600;margin-right:6px}
+.lb-daytag.show{opacity:1}
+.lb-bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(34,57,74,.6)}
+.lb-bar i{display:block;height:100%;background:var(--stone);width:0;transition:width .3s}
+
+@media (max-width:860px){
+  :root{--rowh:120px}
+  .map-wrap{grid-template-columns:1fr}
+  #map{height:420px}
+  .place-panel{height:auto;max-height:420px}
+  .lb-stage{padding:8px}
+  .lb-btn{width:38px;height:52px;background:rgba(19,36,47,.45)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <img id="hero-img" src="img/full/2025-09-28_111353_119.jpg" alt="Turquoise water of Xlendi Bay below limestone cliffs">
+  <div class="hero-text">
+    <div class="eyebrow">Gozo &middot; Comino &middot; Malta</div>
+    <h1>Malta <em>&amp;</em> Gozo</h1>
+    <p class="lede">Twelve days in September 2025: a farmhouse on Gozo, limestone cliffs and turquoise coves, a day among Valletta's bastions, and a last night by the sea in Sliema.</p>
+    <div class="stats" id="stats"></div>
+    <div class="hero-actions">
+      <button class="hero-btn" type="button" id="view-all">&#9654;&ensp;Browse all photos</button>
+      <a class="hero-link" href="then-and-now/index.html">Then &amp; Now <small>9 places, a century apart</small> &rarr;</a>
+    </div>
+  </div>
+</header>
+
+<nav class="days" aria-label="Jump to a day">
+  <div class="days-inner" id="daynav"></div>
+</nav>
+
+<section id="map-section" aria-labelledby="map-title">
+  <div class="map-head">
+    <h2 id="map-title">Where the photos were taken</h2>
+    <p>Pick a place on the map or in the list to see its photos.</p>
+  </div>
+  <div class="map-wrap">
+    <div id="map" role="region" aria-label="Map of Malta and Gozo with photo locations"></div>
+    <aside class="place-panel" aria-live="polite">
+      <div class="panel-head" id="panel-head"></div>
+      <div class="panel-body" id="panel-body"></div>
+    </aside>
+  </div>
+  <p class="map-note" id="map-note"></p>
+</section>
+
+<main id="gallery"></main>
+
+<footer>
+  <p>Photographed on an iPhone 16 and a DJI action camera. A few frames on the beach days are stills pulled from the 4K video.</p>
+  <p>See nine of these places beside photographs from a century ago in <a href="then-and-now/index.html">Then &amp; Now</a>.</p>
+  <p>Coastline: geoBoundaries (CC BY 4.0). Map drawn with Leaflet.</p>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <div class="lb-stage" id="lb-stage">
+    <span class="lb-count" id="lb-count"></span>
+    <img id="lb-img" alt="">
+    <button class="lb-btn lb-prev" id="lb-prev" aria-label="Previous photo">&#8249;</button>
+    <button class="lb-btn lb-next" id="lb-next" aria-label="Next photo">&#8250;</button>
+    <button class="lb-play" id="lb-play" type="button" aria-label="Start slideshow">&#9654; Slideshow</button>
+    <button class="lb-close" id="lb-close" aria-label="Close viewer">&#10005;</button>
+    <div class="lb-daytag" id="lb-daytag" aria-hidden="true"></div>
+    <div class="lb-bar" aria-hidden="true"><i id="lb-bar"></i></div>
+  </div>
+  <div class="lb-info">
+    <div class="lb-cap" id="lb-cap"></div>
+    <div class="lb-meta" id="lb-meta"></div>
+  </div>
+</div>
+
+<script src="lib/leaflet.js"></script>
+<script src="data.js"></script>
+<script>
+(async function(){
+  // data.js carries the same content as data.json + coast.json, so the page also works when opened straight from disk
+  const pre = window.MALTA_DATA;
+  const [data, coast] = pre ? [pre.data, pre.coast] : await Promise.all([
+    fetch('data.json').then(r=>r.json()),
+    fetch('coast.json').then(r=>r.json())
+  ]);
+  const photos = data.photos;
+  const DAYS = data.days;
+  const dayKeys = Object.keys(DAYS).sort();
+  const dayNo = d => dayKeys.indexOf(d)+1;
+  const fmtDate = d => new Date(d+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'long'});
+  photos.forEach((p,i)=>p.i=i);
+  // Every photo, in gallery order (day by day), for continuous browsing
+  const ALL = dayKeys.flatMap(d=>photos.filter(p=>p.day===d)).map(p=>p.i);
+
+  // Stats
+  const placeNames = [...new Set(photos.filter(p=>p.place).map(p=>p.key))];
+  document.getElementById('stats').innerHTML =
+    `<span><b>${dayKeys.length}</b>days</span><span><b>${photos.length}</b>photos</span><span><b>${placeNames.length}</b>places on the map</span><span><b>2</b>islands and a ferry ride</span>`;
+
+  // Day nav
+  const nav = document.getElementById('daynav');
+  const mapChip = document.createElement('button');
+  mapChip.className='chip map'; mapChip.textContent='Map';
+  mapChip.onclick=()=>document.getElementById('map-section').scrollIntoView({behavior:'smooth'});
+  nav.appendChild(mapChip);
+  const allChip = document.createElement('button');
+  allChip.className='chip all'; allChip.innerHTML='&#9654; All photos';
+  allChip.onclick=()=>openLB(ALL[0], ALL);
+  nav.appendChild(allChip);
+  const tnChip = document.createElement('a');
+  tnChip.className='chip tn'; tnChip.href='then-and-now/index.html'; tnChip.innerHTML='Then &amp; Now &rarr;';
+  nav.appendChild(tnChip);
+  document.getElementById('view-all').onclick=()=>openLB(ALL[0], ALL);
+  dayKeys.forEach(d=>{
+    if(!photos.some(p=>p.day===d)) return;
+    const b=document.createElement('button'); b.className='chip'; b.dataset.day=d;
+    b.textContent=`${new Date(d+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})} · ${DAYS[d]}`;
+    b.onclick=()=>document.getElementById('d'+d).scrollIntoView({behavior:'smooth'});
+    nav.appendChild(b);
+  });
+
+  // Gallery
+  const gal = document.getElementById('gallery');
+  dayKeys.forEach(d=>{
+    const ps = photos.filter(p=>p.day===d);
+    if(!ps.length) return;
+    const places=[...new Set(ps.filter(p=>p.place).map(p=>p.place))];
+    const sec=document.createElement('section'); sec.className='day'; sec.id='d'+d;
+    sec.innerHTML=`<div class="day-head"><div class="day-num">${String(dayNo(d)).padStart(2,'0')}</div>
+      <div class="day-date">${fmtDate(d)} · ${ps.length} photo${ps.length>1?'s':''}</div>
+      <h2>${DAYS[d]}</h2>
+      ${places.length?`<div class="day-places">${places.join(' · ')}</div>`:''}</div>`;
+    const rows=document.createElement('div'); rows.className='rows';
+    ps.forEach(p=>{
+      const ar=p.w/p.h;
+      const f=document.createElement('button'); f.className='ph';
+      f.style.flexGrow=ar*100; f.style.setProperty('--ar',ar);
+      f.setAttribute('aria-label', p.caption);
+      f.innerHTML=`<span class="sp" style="padding-bottom:${(1/ar*100).toFixed(3)}%"></span><img loading="lazy" src="img/grid/${p.id}.jpg" alt="${p.caption.replace(/"/g,'&quot;')}"><figcaption>${p.caption}</figcaption>`;
+      f.onclick=()=>openLB(p.i, ALL);
+      rows.appendChild(f);
+    });
+    sec.appendChild(rows); gal.appendChild(sec);
+  });
+
+  // Highlight current day chip
+  const chips=[...nav.querySelectorAll('.chip[data-day]')];
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){chips.forEach(c=>c.classList.toggle('on',c.dataset.day===e.target.id.slice(1)));const on=nav.querySelector('.chip.on'); if(on) on.scrollIntoView({block:'nearest',inline:'center'});}})},{rootMargin:'-45% 0px -50% 0px'});
+  document.querySelectorAll('.day').forEach(s=>io.observe(s));
+
+  // Lightbox
+  const lb=document.getElementById('lb'), lbImg=document.getElementById('lb-img');
+  let seq=[], pos=0, lastFocus=null, scope='', shownDay=null, playTimer=null, tagTimer=null;
+  const SLIDE_MS=4500;
+  const dayTag=document.getElementById('lb-daytag'), playBtn=document.getElementById('lb-play');
+  function show(){
+    const p=photos[seq[pos]];
+    lbImg.src=`img/full/${p.id}.jpg`; lbImg.alt=p.caption;
+    document.getElementById('lb-cap').textContent=p.caption;
+    document.getElementById('lb-count').textContent= scope ? `${scope} · ${pos+1} / ${seq.length}` : `${pos+1} / ${seq.length}`;
+    document.getElementById('lb-bar').style.width=`${(pos+1)/seq.length*100}%`;
+    const meta=document.getElementById('lb-meta');
+    meta.innerHTML=`<span>Day ${dayNo(p.day)} · ${fmtDate(p.day)} · ${p.time}</span>${p.place?`<span>${p.place}</span><button type="button" id="lb-map">Show on map</button>`:''}${scope?`<button type="button" id="lb-all">Continue through all photos</button>`:''}`;
+    const mb=document.getElementById('lb-map'); if(mb) mb.onclick=()=>{closeLB(); selectPlace(p.key,true);};
+    const ab=document.getElementById('lb-all'); if(ab) ab.onclick=()=>{ const cur=seq[pos]; seq=ALL; scope=''; pos=ALL.indexOf(cur); show(); };
+    if(p.day!==shownDay){
+      shownDay=p.day;
+      dayTag.innerHTML=`<b>Day ${dayNo(p.day)}</b>${DAYS[p.day]}`;
+      dayTag.classList.add('show'); clearTimeout(tagTimer);
+      tagTimer=setTimeout(()=>dayTag.classList.remove('show'),2200);
+    }
+    [seq[pos-1],seq[pos+1]].forEach(j=>{if(j!==undefined){const im=new Image(); im.src=`img/full/${photos[j].id}.jpg`;}});
+  }
+  function setPlay(on){
+    clearInterval(playTimer); playTimer=null;
+    if(on) playTimer=setInterval(()=>{ pos=(pos+1)%seq.length; show(); }, SLIDE_MS);
+    playBtn.classList.toggle('on',on);
+    playBtn.innerHTML= on ? '&#10074;&#10074; Pause' : '&#9654; Slideshow';
+    playBtn.setAttribute('aria-label', on ? 'Pause slideshow' : 'Start slideshow');
+  }
+  playBtn.onclick=()=>setPlay(!playTimer);
+  function openLB(i, list, label=''){ lastFocus=document.activeElement; seq=list; scope=label; shownDay=null; pos=list.indexOf(i); lb.classList.add('open'); document.body.style.overflow='hidden'; show(); document.getElementById('lb-close').focus(); }
+  function closeLB(){ setPlay(false); dayTag.classList.remove('show'); lb.classList.remove('open'); document.body.style.overflow=''; if(lastFocus) lastFocus.focus(); }
+  // Manual navigation restarts the slideshow timer so a photo never flips right after you land on it
+  const step=k=>{pos=(pos+k+seq.length)%seq.length; show(); if(playTimer) setPlay(true);};
+  document.getElementById('lb-prev').onclick=()=>step(-1);
+  document.getElementById('lb-next').onclick=()=>step(1);
+  document.getElementById('lb-close').onclick=closeLB;
+  document.getElementById('lb-stage').addEventListener('click',e=>{if(e.target.id==='lb-stage') closeLB();});
+  document.addEventListener('keydown',e=>{ if(!lb.classList.contains('open')) return;
+    if(e.key==='ArrowLeft') step(-1); else if(e.key==='ArrowRight') step(1); else if(e.key==='Escape') closeLB();
+    else if(e.key===' '){ e.preventDefault(); setPlay(!playTimer); } });
+  let tx=null; lb.addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+  lb.addEventListener('touchend',e=>{ if(tx===null) return; const dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>50) step(dx<0?1:-1); tx=null; });
+
+  // Map
+  const map=L.map('map',{zoomSnap:.25,scrollWheelZoom:false,attributionControl:true,minZoom:9,maxZoom:16,maxBounds:[[35.6,13.9],[36.3,14.9]]});
+  map.attributionControl.setPrefix(false).addAttribution('Coastline &copy; geoBoundaries');
+  map.on('click focus',()=>map.scrollWheelZoom.enable());
+  map.on('mouseout',()=>map.scrollWheelZoom.disable());
+  coast.forEach(ring=>L.polygon(ring.map(([x,y])=>[y,x]),{color:'#c9ac77',weight:1,fillColor:'#e6d3ab',fillOpacity:1,interactive:false}).addTo(map));
+  // Ferry routes
+  const ferry={color:'#56b8c3',weight:2,dashArray:'4 6',opacity:.9,interactive:false};
+  L.polyline([[36.0237,14.2995],[36.0050,14.3300],[35.9880,14.3290]],ferry).addTo(map);
+  L.polyline([[36.0237,14.2995],[36.005,14.36],[35.978,14.43],[35.946,14.475],[35.915,14.508],[35.903,14.524],[35.8965,14.5175]],ferry).addTo(map);
+  L.marker([35.995,14.455],{icon:L.divIcon({className:'town',html:'<span style="color:#56b8c3;text-shadow:0 0 4px #0c1822">fast ferry</span>',iconSize:[80,14]})}).addTo(map);
+  [['Victoria',36.0443,14.2390],['Valletta',35.8989,14.5146],['Sliema',35.9122,14.5019],['Comino',36.0108,14.3365],['Mdina',35.8858,14.4033],['Marsaxlokk',35.8418,14.5447],['Mellieħa',35.9564,14.3622]].forEach(([n,la,lo])=>
+    L.marker([la,lo],{icon:L.divIcon({className:'town',html:n,iconSize:[90,14],iconAnchor:[45,-10]}),interactive:false}).addTo(map));
+
+  const byPlace={};
+  photos.forEach(p=>{ if(!p.place) return; (byPlace[p.key]=byPlace[p.key]||{key:p.key,name:p.place,lat:p.lat,lng:p.lng,ps:[]}).ps.push(p); });
+  const places=Object.values(byPlace).sort((a,b)=>a.ps[0].i-b.ps[0].i);
+  const markers={};
+  places.forEach(pl=>{
+    const r=Math.min(16,5+Math.sqrt(pl.ps.length)*2.2);
+    const m=L.circleMarker([pl.lat,pl.lng],{radius:r,color:'#0c1822',weight:2,fillColor:'#56b8c3',fillOpacity:.95}).addTo(map);
+    m.bindTooltip(`${pl.name} · ${pl.ps.length}`,{className:'place-tip',direction:'top',offset:[0,-r]});
+    m.on('click',()=>selectPlace(pl.key,false));
+    markers[pl.key]=m;
+  });
+  const allBounds=L.latLngBounds(places.map(p=>[p.lat,p.lng])).pad(0.12);
+  map.fitBounds(allBounds);
+
+  const ph=document.getElementById('panel-head'), pb=document.getElementById('panel-body');
+  function showList(){
+    Object.values(markers).forEach(m=>m.setStyle({fillColor:'#56b8c3'}));
+    ph.innerHTML=`<h3>Places</h3><p>${places.length} places, in the order we visited them</p>`;
+    let html='<ul class="place-list">', lastDay='';
+    places.forEach(pl=>{ const d=pl.ps[0].day; if(d!==lastDay){ html+=`<li class="dayhdr">Day ${dayNo(d)} · ${DAYS[d]}</li>`; lastDay=d; }
+      html+=`<li><button type="button" data-k="${pl.key}"><span>${pl.name}</span><span class="n">${pl.ps.length}</span></button></li>`; });
+    pb.innerHTML=html+'</ul>'; pb.scrollTop=0;
+    pb.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>selectPlace(b.dataset.k,true));
+  }
+  function selectPlace(k, fly){
+    const pl=byPlace[k]; if(!pl) return;
+    Object.entries(markers).forEach(([kk,m])=>m.setStyle({fillColor:kk===k?'#e2c48d':'#56b8c3'}));
+    markers[k].bringToFront();
+    if(fly) { document.getElementById('map-section').scrollIntoView({behavior:'smooth'}); map.flyTo([pl.lat,pl.lng],Math.max(map.getZoom(),13),{duration:.8}); }
+    const days=[...new Set(pl.ps.map(p=>p.day))].map(d=>`Day ${dayNo(d)}`).join(', ');
+    ph.innerHTML=`<button class="back" type="button" id="back">&larr; All places</button><h3>${pl.name}</h3><p>${pl.ps.length} photo${pl.ps.length>1?'s':''} · ${days}</p>`;
+    pb.innerHTML='<div class="thumbs">'+pl.ps.map(p=>`<button type="button" data-i="${p.i}" aria-label="${p.caption.replace(/"/g,'&quot;')}"><img loading="lazy" src="img/grid/${p.id}.jpg" alt=""></button>`).join('')+'</div>';
+    pb.scrollTop=0;
+    document.getElementById('back').onclick=()=>{showList(); map.flyToBounds(allBounds,{duration:.8});};
+    const idx=pl.ps.map(p=>p.i);
+    pb.querySelectorAll('button[data-i]').forEach(b=>b.onclick=()=>openLB(+b.dataset.i, idx, pl.name));
+  }
+  showList();
+  const unplaced=photos.filter(p=>!p.place).length;
+  document.getElementById('map-note').textContent=`${unplaced} photos, mostly taken from the plane, appear in the gallery only.`;
+})();
+</script>
+</body>
+</html>

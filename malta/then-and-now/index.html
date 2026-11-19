@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Then &amp; Now — Malta &amp; Gozo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f4efe6;--ink:#1d1b18;--muted:#625c53;--rule:#d9d0c1;--accent:#a4462a}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:Figtree,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+header{max-width:1080px;margin:0 auto;padding:40px 24px 28px}
+.back{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--muted);text-decoration:none;margin-bottom:28px}
+.back:hover{color:var(--ink)}
+.kicker{font-size:12px;font-weight:600;letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+h1{font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-size:clamp(44px,8vw,88px);line-height:.95;margin:14px 0 18px;letter-spacing:-.01em}
+.lede{max-width:620px;font-size:17px;line-height:1.6;color:var(--muted);margin:0}
+.hint{display:inline-flex;align-items:center;gap:8px;margin-top:22px;font-size:13px;color:var(--muted)}
+.hint svg{flex:none}
+nav.toc{max-width:1080px;margin:0 auto;padding:0 24px 8px;display:flex;flex-wrap:wrap;gap:8px}
+nav.toc a{font-size:13px;color:var(--ink);text-decoration:none;border:1px solid var(--rule);border-radius:999px;padding:6px 12px;background:#fbf8f2}
+nav.toc a:hover{border-color:var(--ink)}
+.island{max-width:1080px;margin:48px auto 0;padding:0 24px;display:flex;align-items:baseline;gap:16px}
+.island h2{font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-style:italic;font-size:30px;margin:0}
+.island span{flex:1;height:1px;background:var(--rule)}
+article{max-width:1080px;margin:28px auto 0;padding:0 24px;scroll-margin-top:16px}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.card-head h3{font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-size:28px;margin:0}
+.card-head .years{font-size:13px;font-weight:600;letter-spacing:.12em;color:var(--muted)}
+.cmp{position:relative;width:min(100%, calc((100vh - 140px) * var(--ar)));margin:0 auto;aspect-ratio:var(--ar);overflow:hidden;border-radius:4px;background:#2a2622;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:ew-resize;--p:50%}
+.cmp img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+.cmp img.then{clip-path:inset(0 calc(100% - var(--p)) 0 0)}
+.cmp .bar{position:absolute;top:0;bottom:0;left:var(--p);width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.35);pointer-events:none}
+.cmp .knob{position:absolute;top:50%;left:var(--p);width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;outline:none;cursor:ew-resize}
+.cmp .knob:focus-visible{box-shadow:0 0 0 3px var(--accent),0 2px 10px rgba(0,0,0,.35)}
+.tag{position:absolute;top:14px;font-size:12px;font-weight:600;letter-spacing:.14em;color:#fff;background:rgba(20,18,16,.62);padding:6px 10px;border-radius:3px;pointer-events:none}
+.tag.l{left:14px}.tag.r{right:14px}
+.caps{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:12px;font-size:13px;line-height:1.5;color:var(--muted)}
+.caps b{display:block;font-size:11px;letter-spacing:.18em;color:var(--ink);font-weight:600;margin-bottom:2px}
+.caps .r{text-align:right}
+.note{margin:14px 0 0;max-width:680px;font-size:15px;line-height:1.6}
+footer{max-width:1080px;margin:80px auto 0;padding:28px 24px 72px;border-top:1px solid var(--rule);font-size:13px;line-height:1.6;color:var(--muted)}
+footer h4{font-size:11px;letter-spacing:.18em;color:var(--ink);margin:0 0 10px;font-weight:600}
+footer ol{margin:0;padding-left:18px}
+footer a{color:var(--ink)}
+@media (max-width:640px){header{padding-top:28px}.tag{font-size:10px;padding:4px 7px;top:10px}.tag.l{left:10px}.tag.r{right:10px}.caps{grid-template-columns:1fr;gap:6px}.caps .r{text-align:left}.card-head h3{font-size:24px}}
+</style>
+</head>
+<body>
+<header>
+<a class="back" href="../index.html">&larr; All photos from Malta &amp; Gozo</a>
+<div class="kicker">Malta &amp; Gozo · September 2025</div>
+<h1>Then &amp; Now</h1>
+<p class="lede">Nine places from the trip, set beside how they looked a century or more ago. Each old picture is public domain, from Wikimedia Commons. The new one is ours.</p>
+<div class="hint"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg>Drag across any picture, or use the arrow keys, to move between then and now.</div>
+</header>
+<nav class="toc" id="toc" aria-label="Places"></nav>
+<main id="list"></main>
+<footer>
+<h4>HISTORIC IMAGES</h4>
+<ol id="credits"></ol>
+<p style="margin-top:16px">Modern photos: our own, 21–26 September 2025.</p>
+<p><a href="../index.html">&larr; Back to all the photos</a></p>
+</footer>
+<script>
+const PAIRS=[
+{island:'Malta',id:'city-gate',name:'City Gate, Valletta',years:'c.1890 · 2025',ar:4/3,
+ then:{src:'img/then/gate.jpg',pos:'50% 60%',who:'Richard Ellis',when:'c.1890',file:'Richard_Ellis,_Kingsgate_1890.jpg'},
+ now:{src:'img/now/gate.jpg',pos:'50% 50%',when:'26 Sept 2025, 16:58'},
+ note:'The same bridge over the ditch, but not the same gate. In 1890 this was Kingsgate, built in 1853. It was pulled down in 1964, and its replacement went in 2011. The gate we walked through is Renzo Piano’s, finished in 2014: the fifth on this spot.'},
+{island:'Malta',id:'lower-barrakka',name:'Lower Barrakka Gardens',years:'c.1890 · 2025',ar:4/3,
+ then:{src:'img/then/lbarrakka.jpg',pos:'30% 50%',who:'Unknown photographer, albumen print (V&A)',when:'c.1890',file:'Lower_Barrakka_Gardens,_Valletta_(V&A_Museum).jpg'},
+ now:{src:'img/now/lbarrakka.jpg',pos:'50% 50%',when:'26 Sept 2025, 18:31'},
+ note:'The Doric temple is the monument to Sir Alexander Ball, Malta’s first British civil commissioner. In the 1890 photo it stands above a yard full of carts. By 2025 it sits among palms and a fountain.'},
+{island:'Malta',id:'grand-harbour',name:'Grand Harbour at dusk',years:'c.1905 · 2025',ar:4/3,
+ then:{src:'img/then/angelo.jpg',pos:'40% 50%',who:'“Oilette” painted postcard (Rijksmuseum)',when:'c.1900–1910',file:'Gezicht_op_de_Grand_Harbour_in_Valletta_Malta,_Grand_Harbour_(titel_op_object),_RP-F-F01141-L.jpg'},
+ now:{src:'img/now/angelo.jpg',pos:'50% 50%',when:'26 Sept 2025, 18:49'},
+ note:'Fort St Angelo across the water. In the postcard it is lit by moonlight, with the harbour full of rowing boats. In 2025 a ferry passes it at dusk.'},
+{island:'Gozo',id:'citadel',name:'Cathedral Square, the Citadel',years:'early 1900s · 2025',ar:4/3,
+ then:{src:'img/then/citadel.jpg',pos:'50% 50%',who:'Mikiel Farrugia',when:'early 20th century',file:'Mikiel_Farrugia,_The_Law_Courts_in_the_Gozo_Citadel.jpg'},
+ now:{src:'img/now/citadel.jpg',pos:'50% 50%',when:'24 Sept 2025, 12:16'},
+ note:'The old picture shows the Law Courts, which stand on the same square as the cathedral steps we climbed. Back then a single motor car was parked out front.'},
+{island:'Gozo',id:'ggantija',name:'Ġgantija Temples, Xagħra',years:'c.1829 · 2025',ar:1.6,
+ then:{src:'img/then/ggantija.jpg',pos:'50% 60%',who:'Charles de Brocktorff, watercolour',when:'c.1829',file:'Charles_de_Brocktorff_01_Exterior_view_of_the_wall_enclosing_the_Temples.jpg'},
+ now:{src:'img/now/ggantija.jpg',pos:'50% 50%',when:'23 Sept 2025, 13:37'},
+ note:'Brocktorff painted the great outer wall soon after the site was cleared in the 1820s. The temples themselves are more than 5,000 years old.'},
+{island:'Gozo',id:'marsalforn',name:'Marsalforn',years:'c.1900 · 2025',ar:1.6,
+ then:{src:'img/then/marsalforn.jpg',pos:'50% 50%',who:'Unknown photographer',when:'c.1900',file:'Marsalforn_1900.jpg'},
+ now:{src:'img/now/marsalforn.jpg',pos:'50% 60%',when:'24 Sept 2025, 11:07'},
+ note:'Around 1900 Marsalforn was a pebble beach with a church and a handful of houses. Today the same bay is ringed with apartments and restaurants.'},
+{island:'Gozo',id:'ramla',name:'Ramla Bay',years:'c.1910 · 2025',ar:1.5,
+ then:{src:'img/then/ramla.jpg',pos:'50% 50%',who:'Unknown photographer',when:'c.1910',file:'Ramla_l-Hamra_c1910.jpg'},
+ now:{src:'img/now/ramla.jpg',pos:'50% 50%',when:'25 Sept 2025, 15:16'},
+ note:'This was shot from the old track coming down from Xagħra, with a man leading a laden mule toward the bay. There isn’t a single person on the beach.'},
+{island:'Gozo',id:'mgarr-ix-xini',name:'Mġarr ix-Xini',years:'1920s · 2025',ar:4/3,
+ then:{src:'img/then/mgarr.jpg',pos:'50% 50%',who:'Unknown photographer',when:'1920s',file:'Mgarr_Ix-Xini_1920s.jpg'},
+ now:{src:'img/now/mgarr.jpg',pos:'50% 50%',when:'22 Sept 2025, 12:24'},
+ note:'The inlet we reached at the end of the coastal walk. The watchtower on the headland has stood there since the 1660s.'},
+{island:'Gozo',id:'nadur',name:'The church dome, Nadur',years:'c.1910 · 2025',ar:3/4,
+ then:{src:'img/then/nadur.jpg',pos:'50% 40%',who:'E. A. Gouder, postcard',when:'c.1910',file:'E.A.Gouder,_Cnisja_Tan-Nadur,_Gozo.jpg'},
+ now:{src:'img/now/nadur.jpg',pos:'27% 50%',when:'22 Sept 2025, 09:21'},
+ note:'The dome of Nadur’s parish church of St Peter and St Paul, seen from our village. Our street shot is cropped here to match the upright postcard.'}
+];
+const list=document.getElementById('list'),toc=document.getElementById('toc'),credits=document.getElementById('credits');
+let lastIsland='';
+PAIRS.forEach((p,i)=>{
+ if(p.island!==lastIsland){lastIsland=p.island;const d=document.createElement('div');d.className='island';d.innerHTML=`<h2>${p.island}</h2><span></span>`;list.appendChild(d);}
+ const a=document.createElement('article');a.id=p.id;
+ const thenYear=p.years.split(' · ')[0];
+ a.innerHTML=`<div class="card-head"><h3>${p.name}</h3><div class="years">${p.years.toUpperCase()}</div></div>
+ <div class="cmp" style="--ar:${p.ar}">
+  <img class="now" src="${p.now.src}" alt="${p.name} in September 2025" style="object-position:${p.now.pos}" loading="${i<2?'eager':'lazy'}">
+  <img class="then" src="${p.then.src}" alt="${p.name}, ${p.then.when}" style="object-position:${p.then.pos}" loading="${i<2?'eager':'lazy'}">
+  <div class="tag l">THEN · ${thenYear.toUpperCase()}</div><div class="tag r">NOW · 2025</div>
+  <div class="bar"></div>
+  <div class="knob" role="slider" tabindex="0" aria-label="${p.name}: amount of the old picture shown" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1d1b18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l-5 6 5 6M15 6l5 6-5 6"/></svg></div>
+ </div>
+ <div class="caps"><div><b>THEN</b>${p.then.who}, ${p.then.when}</div><div class="r"><b>NOW</b>${p.now.when}</div></div>
+ <p class="note">${p.note}</p>`;
+ list.appendChild(a);
+ const t=document.createElement('a');t.href='#'+p.id;t.textContent=p.name.split(',')[0];toc.appendChild(t);
+ const li=document.createElement('li');li.innerHTML=`${p.name}: ${p.then.who}, ${p.then.when}. Public domain. <a href="https://commons.wikimedia.org/wiki/File:${encodeURIComponent(p.then.file)}">Wikimedia Commons</a>`;credits.appendChild(li);
+});
+document.querySelectorAll('.cmp').forEach(c=>{
+ const knob=c.querySelector('.knob');let v=50,drag=false;
+ const set=n=>{v=Math.max(0,Math.min(100,n));c.style.setProperty('--p',v+'%');knob.setAttribute('aria-valuenow',Math.round(v));};
+ const fromX=x=>{const r=c.getBoundingClientRect();set((x-r.left)/r.width*100);};
+ c.addEventListener('pointerdown',e=>{drag=true;try{c.setPointerCapture(e.pointerId)}catch(_){}fromX(e.clientX);});
+ c.addEventListener('pointermove',e=>{if(drag)fromX(e.clientX);});
+ const end=()=>{drag=false};c.addEventListener('pointerup',end);c.addEventListener('pointercancel',end);
+ knob.addEventListener('keydown',e=>{const s=e.shiftKey?10:2;
+  if(e.key==='ArrowLeft'||e.key==='ArrowDown'){set(v-s);e.preventDefault();}
+  else if(e.key==='ArrowRight'||e.key==='ArrowUp'){set(v+s);e.preventDefault();}
+  else if(e.key==='Home'){set(0);e.preventDefault();}else if(e.key==='End'){set(100);e.preventDefault();}});
+});
+</script>
+</body>
+</html>
