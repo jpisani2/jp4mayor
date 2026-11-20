@@ -76,6 +76,9 @@ const SITE = {
         { label: "Open the photo log", url: "lawn/" }
       ],
       log: [
+        { date: "2026-11-19", title: "Mid-November",
+          note: "Ten weeks after seeding. Filled in, and holding up as the leaves come down.",
+          photos: ["images/lawn/2026-11-19-sidewalk.jpg", "images/lawn/2026-11-19-curb.jpg", "images/lawn/2026-11-19-driveway.jpg"] },
         { date: "2026-09-22", title: "First mow",
           note: "Sixteen days after seeding. From the curb strip by the mailbox.",
           photos: ["lawn/img/IMG_7507.jpg"] },
