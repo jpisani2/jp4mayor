@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="A month of front-lawn photos from Aug 21 to Sep 22, 2026, lined up so each spot keeps the same angle.">
+<meta name="description" content="Three months of front-lawn photos from Aug 21 to Nov 19, 2026, lined up so each spot keeps the same angle.">
 <meta name="theme-color" content="#EEF0E8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#131611" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,7 +14,7 @@
 <link rel="icon" type="image/png" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Front Lawn Progress">
-<meta property="og:description" content="From patchy to thick &amp; green — Aug 21 to Sep 22, 2026.">
+<meta property="og:description" content="From patchy to thick &amp; green — Aug 21 to Nov 19, 2026.">
 <meta property="og:image" content="og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <style>:root{color-scheme:light dark;padding-top:env(safe-area-inset-top,0px)}body{margin:0}img{max-width:100%}</style>
@@ -164,7 +164,7 @@ footer p{margin:0}
     <a class="back" href="../projects.html">← All projects</a>
     <div class="eyebrow">Lawn renovation log · 2026</div>
     <h1>From patchy to <em>thick &amp; green</em></h1>
-    <p class="lede">A month of photos from the same three spots, lined up so each spot keeps the same angle. Drag across a photo to compare, or step through the dates.</p>
+    <p class="lede">Three months of photos from the same three spots, lined up so each spot keeps the same angle. Drag across a photo to compare, or step through the dates.</p>
     <div class="stats" id="stats"></div>
   </header>
 </div>
@@ -188,11 +188,14 @@ footer p{margin:0}
 </div>
 
 <script>
-const PHOTOS = [{"v":"sidewalk","n":"IMG_7335","t":"2026-08-21T08:59:31","d":0,"a":true},{"v":"sidewalk","n":"IMG_7362","t":"2026-08-29T08:49:05","d":8,"a":true},{"v":"sidewalk","n":"IMG_7391","t":"2026-09-02T08:24:13","d":12,"a":true},{"v":"sidewalk","n":"IMG_7424","t":"2026-09-06T08:50:41","d":16,"a":true},{"v":"curb","n":"IMG_7427","t":"2026-09-06T13:00:11","d":16,"a":true},{"v":"curb","n":"IMG_7428","t":"2026-09-06T13:00:19","d":16,"a":false},{"v":"curb","n":"IMG_7429","t":"2026-09-06T15:29:18","d":16,"a":true},{"v":"curb","n":"IMG_7430","t":"2026-09-06T15:29:21","d":16,"a":true},{"v":"curb","n":"IMG_7431","t":"2026-09-06T15:29:21","d":16,"a":true},{"v":"under","n":"IMG_7443","t":"2026-09-07T12:29:57","d":17,"a":true},{"v":"under","n":"IMG_7444","t":"2026-09-07T12:30:04","d":17,"a":true},{"v":"under","n":"IMG_7445","t":"2026-09-07T15:25:25","d":17,"a":true},{"v":"sidewalk","n":"IMG_7460","t":"2026-09-10T12:54:12","d":20,"a":true},{"v":"under","n":"IMG_7463","t":"2026-09-11T08:43:39","d":21,"a":true},{"v":"under","n":"IMG_7464","t":"2026-09-11T08:43:42","d":21,"a":true},{"v":"curb","n":"IMG_7465","t":"2026-09-11T08:49:30","d":21,"a":true},{"v":"sidewalk","n":"IMG_7466","t":"2026-09-11T08:49:47","d":21,"a":true},{"v":"sidewalk","n":"IMG_7467","t":"2026-09-11T10:33:15","d":21,"a":true},{"v":"sidewalk","n":"IMG_7476","t":"2026-09-15T09:40:43","d":25,"a":true},{"v":"curb","n":"IMG_7477","t":"2026-09-17T12:51:41","d":27,"a":true},{"v":"sidewalk","n":"IMG_7481","t":"2026-09-18T13:12:23","d":28,"a":true},{"v":"curb","n":"IMG_7504","t":"2026-09-20T15:35:23","d":30,"a":true},{"v":"curb","n":"IMG_7507","t":"2026-09-22T18:43:56","d":32,"a":true}];
+const PHOTOS = [{"v":"sidewalk","n":"IMG_7335","t":"2026-08-21T08:59:31","d":0,"a":true},{"v":"sidewalk","n":"IMG_7362","t":"2026-08-29T08:49:05","d":8,"a":true},{"v":"sidewalk","n":"IMG_7391","t":"2026-09-02T08:24:13","d":12,"a":true},{"v":"sidewalk","n":"IMG_7424","t":"2026-09-06T08:50:41","d":16,"a":true},{"v":"curb","n":"IMG_7427","t":"2026-09-06T13:00:11","d":16,"a":true},{"v":"curb","n":"IMG_7428","t":"2026-09-06T13:00:19","d":16,"a":false},{"v":"curb","n":"IMG_7429","t":"2026-09-06T15:29:18","d":16,"a":true},{"v":"curb","n":"IMG_7430","t":"2026-09-06T15:29:21","d":16,"a":true},{"v":"curb","n":"IMG_7431","t":"2026-09-06T15:29:21","d":16,"a":true},{"v":"under","n":"IMG_7443","t":"2026-09-07T12:29:57","d":17,"a":true},{"v":"under","n":"IMG_7444","t":"2026-09-07T12:30:04","d":17,"a":true},{"v":"under","n":"IMG_7445","t":"2026-09-07T15:25:25","d":17,"a":true},{"v":"sidewalk","n":"IMG_7460","t":"2026-09-10T12:54:12","d":20,"a":true},{"v":"under","n":"IMG_7463","t":"2026-09-11T08:43:39","d":21,"a":true},{"v":"under","n":"IMG_7464","t":"2026-09-11T08:43:42","d":21,"a":true},{"v":"curb","n":"IMG_7465","t":"2026-09-11T08:49:30","d":21,"a":true},{"v":"sidewalk","n":"IMG_7466","t":"2026-09-11T08:49:47","d":21,"a":true},{"v":"sidewalk","n":"IMG_7467","t":"2026-09-11T10:33:15","d":21,"a":true},{"v":"sidewalk","n":"IMG_7476","t":"2026-09-15T09:40:43","d":25,"a":true},{"v":"curb","n":"IMG_7477","t":"2026-09-17T12:51:41","d":27,"a":true},{"v":"sidewalk","n":"IMG_7481","t":"2026-09-18T13:12:23","d":28,"a":true},{"v":"curb","n":"IMG_7504","t":"2026-09-20T15:35:23","d":30,"a":true},{"v":"curb","n":"IMG_7507","t":"2026-09-22T18:43:56","d":32,"a":true},{"v":"sidewalk","n":"IMG_7841","t":"2026-11-19Tafternoon","d":90,"a":true},{"v":"curb","n":"IMG_7838","t":"2026-11-19Tafternoon","d":90,"a":true}];
+// No clock time on the Nov 19 photos: "T<word>" shows that word (e.g. "afternoon") in place of a time.
 const NOTES = {
   IMG_7428:"Close-up of the curb strip — shown as taken.",
   IMG_7429:"Zoomed-in shot; the dark wedge is outside this photo.",
-  IMG_7465:"Taken from the far end of the strip, lined up on the mailbox."
+  IMG_7465:"Taken from the far end of the strip, lined up on the mailbox.",
+  IMG_7841:"Taken from farther back; lined up on the mailbox and the sidewalk joints.",
+  IMG_7838:"Taken from farther back; lined up on the mailbox and the curb."
 };
 const PREFER_LATEST = {under:"IMG_7463"}; // 7464 has spray haze across it
 const VIEWS = [
@@ -202,9 +205,9 @@ const VIEWS = [
 ];
 const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const DOW=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-const parse=t=>{const [d,h]=t.split("T");const [y,m,dd]=d.split("-").map(Number);const [H,M]=h.split(":").map(Number);return {y,m,dd,H,M,dow:new Date(y,m-1,dd).getDay()}};
+const parse=t=>{const [d,h=""]=t.split("T");const [y,m,dd]=d.split("-").map(Number);const clock=/^\d/.test(h);const [H,M]=clock?h.split(":").map(Number):[0,0];return {y,m,dd,H,M,label:clock?"":h,dow:new Date(y,m-1,dd).getDay()}};
 const fDate=t=>{const p=parse(t);return `${MON[p.m-1]} ${p.dd}`};
-const fTime=t=>{const p=parse(t);const h=p.H%12||12;return `${h}:${String(p.M).padStart(2,"0")} ${p.H<12?"am":"pm"}`};
+const fTime=t=>{const p=parse(t);if(p.label)return p.label;const h=p.H%12||12;return `${h}:${String(p.M).padStart(2,"0")} ${p.H<12?"am":"pm"}`};
 const src=n=>`img/${n}.jpg`, th=n=>`th/${n}.jpg`;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
