@@ -1,7 +1,111 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-18T18:55:00-05:00",
+  "updated": "2026-11-20T13:00:00-05:00",
   "games": [
+    {
+      "id": "g20261120",
+      "date": "2026-11-20",
+      "phase": "Regular season",
+      "headline": "Pistons host a Raptors team on a six-game skid",
+      "dek": "First-place Detroit (10-4) hosts Toronto (5-10) at 7:30 p.m. ET on Prime Video as a 6.5-point favorite; Cade Cunningham is probable and Kawhi Leonard and RJ Barrett are out for the Raptors.",
+      "keys": [
+        {
+          "title": "Toronto without its stars",
+          "text": "The Raptors list Kawhi Leonard (knee inflammation), RJ Barrett (20.9 PPG, hamstring), Collin Murray-Boyles (concussion) and Nate Bittle (foot) out. They have lost six straight, the latest 103-99 to Washington on Wednesday."
+        },
+        {
+          "title": "Cade's knee",
+          "text": "Cade Cunningham is probable and expected to play after missing Wednesday with right knee soreness (RotoWire, Heavy injury report); ESPN still lists him day-to-day. Detroit is also without Taurean Prince (knee surgery, out until at least Dec. 13), Ebuka Okorie and Duncan Robinson; Ronald Holland II (knee) is day-to-day on ESPN's latest update."
+        },
+        {
+          "title": "Rolling, with rest",
+          "text": "Detroit has won two straight, including 122-109 at New Orleans Wednesday, and had Thursday off. The Pistons shoot 37.1% from three to Toronto's 33.6% and have the better free-throw rate: 79.3% to 71.1%."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "25.8 PTS · 7.8 AST · 5.2 REB",
+          "sub": "2026-27 season (13 games); status is the thing to check near tip",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "14.3 PTS · 4.7 AST · 43.7% 3PT",
+          "sub": "2026-27 season (14 games); 17 points and 9 assists at New Orleans Wednesday"
+        },
+        {
+          "team": "DET",
+          "name": "Duncan Robinson",
+          "line": "17.4 PTS · 3.9 3PM · 43.1% 3PT",
+          "sub": "2026-27 season (12 games)"
+        },
+        {
+          "team": "TOR",
+          "name": "Scottie Barnes",
+          "line": "23.8 PTS · 7.4 REB · 4.7 AST",
+          "sub": "2026-27 season (10 games); the focal point with Leonard and Barrett out",
+          "badge": "Star"
+        },
+        {
+          "team": "TOR",
+          "name": "Immanuel Quickley",
+          "line": "17.8 PTS · 5.7 AST · 34.3% 3PT",
+          "sub": "2026-27 season (13 games)"
+        }
+      ],
+      "injuryNote": "As of Friday: the Pistons' injury report lists Cunningham probable and expected to play (RotoWire, Heavy). Out: Prince (knee surgery, mid-December), Okorie (oblique), Duncan Robinson (quad, at least Nov. 27) and Jalen Duren (hamstring, at least Nov. 24); neither is on ESPN's list, so projections treat them as out. ESPN lists Holland day-to-day (updated Nov. 20) and Onyenso day-to-day (foot). Toronto: Leonard, Barrett, Murray-Boyles and Bittle out.",
+      "talkingPoints": [
+        "Toronto has lost six in a row and is missing Kawhi and RJ Barrett.",
+        "We're 10-4 and in first in the Central, with a day of rest after winning in New Orleans.",
+        "Cade is probable after sitting Wednesday, and we've got seven guys out or iffy, so watch the minutes.",
+        "Seven Pistons scored in double figures at New Orleans and we hit 17 threes.",
+        "Scottie Barnes is carrying Toronto at 23.8 a night.",
+        "DET -6.5, but two of Toronto's last five losses were by four points."
+      ],
+      "facts": [
+        {
+          "label": "Broadcast",
+          "text": "Prime Video"
+        },
+        {
+          "label": "Series",
+          "text": "First of four meetings this season (Jan. 12, Mar. 14, Mar. 31 to come)"
+        }
+      ],
+      "projNotes": {
+        "Cade Cunningham": "36 min: probable, set by hand as a full workload",
+        "Daniss Jenkins": "31.8 min with Robinson, Duren, Prince, Okorie out; 19.0 PTS last five",
+        "Kevin Huerter": "28 min projected; ranks up with the thin rotation",
+        "Paul Reed": "24 min as the starting-level big with Duren out",
+        "Ausar Thompson": "Assists projected 3.8, well under his 5.5 average"
+      },
+      "projNote": "Not projected: Duren, Robinson (treated as out), Prince, Okorie (out), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). Line implies about 111.5 Detroit points.",
+      "ouNotes": {
+        "Cade Cunningham": "Probable per Pistons' report (RotoWire, Heavy); his numbers assume he plays about 36 minutes"
+      },
+      "pick": {
+        "call": "Pistons by 9",
+        "text": "Just for fun: Toronto is thin and losing, Detroit is rested and shooting well. Pistons 113, Raptors 104."
+      },
+      "share": "Pistons (10-4) host the Raptors (5-10, lost 6 straight) tonight at 7:30 ET on Prime. Cade probable; Kawhi and Barrett out for Toronto. DET -6.5.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909308"
+        },
+        {
+          "title": "Pistons injury report vs. Raptors (Heavy)",
+          "url": "https://heavy.com/sports/nba/detroit-pistons/injury-report-vs-raptors-november-20/"
+        },
+        {
+          "title": "Cade Cunningham expected to play Friday (RotoWire)",
+          "url": "https://www.rotowire.com/basketball/headlines/cade-cunningham-injury-expected-to-play-friday-540045"
+        }
+      ]
+    },
     {
       "id": "g20261118",
       "date": "2026-11-18",
