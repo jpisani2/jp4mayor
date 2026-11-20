@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-20T13:00:00-05:00",
+  "updated": "2026-11-20T16:55:00-05:00",
   "games": [
     {
       "id": "g20261120",
@@ -76,15 +76,15 @@ window.PISTONS_PREGAME = {
         }
       ],
       "projNotes": {
-        "Cade Cunningham": "36 min: probable, set by hand as a full workload",
-        "Daniss Jenkins": "31.8 min with Robinson, Duren, Prince, Okorie out; 19.0 PTS last five",
-        "Kevin Huerter": "28 min projected; ranks up with the thin rotation",
-        "Paul Reed": "24 min as the starting-level big with Duren out",
-        "Ausar Thompson": "Assists projected 3.8, well under his 5.5 average"
+        "Cade Cunningham": "37.8 min as probable; 37.4 min and 28.6 PTS over his last five",
+        "Daniss Jenkins": "33.5 min with Robinson, Duren, Prince, Okorie out; 19.0 PTS last five",
+        "Kevin Huerter": "29.7 min projected; ranks up with the thin rotation",
+        "Paul Reed": "25.4 min as the starting-level big with Duren out",
+        "Ausar Thompson": "Assists projected 4.0, under his 5.5 average"
       },
-      "projNote": "Not projected: Duren, Robinson (treated as out), Prince, Okorie (out), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). Line implies about 111.5 Detroit points.",
+      "projNote": "Not projected: Duren, Robinson, Holland (treated as out), Prince, Okorie (out), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). Line implies about 111.5 Detroit points.",
       "ouNotes": {
-        "Cade Cunningham": "Probable per Pistons' report (RotoWire, Heavy); his numbers assume he plays about 36 minutes"
+        "Cade Cunningham": "Probable per Pistons' report (RotoWire, Heavy); his numbers assume he plays about 38 minutes"
       },
       "pick": {
         "call": "Pistons by 9",
