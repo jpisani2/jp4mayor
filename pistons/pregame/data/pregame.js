@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-20T16:55:00-05:00",
+  "updated": "2026-11-20T18:55:00-05:00",
   "games": [
     {
       "id": "g20261120",
@@ -56,7 +56,7 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (13 games)"
         }
       ],
-      "injuryNote": "As of Friday: the Pistons' injury report lists Cunningham probable and expected to play (RotoWire, Heavy). Out: Prince (knee surgery, mid-December), Okorie (oblique), Duncan Robinson (quad, at least Nov. 27) and Jalen Duren (hamstring, at least Nov. 24); neither is on ESPN's list, so projections treat them as out. ESPN lists Holland day-to-day (updated Nov. 20) and Onyenso day-to-day (foot). Toronto: Leonard, Barrett, Murray-Boyles and Bittle out.",
+      "injuryNote": "As of Friday: the Pistons' injury report lists Cunningham probable and expected to play (RotoWire, Heavy). Out: Prince (knee surgery, mid-December), Okorie (oblique), Duncan Robinson (quad, at least Nov. 27) and Jalen Duren (hamstring, at least Nov. 24); neither is on ESPN's list, so projections treat them as out. ESPN lists Holland day-to-day (updated Nov. 20) and Onyenso day-to-day (foot). Toronto: Leonard (knee, ESPN return date Dec. 3), Barrett (hamstring), Murray-Boyles (concussion) and Bittle (foot) out. Tip is 7:30; check the final report and starters near tip.",
       "talkingPoints": [
         "Toronto has lost six in a row and is missing Kawhi and RJ Barrett.",
         "We're 10-4 and in first in the Central, with a day of rest after winning in New Orleans.",
@@ -84,7 +84,8 @@ window.PISTONS_PREGAME = {
       },
       "projNote": "Not projected: Duren, Robinson, Holland (treated as out), Prince, Okorie (out), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). Line implies about 111.5 Detroit points.",
       "ouNotes": {
-        "Cade Cunningham": "Probable per Pistons' report (RotoWire, Heavy); his numbers assume he plays about 38 minutes"
+        "Cade Cunningham": "Probable per Pistons' report (RotoWire, Heavy); the assists-over call assumes about 38 minutes",
+        "Paul Reed": "Toronto gives forwards fewer assists than usual (projection model)"
       },
       "pick": {
         "call": "Pistons by 9",
