@@ -1,7 +1,198 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-11-18T22:40:00-05:00",
+  "updated": "2026-11-20T22:20:00-05:00",
   "games": [
+    {
+      "id": "g20261120",
+      "date": "2026-11-20",
+      "phase": "Regular season",
+      "home": true,
+      "venue": "Little Caesars Arena, Detroit",
+      "attendance": 20178,
+      "opp": {
+        "abbr": "TOR",
+        "name": "Toronto Raptors",
+        "short": "Raptors",
+        "score": 105,
+        "quarters": [
+          26,
+          28,
+          23,
+          28
+        ]
+      },
+      "det": {
+        "score": 102,
+        "quarters": [
+          23,
+          25,
+          24,
+          30
+        ]
+      },
+      "result": "L",
+      "record": "10-5",
+      "headline": "Barnes layup with 14 seconds left sinks Pistons",
+      "dek": "Detroit erased a 14-point deficit and led 102-101 on Cade Cunningham's three with 19.8 left, but Toronto won 105-102.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "23 PTS · 9 AST · 5 REB",
+          "sub": "10-for-22 with the step-back three that put Detroit up one at 19.8; 3 turnovers, -11",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Kevin Huerter",
+          "line": "20 PTS · 4 3PM",
+          "sub": "7-for-15 in 36 minutes and a team-best +16"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "13 PTS · 6 REB · 5 OREB · 2 STL",
+          "sub": "6-for-9, but -16 in 33 minutes"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "8 PTS · 7 REB · 3 STL",
+          "sub": "28 minutes off the bench, +7"
+        },
+        {
+          "team": "TOR",
+          "name": "Scottie Barnes",
+          "line": "29 PTS · 5 REB · 5 AST",
+          "sub": "14-for-21; scored the go-ahead layup with 14.3 left"
+        },
+        {
+          "team": "TOR",
+          "name": "Immanuel Quickley",
+          "line": "18 PTS · 11 AST · 3 3PM",
+          "sub": "Made both free throws with 4.5 left to seal it"
+        },
+        {
+          "team": "TOR",
+          "name": "Allen Graves",
+          "line": "20 PTS · 10 REB · 3 STL",
+          "sub": "6-for-9 and a team-best +12"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's scorers",
+          "text": "Barnes' 29 was third among tonight's games (behind James Harden's 51 and Franz Wagner's 35); Cunningham's 23 was sixth."
+        },
+        {
+          "label": "Dimes",
+          "text": "Quickley's 11 assists led tonight's games, and Cunningham's 9 tied for third with Coby White (Dyson Daniels had 10)."
+        },
+        {
+          "label": "Season series",
+          "text": "First meeting of the season; ESPN lists Toronto up 1-0 in the series."
+        }
+      ],
+      "talkingPoints": [
+        "Down 14 in the third and we still had the ball down one in the last 20 seconds.",
+        "Cade's step-back three at 19.8 put us up one. Fourteen seconds later Barnes had it back.",
+        "Toronto scored 19 points off our 11 turnovers.",
+        "They shot 55 percent and hit 54 in the paint. That's the game.",
+        "Shead and Martin went 0-for-8 combined, and Collins played 20 minutes with 3 points.",
+        "Barnes was 14-for-21 and never took a three."
+      ],
+      "notable": [
+        {
+          "stat": "14",
+          "label": "Biggest Toronto lead",
+          "note": "At 6:21 of the third; Detroit never led by more than 2"
+        },
+        {
+          "stat": "11-0",
+          "label": "Detroit run in the third",
+          "note": "From 3:45 to 2:08"
+        },
+        {
+          "stat": "54-44",
+          "label": "Points in the paint",
+          "note": "Toronto shot 42-for-77 (55%)"
+        },
+        {
+          "stat": "19-13",
+          "label": "Points off turnovers",
+          "note": "Toronto's edge; Detroit had 11 turnovers, Toronto 15"
+        },
+        {
+          "stat": "30",
+          "label": "Detroit's fourth-quarter points",
+          "note": "Its best quarter of the night; Toronto scored 28"
+        },
+        {
+          "stat": "30-20",
+          "label": "Assists",
+          "note": "Quickley had 11, Cunningham 9; Toronto also won the boards 40-33"
+        }
+      ],
+      "story": [
+        "Toronto led 54-48 at the half and pushed it to 14 at 6:21 of the third. Detroit answered with an 11-0 run late in the quarter and trailed 77-72 going into the fourth.",
+        "The fourth was close the whole way. Detroit's 8-0 run from 4:46 to 2:56 produced its biggest lead of the night, 2 points. The game was tied at 95 with 2:05 left and again at 99 with 55.6 seconds left, when Quickley hit a fadeaway.",
+        "Jakob Poeltl's tip shot put Toronto up 101-99 and Cunningham answered with a 27-foot step-back three for a 102-101 lead at 19.8. Barnes drove for the layup at 14.3 to make it 103-102 and Quickley's two free throws at 4.5 sealed it. Detroit was without Duncan Robinson, Taurean Prince, Ronald Holland II and Ebuka Okorie; Toronto missed Kawhi Leonard, RJ Barrett and two others."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "37-81 (46%)",
+          "opp": "42-77 (55%)"
+        },
+        {
+          "label": "3PT",
+          "det": "12-33 (36%)",
+          "opp": "9-28 (32%)"
+        },
+        {
+          "label": "FT",
+          "det": "16-21 (76%)",
+          "opp": "12-14 (86%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "33",
+          "opp": "40"
+        },
+        {
+          "label": "Assists",
+          "det": "20",
+          "opp": "30"
+        },
+        {
+          "label": "Steals",
+          "det": "9",
+          "opp": "6"
+        },
+        {
+          "label": "Blocks",
+          "det": "1",
+          "opp": "4"
+        },
+        {
+          "label": "Turnovers",
+          "det": "11",
+          "opp": "15"
+        },
+        {
+          "label": "Paint pts",
+          "det": "44",
+          "opp": "54"
+        }
+      ],
+      "share": "Raptors 105, Pistons 102. Cade hit a go-ahead three at 19.8, Barnes answered at 14.3. DET falls to 10-5.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909308"
+        }
+      ]
+    },
     {
       "id": "g20261118",
       "date": "2026-11-18",
