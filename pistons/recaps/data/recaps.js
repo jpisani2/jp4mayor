@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-11-20T22:20:00-05:00",
+  "updated": "2026-11-22T17:58:00-05:00",
   "games": [
+    {
+      "id": "g20261122",
+      "date": "2026-11-22",
+      "phase": "Regular season",
+      "home": false,
+      "venue": "State Farm Arena, Atlanta",
+      "attendance": 16631,
+      "opp": {
+        "abbr": "ATL",
+        "name": "Atlanta Hawks",
+        "short": "Hawks",
+        "score": 107,
+        "quarters": [
+          29,
+          22,
+          23,
+          33
+        ]
+      },
+      "det": {
+        "score": 97,
+        "quarters": [
+          26,
+          26,
+          33,
+          12
+        ]
+      },
+      "result": "L",
+      "record": "10-6",
+      "headline": "Pistons score 12 in the fourth, fall to Hawks",
+      "dek": "Detroit led 85-74 early in the fourth, then Atlanta outscored them 33-12 in the quarter, including an 18-0 run, for a 107-97 win.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Isaiah Joe",
+          "line": "19 PTS · 3 STL · 3 3PM",
+          "sub": "7-for-15 off the bench and a team-best +11 in 26 minutes",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "18 PTS · 11 REB · 5 AST · 2 BLK",
+          "sub": "7-for-10 and 4-for-4 at the line; a double-double in 38 minutes"
+        },
+        {
+          "team": "DET",
+          "name": "John Collins",
+          "line": "18 PTS · 6 REB · 4 3PM",
+          "sub": "6-for-9 in 22 minutes"
+        },
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "5 PTS · 15 AST · 6 TO",
+          "sub": "2-for-9 from the floor; 15 assists were the most of any player on the night"
+        },
+        {
+          "team": "ATL",
+          "name": "Nickeil Alexander-Walker",
+          "line": "27 PTS · 6 3PM",
+          "sub": "8-for-18 and 6-for-10 from three, 5-for-5 at the line"
+        },
+        {
+          "team": "ATL",
+          "name": "Dyson Daniels",
+          "line": "14 REB · 8 AST · 5 STL · 3 BLK",
+          "sub": "Only 5 points on 2-for-9, but 39 minutes of defense and glass work and +9"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's scorers",
+          "text": "Joe's 19 was second among the games finished so far today, behind Alexander-Walker's 27 (Kispert had 18). Both are far from this week's top mark, James Harden's 51."
+        },
+        {
+          "label": "Dimes",
+          "text": "Cunningham's 15 assists led all of today's games and are the most of anyone in the past week (next best was 12, by Darius Acuff Jr., Stephon Castle, Trae Young and Ausar Thompson)."
+        },
+        {
+          "label": "Season series",
+          "text": "First meeting of the season; ESPN lists Atlanta up 1-0."
+        }
+      ],
+      "talkingPoints": [
+        "We were up 11 early in the fourth and scored 12 points the entire quarter.",
+        "Atlanta went on an 18-0 run from 11:33 to 6:42 of the fourth and we never got the lead back.",
+        "The Hawks had 24 offensive rebounds to our 8, and outrebounded us 62-43.",
+        "Cade had 15 assists but shot 2-for-9 and turned it over 6 times.",
+        "Kevin Huerter was 1-for-8 and a minus-28 in 30 minutes.",
+        "Isaiah Joe and Ausar Thompson were the bright spots, and we were a perfect 14-for-14 at the line."
+      ],
+      "notable": [
+        {
+          "stat": "33-12",
+          "label": "Atlanta's fourth quarter",
+          "note": "Detroit scored 33 in the third and led 85-74 at 11:39 of the fourth"
+        },
+        {
+          "stat": "18-0",
+          "label": "Hawks run in the fourth",
+          "note": "From 11:33 to 6:42; Atlanta also closed on an 8-0 run from 2:44"
+        },
+        {
+          "stat": "62-43",
+          "label": "Rebounds",
+          "note": "Atlanta had 24 offensive boards to Detroit's 8"
+        },
+        {
+          "stat": "14-14",
+          "label": "Detroit free throws",
+          "note": "Atlanta was 20-for-23"
+        },
+        {
+          "stat": "15-50",
+          "label": "Hawks from three",
+          "note": "30%; Detroit was 11-for-32 (34%)"
+        },
+        {
+          "stat": "22-12",
+          "label": "Fast-break points",
+          "note": "Atlanta's edge; Detroit won points in the paint 42-38"
+        }
+      ],
+      "story": [
+        "Detroit led 52-51 at the half and took its biggest lead, 13, late in the third on a 33-point quarter. Ausar Thompson had 18 and 11 and Isaiah Joe added 19 off the bench, and the Pistons led 85-74 at 11:39 of the fourth.",
+        "Then the offense stopped. Atlanta ran off 18 straight from 11:33 to 6:42, Luguentz Dort's three at 8:56 gave the Hawks the lead for good at 87-85, and Detroit managed just 12 points in the quarter, and Atlanta went 20-for-23 at the line on the night.",
+        "Nickeil Alexander-Walker scored 27 for Atlanta, and Kispert had 18 off the bench and was +21, and Dort had 16 and was +20. Detroit played without Jalen Duren, Duncan Robinson, Taurean Prince and Ebuka Okorie. The Pistons fall to 10-6."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "36-85 (42%)",
+          "opp": "36-99 (36%)"
+        },
+        {
+          "label": "3PT",
+          "det": "11-32 (34%)",
+          "opp": "15-50 (30%)"
+        },
+        {
+          "label": "FT",
+          "det": "14-14 (100%)",
+          "opp": "20-23 (87%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "43",
+          "opp": "62"
+        },
+        {
+          "label": "Assists",
+          "det": "30",
+          "opp": "23"
+        },
+        {
+          "label": "Steals",
+          "det": "10",
+          "opp": "12"
+        },
+        {
+          "label": "Blocks",
+          "det": "6",
+          "opp": "4"
+        },
+        {
+          "label": "Turnovers",
+          "det": "16",
+          "opp": "15"
+        },
+        {
+          "label": "Paint pts",
+          "det": "42",
+          "opp": "38"
+        }
+      ],
+      "share": "Hawks 107, Pistons 97. Detroit led by 11 early in the fourth, then scored 12 in the quarter. DET falls to 10-6.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401910029"
+        }
+      ]
+    },
     {
       "id": "g20261120",
       "date": "2026-11-20",
