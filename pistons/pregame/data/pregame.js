@@ -1,25 +1,25 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-22T06:10:00-05:00",
+  "updated": "2026-11-22T12:58:00-05:00",
   "games": [
     {
       "id": "g20261122",
       "date": "2026-11-22",
       "phase": "Regular season",
       "headline": "Pistons try to bounce back at Atlanta",
-      "dek": "First-place Detroit (10-5) visits the Hawks (10-6, winners of three straight) at 3:30 p.m. ET as a 2.5-point road favorite, still shorthanded after Friday's 105-102 loss to Toronto.",
+      "dek": "First-place Detroit (10-5) visits the Hawks (10-6, winners of three straight) at 3:30 p.m. ET as a 1.5-point road favorite, with Cunningham probable and Duren, Robinson and Okorie out.",
       "keys": [
         {
           "title": "Cade carries the load",
-          "text": "Cade Cunningham is listed day-to-day with right knee soreness, but he has played about 37 minutes a game over his last five and averaged 30.4 points in that stretch. With Duren, Robinson, Holland, Okorie and Prince all out or unlikely, the offense runs through him."
+          "text": "Cade Cunningham is probable with right knee soreness on the team's report, though CBS Sports lists a game-time decision. He has played about 37 minutes a game over his last five and averaged 30.4 points in that stretch. With Duren, Robinson and Okorie out, the offense runs through him."
         },
         {
           "title": "A short rotation",
-          "text": "Ronald Holland II (knee), Ebuka Okorie (oblique) and Taurean Prince (knee surgery, mid-December) are out on ESPN's list. Duren (hamstring) and Robinson (quad) are off ESPN's list but were out as of Friday, so the projections treat them as out. Expect heavy minutes for Jenkins, Huerter and Thompson."
+          "text": "Jalen Duren (hamstring), Duncan Robinson (quad), Ebuka Okorie (oblique) and Taurean Prince (knee surgery) are out, and Ugonna Onyenso is on G League assignment. Ron Holland II is questionable after missing Friday. Expect heavy minutes for Jenkins, Huerter and Thompson."
         },
         {
           "title": "Atlanta is hurt too",
-          "text": "The Hawks list Kingston Flemings, Jock Landale, CJ McCollum, Mouhamed Gueye and Asa Newell out. They have won three straight, including 117-112 at Oklahoma City and 111-97 over Charlotte on Friday, and score 117.3 a game to Detroit's 114.5."
+          "text": "The Hawks list CJ McCollum, Jock Landale, Mouhamed Gueye and Asa Newell out; Kingston Flemings is out on ESPN's list but questionable on the team report. They have won three straight, including 111-97 over Charlotte on Friday, and score 117.3 a game to Detroit's 114.5."
         }
       ],
       "watch": [
@@ -56,11 +56,11 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (13 games)"
         }
       ],
-      "injuryNote": "ESPN lists Cunningham day-to-day (right knee soreness), Holland out (knee bruise, return date Nov. 22), Okorie out (oblique, Nov. 24), Prince out (knee surgery, Dec. 13) and Onyenso day-to-day (foot). Jalen Duren (hamstring, at least Nov. 24 per Friday's preview) and Duncan Robinson (quad, at least Nov. 27; missed Friday) are not on ESPN's list, so projections treat them as out; I found no newer report. Atlanta: Flemings (back, Nov. 22), Landale (hip, Nov. 27), McCollum (calf, Dec. 19), Gueye (foot, Dec. 12) and Newell (toe) out. Check the final reports near the 3:30 tip.",
+      "injuryNote": "Team report (Heavy via Yahoo Sports, Nov. 22): Cunningham probable (right knee soreness), Holland questionable (left knee bone bruise), Duren, Robinson, Okorie and Prince out, Onyenso on G League assignment. ESPN's list still shows Cunningham day-to-day and Holland out. Atlanta: McCollum and Landale out; Flemings questionable per the team report (ESPN: out). Check the final reports near the 3:30 tip.",
       "talkingPoints": [
         "We're 10-5 and still first in the Central, but we just dropped one to Toronto at the buzzer.",
-        "Cade's knee is the story. If he plays, he's probably north of 35 minutes again.",
-        "Duren and Robinson are out, so Reed and Collins have to hold the frontcourt.",
+        "Cade is probable with the knee. If he plays, he's probably north of 35 minutes again.",
+        "Duren and Robinson are both out, so Reed and Collins have to hold the frontcourt.",
         "Atlanta has won three in a row and Nickeil Alexander-Walker is putting up 20.9 a night.",
         "Back-to-back-ish for both teams: each played Friday and had a day off.",
         "This is the first of three meetings with the Hawks this season (Dec. 23 and Jan. 26 to come)."
@@ -73,30 +73,38 @@ window.PISTONS_PREGAME = {
         {
           "label": "Tip",
           "text": "Sunday, Nov. 22, 3:30 p.m. ET at State Farm Arena; ESPN lists no national broadcast"
+        },
+        {
+          "label": "Line",
+          "text": "DraftKings has Detroit -1.5, total 223.5 (the line has moved from -2.5 this morning)"
         }
       ],
       "projNotes": {
-        "Cade Cunningham": "37 min as day-to-day; 37 min and 30.4 PTS over his last five",
+        "Cade Cunningham": "37 min as probable; 37 min and 30.4 PTS over his last five",
         "Daniss Jenkins": "34 min with Duren, Robinson, Okorie out; 38 min last five",
         "Paul Reed": "26 min as the lead big with Duren out",
         "John Collins": "26 min; frontcourt thinned by Duren and Robinson out",
         "Kevin Huerter": "30 min; 34 min and 14.2 PTS over his last five",
         "Elijah Harkless": "Few games this season; 18 minutes is a guess"
       },
-      "projNote": "Not projected: Duren, Robinson (treated as out), Holland, Okorie, Prince (out per ESPN), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). Line implies about 114 Detroit points.",
+      "projNote": "Not projected: Duren, Robinson, Okorie, Prince (out), Holland (questionable, treated as out), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (G League). Line implies about 112.5 Detroit points.",
       "ouNotes": {
-        "Cade Cunningham": "Day-to-day (right knee soreness) per ESPN; the assists-over call assumes about 37 minutes",
+        "Cade Cunningham": "Probable (right knee soreness); the assists-over call assumes about 37 minutes",
         "Ausar Thompson": "More minutes with the rotation thin, but the model still sees fewer assists than his average"
       },
       "pick": {
-        "call": "Pistons by 3",
-        "text": "Just for fun: Detroit is shorthanded but 7-2 on the road, and Atlanta is missing guards. If Cade plays, the Pistons squeak it out, 114-111."
+        "call": "Pistons by 2",
+        "text": "Just for fun: Detroit is shorthanded but 7-2 on the road, and Atlanta is missing guards. If Cade plays, the Pistons squeak it out, 113-111."
       },
-      "share": "Pistons (10-5) at the Hawks (10-6) today, 3:30 ET. Cade day-to-day, Duren and Robinson out. DET -2.5, ATL on a 3-game win streak.",
+      "share": "Pistons (10-5) at the Hawks (10-6) today, 3:30 ET. Cade probable, Duren and Robinson out. DET -1.5, ATL on a 3-game win streak.",
       "sources": [
         {
           "title": "ESPN game page",
           "url": "https://www.espn.com/nba/game/_/gameId/401910029"
+        },
+        {
+          "title": "Heavy via Yahoo Sports: Pistons injury report vs. Hawks (Nov. 22)",
+          "url": "https://sports.yahoo.com/articles/detroit-pistons-announce-injury-report-071434249.html"
         }
       ]
     },
