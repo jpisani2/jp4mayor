@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-22T12:58:00-05:00",
+  "updated": "2026-11-22T14:55:00-05:00",
   "games": [
     {
       "id": "g20261122",
@@ -76,7 +76,7 @@ window.PISTONS_PREGAME = {
         },
         {
           "label": "Line",
-          "text": "DraftKings has Detroit -1.5, total 223.5 (the line has moved from -2.5 this morning)"
+          "text": "DraftKings has Detroit -1.5, total 223.5 (down from -2.5 this morning; unchanged at the 2:50 p.m. check)"
         }
       ],
       "projNotes": {
