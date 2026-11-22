@@ -1,7 +1,105 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-20T18:55:00-05:00",
+  "updated": "2026-11-22T06:10:00-05:00",
   "games": [
+    {
+      "id": "g20261122",
+      "date": "2026-11-22",
+      "phase": "Regular season",
+      "headline": "Pistons try to bounce back at Atlanta",
+      "dek": "First-place Detroit (10-5) visits the Hawks (10-6, winners of three straight) at 3:30 p.m. ET as a 2.5-point road favorite, still shorthanded after Friday's 105-102 loss to Toronto.",
+      "keys": [
+        {
+          "title": "Cade carries the load",
+          "text": "Cade Cunningham is listed day-to-day with right knee soreness, but he has played about 37 minutes a game over his last five and averaged 30.4 points in that stretch. With Duren, Robinson, Holland, Okorie and Prince all out or unlikely, the offense runs through him."
+        },
+        {
+          "title": "A short rotation",
+          "text": "Ronald Holland II (knee), Ebuka Okorie (oblique) and Taurean Prince (knee surgery, mid-December) are out on ESPN's list. Duren (hamstring) and Robinson (quad) are off ESPN's list but were out as of Friday, so the projections treat them as out. Expect heavy minutes for Jenkins, Huerter and Thompson."
+        },
+        {
+          "title": "Atlanta is hurt too",
+          "text": "The Hawks list Kingston Flemings, Jock Landale, CJ McCollum, Mouhamed Gueye and Asa Newell out. They have won three straight, including 117-112 at Oklahoma City and 111-97 over Charlotte on Friday, and score 117.3 a game to Detroit's 114.5."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "25.6 PTS · 7.9 AST · 5.1 REB",
+          "sub": "2026-27 season (14 games); knee status is the thing to check near tip",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "14.3 PTS · 4.5 AST · 44.0% 3PT",
+          "sub": "2026-27 season (15 games); picks up minutes with the guard rotation thin"
+        },
+        {
+          "team": "DET",
+          "name": "Kevin Huerter",
+          "line": "10.6 PTS · 2.7 AST · 34.3% 3PT",
+          "sub": "2026-27 season (15 games); scored 20 against Toronto on Friday"
+        },
+        {
+          "team": "ATL",
+          "name": "Nickeil Alexander-Walker",
+          "line": "20.9 PTS · 3.4 3PM · 3.0 AST",
+          "sub": "2026-27 season (16 games); the Hawks' leading scorer",
+          "badge": "Star"
+        },
+        {
+          "team": "ATL",
+          "name": "Jalen Johnson",
+          "line": "19.7 PTS · 9.0 REB · 7.5 AST",
+          "sub": "2026-27 season (13 games)"
+        }
+      ],
+      "injuryNote": "ESPN lists Cunningham day-to-day (right knee soreness), Holland out (knee bruise, return date Nov. 22), Okorie out (oblique, Nov. 24), Prince out (knee surgery, Dec. 13) and Onyenso day-to-day (foot). Jalen Duren (hamstring, at least Nov. 24 per Friday's preview) and Duncan Robinson (quad, at least Nov. 27; missed Friday) are not on ESPN's list, so projections treat them as out; I found no newer report. Atlanta: Flemings (back, Nov. 22), Landale (hip, Nov. 27), McCollum (calf, Dec. 19), Gueye (foot, Dec. 12) and Newell (toe) out. Check the final reports near the 3:30 tip.",
+      "talkingPoints": [
+        "We're 10-5 and still first in the Central, but we just dropped one to Toronto at the buzzer.",
+        "Cade's knee is the story. If he plays, he's probably north of 35 minutes again.",
+        "Duren and Robinson are out, so Reed and Collins have to hold the frontcourt.",
+        "Atlanta has won three in a row and Nickeil Alexander-Walker is putting up 20.9 a night.",
+        "Back-to-back-ish for both teams: each played Friday and had a day off.",
+        "This is the first of three meetings with the Hawks this season (Dec. 23 and Jan. 26 to come)."
+      ],
+      "facts": [
+        {
+          "label": "Series",
+          "text": "First of three meetings this season (Dec. 23, Jan. 26 to come)"
+        },
+        {
+          "label": "Tip",
+          "text": "Sunday, Nov. 22, 3:30 p.m. ET at State Farm Arena; ESPN lists no national broadcast"
+        }
+      ],
+      "projNotes": {
+        "Cade Cunningham": "37 min as day-to-day; 37 min and 30.4 PTS over his last five",
+        "Daniss Jenkins": "34 min with Duren, Robinson, Okorie out; 38 min last five",
+        "Paul Reed": "26 min as the lead big with Duren out",
+        "John Collins": "26 min; frontcourt thinned by Duren and Robinson out",
+        "Kevin Huerter": "30 min; 34 min and 14.2 PTS over his last five",
+        "Elijah Harkless": "Few games this season; 18 minutes is a guess"
+      },
+      "projNote": "Not projected: Duren, Robinson (treated as out), Holland, Okorie, Prince (out per ESPN), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). Line implies about 114 Detroit points.",
+      "ouNotes": {
+        "Cade Cunningham": "Day-to-day (right knee soreness) per ESPN; the assists-over call assumes about 37 minutes",
+        "Ausar Thompson": "More minutes with the rotation thin, but the model still sees fewer assists than his average"
+      },
+      "pick": {
+        "call": "Pistons by 3",
+        "text": "Just for fun: Detroit is shorthanded but 7-2 on the road, and Atlanta is missing guards. If Cade plays, the Pistons squeak it out, 114-111."
+      },
+      "share": "Pistons (10-5) at the Hawks (10-6) today, 3:30 ET. Cade day-to-day, Duren and Robinson out. DET -2.5, ATL on a 3-game win streak.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401910029"
+        }
+      ]
+    },
     {
       "id": "g20261120",
       "date": "2026-11-20",
