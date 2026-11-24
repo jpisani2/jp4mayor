@@ -1,7 +1,104 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-22T14:55:00-05:00",
+  "updated": "2026-11-24T06:05:00-05:00",
   "games": [
+    {
+      "id": "g20261124",
+      "date": "2026-11-24",
+      "phase": "Regular season",
+      "headline": "Pistons try to snap a skid in Orlando",
+      "dek": "First-place Detroit (10-6, lost two straight) visits a Magic team without Paolo Banchero at 7:00 p.m. ET as a 2.5-point road favorite.",
+      "keys": [
+        {
+          "title": "Stop the two-game slide",
+          "text": "Detroit lost 102-105 to Toronto on Friday and 97-107 at Atlanta on Sunday, where it led by 11 early in the fourth and scored just 12 in the quarter. The Pistons are 7-3 on the road this season and are still first in the Central."
+        },
+        {
+          "title": "Orlando is thin up front",
+          "text": "The Magic list Paolo Banchero (ankle sprain), Jonathan Isaac (knee), Noah Penda (hamstring) and Izaiyah Nelson (ankle surgery) out, all with a Nov. 29 return date on ESPN's list. Franz Wagner (24.5 PPG, 8.2 AST) and Desmond Bane (18.5 PPG, 42.6% 3PT) carry the load."
+        },
+        {
+          "title": "Detroit's own short rotation",
+          "text": "Jalen Duren (hamstring) and Ebuka Okorie (oblique) are out until Nov. 30, Duncan Robinson (quad) until Nov. 27 and Taurean Prince (knee surgery) until Dec. 13. Cade Cunningham is day-to-day with a knee issue, so his status near tip matters most. Reed and Collins hold the frontcourt."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Cade Cunningham",
+          "line": "24.2 PTS · 8.3 AST · 5.1 REB",
+          "sub": "2026-27 season (15 games); day-to-day with a knee issue",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "11.1 PTS · 8.6 REB · 5.3 AST",
+          "sub": "2026-27 season (15 games); 18 and 11 at Atlanta on Sunday"
+        },
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "14.1 PTS · 4.4 AST · 42.0% 3PT",
+          "sub": "2026-27 season (16 games); heavy guard minutes again"
+        },
+        {
+          "team": "ORL",
+          "name": "Franz Wagner",
+          "line": "24.5 PTS · 8.2 AST · 6.9 REB",
+          "sub": "2026-27 season (16 games); the Magic's engine with Banchero out",
+          "badge": "Star"
+        },
+        {
+          "team": "ORL",
+          "name": "Desmond Bane",
+          "line": "18.5 PTS · 4.2 3PM · 42.6% 3PT",
+          "sub": "2026-27 season (15 games)"
+        }
+      ],
+      "injuryNote": "ESPN's list (updated Nov. 23): Cunningham day-to-day (knee); Duren, Okorie, Robinson and Prince out. Orlando: Banchero, Isaac, Penda and Nelson out. No newer team report found this morning; check the final reports near the 7:00 tip.",
+      "talkingPoints": [
+        "We're 10-6 and still first in the Central, but we've lost two in a row.",
+        "Sunday hurt: up 11 in the fourth, then 12 points in the quarter.",
+        "Cade's knee is the thing to watch before tip.",
+        "Orlando is 7-9 and 1-5 at home, and Banchero is still out.",
+        "Franz Wagner is averaging 24.5 points and 8.2 assists, so he's the guy to slow down.",
+        "Detroit is 7-3 on the road, so this is a good spot to turn it around."
+      ],
+      "facts": [
+        {
+          "label": "Tip",
+          "text": "Tuesday, Nov. 24, 7:00 p.m. ET at Kia Center; no TV listed on ESPN"
+        },
+        {
+          "label": "Up next",
+          "text": "The Magic visit Detroit on Nov. 29 and Jan. 1"
+        }
+      ],
+      "projNotes": {
+        "Cade Cunningham": "35 min if he plays; day-to-day with the knee",
+        "Daniss Jenkins": "33 min with Duren, Robinson, Okorie out",
+        "Paul Reed": "24 min as the lead big with Duren out",
+        "John Collins": "24 min; frontcourt thin with Duren and Robinson out",
+        "Isaiah Joe": "Few games with DET this season; minutes are an estimate",
+        "Elijah Harkless": "Few games this season; 17 minutes is a guess"
+      },
+      "projNote": "Not projected: Duren, Robinson, Okorie, Prince (out), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). Line implies about 107 Detroit points.",
+      "ouNotes": {
+        "Cade Cunningham": "Day-to-day (knee); projections assume he plays about 35 minutes"
+      },
+      "pick": {
+        "call": "Pistons by 3",
+        "text": "Just for fun: Detroit is shorthanded but 7-3 on the road, and Orlando is 1-5 at home without Banchero. If Cade plays, the Pistons get back on track, 108-105."
+      },
+      "share": "Pistons (10-6) at the Magic (7-9) tonight, 7:00 ET. Cade day-to-day, Duren out, Banchero out for Orlando. DET -2.5, total 211.5.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909314"
+        }
+      ]
+    },
     {
       "id": "g20261122",
       "date": "2026-11-22",
