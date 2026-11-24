@@ -1,13 +1,13 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-24T16:58:00-05:00",
+  "updated": "2026-11-24T17:58:00-05:00",
   "games": [
     {
       "id": "g20261124",
       "date": "2026-11-24",
       "phase": "Regular season",
       "headline": "Pistons try to snap a skid in Orlando",
-      "dek": "First-place Detroit (10-6, lost two straight) visits a Magic team without Paolo Banchero at 7:00 p.m. ET as a 1.5-point road favorite.",
+      "dek": "First-place Detroit (10-6, lost two straight) visits a Magic team without Paolo Banchero at 7:00 p.m. ET as a 2.5-point road favorite.",
       "keys": [
         {
           "title": "Stop the two-game slide",
@@ -56,7 +56,7 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (15 games)"
         }
       ],
-      "injuryNote": "ESPN's list (updated Nov. 23): Cunningham day-to-day (knee); Duren, Okorie, Robinson and Prince out. Orlando: Banchero, Isaac, Penda and Nelson out. Afternoon update: ESPN's injury list moved Okorie's return to Dec. 13 and Prince's to Dec. 26; no newer Cunningham report found (searches turned up only older seasons), so check the final reports near the 7:00 tip.",
+      "injuryNote": "ESPN's list (updated Nov. 23): Cunningham day-to-day (knee); Duren, Okorie, Robinson and Prince out. Orlando: Banchero, Isaac, Penda and Nelson out. Afternoon update: ESPN's injury list moved Okorie's return to Dec. 13 and Prince's to Dec. 26; ESPN still lists him day-to-day as of the 5:50 p.m. check, and a news search found nothing newer for tonight, so check the final reports near the 7:00 tip.",
       "talkingPoints": [
         "We're 10-6 and still first in the Central, but we've lost two in a row.",
         "Sunday hurt: up 11 in the fourth, then 12 points in the quarter.",
@@ -83,7 +83,7 @@ window.PISTONS_PREGAME = {
         "Isaiah Joe": "Few games with DET this season; minutes are an estimate",
         "Elijah Harkless": "Few games this season; 17 minutes is a guess"
       },
-      "projNote": "Not projected: Duren, Robinson, Okorie, Prince (out), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). Line (DET -1.5, total 212.5; moved from -2.5/213.5 this morning) implies about 107 Detroit points.",
+      "projNote": "Not projected: Duren, Robinson, Okorie, Prince (out), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). Line (DET -2.5, total 212.5 on DraftKings; it was -1.5 earlier today) implies about 107 Detroit points.",
       "ouNotes": {
         "Cade Cunningham": "Day-to-day (knee); projections assume he plays about 35 minutes"
       },
@@ -91,7 +91,7 @@ window.PISTONS_PREGAME = {
         "call": "Pistons by 2",
         "text": "Just for fun: Detroit is shorthanded but 7-3 on the road, and Orlando is 1-5 at home without Banchero. If Cade plays, the Pistons get back on track, 107-105."
       },
-      "share": "Pistons (10-6) at the Magic (7-9) tonight, 7:00 ET. Cade day-to-day, Duren out, Banchero out for Orlando. DET -1.5, total 212.5.",
+      "share": "Pistons (10-6) at the Magic (7-9) tonight, 7:00 ET. Cade day-to-day, Duren out, Banchero out for Orlando. DET -2.5, total 212.5.",
       "sources": [
         {
           "title": "ESPN game page",
