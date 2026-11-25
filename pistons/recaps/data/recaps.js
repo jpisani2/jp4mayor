@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-11-22T17:58:00-05:00",
+  "updated": "2026-11-24T21:25:00-05:00",
   "games": [
+    {
+      "id": "g20261124",
+      "date": "2026-11-24",
+      "phase": "Regular season",
+      "home": false,
+      "venue": "Kia Center, Orlando",
+      "attendance": 19352,
+      "opp": {
+        "abbr": "ORL",
+        "name": "Orlando Magic",
+        "short": "Magic",
+        "score": 86,
+        "quarters": [
+          22,
+          14,
+          25,
+          25
+        ]
+      },
+      "det": {
+        "score": 104,
+        "quarters": [
+          16,
+          32,
+          25,
+          31
+        ]
+      },
+      "result": "W",
+      "record": "11-6",
+      "headline": "Pistons beat Magic by 18 without Cade",
+      "dek": "Detroit trailed 22-16 after one, then outscored Orlando 32-14 in the second quarter, led by as many as 18 and won 104-86.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Isaiah Joe",
+          "line": "21 PTS · 5 3PM · 4 REB",
+          "sub": "8-for-15 and 5-for-11 from three; +16 in 30 minutes",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "15 PTS · 10 AST · 5 REB · 2 STL",
+          "sub": "Double-double as a starter in 35 minutes, with 5 turnovers; +16"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "6 PTS · 10 REB · 7 AST · 4 BLK",
+          "sub": "3-for-3 from the floor; nearly a triple-double in 31 minutes, +13"
+        },
+        {
+          "team": "DET",
+          "name": "Ronald Holland II",
+          "line": "13 PTS · 2 3PM",
+          "sub": "5-for-9 off the bench in 17 minutes"
+        },
+        {
+          "team": "ORL",
+          "name": "Desmond Bane",
+          "line": "21 PTS · 4 3PM · 5 AST",
+          "sub": "8-for-13, but 4 turnovers, 6 fouls and a -20 in 34 minutes"
+        },
+        {
+          "team": "ORL",
+          "name": "Wendell Carter Jr.",
+          "line": "13 REB · 3 STL · 9 PTS",
+          "sub": "3-for-10 from the floor; most rebounds in either locker room"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's scorers",
+          "text": "Joe's 21 tied Bane for the most among today's games so far. Both are well short of this week's top mark, James Harden's 51."
+        },
+        {
+          "label": "Dimes",
+          "text": "Jenkins' 10 assists led today's games. The week's best is Josh Giddey's 22; Cade Cunningham's 15 on Sunday is second."
+        },
+        {
+          "label": "Season series",
+          "text": "First meeting of the season; ESPN lists Detroit up 1-0."
+        }
+      ],
+      "talkingPoints": [
+        "We won by 18 on the road with Cade out, and moved to 11-6.",
+        "Down 22-16 after the first, we won the second quarter 32-14, including an 18-0 run.",
+        "Detroit hit 15 of 36 threes (42%); Orlando was 12-for-36 (33%).",
+        "Ausar had 6 points but 10 boards, 7 assists and 4 blocks.",
+        "Isaiah Joe had 21, Daniss Jenkins a 15-and-10, and Javonte Green had 4 steals.",
+        "We scored 24 points off turnovers and 19 on the break to Orlando's 16 and 9."
+      ],
+      "notable": [
+        {
+          "stat": "18-0",
+          "label": "Pistons run in the second",
+          "note": "From 9:03 to 5:08; Detroit turned a 27-20 deficit into a 38-27 lead"
+        },
+        {
+          "stat": "32-14",
+          "label": "Second quarter",
+          "note": "Detroit led 48-36 at the half and never trailed again after 7:39 of the second"
+        },
+        {
+          "stat": "15-36",
+          "label": "Detroit threes",
+          "note": "42%; Orlando was 12-for-36 (33%)"
+        },
+        {
+          "stat": "24-16",
+          "label": "Points off turnovers",
+          "note": "Orlando had 20 turnovers to Detroit's 16; fast-break points were 19-9"
+        },
+        {
+          "stat": "18",
+          "label": "Biggest Detroit lead",
+          "note": "At 6:01 of the third; Orlando's best was 7"
+        },
+        {
+          "stat": "17-24",
+          "label": "Fouls",
+          "note": "Detroit shot 11-for-15 at the line, Orlando 6-for-8; Bane fouled out with 6"
+        }
+      ],
+      "story": [
+        "Orlando led 22-16 after one quarter and 27-20 early in the second. Then Detroit ripped off an 18-0 run from 9:03 to 5:08, Isaiah Joe's layup at 7:39 gave the Pistons the lead for good, and they led 48-36 at the half after a 32-14 quarter.",
+        "The margin reached 18 at 6:01 of the third and stayed above 12 the rest of the way. Joe finished with 21 on 5-for-11 from three, Daniss Jenkins had 15 points and 10 assists, and Ausar Thompson had 10 rebounds, 7 assists and 4 blocks on 3-for-3 shooting. Ronald Holland II added 13 in 17 minutes.",
+        "Orlando shot 41% and had 20 turnovers. Desmond Bane scored 21 but fouled out and was -20, and Franz Wagner had 20 on 9-for-20. Detroit played without Cade Cunningham (right knee soreness), Jalen Duren, Duncan Robinson, Taurean Prince and Ebuka Okorie, and moved to 11-6, 8-3 on the road."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "39-79 (49%)",
+          "opp": "34-83 (41%)"
+        },
+        {
+          "label": "3PT",
+          "det": "15-36 (42%)",
+          "opp": "12-36 (33%)"
+        },
+        {
+          "label": "FT",
+          "det": "11-15 (73%)",
+          "opp": "6-8 (75%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "42",
+          "opp": "41"
+        },
+        {
+          "label": "Assists",
+          "det": "27",
+          "opp": "22"
+        },
+        {
+          "label": "Steals",
+          "det": "12",
+          "opp": "8"
+        },
+        {
+          "label": "Blocks",
+          "det": "6",
+          "opp": "4"
+        },
+        {
+          "label": "Turnovers",
+          "det": "16",
+          "opp": "20"
+        },
+        {
+          "label": "Paint pts",
+          "det": "40",
+          "opp": "38"
+        }
+      ],
+      "share": "Pistons 104, Magic 86. Detroit won the second quarter 32-14 and led by as many as 18 without Cade. DET moves to 11-6.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909314"
+        }
+      ]
+    },
     {
       "id": "g20261122",
       "date": "2026-11-22",
