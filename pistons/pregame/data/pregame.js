@@ -1,6 +1,6 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-27T16:55:00-05:00",
+  "updated": "2026-11-27T18:55:00-05:00",
   "games": [
     {
       "id": "g20261127",
@@ -56,7 +56,7 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (19 games)"
         }
       ],
-      "injuryNote": "ESPN's list (updated Nov. 26): Cunningham, Robinson, Duren, Okorie and Prince are all out for Detroit; ESPN lists no Milwaukee injuries. ESPN also lists Milwaukee guard Kasparas Jakucionis (left ankle) out. A 4:50 p.m. news search found no starting lineups or newer Detroit news, so check the final reports near the 7:30 tip.",
+      "injuryNote": "ESPN's list (updated Nov. 26): Cunningham, Robinson, Duren, Okorie and Prince are all out for Detroit; ESPN lists no Milwaukee injuries. ESPN also lists Milwaukee guard Kasparas Jakucionis (left ankle) out. A 6:50 p.m. news search found no starting lineups or newer Detroit or Milwaukee news, and the line is unchanged at DET -9.5, so check the final reports near the 7:30 tip.",
       "talkingPoints": [
         "We're 11-6 and first in the Central, coming off an 18-point win in Orlando.",
         "Milwaukee is 2-17, but we lost to Toronto at home last week, so no sleeping on anyone.",
