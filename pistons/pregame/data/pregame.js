@@ -1,17 +1,17 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-27T06:05:00-05:00",
+  "updated": "2026-11-27T12:58:00-05:00",
   "games": [
     {
       "id": "g20261127",
       "date": "2026-11-27",
       "phase": "Regular season",
       "headline": "Short-handed Pistons host the 2-17 Bucks",
-      "dek": "First-place Detroit (11-6) hosts Milwaukee (2-17) at 7:30 p.m. ET as an 8.5-point favorite, with Cunningham, Duren and Robinson all out.",
+      "dek": "First-place Detroit (11-6) hosts Milwaukee (2-17) at 7:30 p.m. ET as a 10.5-point favorite, with Cunningham, Duren and Robinson all out.",
       "keys": [
         {
           "title": "Win the game you're supposed to win",
-          "text": "Milwaukee is 2-17, 1-9 on the road and is 1-4 in its last five. Detroit is 11-6, 3-2 in its last five and 3-3 at home. DraftKings has DET -8.5 with a 218.5 total."
+          "text": "Milwaukee is 2-17, 1-8 on the road and 1-4 in its last five. Detroit is 11-6, 3-2 in its last five and 3-3 at home. DraftKings now has DET -10.5 (moved from -8.5 this morning) with a 219.5 total."
         },
         {
           "title": "A depleted Detroit rotation",
@@ -56,14 +56,14 @@ window.PISTONS_PREGAME = {
           "sub": "2026-27 season (19 games)"
         }
       ],
-      "injuryNote": "ESPN's list (updated Nov. 26): Cunningham, Robinson, Duren, Okorie and Prince are all out for Detroit; ESPN lists no Milwaukee injuries. A news search found nothing newer for tonight, so check final reports near the 7:30 tip.",
+      "injuryNote": "ESPN's list (updated Nov. 26): Cunningham, Robinson, Duren, Okorie and Prince are all out for Detroit; ESPN lists no Milwaukee injuries. A midday news search found nothing newer, so check final reports near the 7:30 tip.",
       "talkingPoints": [
         "We're 11-6 and first in the Central, coming off an 18-point win in Orlando.",
         "Milwaukee is 2-17, but we lost to Toronto at home last week, so no sleeping on anyone.",
         "No Cade, Duren or Robinson tonight, so the depth guys have to deliver again.",
         "Isaiah Joe went 5-for-11 from three in Orlando; keep an eye on him.",
         "Herro is averaging 22.3 for Milwaukee and is their one real scoring threat.",
-        "DET is an 8.5-point favorite at home."
+        "DET is now a 10.5-point favorite at home; the line grew from 8.5 this morning."
       ],
       "facts": [
         {
@@ -83,15 +83,15 @@ window.PISTONS_PREGAME = {
         "Isaiah Joe": "Only 7 games with DET this season; minutes are an estimate",
         "Elijah Harkless": "Only 5 games this season; 18 minutes is a guess"
       },
-      "projNote": "Not projected: Cunningham, Robinson, Duren, Okorie, Prince (out), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). The line (DET -8.5, total 218.5 on DraftKings) implies about 113.5 Detroit points.",
+      "projNote": "Not projected: Cunningham, Robinson, Duren, Okorie, Prince (out), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). The line (DET -10.5, total 219.5 on DraftKings) implies about 115 Detroit points.",
       "ouNotes": {
         "Kevin Huerter": "Starters out lift his minutes to about 33 in the projection"
       },
       "pick": {
-        "call": "Pistons by 9",
-        "text": "Just for fun: Milwaukee is 2-17 and 1-8 on the road, and Detroit is at home with a deep-enough bench. Pistons 113, Bucks 104."
+        "call": "Pistons by 11",
+        "text": "Just for fun: Milwaukee is 2-17 and 1-8 on the road, and Detroit is at home with a deep-enough bench. Pistons 114, Bucks 103."
       },
-      "share": "Pistons (11-6) host the Bucks (2-17) tonight, 7:30 ET. Cade, Duren, Robinson out. DET -8.5, total 218.5.",
+      "share": "Pistons (11-6) host the Bucks (2-17) tonight, 7:30 ET. Cade, Duren, Robinson out. DET -10.5, total 219.5.",
       "sources": [
         {
           "title": "ESPN game page",
