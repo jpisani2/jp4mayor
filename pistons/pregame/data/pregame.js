@@ -1,7 +1,104 @@
 /* Pistons game previews, newest first. Written by the pistons-pregame skill from tools/out/<date>.json. Matchup numbers live in matchup.js. */
 window.PISTONS_PREGAME = {
-  "updated": "2026-11-24T17:58:00-05:00",
+  "updated": "2026-11-27T06:05:00-05:00",
   "games": [
+    {
+      "id": "g20261127",
+      "date": "2026-11-27",
+      "phase": "Regular season",
+      "headline": "Short-handed Pistons host the 2-17 Bucks",
+      "dek": "First-place Detroit (11-6) hosts Milwaukee (2-17) at 7:30 p.m. ET as an 8.5-point favorite, with Cunningham, Duren and Robinson all out.",
+      "keys": [
+        {
+          "title": "Win the game you're supposed to win",
+          "text": "Milwaukee is 2-17, 1-9 on the road and is 1-4 in its last five. Detroit is 11-6, 3-2 in its last five and 3-3 at home. DraftKings has DET -8.5 with a 218.5 total."
+        },
+        {
+          "title": "A depleted Detroit rotation",
+          "text": "ESPN lists Cade Cunningham (knee, return Nov. 29), Duncan Robinson (quad, Nov. 29), Jalen Duren (hamstring, Nov. 30), Ebuka Okorie (oblique, Dec. 13) and Taurean Prince (knee surgery, Dec. 26) out. Jenkins, Huerter, Reed, Collins and Thompson carry the minutes."
+        },
+        {
+          "title": "Keep Herro in check",
+          "text": "Tyler Herro leads Milwaukee at 22.3 points and 2.9 threes a game. The Bucks score 109.1 a game on 43.6% shooting and turn it over 15.6 times, while Detroit forces 9.5 steals a game."
+        }
+      ],
+      "watch": [
+        {
+          "team": "DET",
+          "name": "Daniss Jenkins",
+          "line": "14.1 PTS · 4.7 AST · 40.2% 3PT",
+          "sub": "2026-27 season (17 games); projected for heavy guard minutes with Cade out",
+          "badge": "Star"
+        },
+        {
+          "team": "DET",
+          "name": "Ausar Thompson",
+          "line": "10.8 PTS · 8.7 REB · 5.4 AST",
+          "sub": "2026-27 season (16 games)"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "11.5 PTS · 7.4 REB · 57.1% FG",
+          "sub": "2026-27 season (17 games); lead big with Duren out"
+        },
+        {
+          "team": "MIL",
+          "name": "Tyler Herro",
+          "line": "22.3 PTS · 4.6 AST · 39.3% 3PT",
+          "sub": "2026-27 season (18 games); the Bucks' top scorer",
+          "badge": "Star"
+        },
+        {
+          "team": "MIL",
+          "name": "Jaime Jaquez Jr.",
+          "line": "14.4 PTS · 4.8 REB · 39.8% 3PT",
+          "sub": "2026-27 season (19 games)"
+        }
+      ],
+      "injuryNote": "ESPN's list (updated Nov. 26): Cunningham, Robinson, Duren, Okorie and Prince are all out for Detroit; ESPN lists no Milwaukee injuries. A news search found nothing newer for tonight, so check final reports near the 7:30 tip.",
+      "talkingPoints": [
+        "We're 11-6 and first in the Central, coming off an 18-point win in Orlando.",
+        "Milwaukee is 2-17, but we lost to Toronto at home last week, so no sleeping on anyone.",
+        "No Cade, Duren or Robinson tonight, so the depth guys have to deliver again.",
+        "Isaiah Joe went 5-for-11 from three in Orlando; keep an eye on him.",
+        "Herro is averaging 22.3 for Milwaukee and is their one real scoring threat.",
+        "DET is an 8.5-point favorite at home."
+      ],
+      "facts": [
+        {
+          "label": "Tip",
+          "text": "Friday, Nov. 27, 7:30 p.m. ET at Little Caesars Arena; Bucks TV on MyMi and the Bucks App"
+        },
+        {
+          "label": "Up next",
+          "text": "The Bucks and Pistons also meet Mar. 2, Mar. 11 and Mar. 18"
+        }
+      ],
+      "projNotes": {
+        "Daniss Jenkins": "37 min with Cade, Duren, Robinson out; averages 31",
+        "Kevin Huerter": "33 min with the roster thin",
+        "Paul Reed": "27 min as the lead big with Duren out",
+        "John Collins": "27 min; frontcourt thin without Duren, Robinson",
+        "Isaiah Joe": "Only 7 games with DET this season; minutes are an estimate",
+        "Elijah Harkless": "Only 5 games this season; 18 minutes is a guess"
+      },
+      "projNote": "Not projected: Cunningham, Robinson, Duren, Okorie, Prince (out), Isaac Jones, Chaz Lanier, Tolu Smith (few minutes), Ugonna Onyenso (no NBA box scores). The line (DET -8.5, total 218.5 on DraftKings) implies about 113.5 Detroit points.",
+      "ouNotes": {
+        "Kevin Huerter": "Starters out lift his minutes to about 33 in the projection"
+      },
+      "pick": {
+        "call": "Pistons by 9",
+        "text": "Just for fun: Milwaukee is 2-17 and 1-8 on the road, and Detroit is at home with a deep-enough bench. Pistons 113, Bucks 104."
+      },
+      "share": "Pistons (11-6) host the Bucks (2-17) tonight, 7:30 ET. Cade, Duren, Robinson out. DET -8.5, total 218.5.",
+      "sources": [
+        {
+          "title": "ESPN game page",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909327"
+        }
+      ]
+    },
     {
       "id": "g20261124",
       "date": "2026-11-24",
