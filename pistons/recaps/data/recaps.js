@@ -1,7 +1,192 @@
 /* Pistons game recaps, newest first. Written by the pistons-recap skill from tools/out/<date>.json. */
 window.PISTONS_RECAPS = {
-  "updated": "2026-11-24T21:25:00-05:00",
+  "updated": "2026-11-27T22:05:00-05:00",
   "games": [
+    {
+      "id": "g20261127",
+      "date": "2026-11-27",
+      "phase": "Regular season",
+      "home": true,
+      "venue": "Little Caesars Arena, Detroit",
+      "attendance": 0,
+      "opp": {
+        "abbr": "MIL",
+        "name": "Milwaukee Bucks",
+        "short": "Bucks",
+        "score": 98,
+        "quarters": [
+          29,
+          21,
+          26,
+          22
+        ]
+      },
+      "det": {
+        "score": 113,
+        "quarters": [
+          24,
+          24,
+          42,
+          23
+        ]
+      },
+      "result": "W",
+      "record": "12-6",
+      "headline": "Bench and a 42-point third bury the Bucks",
+      "dek": "Down 50-48 at the half, Detroit outscored Milwaukee 42-26 in the third, led by as many as 20 and won 113-98.",
+      "leaders": [
+        {
+          "team": "DET",
+          "name": "Isaiah Joe",
+          "line": "22 PTS · 5 3PM · 3 AST",
+          "sub": "7-for-14 and 5-for-12 from three off the bench; +20 in 27 minutes",
+          "badge": "Top night"
+        },
+        {
+          "team": "DET",
+          "name": "Paul Reed",
+          "line": "14 PTS · 7 REB · 2 STL",
+          "sub": "5-for-8 in 23 minutes and a team-best +28"
+        },
+        {
+          "team": "DET",
+          "name": "Elijah Harkless",
+          "line": "14 PTS · 7 AST · 4 REB",
+          "sub": "7 assists with no turnovers in 27 minutes; +26"
+        },
+        {
+          "team": "DET",
+          "name": "Javonte Green",
+          "line": "10 PTS · 11 REB · 3 STL",
+          "sub": "Double-double as a starter, 4 of the boards offensive"
+        },
+        {
+          "team": "MIL",
+          "name": "Brayden Burries",
+          "line": "23 PTS · 7 REB · 2 3PM",
+          "sub": "9-for-17 off the bench in 28 minutes, but 4 turnovers"
+        },
+        {
+          "team": "MIL",
+          "name": "Myles Turner",
+          "line": "12 REB · 7 PTS",
+          "sub": "Most rebounds in either locker room, on 2-for-5 shooting with 4 fouls"
+        }
+      ],
+      "context": [
+        {
+          "label": "Tonight's scorers",
+          "text": "Joe's 22 was 4th among today's top scorers so far (Jalen Brunson 27, Bam Adebayo 25, Burries 23). The week's best is 50, by Tyler Herro and Victor Wembanyama."
+        },
+        {
+          "label": "Boards",
+          "text": "Green's 11 rebounds were 3rd among today's top lines, behind Giannis Antetokounmpo's 23 and Turner's 12."
+        },
+        {
+          "label": "Dimes",
+          "text": "Harkless' 7 assists were 3rd today behind Davion Mitchell's 9 and Brunson's 8. The week's best is Josh Giddey's 22."
+        }
+      ],
+      "talkingPoints": [
+        "We trailed 50-48 at the half and then won the third quarter 42-26.",
+        "The bench scored 60 of our 113 points, with Joe 22, Reed 14 and Harkless 14.",
+        "Reed was +28, Harkless +26 and Holland +24; every starter but Jenkins was a minus.",
+        "We got out and ran: 22 fast-break points to Milwaukee's 11, and 12 steals to their 8.",
+        "Detroit hit 16 of 47 threes and turned it over just 13 times to the Bucks' 18.",
+        "We did it without Cade, Duren, Robinson, Prince or Okorie, and moved to 12-6."
+      ],
+      "notable": [
+        {
+          "stat": "60",
+          "label": "Bench points",
+          "note": "Joe 22, Reed 14, Harkless 14, Holland 7, Lanier 3; Milwaukee's bench had 32"
+        },
+        {
+          "stat": "42-26",
+          "label": "Third quarter",
+          "note": "Detroit went from down 50-48 at the half to up 90-76 after three"
+        },
+        {
+          "stat": "22-11",
+          "label": "Fast-break points",
+          "note": "Detroit also had 12 steals to Milwaukee's 8"
+        },
+        {
+          "stat": "+28",
+          "label": "Paul Reed",
+          "note": "Best plus-minus in the game, in 23 minutes"
+        },
+        {
+          "stat": "20",
+          "label": "Biggest Pistons lead",
+          "note": "At 4:27 of the fourth; Milwaukee's best was 14, early in the first"
+        },
+        {
+          "stat": "50-38",
+          "label": "Paint points, Bucks",
+          "note": "Milwaukee won the paint, but went 12-for-40 from three"
+        }
+      ],
+      "story": [
+        "Milwaukee led 29-24 after one and 50-48 at the half. Kevin Huerter's floater at 10:11 put the Pistons up 53-52 for good, and a 42-point quarter turned the game. They led 90-76 after three and by as many as 20 in the fourth.",
+        "The bench carried it. Isaiah Joe scored 22 on 5-for-12 from three, Paul Reed had 14 points and 7 rebounds, and Elijah Harkless added 14 points and 7 assists without a turnover. The bench outscored Milwaukee's 60-32, and Javonte Green had 10 points, 11 rebounds and 3 steals as a starter.",
+        "Brayden Burries scored 23 off the bench for Milwaukee and Myles Turner pulled down 12 rebounds, but the Bucks had 18 turnovers and shot 12-for-40 from three. Detroit played without Cade Cunningham, Jalen Duren, Duncan Robinson, Taurean Prince and Ebuka Okorie, and moved to 12-6."
+      ],
+      "teamStats": [
+        {
+          "label": "FG",
+          "det": "40-92 (43%)",
+          "opp": "38-88 (43%)"
+        },
+        {
+          "label": "3PT",
+          "det": "16-47 (34%)",
+          "opp": "12-40 (30%)"
+        },
+        {
+          "label": "FT",
+          "det": "17-25 (68%)",
+          "opp": "10-13 (77%)"
+        },
+        {
+          "label": "Rebounds",
+          "det": "49",
+          "opp": "51"
+        },
+        {
+          "label": "Assists",
+          "det": "27",
+          "opp": "21"
+        },
+        {
+          "label": "Steals",
+          "det": "12",
+          "opp": "8"
+        },
+        {
+          "label": "Blocks",
+          "det": "4",
+          "opp": "5"
+        },
+        {
+          "label": "Turnovers",
+          "det": "13",
+          "opp": "18"
+        },
+        {
+          "label": "Paint pts",
+          "det": "38",
+          "opp": "50"
+        }
+      ],
+      "share": "Pistons 113, Bucks 98. Down 50-48 at the half, Detroit won the third 42-26 and the bench scored 60. DET moves to 12-6.",
+      "sources": [
+        {
+          "title": "ESPN box score",
+          "url": "https://www.espn.com/nba/game/_/gameId/401909327"
+        }
+      ]
+    },
     {
       "id": "g20261124",
       "date": "2026-11-24",
